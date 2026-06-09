@@ -1,0 +1,206 @@
+[
+  {
+    "data": {
+      "name": "Analyze Icon/Node",
+      "system": {
+        "actionPart1": "Computer",
+        "actionPart2": "Analyze",
+        "actionType": "SIMPLE",
+        "description": "",
+        "label": "sr4.actions.analyze_iconnode",
+        "source": "SR4, Page 228"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q"
+  },
+  {
+    "data": {
+      "name": "Capture Wireless Signal",
+      "system": {
+        "actionPart1": "Electronic Warfare",
+        "actionPart2": "Sniffer",
+        "actionType": "COMPLEX",
+        "description": "",
+        "label": "sr4.actions.capture_wireless_signal",
+        "source": "SR4, Page 229"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.8r9s0t1u-2v3w-4x5y-6z7a-8b9c0d1e2f3g"
+  },
+  {
+    "data": {
+      "name": "Control Device",
+      "system": {
+        "actionPart1": "Command",
+        "actionPart2": "Control",
+        "actionType": "COMPLEX",
+        "description": "",
+        "label": "sr4.actions.control_device",
+        "source": "SR4, Page 229"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.4h5i6j7k-8l9m-0n1o-2p3q-4r5s6t7u8v9w"
+  },
+  {
+    "data": {
+      "name": "Crash Node",
+      "system": {
+        "actionPart1": "Hacking",
+        "actionPart2": "Exploit",
+        "actionType": "COMPLEX",
+        "description": "",
+        "label": "sr4.actions.crash_node",
+        "source": "SR4, Page 229"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p"
+  },
+  {
+    "data": {
+      "name": "Crash Program",
+      "system": {
+        "actionPart1": "Hacking",
+        "actionPart2": "Exploit",
+        "actionType": "COMPLEX",
+        "description": "",
+        "label": "sr4.actions.crash_program",
+        "source": "SR4, Page 229"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.7q8r9s0t-1u2v-3w4x-5y6z-7a8b9c0d1e2f"
+  },
+  {
+    "data": {
+      "name": "Data Search",
+      "system": {
+        "actionPart1": "Data Search",
+        "actionPart2": "Browse",
+        "actionType": "COMPLEX",
+        "description": "",
+        "label": "sr4.actions.data_search",
+        "source": "SR4, Page 229"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Composure",
+      "system": {
+        "actionPart1": "Willpower",
+        "actionPart2": "Charisma",
+        "actionType": "TEST",
+        "description": "",
+        "label": "sr4.actions.composure",
+        "source": "SR4, Page 229"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.3a4b5c6d-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
+  },
+  {
+    "data": {
+      "name": "Judge Intensions",
+      "system": {
+        "actionPart1": "Intuition",
+        "actionPart2": "Charisma",
+        "actionType": "TEST",
+        "description": "",
+        "label": "sr4.actions.judge_intensions",
+        "source": "SR4, Page 139"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.9q0r1s2t-3u4v-5w6x-7y8z-9a0b1c2d3e4f"
+  },
+  {
+    "data": {
+      "name": "Lift/Carry",
+      "system": {
+        "actionPart1": "Strength",
+        "actionPart2": "Body",
+        "actionType": "TEST",
+        "description": "",
+        "label": "sr4.actions.liftcarry",
+        "source": "SR4, Page 139"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.5g6h7i8j-9k0l-1m2n-3o4p-5q6r7s8t9u0v"
+  },
+  {
+    "data": {
+      "name": "Memory",
+      "system": {
+        "actionPart1": "Logic",
+        "actionPart2": "Willpower",
+        "actionType": "TEST",
+        "description": "",
+        "label": "sr4.actions.memory",
+        "source": "SR4, Page 139"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.523a4b5c-6d7e-8f9g-0h1i-2j3k4l5m6n7o"
+  },
+  {
+    "data": {
+      "name": "Melee Defense",
+      "system": {
+        "actionPart1": "Acrobatics/Weapon Skill/Dodge/Gymnastics",
+        "actionPart2": "Reaction",
+        "actionType": "TEST",
+        "description": "",
+        "label": "sr4.actions.melee_defense",
+        "source": "SR4, Page 139"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.8p9q0r1s-2t3u-4v5w-6x7y-8z9a0b1c2d3e"
+  },
+  {
+    "data": {
+      "name": "Ranged Defense (Full)",
+      "system": {
+        "actionPart1": "Dodge",
+        "actionPart2": "Reaction",
+        "actionType": "TEST",
+        "description": "",
+        "label": "sr4.actions.ranged_defense_full",
+        "source": "SR4, Page 139"
+      },
+      "type": "Action"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.actions.1axs2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o"
+  }
+]

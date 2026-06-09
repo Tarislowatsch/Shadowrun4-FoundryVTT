@@ -1,0 +1,42 @@
+<div class="grid">
+  <!-- Header Row -->
+  <div class="character-row character-header">
+    <span>{{localize 'sr4.stats.physical'}}</span>
+    <span>{{localize 'sr4.stats.mental'}}</span>
+    <span>{{localize 'sr4.stats.special'}}</span>
+    <span>{{localize 'sr4.stats.special'}}</span>
+  </div>
+  <!-- Dynamic Stats -->
+  {{#each computedStats as |value key|}}
+    {{#unless
+      (or
+        (and ../isTechnomancer (eq key "MAGIC"))
+        (and (not ../isTechnomancer) (eq key "RESONANCE"))
+      )
+    }}
+    <div class="cell">
+      <label>{{localize (concat 'sr4.stats.' key)}}</label>
+      {{#if @root.editMode}}
+        <input
+          type="number"
+          name="system.sheetStats.{{key}}"
+          value="{{lookup @root.system.sheetStats key}}"
+          data-dtype="Number"
+          {{#if (includes @root.derivedKeys key)}}readonly{{/if}}
+        />
+      {{else}}
+        <span class="stat-display">
+          {{lookup @root.system.sheetStats key}}
+          {{#if (ne (lookup @root.system.sheetStats key) value)}}
+            <span class="stat-bonus">({{value}})</span>
+          {{/if}}
+        </span>
+      {{/if}}
+    </div>
+    {{/unless}}
+  {{/each}}
+  <div class="cell">
+    <label>{{localize 'sr4.stats.INITIATIVEPASSES'}}</label>
+    <span>{{system.derivedStats.passesString}}</span>
+  </div>
+</div>

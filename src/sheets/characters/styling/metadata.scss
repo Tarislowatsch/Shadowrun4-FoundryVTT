@@ -1,0 +1,40 @@
+/* metadata.css */
+
+.metadata-container {
+  .actor-image {
+    max-height: 170px;
+    max-width: 90px;
+  }
+  .character-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .info-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .meta-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 calc(29% - 1rem);
+
+    label {
+      flex: 1 1;
+      max-width: 50%;
+      min-width: 10rem;
+    }
+
+    input {
+      max-width: 30rem;
+    }
+  }
+}

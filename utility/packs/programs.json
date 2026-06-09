@@ -1,0 +1,524 @@
+[
+  {
+    "data": {
+      "name": "Analyze",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.analyze",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 232"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.c855510e-d591-4bc9-a24f-e4ab0a39cf35"
+  },
+  {
+    "data": {
+      "name": "Browse",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.browse",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 232"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.17a64458-8bfa-481c-a62c-f70379977fc0"
+  },
+  {
+    "data": {
+      "name": "Command",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.command",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 232"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.14da65a0-61b4-4ca1-a21f-9daa5237c9b6"
+  },
+  {
+    "data": {
+      "name": "Edit",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.edit",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.f9db409e-0906-46f5-b8b0-75af4f86b919"
+  },
+  {
+    "data": {
+      "name": "Encrypt",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.encrypt",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.5c8582f7-2e56-450d-82d8-cd656e60fd79"
+  },
+  {
+    "data": {
+      "name": "Purge",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.purge",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "UN, Page 111"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.de1d3170-3178-4991-a6c7-4431465edc3a"
+  },
+  {
+    "data": {
+      "name": "Reality Filter",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.reality_filter",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.e36cd509-a042-4b2b-8f6b-61a4f8687d1e"
+  },
+  {
+    "data": {
+      "name": "Scan",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.scan",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.627f0fc3-051d-46e3-9b36-595e94ea58b9"
+  },
+  {
+    "data": {
+      "name": "CarnivoreGold",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.carnivoregold",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SG, Page 149"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.f53862fe-9161-4094-8307-0445ab43b340"
+  },
+  {
+    "data": {
+      "name": "Lip Reader",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.lip_reader",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SG, Page 149"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.fc62f645-ab98-48aa-bde5-35de76e262e2"
+  },
+  {
+    "data": {
+      "name": "MonaLisa",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.monalisa",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SG, Page 149"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.5ba038b7-144f-400e-af08-298f9c7d3946"
+  },
+  {
+    "data": {
+      "name": "Data Translation",
+      "system": {
+        "category": "Common Use",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.data_translation",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "GH, Page 14"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.c10839cf-a49d-4674-9597-07f1740f557a"
+  },
+  {
+    "data": {
+      "name": "Armor",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.armor",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.2436a2c5-1c54-41bb-8e6f-effc456b269a"
+  },
+  {
+    "data": {
+      "name": "Attack",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.attack",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.6eb1680f-f6aa-4589-b10b-aeeb000a1a1b"
+  },
+  {
+    "data": {
+      "name": "Black Hammer",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.black_hammer",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.6161be2a-a94b-4469-b2e3-0cd6bee93ff9"
+  },
+  {
+    "data": {
+      "name": "Blackout",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.blackout",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.cefbb561-2749-41ec-939e-9fc9a38e3193"
+  },
+  {
+    "data": {
+      "name": "Corrupt",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.corrupt",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "UN, Page 111"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.36c9ac5d-a015-497d-aa21-6d8f2314be1c"
+  },
+  {
+    "data": {
+      "name": "Data Bomb",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.data_bomb",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.a5ad442c-dc7c-471d-b5f8-40cc49e043e0"
+  },
+  {
+    "data": {
+      "name": "Decrypt",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.decrypt",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.c8ca9371-55cb-4e16-b86b-44569ce84180"
+  },
+  {
+    "data": {
+      "name": "Defuse",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.defuse",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.05e0d54a-8d39-4e38-9fc5-c0ace85ae7f8"
+  },
+  {
+    "data": {
+      "name": "Disarm",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.disarm",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "UN, Page 111"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.45cc0977-3f40-45ab-bf4d-40a89d9e5615"
+  },
+  {
+    "data": {
+      "name": "ECCM",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.eccm",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.507f9966-3541-4003-bba2-8fe692e66de7"
+  },
+  {
+    "data": {
+      "name": "Exploit",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.exploit",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.0ded98c4-7f49-4653-b39d-c2f2d6af52ae"
+  },
+  {
+    "data": {
+      "name": "Medic",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.medic",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 233"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.bd47fc47-914f-4cc9-a856-d18e4c83b5aa"
+  },
+  {
+    "data": {
+      "name": "Nuke",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.nuke",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "UN, Page 111"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.52591325-6b8b-40ff-9897-651e817d0fc1"
+  },
+  {
+    "data": {
+      "name": "Sniffer",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.sniffer",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 234"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.4d58e155-27e2-4443-a144-8b190d97e2b0"
+  },
+  {
+    "data": {
+      "name": "Spoof",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.spoof",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 234"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.64777249-86fb-4156-b805-69f20c326d6f"
+  },
+  {
+    "data": {
+      "name": "Stealth",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.stealth",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 234"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.d96b0e80-c9f1-4679-9d80-8e79dc5be5a8"
+  },
+  {
+    "data": {
+      "name": "Track",
+      "system": {
+        "category": "Hacking",
+        "complexform": true,
+        "description": "",
+        "label": "sr4.programs.track",
+        "maxrating": null,
+        "programtypes": [],
+        "source": "SR4, Page 234"
+      },
+      "type": "Program"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.programs.045a2b99-eecf-43d7-8002-ce2198dafa27"
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "type": "module",
+  "version": "0.1.25",
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@release-it/bumper": "^7.0.6",
+    "@release-it/conventional-changelog": "^11.0.1",
+    "eslint": "^9.16.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-sort-json": "^4.2.0",
+    "release-it": "^20.2.0",
+    "sass": "^1.82.0",
+    "vite": "^8.0.16",
+    "vite-plugin-static-copy": "^4.1.1"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:full": "npm run build:db && vite build",
+    "watch": "vite build --watch",
+    "clean": "node --input-type=module -e \"import fs from 'fs'; fs.rmSync('shadowrun4e', {recursive:true,force:true})\"",
+    "build:db": "node utility/build-db.js",
+    "prepare": "husky",
+    "eslint": "eslint",
+    "createSymlinks": "node ./tools/create-symlinks.mjs",
+    "postinstall": "npm run createSymlinks",
+    "release": "release-it"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write"
+    ],
+    "*.scss": [
+      "prettier --write"
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+<div class="item-sheet-body">
+  <header class="item-sheet-header">
+    <img
+      class="item-sheet-img"
+      data-edit="img"
+      src="{{ item.img }}"
+      alt="{{ item.name }}"
+    />
+    <div class="item-sheet-name">
+      <label>{{localize 'sr4.item.name'}}</label>
+      <input type="text" name="name" value="{{ item.name }}" />
+    </div>
+  </header>
+
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize 'sr4.spell.category'}}</th>
+        <th>{{localize 'sr4.spell.type'}}</th>
+        <th>{{localize 'sr4.spell.range'}}</th>
+        {{#if (eq system.category "COMBAT")}}
+        <th>{{localize 'sr4.spell.damage'}}</th>
+        <th>{{localize 'sr4.spell.damagetype'}}</th>
+        <th>{{localize 'sr4.spell.element'}}</th>
+        {{/if}}
+        <th>{{localize 'sr4.spell.duration'}}</th>
+        <th>{{localize 'sr4.spell.dv'}}</th>
+        <th>{{localize 'sr4.spell.source'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <select name="system.category">
+            {{selectOptions spellcategories selected=system.category localize=true}}
+          </select>
+        </td>
+        <td>
+          <select name="system.type">
+            {{selectOptions spelltypes selected=system.type localize=true}}
+          </select>
+        </td>
+        <td>
+          <select name="system.range">
+            {{selectOptions spellranges selected=system.range localize=true}}
+          </select>
+        </td>
+        {{#if (eq system.category "COMBAT")}}
+        <td>
+          <input type="text" name="system.damage" value="{{ system.damage }}" />
+        </td>
+        <td>
+          <select name="system.damagetype">
+            {{selectOptions damagetypes selected=system.damageType localize=true}}
+          </select>
+        </td>
+        <td>
+          <select name="system.element">
+            {{selectOptions spellelements selected=system.element localize=true}}
+          </select>
+        </td>
+        {{/if}}
+        <td>
+          <select name="system.duration">
+            {{selectOptions spelldurations selected=system.duration localize=true}}
+          </select>
+        </td>
+        <td><input type="text" name="system.dv" value="{{ system.dv }}" /></td>
+        <td>
+          <input type="text" name="system.source" value="{{ system.source }}" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="item-textareas">
+    <div>
+      <label>{{localize 'sr4.item.notes'}}</label>
+      <textarea name="system.notes">{{ system.notes }}</textarea>
+    </div>
+    <div>
+      <label>{{localize 'sr4.item.description'}}</label>
+      <textarea name="system.description">{{ system.description }}</textarea>
+    </div>
+  </div>
+</div>

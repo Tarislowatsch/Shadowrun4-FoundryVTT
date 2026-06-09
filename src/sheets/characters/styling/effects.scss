@@ -1,0 +1,207 @@
+.effects {
+  .inventory-section {
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .add-effect-btn {
+        width: 22px;
+        height: 22px;
+        border: 1px solid transparent;
+        background: none;
+        color: var(--sr4-border-dim);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: var(--sr4-teal);
+          border-color: var(--sr4-teal);
+          background: var(--sr4-teal-glow);
+        }
+      }
+    }
+  }
+
+  .effects-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+
+    thead tr {
+      border-bottom: 2px solid var(--sr4-teal);
+    }
+
+    th {
+      text-align: left;
+      padding: 4px 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--sr4-label);
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    td {
+      padding: 4px 8px;
+      border-bottom: 1px solid rgba(0, 179, 164, 0.1);
+      vertical-align: middle;
+      color: var(--sr4-text);
+    }
+
+    .effect-row {
+      transition: background 0.15s;
+
+      &:hover td {
+        background: rgba(0, 179, 164, 0.05);
+      }
+
+      &.effect-inactive td {
+        opacity: 0.35;
+        font-style: italic;
+      }
+    }
+
+    .effect-value {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+
+      &.positive {
+        color: #4dcc6e;
+      }
+      &.negative {
+        color: var(--sr4-red);
+      }
+    }
+
+    .effect-icon-col {
+      width: 24px;
+      padding: 2px 4px;
+    }
+
+    .effect-icon {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      border: none;
+    }
+
+    .effect-toggle {
+      text-align: center;
+    }
+
+    .item-controls {
+      display: flex;
+      gap: 4px;
+
+      a {
+        width: 22px;
+        height: 22px;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--sr4-border-dim);
+        cursor: pointer;
+
+        &:hover {
+          color: var(--sr4-teal);
+          border-color: var(--sr4-teal);
+          background: var(--sr4-teal-glow);
+        }
+
+        &[data-action='deleteEffect']:hover {
+          color: var(--sr4-red);
+          border-color: var(--sr4-red);
+          background: rgba(224, 48, 48, 0.08);
+        }
+      }
+    }
+  }
+}
+
+.item-form.effect {
+  .item-sheet-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .effect-img-picker {
+    flex-shrink: 0;
+
+    .effect-header-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border: 1px solid var(--sr4-border-dim);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+
+      &:hover {
+        border-color: var(--sr4-teal);
+      }
+    }
+  }
+
+  .item-stats-table {
+    select,
+    input[type='number'] {
+      width: 100%;
+      background: var(--sr4-bg-card);
+      border: 1px solid var(--sr4-border-dim);
+      color: var(--sr4-text);
+      border-radius: 3px;
+      padding: 2px 4px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.72rem;
+
+      &:focus {
+        outline: none;
+        border-color: var(--sr4-teal);
+        box-shadow: 0 0 4px var(--sr4-teal-glow);
+      }
+    }
+
+    input[type='checkbox'] {
+      accent-color: var(--sr4-teal);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+  }
+}
+
+.effect-config-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--sr4-border-dim);
+
+  button[type='submit'] {
+    background: var(--sr4-teal-glow);
+    border: 1px solid var(--sr4-teal);
+    color: var(--sr4-teal);
+    padding: 4px 14px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+
+    &:hover {
+      background: rgba(0, 179, 164, 0.35);
+    }
+
+    i {
+      margin-right: 4px;
+    }
+  }
+}

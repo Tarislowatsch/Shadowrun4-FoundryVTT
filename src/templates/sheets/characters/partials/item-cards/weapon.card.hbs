@@ -1,0 +1,62 @@
+<div
+  class="item-card item weapon-card"
+  data-item-id="{{ this._id }}"
+  id="{{ this._id }}"
+>
+  <div class="item-header item-row">
+    <span class="item-name">
+      {{ this.name }}
+    </span>
+
+    <div class="item-actions">
+      <button
+        class="attack roll-action"
+        data-action="attackRoll"
+        data-attack-skill="{{ this.system.attackSkill }}"
+        data-item-id="{{ this._id }}"
+      >
+        <i class="fas fa-bullseye"></i>
+      </button>
+      <button class="item-edit" data-action="editItem">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="item-delete" data-action="deleteItem">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="item-body weapon-stats">
+    <span class="item-property">
+      <strong>{{localize "sr4.weapon.attackSkill"}}</strong>
+      {{localize (lookup attackskills this.system.attackSkill)}}
+    </span>
+
+    <span class="item-property">
+      <strong>{{localize "sr4.weapon.damage"}}</strong>
+      {{ this.system.damage }}
+    </span>
+
+    <span class="item-property">
+      <strong>{{localize "sr4.weapon.damageType"}}</strong>
+      {{localize (lookup damageTypes this.system.damageType)}}
+    </span>
+
+    <span class="item-property">
+      <strong>{{localize "sr4.weapon.ap"}}</strong>
+      {{ this.system.ap }}
+    </span>
+
+    {{#if (eq this.type 'Ranged Weapon')}}
+    <span class="item-property">
+      <strong>{{localize "sr4.weapon.range"}}</strong>
+      {{ this.system.range }}
+    </span>
+
+    <span class="item-property">
+      <strong>{{localize "sr4.weapon.ammo"}}</strong>
+      {{ this.system.ammo }}
+    </span>
+    {{/if}}
+  </div>
+</div>

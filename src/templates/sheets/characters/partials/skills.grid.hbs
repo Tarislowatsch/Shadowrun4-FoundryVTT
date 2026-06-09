@@ -1,0 +1,121 @@
+{{!-- Skill Search Bar --}}
+<div class="skill-search-bar">
+  <input
+    type="text"
+    id="skill-search"
+    placeholder="{{localize 'sr4.skills.search'}}"
+    autocomplete="off"
+  />
+</div>
+
+<div class="grid">
+  {{!-- Header Row: Kategorien --}}
+  <div class="full-width">
+    <span class="cell3">{{localize "sr4.skills.active"}}</span>
+    <span class="cell3">{{localize "sr4.skills.active"}}</span>
+    <span class="cell3">{{localize "sr4.skills.knowledge"}}</span>
+  </div>
+
+  {{!-- Header Row: Spaltenbezeichnungen --}}
+  <div class="full-width">
+    {{#each headerArray}}
+      <div class="column-header">
+        <span class="header-item">{{localize "sr4.skills.name"}}</span>
+        <span class="header-item">{{localize "sr4.skills.rating"}}</span>
+        <span class="header-item">{{localize "sr4.skills.specialization"}}</span>
+        <span class="header-item">{{localize "sr4.skills.attribute"}}</span>
+      </div>
+    {{/each}}
+  </div>
+
+  {{!-- Active Skills Spalte 1 --}}
+  <div class="column column-2 item-list">
+    {{#each skills}}
+      {{#if (eq this.system.type "active")}}
+        <div
+          class="cell3 item skill active-skill"
+          data-item-id="{{this._id}}"
+          data-skill-name="{{localizeOr this.system.label this.name}}"
+        >
+          <label class="roll-skill" data-skill="{{this.name}}">
+            {{localizeOr this.system.label this.name}}
+          </label>
+          <input
+            type="number"
+            name="system.rating"
+            value="{{this.system.rating}}"
+            data-dtype="Number"
+            {{#unless ../editMode}}readonly{{/unless}}
+          />
+          <input
+            type="text"
+            name="system.specialization"
+            value="{{this.system.specialization}}"
+            data-dtype="String"
+            {{#unless ../editMode}}readonly{{/unless}}
+          />
+          <select
+            name="system.attribute"
+            data-dtype="String"
+            {{#unless ../editMode}}disabled{{/unless}}
+          >
+            {{selectOptions ../attributes selected=this.system.attribute localize=true}}
+          </select>
+          {{#if ../editMode}}
+            <button class="item-edit" type="button" data-action="edit" title="{{localize 'sr4.edit'}}">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="item-delete" type="button" data-action="delete" title="{{localize 'sr4.delete'}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          {{/if}}
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
+
+  {{!-- Knowledge Skills Spalte --}}
+  <div class="column column-1 item-list">
+    {{#each skills}}
+      {{#if (eq this.system.type "knowledge")}}
+        <div
+          id="{{this._id}}"
+          class="cell3 item skill knowledge-skill"
+          data-item-id="{{this._id}}"
+          data-skill-name="{{this.name}}"
+        >
+          <label>{{this.name}}</label>
+          <input
+            type="number"
+            name="system.rating"
+            value="{{this.system.rating}}"
+            data-dtype="Number"
+            {{#unless ../editMode}}readonly{{/unless}}
+          />
+          <input
+            type="text"
+            name="system.specialization"
+            value="{{this.system.specialization}}"
+            data-dtype="String"
+            {{#unless ../editMode}}readonly{{/unless}}
+          />
+          <select
+            name="system.attribute"
+            data-dtype="String"
+            {{#unless ../editMode}}disabled{{/unless}}
+          >
+            {{selectOptions ../attributes selected=this.system.attribute localize=true}}
+          </select>
+          {{#if ../editMode}}
+            <button class="item-edit" type="button" data-action="edit" title="{{localize 'sr4.edit'}}">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="item-delete" type="button" data-action="delete" title="{{localize 'sr4.delete'}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          {{/if}}
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

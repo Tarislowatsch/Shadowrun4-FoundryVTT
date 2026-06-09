@@ -1,0 +1,140 @@
+<div
+  class="modifiers-card tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="modifiers"
+>
+  <div class="modifier-grid">
+
+    <div class="modifier-section">
+      <h3>{{localize "sr4.modifiers.defense"}}</h3>
+      {{log system.derivedStats}}
+      <div class="modifier-field">
+        <label>{{localize "sr4.bonus.soakBonus"}}</label>
+        <input
+          type="number"
+          data-dtype="Number"
+          name="system.modifiers.soakBonus"
+          value="{{system.modifiers.soakBonus}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.bonus.overflowBonus"}}</label>
+        <input
+          type="number"
+          data-dtype="Number"
+          name="system.modifiers.overflowBonus"
+          value="{{system.modifiers.overflowBonus}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.bonus.woundModBonus"}}</label>
+        <input
+          data-dtype="Number"
+          name="system.modifiers.woundModBonus"
+          value="{{system.modifiers.woundModBonus}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+        <div class="modifier-field readonly">
+          <label>{{localize "sr4.modifiers.woundModifier"}}</label>
+          <span>{{system.derivedStats.woundModifier}}</span>
+        </div>
+    </div>
+
+    <div class="modifier-section">
+      <h3>{{localize "sr4.modifiers.initiative.title"}}</h3>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.modifiers.initiative.physicalBonus"}}</label>
+        <input
+          type="number"
+          name="system.modifiers.initiative.bonuses.physical"
+          value="{{system.modifiers.initiative.bonuses.physical}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.modifiers.initiative.physicalPasses"}}</label>
+        <input
+          type="number"
+          min="1"
+          name="system.modifiers.initiative.passes.physical"
+          value="{{system.modifiers.initiative.passes.physical}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.modifiers.initiative.astralBonus"}}</label>
+        <input
+          type="number"
+          name="system.modifiers.initiative.bonuses.astral"
+          value="{{system.modifiers.initiative.bonuses.astral}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.modifiers.initiative.astralPasses"}}</label>
+        <input
+          type="number"
+          min="1"
+          name="system.modifiers.initiative.passes.astral"
+          value="{{system.modifiers.initiative.passes.astral}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.modifiers.initiative.matrixBonus"}}</label>
+        <input
+          type="number"
+          name="system.modifiers.initiative.bonuses.matrix"
+          value="{{system.modifiers.initiative.bonuses.matrix}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+
+      <div class="modifier-field">
+        <label>{{localize "sr4.modifiers.initiative.matrixPasses"}}</label>
+        <input
+          type="number"
+          min="1"
+          name="system.modifiers.initiative.passes.matrix"
+          value="{{system.modifiers.initiative.passes.matrix}}"
+          {{#unless editMode}}readonly{{/unless}}
+        />
+      </div>
+    </div>
+
+    <div class="modifier-section">
+      <h3>{{localize "sr4.modifiers.overview"}}</h3>
+
+      <div class="modifier-field readonly">
+        <label>{{localize "sr4.modifiers.initiative.currentPhysical"}}</label>
+        <span>{{system.modifiers.initiative.bonuses.physical}}</span>
+      </div>
+
+      <div class="modifier-field readonly">
+        <label>{{localize "sr4.modifiers.initiative.currentAstral"}}</label>
+        <span>{{system.modifiers.initiative.bonuses.astral}}</span>
+      </div>
+
+      <div class="modifier-field readonly">
+        <label>{{localize "sr4.modifiers.initiative.currentMatrix"}}</label>
+        <span>{{system.modifiers.initiative.bonuses.matrix}}</span>
+      </div>
+
+      <div class="modifier-field readonly">
+        <label>{{localize "sr4.modifiers.initiative.currentPasses"}}</label>
+        <span>{{system.derivedStats.passesString}}</span>
+      </div>
+    </div>
+
+  </div>
+</div>

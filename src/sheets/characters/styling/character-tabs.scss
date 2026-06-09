@@ -1,0 +1,59 @@
+.shadowrun4e {
+  .tab.active {
+    margin-top: 1rem;
+  }
+
+  nav.sheet-tabs.tabs {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #0d1a1a;
+    border-bottom: 2px solid #00b3a4;
+    width: 100%;
+
+    a[data-action='tab'] {
+      background: transparent;
+      color: #00b3a4;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition:
+        background 0.2s,
+        color 0.2s,
+        border-color 0.2s;
+      white-space: nowrap;
+
+      i {
+        font-size: 14px;
+      }
+
+      span {
+        display: block;
+      }
+
+      &:hover {
+        background: rgba(0, 179, 164, 0.15);
+        border-color: #00b3a4;
+        color: #00e5d3;
+      }
+
+      &.active {
+        background: rgba(0, 179, 164, 0.2);
+        border-color: #00b3a4;
+        color: #00e5d3;
+        border-bottom: 2px solid #0d1a1a;
+        margin-bottom: -2px;
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+node_modules/
+shadowrun4e/
+.env
+**/*.hbs

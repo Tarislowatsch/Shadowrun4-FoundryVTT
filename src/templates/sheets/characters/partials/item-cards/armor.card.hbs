@@ -1,0 +1,36 @@
+<div class="item-card item armor-card" data-item-id="{{ this._id }}">
+  <div class="item-header item-row">
+    <span class="item-name">{{ this.name }}</span>
+
+    <span class="item-property">
+      <strong>{{localize "sr4.armor.ballisticarmor"}}</strong>
+      {{ this.system.ballisticarmor }}
+    </span>
+
+    <span class="item-property">
+      <strong>{{localize "sr4.armor.impactarmor"}}</strong>
+      {{ this.system.impactarmor }}
+    </span>
+
+    <a
+      class="item-toggle-equip"
+      data-action="toggleEquip"
+      data-id="{{ this._id }}"
+      data-equipped="{{ this.system.equipped }}"
+    >
+      {{#if this.system.equipped}}
+      <i class="fas fa-shield-alt"></i>
+      {{else}}
+      <i class="fas fa-shield"></i>
+      {{/if}}
+    </a>
+
+    <button class="item-edit">
+      <i class="fas fa-edit"></i>
+    </button>
+
+    <button class="item-delete">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+</div>

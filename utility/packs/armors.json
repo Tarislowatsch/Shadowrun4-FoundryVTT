@@ -1,0 +1,2027 @@
+[
+  {
+    "data": {
+      "name": "Victory: Industrious Hard Hat",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 50,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.victory_industrious_hard_hat",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Actioneer Business Clothes",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 5,
+        "capacity": 0,
+        "cost": 1500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 3,
+        "label": "sr4.armors.actioneer_business_clothes",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Armor Clothing",
+      "system": {
+        "avail": 2,
+        "availability": "",
+        "ballisticarmor": 4,
+        "capacity": 0,
+        "cost": 500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 0,
+        "label": "sr4.armors.armor_clothing",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Armor Jacket",
+      "system": {
+        "avail": 2,
+        "availability": "",
+        "ballisticarmor": 8,
+        "capacity": 0,
+        "cost": 900,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.armor_jacket",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Armor Vest",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 600,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.armor_vest",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Bike Racing Armor",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 4,
+        "capacity": 6,
+        "cost": 500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 7,
+        "label": "sr4.armors.bike_racing_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Body Armor Bag",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 750,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.body_armor_bag",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Bunker Gear",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 3,
+        "capacity": 4,
+        "cost": 2500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.bunker_gear",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Camouflage Suit",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 8,
+        "capacity": 0,
+        "cost": 1200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.camouflage_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Chain Shirt",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 900,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 7,
+        "label": "sr4.armors.chain_shirt",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Chameleon Suit",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 8000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.chameleon_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Form-Fitting Shirt",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 3,
+        "capacity": 0,
+        "cost": 500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 0,
+        "label": "sr4.armors.formfitting_shirt",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Form-Fitting Half-Body Suit",
+      "system": {
+        "avail": 7,
+        "availability": "",
+        "ballisticarmor": 4,
+        "capacity": 0,
+        "cost": 900,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.formfitting_halfbody_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Form-Fitting Full-Body Suit",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 1600,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.formfitting_fullbody_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Full Body Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 10,
+        "capacity": 8,
+        "cost": 6000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 8,
+        "label": "sr4.armors.full_body_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Lined Coat",
+      "system": {
+        "avail": 2,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 700,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.lined_coat",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Padded Leather Armor",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 600,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 5,
+        "label": "sr4.armors.padded_leather_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Paper Armor",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 0,
+        "cost": 100,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.paper_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AT"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Riot Control Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 6,
+        "cost": 3000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 9,
+        "label": "sr4.armors.riot_control_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SWAT Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 12,
+        "capacity": 8,
+        "cost": 8000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 10,
+        "label": "sr4.armors.swat_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Urban Explorer Jumpsuit",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 6,
+        "cost": 500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.urban_explorer_jumpsuit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Diving Armor",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 5,
+        "capacity": 3,
+        "cost": 1750,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.diving_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Evo HEL Suit",
+      "system": {
+        "avail": 10,
+        "availability": "",
+        "ballisticarmor": 4,
+        "capacity": 5,
+        "cost": 3000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.evo_hel_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Mitsuhama EE Suit",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 3,
+        "capacity": 5,
+        "cost": 1500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 3,
+        "label": "sr4.armors.mitsuhama_ee_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Polar Survival Suit",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 6,
+        "cost": 1000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 3,
+        "label": "sr4.armors.polar_survival_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Security Spacesuit",
+      "system": {
+        "avail": 24,
+        "availability": "",
+        "ballisticarmor": 12,
+        "capacity": 8,
+        "cost": 25000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 12,
+        "label": "sr4.armors.security_spacesuit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Spacesuit",
+      "system": {
+        "avail": 16,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 4,
+        "cost": 12000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 8,
+        "label": "sr4.armors.spacesuit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SK Myrmidon Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 16,
+        "capacity": 0,
+        "cost": 32500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 14,
+        "label": "sr4.armors.sk_myrmidon_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "ARG"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Light Military Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 12,
+        "capacity": 10,
+        "cost": 12000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 10,
+        "label": "sr4.armors.light_military_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Medium Military Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 14,
+        "capacity": 15,
+        "cost": 16000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 12,
+        "label": "sr4.armors.medium_military_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Heavy Military Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 16,
+        "capacity": 20,
+        "cost": 20000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 14,
+        "label": "sr4.armors.heavy_military_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Oyoroi Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 11,
+        "capacity": 11,
+        "cost": 11000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 11,
+        "label": "sr4.armors.oyoroi_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Red Samurai Armor",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 13,
+        "capacity": 12,
+        "cost": 15000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 13,
+        "label": "sr4.armors.red_samurai_armor",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Helmet",
+      "system": {
+        "avail": 2,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 0,
+        "cost": 100,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Ballistic Shield",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 1500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.ballistic_shield",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Riot Shield",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.riot_shield",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Taser Shield",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 750,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.taser_shield",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Riot Control Helmet",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 6,
+        "cost": 1000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.riot_control_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SWAT Helmet",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 4,
+        "cost": 1200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.swat_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Urban Explorer Helmet",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 5,
+        "cost": 50,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.urban_explorer_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Military Helmet (Rating 4)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 5,
+        "cost": 10000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.military_helmet_rating_4",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Military Helmet (Rating 5)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 5,
+        "cost": 12500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.military_helmet_rating_5",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Military Helmet (Rating 6)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 5,
+        "cost": 18500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.military_helmet_rating_6",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Kabuto Helmet",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 4,
+        "cost": 10000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.kabuto_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SK Myrmidon Helmet",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 15000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.sk_myrmidon_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "ARG"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Bike Racing Helmet",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 6,
+        "cost": 200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.bike_racing_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Bunker Gear Helmet",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 3,
+        "cost": 750,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.bunker_gear_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Full Body Armor Helmet",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 7,
+        "cost": 1000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.full_body_armor_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "SR4"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Ballistic Mask",
+      "system": {
+        "avail": 7,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 130,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.ballistic_mask",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "WAR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Death Mask",
+      "system": {
+        "avail": 2,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 275,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.death_mask",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AT"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Forearm Guards",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.securetech_forearm_guards",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Helmet",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 100,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.securetech_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Arm Casings",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 175,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.securetech_arm_casings",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Leg Casings",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 175,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.securetech_leg_casings",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Leg and Arm Casings",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 0,
+        "cost": 350,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.securetech_leg_and_arm_casings",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Shin Guards",
+      "system": {
+        "avail": 5,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 0,
+        "cost": 150,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.securetech_shin_guards",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech Vitals Protector",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 0,
+        "cost": 200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.securetech_vitals_protector",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech PPP Armor (Ensemble with Helmet)",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 30,
+        "cost": 1000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.securetech_ppp_armor_ensemble_with_helmet",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "SecureTech PPP Armor (Ensemble)",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 24,
+        "cost": 900,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.securetech_ppp_armor_ensemble",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "AR"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Arctic Diver Suit",
+      "system": {
+        "avail": 8,
+        "availability": "",
+        "ballisticarmor": 0,
+        "capacity": 6,
+        "cost": 3000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.arctic_diver_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "HP"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Ares Arctic Forces Suit",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 12,
+        "capacity": 6,
+        "cost": 10000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 10,
+        "label": "sr4.armors.ares_arctic_forces_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "HP"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Ares Armored Coldsuit",
+      "system": {
+        "avail": 6,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 9,
+        "cost": 1000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.ares_armored_coldsuit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "HP"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Ares Armored Survivalist",
+      "system": {
+        "avail": 10,
+        "availability": "",
+        "ballisticarmor": 4,
+        "capacity": 6,
+        "cost": 1500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.ares_armored_survivalist",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "HP"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Ares Polar Sneak Suit",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 6,
+        "cost": 9000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 3,
+        "label": "sr4.armors.ares_polar_sneak_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "HP"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Evo Armadillo Armored Space Suit",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 12,
+        "capacity": 8,
+        "cost": 35000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 12,
+        "label": "sr4.armors.evo_armadillo_armored_space_suit",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "HP"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Armor Jacket (2050)",
+      "system": {
+        "avail": 3,
+        "availability": "",
+        "ballisticarmor": 8,
+        "capacity": 0,
+        "cost": 900,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 6,
+        "label": "sr4.armors.armor_jacket_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Armor Vest (2050)",
+      "system": {
+        "avail": 2,
+        "availability": "",
+        "ballisticarmor": 6,
+        "capacity": 0,
+        "cost": 200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 4,
+        "label": "sr4.armors.armor_vest_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Form-Fitting Full Suit (2050)",
+      "system": {
+        "avail": 5,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 500,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.formfitting_full_suit_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Form-Fitting Half Suit (2050)",
+      "system": {
+        "avail": 4,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 250,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.formfitting_half_suit_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Form-Fitting Shirt (2050)",
+      "system": {
+        "avail": 3,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 0,
+        "cost": 150,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 0,
+        "label": "sr4.armors.formfitting_shirt_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Heavy Armor, Full (2050)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 12,
+        "capacity": 0,
+        "cost": 20000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 10,
+        "label": "sr4.armors.heavy_armor_full_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Heavy Armor, Partial (2050)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 11,
+        "capacity": 0,
+        "cost": 10000,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 9,
+        "label": "sr4.armors.heavy_armor_partial_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Helmet (2050)",
+      "system": {
+        "avail": 12,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 200,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.helmet_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Leather, Real (2050)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 2,
+        "capacity": 0,
+        "cost": 750,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 2,
+        "label": "sr4.armors.leather_real_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  },
+  {
+    "data": {
+      "name": "Leather, Synthetic (2050)",
+      "system": {
+        "avail": 0,
+        "availability": "",
+        "ballisticarmor": 1,
+        "capacity": 0,
+        "cost": 250,
+        "description": "",
+        "equipped": false,
+        "impactarmor": 1,
+        "label": "sr4.armors.leather_synthetic_2050",
+        "legality": "",
+        "modable": false,
+        "mods": [],
+        "notes": "",
+        "quantity": 1,
+        "rating": null,
+        "source": "2050"
+      },
+      "type": "Armor"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": ""
+  }
+]

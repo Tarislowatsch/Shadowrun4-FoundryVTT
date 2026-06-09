@@ -1,0 +1,1330 @@
+[
+  {
+    "data": {
+      "name": "Archery",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "ranged combat",
+        "label": "sr4.skills.categorized.archery",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.01"
+  },
+  {
+    "data": {
+      "name": "Automatics",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "ranged combat",
+        "label": "sr4.skills.categorized.automatics",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.02"
+  },
+  {
+    "data": {
+      "name": "Blades",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "close combat",
+        "label": "sr4.skills.categorized.blades",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.03"
+  },
+  {
+    "data": {
+      "name": "Clubs",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "close combat",
+        "label": "sr4.skills.categorized.clubs",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.04"
+  },
+  {
+    "data": {
+      "name": "Escape-Artist",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.escapeartist",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.05"
+  },
+  {
+    "data": {
+      "name": "Exotic-Melee-Weapon",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "label": "sr4.skills.categorized.exoticmeleeweapon",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.06"
+  },
+  {
+    "data": {
+      "name": "Exotic-Ranged-Weapon",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "label": "sr4.skills.categorized.exoticrangedweapon",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.07"
+  },
+  {
+    "data": {
+      "name": "Forgery",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.forgery",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.08"
+  },
+  {
+    "data": {
+      "name": "Gunnery",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "label": "sr4.skills.categorized.gunnery",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.09"
+  },
+  {
+    "data": {
+      "name": "Gymnastics",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.gymnastics",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.10"
+  },
+  {
+    "data": {
+      "name": "Heavy-Weapons",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "label": "sr4.skills.categorized.heavyweapons",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.11"
+  },
+  {
+    "data": {
+      "name": "Infiltration",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "physical",
+        "description": "",
+        "group": "stealth",
+        "label": "sr4.skills.categorized.infiltration",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.12"
+  },
+  {
+    "data": {
+      "name": "Locksmith",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "technical",
+        "description": "",
+        "group": "technical",
+        "label": "sr4.skills.categorized.locksmith",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.13"
+  },
+  {
+    "data": {
+      "name": "Longarms",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "ranged combat",
+        "label": "sr4.skills.categorized.longarms",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.14"
+  },
+  {
+    "data": {
+      "name": "Palming",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "physical",
+        "description": "",
+        "group": "stealth",
+        "label": "sr4.skills.categorized.palming",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.15"
+  },
+  {
+    "data": {
+      "name": "Pistols",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "ranged combat",
+        "label": "sr4.skills.categorized.pistols",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.16"
+  },
+  {
+    "data": {
+      "name": "Throwing-Weapons",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "ranged combat",
+        "label": "sr4.skills.categorized.throwingweapons",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.17"
+  },
+  {
+    "data": {
+      "name": "Unarmed-Combat",
+      "system": {
+        "attribute": "AGILITY",
+        "category": "combat",
+        "description": "",
+        "group": "close combat",
+        "label": "sr4.skills.categorized.unarmedcombat",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.18"
+  },
+  {
+    "data": {
+      "name": "Diving",
+      "system": {
+        "attribute": "BODY",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.diving",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.19"
+  },
+  {
+    "data": {
+      "name": "Parachuting",
+      "system": {
+        "attribute": "BODY",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.parachuting",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.20"
+  },
+  {
+    "data": {
+      "name": "Dodge",
+      "system": {
+        "attribute": "REACTION",
+        "category": "combat",
+        "description": "",
+        "label": "sr4.skills.categorized.dodge",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.21"
+  },
+  {
+    "data": {
+      "name": "Pilot-Aerospace",
+      "system": {
+        "attribute": "REACTION",
+        "category": "vehicle",
+        "description": "",
+        "label": "sr4.skills.categorized.pilotaerospace",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.22"
+  },
+  {
+    "data": {
+      "name": "Pilot-Aircraft",
+      "system": {
+        "attribute": "REACTION",
+        "category": "vehicle",
+        "description": "",
+        "label": "sr4.skills.categorized.pilotaircraft",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.23"
+  },
+  {
+    "data": {
+      "name": "Pilot-Anthroform",
+      "system": {
+        "attribute": "REACTION",
+        "category": "vehicle",
+        "description": "",
+        "label": "sr4.skills.categorized.pilotanthroform",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.24"
+  },
+  {
+    "data": {
+      "name": "Pilot-Exotic-Vehicle",
+      "system": {
+        "attribute": "REACTION",
+        "category": "vehicle",
+        "description": "",
+        "label": "sr4.skills.categorized.pilotexoticvehicle",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.25"
+  },
+  {
+    "data": {
+      "name": "Pilot-Ground-Craft",
+      "system": {
+        "attribute": "REACTION",
+        "category": "vehicle",
+        "description": "",
+        "label": "sr4.skills.categorized.pilotgroundcraft",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.26"
+  },
+  {
+    "data": {
+      "name": "Pilot-Watercraft",
+      "system": {
+        "attribute": "REACTION",
+        "category": "vehicle",
+        "description": "",
+        "label": "sr4.skills.categorized.pilotwatercraft",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.27"
+  },
+  {
+    "data": {
+      "name": "Climbing",
+      "system": {
+        "attribute": "STRENGTH",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.climbing",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.28"
+  },
+  {
+    "data": {
+      "name": "Running",
+      "system": {
+        "attribute": "STRENGTH",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.running",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.29"
+  },
+  {
+    "data": {
+      "name": "Swimming",
+      "system": {
+        "attribute": "STRENGTH",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.swimming",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.30"
+  },
+  {
+    "data": {
+      "name": "Con",
+      "system": {
+        "attribute": "CHARISMA",
+        "category": "social",
+        "description": "",
+        "group": "influence",
+        "label": "sr4.skills.categorized.con",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.31"
+  },
+  {
+    "data": {
+      "name": "Etiquette",
+      "system": {
+        "attribute": "CHARISMA",
+        "category": "social",
+        "description": "",
+        "group": "influence",
+        "label": "sr4.skills.categorized.etiquette",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.32"
+  },
+  {
+    "data": {
+      "name": "Instruction",
+      "system": {
+        "attribute": "CHARISMA",
+        "category": "social",
+        "description": "",
+        "label": "sr4.skills.categorized.instruction",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.33"
+  },
+  {
+    "data": {
+      "name": "Intimidation",
+      "system": {
+        "attribute": "CHARISMA",
+        "category": "social",
+        "description": "",
+        "label": "sr4.skills.categorized.intimidation",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.34"
+  },
+  {
+    "data": {
+      "name": "Leadership",
+      "system": {
+        "attribute": "CHARISMA",
+        "category": "social",
+        "description": "",
+        "label": "sr4.skills.categorized.leadership",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.35"
+  },
+  {
+    "data": {
+      "name": "Negotiation",
+      "system": {
+        "attribute": "CHARISMA",
+        "category": "social",
+        "description": "",
+        "group": "influence",
+        "label": "sr4.skills.categorized.negotiation",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.36"
+  },
+  {
+    "data": {
+      "name": "Artisan",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.artisan",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.37"
+  },
+  {
+    "data": {
+      "name": "Assensing",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.assensing",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.38"
+  },
+  {
+    "data": {
+      "name": "Disguise",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.disguise",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.39"
+  },
+  {
+    "data": {
+      "name": "Navigation",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.navigation",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.40"
+  },
+  {
+    "data": {
+      "name": "Perception",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.perception",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.41"
+  },
+  {
+    "data": {
+      "name": "Shadowing",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.shadowing",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.42"
+  },
+  {
+    "data": {
+      "name": "Tracking",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.tracking",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.43"
+  },
+  {
+    "data": {
+      "name": "Aeronautics-Mechanic",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.aeronauticsmechanic",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.44"
+  },
+  {
+    "data": {
+      "name": "Arcana",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.arcana",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.45"
+  },
+  {
+    "data": {
+      "name": "Armorer",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.armorer",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.46"
+  },
+  {
+    "data": {
+      "name": "Automotive-Mechanic",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.automotivemechanic",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.47"
+  },
+  {
+    "data": {
+      "name": "Chemistry",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.chemistry",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.48"
+  },
+  {
+    "data": {
+      "name": "Computer",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.computer",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.49"
+  },
+  {
+    "data": {
+      "name": "Cybertechnology",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.cybertechnology",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.50"
+  },
+  {
+    "data": {
+      "name": "Cybercombat",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.cybercombat",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.51"
+  },
+  {
+    "data": {
+      "name": "Data-Search",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.datasearch",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.52"
+  },
+  {
+    "data": {
+      "name": "Demolitions",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.demolitions",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.53"
+  },
+  {
+    "data": {
+      "name": "Electronic-Warfare",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.electronicwarfare",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.54"
+  },
+  {
+    "data": {
+      "name": "Enchanting",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.enchanting",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.55"
+  },
+  {
+    "data": {
+      "name": "First-Aid",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.firstaid",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.56"
+  },
+  {
+    "data": {
+      "name": "Industrial-Mechanic",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.industrialmechanic",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.57"
+  },
+  {
+    "data": {
+      "name": "Hacking",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.hacking",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.58"
+  },
+  {
+    "data": {
+      "name": "Hardware",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.hardware",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.59"
+  },
+  {
+    "data": {
+      "name": "Medicine",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.medicine",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.60"
+  },
+  {
+    "data": {
+      "name": "Nautical-Mechanic",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "technical",
+        "description": "",
+        "label": "sr4.skills.categorized.nauticalmechanic",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.61"
+  },
+  {
+    "data": {
+      "name": "Software",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "matrix",
+        "description": "",
+        "label": "sr4.skills.categorized.software",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.62"
+  },
+  {
+    "data": {
+      "name": "Astral-Combat",
+      "system": {
+        "attribute": "WILLPOWER",
+        "category": "combat",
+        "description": "",
+        "label": "sr4.skills.categorized.astralcombat",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.63"
+  },
+  {
+    "data": {
+      "name": "Survival",
+      "system": {
+        "attribute": "WILLPOWER",
+        "category": "physical",
+        "description": "",
+        "label": "sr4.skills.categorized.survival",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.64"
+  },
+  {
+    "data": {
+      "name": "Banishing",
+      "system": {
+        "attribute": "MAGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.banishing",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.65"
+  },
+  {
+    "data": {
+      "name": "Binding",
+      "system": {
+        "attribute": "MAGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.binding",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.66"
+  },
+  {
+    "data": {
+      "name": "Counterspelling",
+      "system": {
+        "attribute": "MAGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.counterspelling",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.67"
+  },
+  {
+    "data": {
+      "name": "Ritual-Spellcasting",
+      "system": {
+        "attribute": "MAGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.ritualspellcasting",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.68"
+  },
+  {
+    "data": {
+      "name": "Spellcasting",
+      "system": {
+        "attribute": "MAGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.spellcasting",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.69"
+  },
+  {
+    "data": {
+      "name": "Summoning",
+      "system": {
+        "attribute": "MAGIC",
+        "category": "magic",
+        "description": "",
+        "label": "sr4.skills.categorized.summoning",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.70"
+  },
+  {
+    "data": {
+      "name": "Compiling",
+      "system": {
+        "attribute": "RESONANCE",
+        "category": "misc",
+        "description": "",
+        "label": "sr4.skills.categorized.compiling",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.71"
+  },
+  {
+    "data": {
+      "name": "Decompiling",
+      "system": {
+        "attribute": "RESONANCE",
+        "category": "misc",
+        "description": "",
+        "label": "sr4.skills.categorized.decompiling",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.72"
+  },
+  {
+    "data": {
+      "name": "Registering",
+      "system": {
+        "attribute": "RESONANCE",
+        "category": "misc",
+        "description": "",
+        "label": "sr4.skills.categorized.registering",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.73"
+  }
+]

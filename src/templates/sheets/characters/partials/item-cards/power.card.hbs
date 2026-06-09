@@ -1,0 +1,36 @@
+<div
+  class="item-card"
+  id="{{ this._id }}"
+  data-item-id="{{ this._id }}"
+  title="{{ this.system.description }}"
+>
+  <div class="item-row">
+    <span class="item-name">{{ this.name }}</span>
+    <span class="item-cost"
+      >{{localize "sr4.power.totalCost"}}: {{ this.system.totalCost }}</span
+    >
+    <span class="item-rating"
+      >{{localize "sr4.power.rating"}}: {{ this.system.rating }}</span
+    >
+    {{#if this.system.geas}}
+    <span class="item-geas">{{localize "sr4.power.geas"}}</span>
+    {{/if}}
+    <span class="item-source"
+      >{{localize "sr4.power.source"}}: {{ this.system.source }}</span
+    >
+    <button
+      class="item-edit"
+      data-action="editItem"
+      data-tooltip="{{localize 'sr4.item.edit'}}"
+    >
+      <i class="fas fa-edit"></i>
+    </button>
+    <button
+      class="item-delete"
+      data-action="deleteItem"
+      data-tooltip="{{localize 'sr4.item.delete'}}"
+    >
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,147 @@
+[
+  {
+    "data": {
+      "name": "Human",
+      "system": {
+        "description": "",
+        "label": "sr4.metatypes.human",
+        "source": "SR4, Page 81",
+        "statmaximum": {
+          "AGILITY": "6",
+          "BODY": "6",
+          "CHARISMA": "6",
+          "EDGE": "7",
+          "ESSENCE": "6",
+          "INITIATIVE": "12",
+          "INTUITION": "6",
+          "LOGIC": "6",
+          "MAGIC": "6",
+          "REACTION": "6",
+          "RESONANCE": "6",
+          "STRENGTH": "6",
+          "WILLPOWER": "6"
+        }
+      },
+      "type": "Metatype"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.metatypes.1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p"
+  },
+  {
+    "data": {
+      "name": "Elf",
+      "system": {
+        "description": "",
+        "label": "sr4.metatypes.elf",
+        "source": "SR4, Page 81",
+        "statmaximum": {
+          "AGILITY": "7",
+          "BODY": "6",
+          "CHARISMA": "8",
+          "EDGE": "7",
+          "ESSENCE": "6",
+          "INITIATIVE": "12",
+          "INTUITION": "6",
+          "LOGIC": "6",
+          "MAGIC": "6",
+          "REACTION": "6",
+          "RESONANCE": "6",
+          "STRENGTH": "6",
+          "WILLPOWER": "6"
+        }
+      },
+      "type": "Metatype"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.metatypes.2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q"
+  },
+  {
+    "data": {
+      "name": "Dwarf",
+      "system": {
+        "description": "",
+        "label": "sr4.metatypes.dwarf",
+        "source": "SR4, Page 81",
+        "statmaximum": {
+          "AGILITY": "6",
+          "BODY": "7",
+          "CHARISMA": "6",
+          "EDGE": "7",
+          "ESSENCE": "6",
+          "INITIATIVE": "11",
+          "INTUITION": "6",
+          "LOGIC": "6",
+          "MAGIC": "6",
+          "REACTION": "5",
+          "RESONANCE": "6",
+          "STRENGTH": "8",
+          "WILLPOWER": "7"
+        }
+      },
+      "type": "Metatype"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.metatypes.3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r"
+  },
+  {
+    "data": {
+      "name": "Ork",
+      "system": {
+        "description": "",
+        "label": "sr4.metatypes.ork",
+        "source": "SR4, Page 81",
+        "statmaximum": {
+          "AGILITY": "6",
+          "BODY": "9",
+          "CHARISMA": "5",
+          "EDGE": "6",
+          "ESSENCE": "6",
+          "INITIATIVE": "12",
+          "INTUITION": "6",
+          "LOGIC": "5",
+          "MAGIC": "6",
+          "REACTION": "6",
+          "RESONANCE": "6",
+          "STRENGTH": "8",
+          "WILLPOWER": "6"
+        }
+      },
+      "type": "Metatype"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.metatypes.4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s"
+  },
+  {
+    "data": {
+      "name": "Troll",
+      "system": {
+        "description": "",
+        "label": "sr4.metatypes.troll",
+        "source": "SR4, Page 81",
+        "statmaximum": {
+          "AGILITY": "5",
+          "BODY": "10",
+          "CHARISMA": "4",
+          "EDGE": "6",
+          "ESSENCE": "6",
+          "INITIATIVE": "11",
+          "INTUITION": "5",
+          "LOGIC": "5",
+          "MAGIC": "6",
+          "REACTION": "6",
+          "RESONANCE": "6",
+          "STRENGTH": "10",
+          "WILLPOWER": "6"
+        }
+      },
+      "type": "Metatype"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.metatypes.5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t"
+  }
+]

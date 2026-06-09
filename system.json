@@ -1,0 +1,140 @@
+{
+  "authors": [
+    {
+      "name": "Tarislowatsch"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "description": "Shadowrun 4th Edition System for Foundry VTT",
+  "download": "https://github.com/Tarislowatsch/Shadowrun4-FoundryVTT/releases/download/v0.1.25/shadowrun4e.zip",
+  "esmodules": [
+    "shadowrun4e.js"
+  ],
+  "grid": {
+    "Units": "m",
+    "distance": 5
+  },
+  "id": "shadowrun4e",
+  "initiative": {
+    "decimals": 0,
+    "formula": "1d6"
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.labels.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.labels.json"
+    }
+  ],
+  "manifest": "https://raw.githubusercontent.com/Tarislowatsch/Shadowrun4-FoundryVTT/main/system.json",
+  "packs": [
+    {
+      "label": "SR4 Skills",
+      "name": "skills",
+      "path": "packs/skills",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Programs",
+      "name": "programs",
+      "path": "packs/programs",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Spells",
+      "name": "spells",
+      "path": "packs/spells",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Melee Weapons",
+      "name": "melee_weapons",
+      "path": "packs/melee_weapons",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Ranged Weapons",
+      "name": "ranged_weapons",
+      "path": "packs/ranged_weapons",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Cyberware",
+      "name": "cyberware",
+      "path": "packs/cyberware",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Gear",
+      "name": "gear",
+      "path": "packs/gear",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Powers",
+      "name": "powers",
+      "path": "packs/powers",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Bioware",
+      "name": "bioware",
+      "path": "packs/bioware",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Metatypes",
+      "name": "metatypes",
+      "path": "packs/metatypes",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Actions",
+      "name": "actions",
+      "path": "packs/actions",
+      "system": "shadowrun4e",
+      "type": "Item"
+    },
+    {
+      "label": "SR4 Armors",
+      "name": "armors",
+      "path": "packs/armors",
+      "system": "shadowrun4e",
+      "type": "Item"
+    }
+  ],
+  "socket": true,
+  "styles": [
+    "style.css"
+  ],
+  "title": "Shadowrun 4th Edition",
+  "version": "0.1.25"
+}

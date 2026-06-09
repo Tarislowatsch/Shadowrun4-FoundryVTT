@@ -1,0 +1,46 @@
+
+  <div class="item-sheet-body">
+
+    <header class="item-sheet-header">
+      <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
+      <div class="item-sheet-name">
+        <label>{{localize 'sr4.item.name'}}</label>
+        <input type="text" name="name" value="{{ item.name }}" />
+      </div>
+    </header>
+
+    <table class="item-stats-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.power.rating'}}</th>
+          <th>{{localize 'sr4.power.cost'}}</th>
+          <th>{{localize 'sr4.power.totalCost'}}</th>
+          <th>{{localize 'sr4.power.geas'}}</th>
+          <th>{{localize 'sr4.power.source'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="number" name="system.rating" value="{{ system.rating }}" min="1" /></td>
+          <td><input type="number" name="system.cost" value="{{ system.cost }}" min="0" step="0.25" /></td>
+          <td class="computed">{{ system.totalCost }}</td>
+          <td>
+            <input type="checkbox" name="system.geas" {{#if system.geas}}checked{{/if}} />
+          </td>
+          <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="item-textareas">
+      <div>
+        <label>{{localize 'sr4.item.notes'}}</label>
+        <textarea name="system.notes">{{ system.notes }}</textarea>
+      </div>
+      <div>
+        <label>{{localize 'sr4.item.description'}}</label>
+        <textarea name="system.description">{{ system.description }}</textarea>
+      </div>
+    </div>
+
+  </div>

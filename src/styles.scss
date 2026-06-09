@@ -1,0 +1,17 @@
+@use 'sheets/items/item-sheet.scss';
+/* Importing the character sheet styles */
+@use 'sheets/characters/styling/character-tabs.scss';
+@use 'sheets/characters/styling/base-sheet.scss';
+@use 'sheets/characters/styling/edit-mode.scss';
+@use 'sheets/characters/styling/metadata.scss';
+@use 'sheets/characters/styling/items.scss';
+@use 'sheets/characters/styling/condition-monitor.scss';
+@use 'sheets/characters/styling/modifiers.scss';
+@use 'sheets/characters/styling/npc-sheet.scss';
+@use 'sheets/characters/styling/effects.scss';
+
+input[type='checkbox'] {
+  border: 1px solid var(--sr4-border-dim);
+  cursor: pointer;
+  font: revert;
+}

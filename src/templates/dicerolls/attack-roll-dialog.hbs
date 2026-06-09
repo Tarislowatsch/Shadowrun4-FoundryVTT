@@ -1,0 +1,18 @@
+<form class="skill-roll-dialog">
+  {{> bonus-input}}
+  {{> malus-input}}
+  {{> specialization-checkbox}}
+  <div class="form-group">
+    <label for="smartlink">{{localize "sr4.roll.smartlink"}}</label>
+    <input
+      type="checkbox"
+      id="smartlink"
+      name="smartlink"
+      {{
+      checked
+      smartlink
+      }}
+    />
+  </div>
+  {{> edge-checkbox}}
+</form>

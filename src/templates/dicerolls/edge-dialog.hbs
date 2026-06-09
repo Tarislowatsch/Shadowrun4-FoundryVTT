@@ -1,0 +1,27 @@
+<div class="dialog-content edge-dialog">
+  <p>{{ message }}</p>
+
+  {{#if isCriticalGlitch}}
+  <button class="glitch">
+    {{localize 'sr4.roll.edge.criticalGlitch'}}
+  </button>
+
+  {{else if isGlitch}}
+  <button class="glitch">
+    {{localize 'sr4.roll.edge.glitch'}}
+  </button>
+
+  {{else}}
+  <button class="reroll-failure">
+    {{localize 'sr4.roll.edge.reroll'}}
+  </button>
+
+  <button class="add-edge-dice">
+    {{localize 'sr4.roll.edge.add-dice'}}
+  </button>
+  {{/if}}
+
+  <button class="abort">
+    {{localize 'sr4.roll.edge.cancel'}}
+  </button>
+</div>
