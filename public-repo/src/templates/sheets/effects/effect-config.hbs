@@ -1,0 +1,74 @@
+<form class="item-form effect" autocomplete="off">
+  <div class="item-sheet-body">
+
+    <header class="item-sheet-header">
+      <div class="effect-img-picker">
+        <img
+          src="{{img}}"
+          class="effect-header-img"
+          data-action="pickImage"
+          data-tooltip="{{localize 'sr4.effect.changeIcon'}}"
+        />
+        <input type="hidden" name="img" value="{{img}}" />
+      </div>
+      <div class="item-sheet-name">
+        <label>{{localize "sr4.effect.name"}}</label>
+        <input type="text" name="name" value="{{name}}" />
+      </div>
+      <div class="item-sheet-header-extras">
+        <label>
+          {{localize "sr4.effect.active"}}
+          <input type="checkbox" name="active" {{#if active}}checked{{/if}} />
+        </label>
+      </div>
+    </header>
+
+    <table class="item-stats-table">
+      <thead>
+        <tr>
+          <th>{{localize "sr4.effect.attribute"}}</th>
+          <th>{{localize "sr4.effect.mode.label"}}</th>
+          <th>{{localize "sr4.effect.value"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select name="changeKey">
+              {{selectOptions effectTargets selected=changeKey localize=true}}
+            </select>
+          </td>
+          <td>
+            <select name="changeMode">
+              {{selectOptions changeModes selected=changeMode localize=true}}
+            </select>
+          </td>
+          <td>
+            <input
+              type="number"
+              name="changeValue"
+              value="{{changeValue}}"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="item-textareas">
+      <div>
+        <label>{{localize "sr4.effect.notes"}}</label>
+        <textarea
+          name="description"
+          placeholder="{{localize 'sr4.effect.notes'}}"
+        >{{description}}</textarea>
+      </div>
+    </div>
+
+    <footer class="effect-config-footer">
+      <button type="button" data-action="saveEffect">
+        <i class="fas fa-save"></i> {{localize "Save Changes"}}
+      </button>
+    </footer>
+
+  </div>
+</form>

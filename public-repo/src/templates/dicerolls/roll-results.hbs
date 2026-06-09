@@ -1,0 +1,38 @@
+<div id="{{ messageId }}">
+  {{#if skillName}}
+  <strong>{{ actorName }} {{localize "sr4.roll.rolling"}}:</strong>
+  {{ skillName }}
+  {{/if}}
+  {{#if isCriticalGlitch}}
+  {{!-- Critical Glitch --}}
+  <br />🔴 <strong>{{localize "sr4.roll.criticalGlitch"}}</strong>
+
+  {{else if isGlitch}}
+  {{!-- Glitch --}}
+  <br />🔴 <strong>{{localize "sr4.roll.glitch"}}</strong>
+  {{else if showCombined}}
+  {{!-- After reroll --}}
+  <br />🟢 {{localize "sr4.roll.combined_successes"}}: {{ successes }},
+  {{else}}
+  {{!-- Default --}}
+  <br />🟢 {{localize "sr4.roll.successes"}}: {{ successes }}, 🔴
+  {{localize "sr4.roll.failures"}}: {{ failures }}
+  {{/if}}
+  {{#if showExtendButton}}
+  <br />
+  <button class="extended-test-button">
+    {{localize "sr4.roll.useExtendedButton"}}
+  </button>
+  {{#if showEdgeButton}}
+  <button class="extended-edge-button">
+    {{localize "sr4.roll.rerollButton"}}
+  </button>
+  {{/if}}
+  {{/if}}
+
+  {{#if showEdgeButton}}
+  <br /><button class="edge-use-button">
+    {{localize "sr4.roll.useEdgeButton"}}
+  </button>
+  {{/if}}
+</div>

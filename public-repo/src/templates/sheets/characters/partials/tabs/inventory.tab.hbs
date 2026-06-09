@@ -1,0 +1,87 @@
+<div
+  class="inventory tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="inventory"
+>
+  {{!-- Waffen --}}
+  <section class="inventory-section">
+    <h3>{{localize 'sr4.inventory.weapons'}}</h3>
+    {{#if weapons}}
+    <ul class="weapon-list">
+      {{#each weapons as |weapon|}}
+      {{> "weapon-card"}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.weapon.noWeapons'}}</p>
+    {{/if}}
+  </section>
+
+  <hr />
+
+  {{!-- Rüstung --}}
+  <section class="inventory-section">
+    <h3>{{localize 'sr4.inventory.armor'}}</h3>
+    {{#if armor}}
+    <ul class="armor-list">
+      {{#each armor as |item|}}
+      {{> "armor-card" item}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.armor.noarmors'}}</p>
+    {{/if}}
+  </section>
+
+  <hr />
+
+  {{!-- Cyberware / Bioware --}}
+  {{#if implants}}
+  <section class="inventory-section">
+    <h3>{{localize 'sr4.inventory.implants'}}</h3>
+
+    <ul class="implant-list">
+      {{#each implants as |item|}}
+      {{> "implant-card" item}}
+      {{/each}}
+    </ul>
+  </section>
+  <hr />
+  {{/if}}
+
+  {{!-- Ausrüstung --}}
+  <section class="inventory-section">
+    <h3>{{localize 'sr4.inventory.items'}}</h3>
+    {{#if items}}
+    <ul class="item-list">
+      {{#each items as |item|}}
+      {{> "item-card" item=item}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.item.noItems'}}</p>
+    {{/if}}
+  </section>
+
+  <hr />
+
+  {{!-- Foki / Fetische --}}
+  {{#if foci}}
+  <section class="inventory-section">
+    <h3>{{localize 'sr4.inventory.foci'}}</h3>
+
+    <ul class="item-list">
+      {{#each foci as |item|}}
+      {{> "item-card" item=item}}
+      {{/each}}
+    </ul>
+  </section>
+  {{/if}}
+  <hr />
+
+  {{!-- Fahrzeuge (vorbereitet) --}}
+  <section class="inventory-section inventory-section--vehicles">
+    <h3>{{localize 'sr4.inventory.vehicles'}}</h3>
+    <p class="empty-list">{{localize 'sr4.vehicle.notImplemented'}}</p>
+  </section>
+</div>

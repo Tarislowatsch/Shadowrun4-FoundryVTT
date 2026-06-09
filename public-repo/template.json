@@ -1,0 +1,24 @@
+{
+  "Actor": {
+    "types": ["character", "npc", "vehicle", "device"]
+  },
+  "Item": {
+    "types": [
+      "Ranged Weapon",
+      "Melee Weapon",
+      "Implant",
+      "Item",
+      "Gear",
+      "Armor",
+      "Skill",
+      "Spell",
+      "Commlink",
+      "Program",
+      "Fetish",
+      "Focus",
+      "Action",
+      "Power",
+      "Vehicle"
+    ]
+  }
+}

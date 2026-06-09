@@ -1,0 +1,147 @@
+<div
+  class="magic-card tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="magic"
+>
+  <div class="magic-grid">
+    <div class="magic-collumn">
+      <div class="magic-input">
+        <label for="magician">{{localize "sr4.magic.magician"}}</label>
+        <input
+          type="checkbox"
+          id="magician"
+          name="system.magic.magician"
+          data-action="toggleMagician"
+          {{checked
+          system.magic.magician}}
+        />
+      </div>
+      <div class="magic-input">
+        <label for="adept">{{localize "sr4.magic.adept"}}</label>
+        <input
+          type="checkbox"
+          id="adept"
+          name="system.magic.adept"
+          data-action="toggleAdept"
+          {{checked
+          system.magic.adept}}
+        />
+      </div>
+      {{#if system.magic.magician}}
+      <div class="magic-input">
+        <label for="tradition">{{localize "sr4.magic.tradition"}}</label>
+        <select
+          id="tradition"
+          name="system.magic.tradition"
+          data-dtype="String"
+        >
+          {{selectOptions traditions selected=system.magic.tradition localize=true}}
+        </select>
+      </div>
+      <div class="magic-input">
+        <label for="totem">{{localize "sr4.magic.totem"}}</label>
+        <input
+          type="text"
+          id="totem"
+          name="system.magic.totem"
+          value="{{ system.magic.totem }}"
+        />
+      </div>
+      {{/if}}
+    </div>
+
+    {{#if system.magic.magician}}
+    <div class="magic-collumn">
+      <div class="magic-stat">
+        <label>{{localize "sr4.magic.drainPool"}}:</label>
+        <span>
+          {{ system.sheetStats.WILLPOWER }}
+          +
+          {{lookup system.sheetStats system.magic.drainAttribute}}
+        </span>
+      </div>
+      <div class="magic-input">
+        <label
+          for="drainAttribute"
+          >{{localize "sr4.magic.drainAttribute"}}</label
+        >
+        <select
+          id="drainAttribute"
+          name="system.magic.drainAttribute"
+          data-dtype="String"
+        >
+          {{selectOptions drainAttributes selected=system.magic.drainAttribute localize=true}}
+        </select>
+      </div>
+      <div class="magic-section-subtitle">
+        {{localize "sr4.magic.drainboni.label"}}
+      </div>
+      <div class="magic-input">
+        <label
+          for="drainBonus"
+          >{{localize "sr4.magic.drainboni.spellcasting"}}</label
+        >
+        <input
+          type="number"
+          id="drainBonus"
+          name="system.magic.drainBonus"
+          data-dtype="Number"
+          value="{{ system.magic.drainBonus }}"
+        />
+      </div>
+      <div class="magic-input">
+        <label
+          for="summoningDrainBonus"
+          >{{localize "sr4.magic.drainboni.summoning"}}</label
+        >
+        <input
+          type="number"
+          id="summoningDrainBonus"
+          name="system.magic.summoningDrainBonus"
+          data-dtype="Number"
+          value="{{ system.magic.summoningDrainBonus }}"
+        />
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if system.magic.adept}}
+    <div class="magic-collumn">
+      <div class="magic-stat">
+        <label>{{localize "sr4.magic.powerpoints"}}:</label>
+        <span
+          class="{{#if (gt totalPowerCost system.sheetStats.MAGIC)}}over-limit{{/if}}"
+        >
+          {{ totalPowerCost }} / {{ system.sheetStats.MAGIC }}
+        </span>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+  {{#if system.magic.magician}}
+  <h3>{{localize "sr4.magic.spells"}}</h3>
+  {{#if spells}}
+  <ul class="spell-list">
+    {{#each spells as |spell|}}
+    {{> "spell-card" spell}}
+    {{/each}}
+  </ul>
+  {{else}}
+  <p>{{localize "sr4.spell.nospells"}}</p>
+  {{/if}}
+  {{/if}}
+
+  {{#if system.magic.adept}}
+  <h3>{{localize "sr4.magic.powers"}}</h3>
+  {{#if powers}}
+  <ul class="spell-list">
+    {{#each powers as |power|}}
+    {{> "power-card" power}}
+    {{/each}}
+  </ul>
+  {{else}}
+  <p>{{localize "sr4.power.nopowers"}}</p>
+  {{/if}}
+  {{/if}}
+</div>

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+
+    "moduleResolution": "bundler",
+
+    "noEmit": true,
+    "paths": {
+      "@client/*": ["./foundry/client/*"],
+      "@common/*": ["./foundry/common/*"],
+
+      "@documents/*": ["./src/documents/*"],
+      "@effects/*": ["./src/effects/*"],
+      "@flows/*": ["./src/flows/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@models/*": ["./src/models/*"],
+      "@sheets/*": ["./src/sheets/*"],
+      "@utils/*": ["./src/utils/*"]
+    },
+
+    "strict": false,
+    "target": "ES2022",
+
+    "types": ["jquery"]
+  },
+
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*", "foundry/**/*"]
+}

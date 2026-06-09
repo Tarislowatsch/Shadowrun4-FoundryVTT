@@ -1,0 +1,186 @@
+.sheet-container {
+  hr {
+    margin: 0.5rem 0;
+    border: 1px solid teal;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .character-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .character-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+    span {
+      display: inline-flex;
+      width: 25%;
+    }
+  }
+
+  .tab,
+  .content {
+    height: 100%;
+  }
+}
+
+.shadowrun4e {
+  .window-content {
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    height: 100%;
+  }
+}
+
+form.shadowrun4e {
+  width: 100%;
+
+  .grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+
+    .full-width {
+      display: flex;
+      flex: 1 1 100%;
+      gap: 0;
+    }
+
+    .column {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 0.5rem;
+      min-width: 0;
+      flex-shrink: 1;
+    }
+
+    .column-1 {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .column-2 {
+      flex: 2 1 0;
+      min-width: 0;
+      column-gap: 2rem;
+    }
+
+    .column-header {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #00b3a4;
+      flex: 1 1 33%;
+
+      .header-item {
+        flex: 0 1 25%;
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+  }
+
+  select,
+  .cell,
+  .cell3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-sizing: border-box;
+
+    label {
+      text-align: left;
+    }
+    input {
+      text-align: center;
+    }
+  }
+
+  .cell {
+    flex: 1 1 calc(25% - 1rem);
+
+    span.stat-display {
+      flex: 0 1 50%;
+      max-width: 60px;
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: left;
+      gap: 0.2em;
+
+      height: 32px;
+      line-height: 32px;
+
+      .stat-bonus {
+        color: var(--sr4-teal);
+        font-size: 0.8em;
+      }
+    }
+
+    label {
+      flex: 1 1;
+      max-width: 50%;
+      min-width: 10rem;
+    }
+
+    input {
+      flex: 0 1 50%;
+      max-width: 60px;
+    }
+  }
+
+  .cell3 {
+    flex: 1 1 calc(33% - 1rem);
+
+    label {
+      width: 40%;
+      min-width: 40%;
+      max-width: 40%;
+      word-break: break-word;
+    }
+
+    input[type='text'],
+    select {
+      flex: 0 1 40%;
+    }
+
+    input[type='number'] {
+      flex: 0 1 10%;
+      min-width: 40px;
+    }
+  }
+
+  .cell3.active-skill {
+    max-width: calc(50% - 1rem);
+  }
+
+  .cell3.knowledge-skill {
+    flex: 1 1 calc(100% - 1rem);
+  }
+}
+
+.skill-search-bar {
+  margin-bottom: 0.5rem;
+}
+#skill-search {
+  width: 100%;
+  padding: 4px 8px;
+}
+.skill.hidden {
+  display: none;
+}

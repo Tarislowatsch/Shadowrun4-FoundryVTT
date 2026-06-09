@@ -1,0 +1,46 @@
+<div class="sheet-container npc-sheet">
+  <div class="npc-header">
+    <div class="actor-image">
+      <img data-edit="img" name="img" src="{{actor.img}}" alt="{{actor.name}}" />
+    </div>
+    <div class="npc-header-info">
+      <div class="meta-field">
+        <label>{{localize 'sr4.metadata.characterName'}}</label>
+        <input type="text" name="name" value="{{actor.name}}" data-dtype="String" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+      <div class="meta-field">
+        <label>{{localize 'sr4.metadata.metatype'}}</label>
+        <input type="text" name="system.descriptionAndNotes.metatype" value="{{system.descriptionAndNotes.metatype}}" data-dtype="String" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  {{> "statblock-sheet" computedStats=computedStats editMode=editMode derivedKeys=derivedKeys}}
+
+  <hr />
+
+
+  {{> "skills-grid"}}
+
+  <hr />
+
+
+  <div class="npc-section">
+    <h3>{{localize 'SR4.tab.weapons'}}</h3>
+    {{#if weapons}}
+      <ul class="weapon-list">
+        {{#each weapons as |weapon|}}
+          {{> "weapon-card" weapon shootingmodes=../shootingmodes attackskills=../attackskills}}
+        {{/each}}
+      </ul>
+    {{else}}
+      <p>{{localize 'sr4.weapon.noWeapons'}}</p>
+    {{/if}}
+  </div>
+
+  <hr />
+
+  {{> "defense-tab"}}
+
+</div>

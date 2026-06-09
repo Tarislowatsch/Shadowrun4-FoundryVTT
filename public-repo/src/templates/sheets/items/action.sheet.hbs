@@ -1,0 +1,81 @@
+<div class="item-form action" autocomplete="off">
+  <div class="item-sheet-body">
+    <header class="item-sheet-header">
+      <img
+        class="item-sheet-img"
+        data-edit="img"
+        src="{{ item.img }}"
+        alt="{{ item.name }}"
+      />
+      <div class="item-sheet-name">
+        <label>{{localize 'sr4.item.name'}}</label>
+        <input type="text" name="name" value="{{ item.name }}" />
+      </div>
+    </header>
+
+    <table class="item-stats-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.item.actionType'}}</th>
+          <th>{{localize 'sr4.item.actionPart1'}}</th>
+          <th>{{localize 'sr4.item.rating1'}}</th>
+          <th>{{localize 'sr4.item.actionPart2'}}</th>
+          <th>{{localize 'sr4.item.rating2'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select name="system.actionType">
+              {{selectOptions actiontypes selected=system.actionType localize=true}}
+            </select>
+          </td>
+          <td>
+            <input
+              type="text"
+              name="system.actionPart1"
+              value="{{ system.actionPart1 }}"
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              name="system.rating1"
+              value="{{ system.rating1 }}"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              name="system.actionPart2"
+              value="{{ system.actionPart2 }}"
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              name="system.rating2"
+              value="{{ system.rating2 }}"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="item-textareas">
+      <div>
+        <label>{{localize 'sr4.item.notes'}}</label>
+        <textarea name="system.notes">{{ system.notes }}</textarea>
+      </div>
+      <div>
+        <label>{{localize 'sr4.item.description'}}</label>
+        <textarea name="system.description">{{ system.description }}</textarea>
+      </div>
+    </div>
+
+    <div class="item-extra-row">
+      <label>{{localize 'sr4.item.source'}}</label>
+      <input type="text" name="system.source" value="{{ system.source }}" />
+    </div>
+  </div>
+</div>

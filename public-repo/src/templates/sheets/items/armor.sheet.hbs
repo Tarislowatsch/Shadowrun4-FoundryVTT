@@ -1,0 +1,84 @@
+<div class="item-sheet-body">
+  <header class="item-sheet-header">
+    <img
+      class="item-sheet-img"
+      data-edit="img"
+      src="{{ item.img }}"
+      alt="{{ item.name }}"
+    />
+    <div class="item-sheet-name">
+      <label>{{localize 'sr4.item.name'}}</label>
+      <input type="text" name="name" value="{{ item.name }}" />
+    </div>
+  </header>
+
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize 'sr4.item.rating'}}</th>
+        <th>{{localize 'sr4.armor.ballisticarmor'}}</th>
+        <th>{{localize 'sr4.armor.impactarmor'}}</th>
+        <th>{{localize 'sr4.item.capacity'}}</th>
+        <th>{{localize 'sr4.item.avail'}}</th>
+        <th>{{localize 'sr4.item.legality'}}</th>
+        <th>{{localize 'sr4.item.cost'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input
+            type="number"
+            name="system.rating"
+            value="{{ system.rating }}"
+          />
+        </td>
+        <td>
+          <input
+            type="number"
+            name="system.ballisticarmor"
+            value="{{ system.ballisticarmor }}"
+          />
+        </td>
+        <td>
+          <input
+            type="number"
+            name="system.impactarmor"
+            value="{{ system.impactarmor }}"
+          />
+        </td>
+        <td>
+          <input
+            type="number"
+            name="system.capacity"
+            value="{{ system.capacity }}"
+          />
+        </td>
+        <td>
+          <input type="text" name="system.avail" value="{{ system.avail }}" />
+        </td>
+        <td>
+          <input
+            type="text"
+            name="system.legality"
+            value="{{ system.legality }}"
+          />
+        </td>
+        <td>
+          <input type="number" name="system.cost" value="{{ system.cost }}" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="item-textareas">
+    <div>
+      <label>{{localize 'sr4.item.notes'}}</label>
+      <textarea name="system.notes">{{ system.notes }}</textarea>
+    </div>
+    <div>
+      <label>{{localize 'sr4.item.description'}}</label>
+      <textarea name="system.description">{{ system.description }}</textarea>
+    </div>
+  </div>
+</div>

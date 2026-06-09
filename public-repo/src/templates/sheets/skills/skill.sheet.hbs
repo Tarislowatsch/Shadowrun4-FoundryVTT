@@ -1,0 +1,89 @@
+<div class="item-sheet-body">
+
+  <header class="item-sheet-header">
+    <img class="item-sheet-img" data-edit="img" src="{{item.img}}" alt="{{item.name}}" />
+    <div class="item-sheet-name">
+      <label>{{localize "sr4.skills.name"}}</label>
+      <input type="text" name="name" value="{{item.name}}" />
+    </div>
+  </header>
+
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize "sr4.skills.type"}}</th>
+        <th>{{localize "sr4.skills.attribute"}}</th>
+        <th>{{localize "sr4.skills.category"}}</th>
+        <th>{{localize "sr4.skills.specialization"}}</th>
+        <th>{{localize "sr4.skills.source"}}</th>
+        <th>{{localize "sr4.skills.group"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <select name="system.type">
+            <option value="active" {{#if (eq system.type "active")}}selected{{/if}}>
+              {{localize "sr4.skills.active"}}
+            </option>
+            <option value="knowledge" {{#if (eq system.type "knowledge")}}selected{{/if}}>
+              {{localize "sr4.skills.knowledge"}}
+            </option>
+          </select>
+        </td>
+        <td>
+          <select name="system.attribute">
+            {{selectOptions attributes selected=system.attribute localize=true}}
+          </select>
+        </td>
+        <td>
+          {{#if (eq system.type "active")}}
+            <select name="system.category">
+              {{selectOptions activeskillcategories selected=system.category localize=true}}
+            </select>
+          {{else}}
+            <select name="system.category">
+              {{selectOptions knowledgeskillcategories selected=system.category localize=true}}
+            </select>
+          {{/if}}
+        </td>
+        <td>
+          <input
+            type="text"
+            name="system.specialization"
+            value="{{system.specialization}}"
+            placeholder="{{localize 'sr4.skills.specialization'}}"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            name="system.source"
+            value="{{system.source}}"
+            placeholder="{{localize 'sr4.skills.source'}}"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            name="system.group"
+            value="{{system.group}}"
+            placeholder="{{localize 'sr4.skills.group'}}"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="item-textareas">
+    <div>
+      <label>{{localize 'sr4.item.notes'}}</label>
+      <textarea name="system.notes">{{system.notes}}</textarea>
+    </div>
+    <div>
+      <label>{{localize 'sr4.item.description'}}</label>
+      <textarea name="system.description">{{system.description}}</textarea>
+    </div>
+  </div>
+
+</div>

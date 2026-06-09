@@ -1,0 +1,61 @@
+<form class="defense-roll-dialog">
+  <div class="form-group attack-info">
+    <span
+      >{{ attackerName }} · {{ weaponName }} ·
+      {{#unless hideSuccesses}}
+      {{localize "sr4.defense.attackSuccesses"}}: {{ attackSuccesses }}
+      {{/unless}}</span
+    >
+  </div>
+
+  <div class="form-group">
+    <span class="defense-stat"
+      >{{localize "sr4.stats.REACTION"}}: {{ reaction }}</span
+    >
+  </div>
+
+  {{#if isMelee}}
+  {{#if meleeSkills.length}}
+  <div class="form-group">
+    <label for="skill1">{{localize "sr4.defense.skill1"}}</label>
+    <select id="skill1" name="skill1">
+      {{#each meleeSkills}}
+      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
+        {{ this.label }} ({{ this.rating }})
+      </option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="skill2">{{localize "sr4.defense.skill2"}}</label>
+    <select id="skill2" name="skill2">
+      {{#each meleeSkills}}
+      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
+        {{ this.label }} ({{ this.rating }})
+      </option>
+      {{/each}}
+    </select>
+  </div>
+  {{/if}}
+
+  {{else}}
+  {{#if rangedSkills.length}}
+  <div class="form-group">
+    <label for="skill1">{{localize "sr4.defense.skill"}}</label>
+    <select id="skill1" name="skill1">
+      {{#each rangedSkills}}
+      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
+        {{ this.label }} ({{ this.rating }})
+      </option>
+      {{/each}}
+    </select>
+  </div>
+  {{/if}}
+  {{/if}}
+
+  {{> bonus-input}}
+  {{> malus-input}}
+  {{> specialization-checkbox}}
+  {{> edge-checkbox}}
+</form>

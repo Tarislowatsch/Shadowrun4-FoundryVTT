@@ -1,0 +1,534 @@
+// --------------------------------
+// Variables
+// --------------------------------
+
+:root {
+  --sr4-bg-header: #0d1a1a;
+  --sr4-bg-card: #111818;
+
+  --sr4-border: #00b3a4;
+  --sr4-border-dim: #008080;
+
+  --sr4-teal: #00b3a4;
+  --sr4-teal-glow: rgba(0, 179, 164, 0.25);
+
+  --sr4-text: #00b3a4;
+  --sr4-text-muted: rgba(0, 179, 164, 0.65);
+
+  --sr4-label: #007a70;
+
+  --sr4-red: #e03030;
+  --sr4-green: #1db954;
+}
+
+// --------------------------------
+// Mixins
+// --------------------------------
+
+@mixin sr4-input {
+  background: transparent;
+  border: 1px solid var(--sr4-border-dim);
+  border-radius: 3px;
+  color: var(--sr4-text);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+}
+
+@mixin sr4-input-focus {
+  &:focus {
+    outline: none;
+    border-color: var(--sr4-teal);
+    background: rgba(0, 179, 164, 0.05);
+  }
+}
+
+@mixin sr4-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sr4-label);
+}
+
+@mixin icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: var(--sr4-border-dim);
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  flex: 0 0 auto;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+
+// --------------------------------
+// Sheet Root
+// --------------------------------
+
+.item-sheet-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.6rem;
+  box-sizing: border-box;
+  background: var(--sr4-bg-card);
+  color: var(--sr4-text);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  overflow-y: auto;
+}
+
+// --------------------------------
+// Header
+// --------------------------------
+
+.item-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 2px solid var(--sr4-border-dim);
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    flex-wrap: wrap;
+  }
+}
+
+.item-sheet-img {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  object-fit: cover;
+  border: 1px solid var(--sr4-border-dim);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--sr4-teal);
+  }
+}
+
+.item-sheet-name {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  label {
+    @include sr4-label;
+  }
+
+  input[type='text'] {
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--sr4-border-dim);
+    color: var(--sr4-text);
+    padding: 2px 0;
+    width: 100%;
+
+    &:focus {
+      outline: none;
+      border-bottom-color: var(--sr4-teal);
+    }
+  }
+}
+
+.item-sheet-header-extras {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    color: var(--sr4-label);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--sr4-teal);
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// --------------------------------
+// Stats Table
+// --------------------------------
+
+.item-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.75rem;
+  table-layout: fixed;
+
+  th {
+    @include sr4-label;
+    font-weight: 700;
+    padding: 0.25rem 0.4rem;
+    border-bottom: 1px solid var(--sr4-border-dim);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  td {
+    padding: 0.25rem 0.4rem;
+    vertical-align: middle;
+
+    &.computed {
+      text-align: center;
+      font-weight: 700;
+      color: var(--sr4-text);
+    }
+  }
+
+  input[type='text'],
+  input[type='number'],
+  select {
+    @include sr4-input;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    @include sr4-input-focus;
+  }
+
+  select {
+    text-align: left;
+    cursor: pointer;
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--sr4-teal);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+}
+
+// --------------------------------
+// Text Areas
+// --------------------------------
+
+.item-textareas {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+
+  > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  label {
+    @include sr4-label;
+  }
+
+  textarea {
+    flex: 1;
+    min-height: 80px;
+    resize: vertical;
+    background: rgba(0, 128, 128, 0.05);
+    border: 1px solid var(--sr4-border-dim);
+    border-radius: 3px;
+    color: var(--sr4-text);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    padding: 4px 6px;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: var(--sr4-teal);
+      background: rgba(0, 179, 164, 0.04);
+    }
+  }
+}
+
+// --------------------------------
+// Extra Row (source etc.)
+// --------------------------------
+
+.item-extra-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  label {
+    @include sr4-label;
+    white-space: nowrap;
+  }
+
+  input[type='text'] {
+    @include sr4-input;
+    flex: 1;
+    padding: 2px 6px;
+    @include sr4-input-focus;
+  }
+}
+
+// --------------------------------
+// Buttons
+// --------------------------------
+
+.roll-action,
+.item-edit,
+.item-delete,
+.spell-cast,
+.attack {
+  @include icon-button;
+}
+
+.roll-action,
+.spell-cast,
+.attack,
+.item-edit {
+  &:hover {
+    background: var(--sr4-teal-glow);
+    border-color: var(--sr4-teal);
+    color: var(--sr4-teal);
+  }
+}
+
+.item-delete {
+  &:hover {
+    color: var(--sr4-red);
+    border-color: var(--sr4-red);
+    background: rgba(224, 48, 48, 0.08);
+  }
+}
+
+// --------------------------------
+// Lists (actor sheet item rows)
+// --------------------------------
+
+.weapon-list,
+.armor-list,
+.implant-list,
+.item-list,
+.spell-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--sr4-bg-card);
+  border: 1px solid var(--sr4-border-dim);
+  border-left: 3px solid var(--sr4-teal);
+  border-radius: 4px;
+  padding: 0.5rem 0.6rem;
+  margin-bottom: 0.5rem;
+  color: var(--sr4-text);
+  font-family: 'Orbitron', sans-serif;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 0 8px var(--sr4-teal-glow);
+  }
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+  min-height: 26px;
+  font-size: 0.78rem;
+}
+
+.item-property {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 3px 6px;
+  background: rgba(0, 128, 128, 0.07);
+  border: 1px solid #c5dede;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  color: var(--sr4-text);
+  white-space: nowrap;
+
+  strong {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--sr4-label);
+  }
+}
+
+a.item-toggle-equip {
+  color: var(--sr4-border-dim);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--sr4-teal);
+  }
+}
+
+.inventory-section {
+  margin-bottom: 0.75rem;
+
+  h3 {
+    margin: 0 0 0.4rem 0;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--sr4-border-dim);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sr4-teal);
+  }
+}
+
+.empty-list {
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--sr4-text-muted);
+}
+
+.weapon-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.35rem 0.5rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// --------------------------------
+// Magic Card (actor sheet)
+// --------------------------------
+
+.magic-card {
+  padding: 0.5rem;
+
+  h3 {
+    margin: 0.75rem 0 0.4rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--sr4-border-dim);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sr4-teal);
+  }
+
+  .magic-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .magic-collumn {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1 1;
+    max-width: 30%;
+  }
+
+  .magic-section-subtitle {
+    flex: 1;
+    font-weight: 600;
+    color: var(--sr4-label);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .magic-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    font-size: 0.8rem;
+
+    label {
+      flex: 1;
+      font-weight: 600;
+      color: var(--sr4-label);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    input[type='text'],
+    input[type='number'],
+    select {
+      width: 30%;
+      flex: 0 0 auto;
+      border: 1px solid var(--sr4-border);
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 0.78rem;
+    }
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--sr4-teal);
+    }
+  }
+
+  .magic-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+
+    label {
+      flex: 1;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--sr4-label);
+      text-transform: uppercase;
+    }
+
+    span {
+      font-size: 0.85rem;
+      font-weight: 700;
+
+      &.over-limit {
+        color: var(--sr4-red);
+      }
+    }
+  }
+}

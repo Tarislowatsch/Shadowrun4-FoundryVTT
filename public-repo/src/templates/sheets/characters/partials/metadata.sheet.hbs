@@ -1,0 +1,36 @@
+<div class="metadata-container">
+  <div class="character-row">
+    <div class="actor-image">
+      <img data-edit="img" name="img" src="{{actor.img}}" alt="{{actor.name}}" />
+    </div>
+
+    <div class="info-columns">
+      <div class="meta-field">
+        {{log this}}
+        <label>{{localize 'sr4.metadata.characterName'}}</label>
+        <input type="text" name="name" value="{{actor.name}}" data-dtype="String"/>
+      </div>
+
+      <div class="meta-field">
+        <label>{{localize 'sr4.metadata.metatype'}}</label>
+        <input type="text" name="system.descriptionAndNotes.metatype" value="{{system.descriptionAndNotes.metatype}}" data-dtype="String" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+
+      <div class="meta-field">
+        <label>{{localize 'sr4.metadata.gender'}}</label>
+        <input type="text" name="system.descriptionAndNotes.gender" value="{{system.descriptionAndNotes.gender}}" data-dtype="String" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+
+      {{#each system.metaData}}
+        <div class="meta-field">
+          <label>{{localizeKey 'sr4.metadata' @key}}</label>
+          {{#if (lookup ../textFields @key)}}
+            <input type="text" name="system.metaData.{{@key}}" value="{{this}}" data-dtype="String" {{#unless ../editMode}}readonly{{/unless}} />
+          {{else}}
+            <input type="number" name="system.metaData.{{@key}}" value="{{this}}" data-dtype="Number" {{#unless ../editMode}}readonly{{/unless}} />
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>

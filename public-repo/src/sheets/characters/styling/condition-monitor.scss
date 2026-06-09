@@ -1,0 +1,45 @@
+.status-track-card h4 {
+  margin: 0 0 0.3rem 0;
+  color: var(--sr4-teal);
+}
+
+.monitor-tracks {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.status-track-card {
+  flex: 1;
+}
+
+.monitor-track {
+  display: grid;
+  grid-template-columns: repeat(3, 34px);
+  gap: 3px;
+  align-content: start;
+}
+
+.monitor-box {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--sr4-border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.monitor-box.filled {
+  background: var(--sr4-teal);
+  color: white;
+}
+
+.monitor-box.overflow.filled {
+  background: red;
+  color: var(--sr4-red);
+}

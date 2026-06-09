@@ -1,0 +1,13 @@
+<div class="modify-damage-dialog">
+  <p>
+    {{localize "sr4.damage.pending" name=name damage=damage type=damageType}}
+  </p>
+  {{> bonus-input}}
+  {{> malus-input}}
+  <p>
+    <strong>
+      {{localize "sr4.damage.result"}}:
+      <span id="damage-preview">{{ amount }}</span> {{ damageType }}
+    </strong>
+  </p>
+</div>

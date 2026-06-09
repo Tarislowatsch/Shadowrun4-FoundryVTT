@@ -1,0 +1,175 @@
+:root {
+  --sr4-bg-card: #111818;
+  --sr4-border: #00b3a4;
+  --sr4-border-dim: #008080;
+
+  --sr4-teal: #00b3a4;
+  --sr4-teal-glow: rgba(0, 179, 164, 0.25);
+
+  --sr4-text: #00b3a4;
+  --sr4-text-muted: rgba(0, 179, 164, 0.6);
+
+  --sr4-label: #007a70;
+
+  --sr4-red: #e03030;
+}
+
+/* ---------------- ITEM BASE ---------------- */
+
+.item-card {
+  display: flex;
+  flex-direction: column;
+
+  background: var(--sr4-bg-card);
+
+  border: 1px solid var(--sr4-border-dim);
+  border-left: 3px solid var(--sr4-teal);
+
+  border-radius: 4px;
+
+  padding: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+
+  color: var(--sr4-text);
+
+  font-family: 'Orbitron', sans-serif;
+
+  transition: box-shadow 0.15s;
+}
+
+.item-card:hover {
+  box-shadow: 0 0 8px var(--sr4-teal-glow);
+}
+
+/* ---------------- HEADER ---------------- */
+
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  margin-bottom: 0.4rem;
+}
+
+.item-name {
+  flex: 1;
+  min-width: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-weight: 700;
+}
+
+/* ---------------- PROPERTY ---------------- */
+
+.item-property {
+  display: flex;
+  flex-direction: column;
+
+  padding: 3px 6px;
+
+  background: rgba(0, 128, 128, 0.07);
+
+  border: 1px solid #c5dede;
+  border-radius: 3px;
+
+  font-size: 0.72rem;
+}
+
+.item-property strong {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--sr4-label);
+}
+
+/* ---------------- ACTIONS ---------------- */
+
+.item-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* buttons unified */
+.item-edit,
+.item-delete,
+.roll-action,
+.attack {
+  width: 22px;
+  height: 22px;
+
+  border: 1px solid transparent;
+  background: none;
+
+  color: var(--sr4-border-dim);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-edit:hover,
+.roll-action:hover,
+.attack:hover {
+  color: var(--sr4-teal);
+  border-color: var(--sr4-teal);
+  background: var(--sr4-teal-glow);
+}
+
+.item-delete:hover {
+  color: var(--sr4-red);
+  border-color: var(--sr4-red);
+  background: rgba(224, 48, 48, 0.08);
+}
+
+/* ---------------- WEAPON ---------------- */
+
+.weapon-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.4rem;
+}
+
+.weapon-smartlink {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+/* ---------------- DEFENSE ---------------- */
+
+.defense-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.defense-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.defense-field {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.defense-field label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--sr4-label);
+}
+
+.defense-field input {
+  width: 60px;
+  text-align: right;
+
+  border: 1px solid var(--sr4-border-dim);
+  border-radius: 3px;
+}

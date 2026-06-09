@@ -1,0 +1,11 @@
+# dependencies
+/node_modules
+
+#symlinks
+/foundry
+
+# compiled output
+/shadowrun4e
+# environment file
+.env
+/packs

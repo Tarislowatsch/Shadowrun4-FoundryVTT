@@ -1,0 +1,64 @@
+<div
+  class="item-card"
+  id="{{ this._id }}"
+  data-item-id="{{ this._id }}"
+  title="{{ this.system.description }}"
+>
+  <div class="item-row">
+    <span class="item-name">{{ this.name }}</span>
+    <span class="item-category"
+      >{{localize "sr4.spell.category"}}:
+      {{localize (concat "sr4.spell.categories." this.system.category)}}</span
+    >
+    <span class="item-type"
+      >{{localize "sr4.spell.type"}}:
+      {{localize (concat "sr4.spell.types." this.system.type)}}</span
+    >
+    <span class="item-range"
+      >{{localize "sr4.spell.range"}}:
+      {{localize (concat "sr4.spell.ranges." this.system.range)}}</span
+    >
+
+    {{#if (eq this.system.category "COMBAT")}}
+    <span class="item-damage"
+      >{{localize "sr4.spell.damage"}}: {{ this.system.damage }}</span
+    >
+    <span class="item-damagetype"
+      >{{localize "sr4.spell.damagetype"}}:
+      {{localize (concat "sr4.damage." this.system.type)}}</span
+    >
+    <span class="item-element"
+      >{{localize "sr4.spell.element"}}:
+      {{localize (concat "sr4.spell.elements." this.system.element)}}</span
+    >
+    {{/if}}
+
+    <span class="item-duration"
+      >{{localize "sr4.spell.duration"}}:
+      {{localize (concat "sr4.spell.durations." this.system.duration)}}</span
+    >
+    <span class="item-dv"
+      >{{localize "sr4.spell.dv"}}: {{ this.system.dv }}</span
+    >
+    <span class="item-source"
+      >{{localize "sr4.spell.source"}}: {{ this.system.source }}</span
+    >
+    <button class="spell-cast" data-action="castSpell">
+      <i class="fas fa-dice-d20"></i>
+    </button>
+    <button
+      class="item-edit"
+      data-action="editItem"
+      data-tooltip="{{localize 'sr4.item.edit'}}"
+    >
+      <i class="fas fa-edit"></i>
+    </button>
+    <button
+      class="item-delete"
+      data-action="deleteItem"
+      data-tooltip="{{localize 'sr4.item.delete'}}"
+    >
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+</div>

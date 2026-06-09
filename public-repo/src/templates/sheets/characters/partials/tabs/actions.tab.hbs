@@ -1,0 +1,11 @@
+<div class="tab {{ tab.cssClass }}" data-tab="actions" data-group="primary">
+  {{#if actions}}
+  <ul class="action-list">
+    {{#each actions as |action|}}
+    {{> "action-card" action actiontypes=../actiontypes}}
+    {{/each}}
+  </ul>
+  {{else}}
+  <p>{{localize 'sr4.action.noActions'}}</p>
+  {{/if}}
+</div>
