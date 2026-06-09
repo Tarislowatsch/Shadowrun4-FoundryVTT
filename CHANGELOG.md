@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.1.28](https://github.com/Tarislowatsch/sr4foundry/compare/v0.1.27...v0.1.28) (2026-06-09)
+
 ## [0.1.27](https://github.com/Tarislowatsch/sr4foundry/compare/v0.1.26...v0.1.27) (2026-06-09)
 
 ## [0.1.26](https://github.com/Tarislowatsch/sr4foundry/compare/v0.1.25...v0.1.26) (2026-06-09)
