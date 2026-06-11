@@ -5,10 +5,12 @@ const fields = foundry.data.fields;
 /**
  * Properties shared by all weapon system data models (from genericWeaponSchema).
  * @typedef {object} SR4WeaponSystemBase
- * @property {string} damage
+ * @property {number} damage
  * @property {string} damageType
- * @property {string} ap
+ * @property {number} ap  - Armor Penetration value (negative = reduces effective armor)
+ * @property {boolean} apHalf - When true, effective armor is halved instead (SR4 p.151 "-half")
  * @property {string} attackSkill
+ * @property {'ballistic' | 'impact'} armorType
  */
 
 /**
@@ -29,21 +31,12 @@ export class SR4RangedWeaponData extends foundry.abstract.TypeDataModel {
   smartlink;
   /** @type {string} */
   mode;
-  /** @type {string} */
+  /** @type {number} */
   rc;
   /** @type {string} */
   ammo;
   /** @type {string} */
   range;
-
-  prepareBaseData() {
-    const source = this.parent?._source?.system ?? {};
-    this.rc = source.rc ?? '';
-    this.mode = source.mode ?? '';
-    this.ammo = source.ammo ?? '';
-    this.range = source.range ?? '';
-    this.smartlink = source.smartlink ?? false;
-  }
 
   static defineSchema() {
     return {
@@ -51,22 +44,32 @@ export class SR4RangedWeaponData extends foundry.abstract.TypeDataModel {
       ...genericWeaponSchema(),
       smartlink: new fields.BooleanField({ initial: false }),
       mode: new fields.StringField({ initial: '' }),
-      rc: new fields.StringField({ initial: '' }),
+      rc: new fields.NumberField({ initial: 0, integer: true }),
       ammo: new fields.StringField({ initial: '' }),
       range: new fields.StringField({ initial: '' }),
+      armorType: new fields.StringField({
+        initial: 'ballistic',
+        choices: ['ballistic', 'impact'],
+        blank: false,
+      }),
     };
   }
 }
 
 /** DataModel for melee weapons (type: "Melee Weapon"). */
 export class SR4MeleeWeaponData extends foundry.abstract.TypeDataModel {
-  /** @type {string} */
+  /** @type {number} */
   reach;
   static defineSchema() {
     return {
       ...genericItemSchema(),
       ...genericWeaponSchema(),
-      reach: new fields.StringField({ initial: '' }),
+      reach: new fields.NumberField({ initial: 0, integer: true }),
+      armorType: new fields.StringField({
+        initial: 'impact',
+        choices: ['ballistic', 'impact'],
+        blank: false,
+      }),
     };
   }
 }

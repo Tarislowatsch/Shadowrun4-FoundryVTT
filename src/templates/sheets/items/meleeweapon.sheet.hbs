@@ -19,6 +19,7 @@
         <th>{{localize 'sr4.weapon.damage'}}</th>
         <th>{{localize 'sr4.weapon.damageType'}}</th>
         <th>{{localize 'sr4.weapon.ap'}}</th>
+        <th>{{localize 'sr4.weapon.armorType.label'}}</th>
         <th>{{localize 'sr4.weapon.reach'}}</th>
         <th>{{localize 'sr4.weapon.avail'}}</th>
         <th>{{localize 'sr4.weapon.legality'}}</th>
@@ -46,7 +47,20 @@
           </select>
         </td>
         <td>
-          <input type="number" name="system.ap" value="{{ system.ap }}" />
+          <input type="number" name="system.ap" value="{{ system.ap }}" {{#if system.apHalf}}disabled{{/if}} />
+          <label title="{{localize 'sr4.weapon.apHalf'}}">
+            <input type="checkbox" data-field="system.apHalf" {{#if system.apHalf}}checked{{/if}} /> ½
+          </label>
+        </td>
+        <td>
+          <select name="system.armorType">
+            <option value="ballistic" {{#if (eq system.armorType "ballistic")}}selected{{/if}}>
+              {{localize "sr4.weapon.armorType.ballistic"}}
+            </option>
+            <option value="impact" {{#if (eq system.armorType "impact")}}selected{{/if}}>
+              {{localize "sr4.weapon.armorType.impact"}}
+            </option>
+          </select>
         </td>
         <td>
           <input type="number" name="system.reach" value="{{ system.reach }}" />

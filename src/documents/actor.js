@@ -1,6 +1,10 @@
 import { SpellcastingFlow } from '@flows/index';
 import { Attackskill } from '@models/index';
-import { computeDerivedStats } from './derivedStats.mapper';
+import {
+  computeDerivedStats,
+  computeSpiritDerivedStats,
+  computeVehicleDerivedStats,
+} from './derivedStats.mapper';
 import { getGame } from '@utils/index';
 import { SR4ActiveEffect } from '@effects/index';
 
@@ -25,9 +29,13 @@ const DEFAULT_STATS = {
 };
 
 /**
+ * @typedef {'character' | 'npc' | 'vehicle' | 'spirit'} SR4ActorType
+ */
+
+/**
  * @interface SR4Actor
- * @property {import('@models/index').SR4BaseCharacterSystem} system
- * @property {string} type
+ * @property {SR4ActorType} type
+ * @property {import('@models/index').SR4BaseCharacterSystem | import('@models/index').SR4VehicleSystem | import('@models/index').SR4SpiritSystem} system
  */
 export class SR4Actor extends foundry.documents.Actor {
   get actor() {
@@ -35,33 +43,46 @@ export class SR4Actor extends foundry.documents.Actor {
   }
 
   prepareDerivedData() {
-    // TODO: Spirits and NPCs also carry sheetStats — extend this when their
-    // derived stats (wound modifier, augmented maximums) need computing too.
-    if (this.type !== 'character') return;
     /** @type {any} */
     const self = this;
-    /** @type {import('@models/index').SR4BaseCharacterSystem} */
-    const systemData = self.system;
-    if (!systemData?.sheetStats) return;
 
-    /** @type {any[]} */
-    const equipped = self.items.filter(
-      (i) => i.type === 'Armor' && i.system?.equipped === true
-    );
+    if (self.type === 'character' || self.type === 'npc') {
+      /** @type {import('@models/index').SR4BaseCharacterSystem} */
+      const systemData = self.system;
+      if (!systemData?.sheetStats) return;
 
-    const armorBonus = {
-      ballistic: systemData.armor.ballistic,
-      impact: systemData.armor.impact,
-    };
-    systemData.armor.ballistic =
-      equipped.reduce((s, i) => s + (i.system.ballisticarmor || 0), 0) +
-      armorBonus.ballistic;
-    systemData.armor.impact =
-      equipped.reduce((s, i) => s + (i.system.impactarmor || 0), 0) +
-      armorBonus.impact;
+      /** @type {any[]} */
+      const equipped = self.items.filter(
+        (i) => i.type === 'Armor' && i.system?.equipped === true
+      );
+      const armorBonus = {
+        ballistic: systemData.armor.ballistic,
+        impact: systemData.armor.impact,
+      };
+      systemData.armor.ballistic =
+        equipped.reduce((s, i) => s + (i.system.ballisticarmor || 0), 0) +
+        armorBonus.ballistic;
+      systemData.armor.impact =
+        equipped.reduce((s, i) => s + (i.system.impactarmor || 0), 0) +
+        armorBonus.impact;
 
-    const derived = computeDerivedStats(systemData);
-    Object.assign(systemData.derivedStats, derived);
+      Object.assign(systemData.derivedStats, computeDerivedStats(systemData));
+    } else if (self.type === 'spirit') {
+      /** @type {import('@models/index').SR4SpiritSystem} */
+      const systemData = self.system;
+      if (!systemData?.sheetStats) return;
+      Object.assign(
+        systemData.derivedStats,
+        computeSpiritDerivedStats(systemData)
+      );
+    } else if (self.type === 'vehicle') {
+      /** @type {import('@models/index').SR4VehicleSystem} */
+      const systemData = self.system;
+      Object.assign(
+        systemData.derivedStats,
+        computeVehicleDerivedStats(systemData)
+      );
+    }
   }
 
   /** @returns {import('@models/index').SR4SheetStats} */
@@ -180,12 +201,127 @@ export class SR4Actor extends foundry.documents.Actor {
    * @returns {Promise<SR4ActiveEffect>}
    */
   async applyEffectTemplate(templateKey) {
+    // @ts-ignore — SR4Actor satisfies the Actor contract at runtime
     return SR4ActiveEffect.fromTemplate(templateKey, this);
+  }
+
+  /** @returns {number} */
+  getInitiativeBase() {
+    /** @type {any} */
+    const self = this;
+    return self.system?.derivedStats?.initiative?.physical ?? 0;
+  }
+
+  /** @returns {number} */
+  getMalus() {
+    /** @type {any} */
+    const self = this;
+    return self.system?.derivedStats?.woundModifier ?? 0;
+  }
+
+  async _preUpdate(changed, options, userId) {
+    await super._preUpdate(changed, options, userId);
+    if (game.settings.get('shadowrun4e', 'liveInitiativeReduction'))
+      options._sr4Malus = this.getMalus();
+  }
+
+  async _onUpdate(changed, options, userId) {
+    await super._onUpdate(changed, options, userId);
+    if (!game.settings.get('shadowrun4e', 'liveInitiativeReduction')) return;
+
+    const oldMalus = options._sr4Malus;
+    if (oldMalus === undefined) return;
+
+    const delta = this.getMalus() - oldMalus;
+    if (delta === 0) return;
+
+    /** @type {any} */
+    const self = this;
+    for (const combat of game?.combats ?? []) {
+      // @ts-ignore — combatants is the correct Foundry EmbeddedCollection property
+      const combatant = combat.combatants.find((c) => c.actor?.id === self.id);
+      if (!combatant || combatant.initiative === null) continue;
+      await combatant.update({
+        initiative: Math.max(0, combatant.initiative - delta),
+      });
+    }
+  }
+
+  static #NPC_SKILL_ALLOWLIST = new Set([
+    'archery',
+    'automatics',
+    'blades',
+    'clubs',
+    'gunnery',
+    'heavy-weapons',
+    'longarms',
+    'pistols',
+    'throwing-weapons',
+    'unarmed-combat',
+    'counterspelling',
+    'spellcasting',
+    'summoning',
+    'gymnastics',
+    'infiltration',
+    'intimidation',
+    'perception',
+    'running',
+    'swimming',
+  ]);
+
+  async _onCreate(data, options, userId) {
+    await super._onCreate(data, options, userId);
+    if (userId !== game.user?.id) return;
+
+    /** @type {any} */
+    const self = this;
+    if (self.type === 'character') {
+      await self.update({ 'prototypeToken.actorLink': true });
+    }
+    if (self.type === 'character' || self.type === 'npc') {
+      await SR4Actor.#addSkillsFromCompendium(self, self.type === 'npc');
+    }
+  }
+
+  static async #addSkillsFromCompendium(actor, npcOnly) {
+    if (actor.items.some((i) => i.type === 'Skill')) return;
+    const compendium = game?.packs?.get('shadowrun4e.skills');
+    if (!compendium) {
+      ui.notifications?.error(
+        'SR4 | Skill compendium "shadowrun4e.skills" not found.'
+      );
+      return;
+    }
+    const index = await compendium.getIndex();
+    let skillEntries = index.filter((e) => e?.type === 'Skill');
+    if (npcOnly) {
+      skillEntries = skillEntries.filter((e) =>
+        SR4Actor.#NPC_SKILL_ALLOWLIST.has(e.name?.toLowerCase())
+      );
+    }
+    const skills = await Promise.all(
+      skillEntries.map((e) => compendium.getDocument(e._id))
+    );
+    const skillData = skills
+      .filter(Boolean)
+      .map((s) => {
+        const obj = s.toObject();
+        return {
+          name: obj.name ?? s.name,
+          type: obj.type ?? s.type,
+          img: obj.img ?? null,
+          system: obj.system ?? {},
+          effects: [],
+        };
+      })
+      .filter((s) => s.name && s.type);
+    await actor.createEmbeddedDocuments('Item', skillData);
   }
 
   async updateTokenAppearance() {
     /** @type {any} */
     const self = this;
+    if (self.type !== 'character' && self.type !== 'npc') return;
     const token = self.token;
     if (!token) return;
     const newEffects = [];

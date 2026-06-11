@@ -48,7 +48,7 @@ export class DieChatHook {
     if (canExtend) {
       const extBtn = document.createElement('button');
       extBtn.className = 'extended-test-button';
-      extBtn.textContent = 'Extend Test';
+      extBtn.textContent = game.i18n.localize('sr4.roll.extendTest');
       container.appendChild(extBtn);
 
       let edgeExBtn = null;
@@ -76,7 +76,7 @@ export class DieChatHook {
       if (edgeAvailable) {
         edgeExBtn = document.createElement('button');
         edgeExBtn.className = 'extended-edge-button';
-        edgeExBtn.textContent = 'Extend + Edge';
+        edgeExBtn.textContent = game.i18n.localize('sr4.roll.extendEdge');
         container.appendChild(edgeExBtn);
 
         edgeExBtn.addEventListener(
@@ -101,7 +101,7 @@ export class DieChatHook {
     if (edgeAvailable && !extended) {
       edgeBtn = document.createElement('button');
       edgeBtn.className = 'edge-use-button';
-      edgeBtn.textContent = 'Edge verwenden';
+      edgeBtn.textContent = game.i18n.localize('sr4.roll.edge.use');
       container.appendChild(edgeBtn);
 
       const fallbackTimer = setTimeout(() => edgeBtn.remove(), 1000 * 60 * 30);

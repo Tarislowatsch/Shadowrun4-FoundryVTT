@@ -1,4 +1,53 @@
 /**
+ * @param {import('@models/index').SR4SpiritSystem} systemData
+ * @returns {import('@models/index').SR4SpiritDerivedStats}
+ */
+export function computeSpiritDerivedStats(systemData) {
+  const sheetStats = systemData.sheetStats;
+  const monitor = systemData.conditionMonitor;
+  const derivedStats = { ...systemData.derivedStats };
+
+  monitor.physical.max = Math.ceil(8 + sheetStats.BODY / 2);
+  monitor.stun.max = Math.ceil(8 + sheetStats.WILLPOWER / 2);
+
+  derivedStats.woundModifier =
+    Math.floor(monitor.physical.current / 3) +
+    Math.floor(monitor.stun.current / 3);
+  derivedStats.dicePoolModifier = derivedStats.woundModifier;
+
+  derivedStats.initiative.physical = sheetStats.INTUITION + sheetStats.REACTION;
+  derivedStats.initiative.astral = sheetStats.INTUITION * 2;
+  derivedStats.initiative.matrix = 0;
+
+  // TODO: derive from spirit type table; 2 passes covers most common spirits
+  derivedStats.passesString = '2/2/0';
+
+  return derivedStats;
+}
+
+/**
+ * @param {import('@models/index').SR4VehicleSystem} systemData
+ * @returns {import('@models/index').SR4VehicleDerivedStats}
+ */
+export function computeVehicleDerivedStats(systemData) {
+  const monitor = systemData.conditionMonitor;
+  const derivedStats = { ...systemData.derivedStats };
+
+  monitor.physical.max = Math.ceil(8 + systemData.body / 2);
+
+  derivedStats.woundModifier = Math.floor(monitor.physical.current / 3);
+  derivedStats.dicePoolModifier = derivedStats.woundModifier;
+
+  derivedStats.initiative.physical =
+    (systemData.pilot ?? 0) + (systemData.response ?? 0);
+  derivedStats.initiative.astral = 0;
+  derivedStats.initiative.matrix = 0;
+  derivedStats.passesString = '1/0/0';
+
+  return derivedStats;
+}
+
+/**
  * @param {import('@models/index').SR4BaseCharacterSystem} actorData
  * @returns {import('@models/index').SR4DerivedStats}
  */
@@ -38,7 +87,7 @@ export function computeDerivedStats(actorData) {
     initiativePasses.matrix,
   ].join('/');
 
-  derivedStats.augmentedMaximum = computeAugmentedMaximum(sheetStats);
+  // derivedStats.augmentedMaximum = computeAugmentedMaximum(sheetStats);
   derivedStats.judgeIntentions = sheetStats.CHARISMA + sheetStats.WILLPOWER;
   derivedStats.liftCarry = sheetStats.STRENGTH + sheetStats.BODY;
   derivedStats.memory = sheetStats.LOGIC + sheetStats.INTUITION;
@@ -47,32 +96,10 @@ export function computeDerivedStats(actorData) {
   return derivedStats;
 }
 
-/**
- * @param {import('@models/index').SR4SheetStats} stats
- * @returns {Record<keyof import('@models/index').SR4SheetStats, number>}
- */
-function computeAugmentedMaximum(stats) {
-  return {
-    BODY: Math.floor(stats.BODY / 2) + stats.BODY,
-    STRENGTH: Math.floor(stats.STRENGTH / 2) + stats.STRENGTH,
-    AGILITY: Math.floor(stats.AGILITY / 2) + stats.AGILITY,
-    REACTION: Math.floor(stats.REACTION / 2) + stats.REACTION,
-    WILLPOWER: Math.floor(stats.WILLPOWER / 2) + stats.WILLPOWER,
-    LOGIC: Math.floor(stats.LOGIC / 2) + stats.LOGIC,
-    INTUITION: Math.floor(stats.INTUITION / 2) + stats.INTUITION,
-    CHARISMA: Math.floor(stats.CHARISMA / 2) + stats.CHARISMA,
-    EDGE: Math.floor(stats.EDGE / 2) + stats.EDGE,
-    MAGIC: Math.floor((stats.MAGIC || 1) / 2) + (stats.MAGIC || 0),
-    RESONANCE: Math.floor((stats.RESONANCE || 1) / 2) + (stats.RESONANCE || 0),
-    ESSENCE: stats.ESSENCE || 6,
-    CURRENTEDGE: Math.floor(stats.EDGE / 2) + stats.EDGE,
-    INITIATIVE: Math.floor((stats.INITIATIVE || 1) / 2),
-    MATRIXINITIATIVE:
-      Math.floor((stats.MATRIXINITIATIVE || 1) / 2) + stats.INITIATIVE,
-    ASTRALINITIATIVE:
-      Math.floor((stats.ASTRALINITIATIVE || 1) / 2) + stats.INITIATIVE,
-  };
-}
+// TODO: computeAugmentedMaximum — augmented maximums must be derived from the
+// actor's metatype racial maximums, not just base * 1.5. Re-enable once metatype
+// data is available on the actor.
+// function computeAugmentedMaximum(stats) { ... }
 
 /**
  * @param {import('@models/index').SR4ConditionMonitor} monitor

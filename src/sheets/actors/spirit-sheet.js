@@ -37,7 +37,7 @@ export default class SR4SpiritSheet extends SR4NpcBaseSheet {
       system: actorData.system,
       flags: actorData.flags,
       ownerName: await this._resolveLinkedActorName(actorData.system.ownerUuid),
-      powers: items.filter((i) => i.type === 'Power'),
+      critterPowers: items.filter((i) => i.type === 'CritterPower'),
       skills: items
         .filter((i) => i.type === 'Skill')
         .sort((a, b) => a.name.localeCompare(b.name)),

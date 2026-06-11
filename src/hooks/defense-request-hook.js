@@ -59,10 +59,3 @@ export class DefenseHook {
     await DefenseFlow.start(defender, attackerId, successes, weapon);
   }
 }
-
-/**
- * @returns {DefenseHook}
- */
-export function initDefenseHook() {
-  return new DefenseHook();
-}

@@ -84,6 +84,7 @@ export async function showEdgeDialog(options) {
       window: {
         title: getGame().i18n?.localize('sr4.roll.edge.dialogTitle') ?? '',
       },
+      position: { width: 480 },
       content,
       buttons: [
         {

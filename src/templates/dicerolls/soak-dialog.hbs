@@ -1,0 +1,11 @@
+<form class="soak-roll-dialog">
+  <div class="form-group">
+    <span>{{localize "sr4.soak.incomingDamage"}}: <strong>{{ incomingDamage }} {{ damageType }}</strong></span>
+  </div>
+  <div class="form-group">
+    <span>{{localize "sr4.stats.BODY"}}: {{ body }} + {{localize "sr4.soak.armor"}}: {{ effectiveArmor }}{{#if soakBonus}} + {{localize "sr4.soak.soakBonus"}}: {{ soakBonus }}{{/if}}</span>
+  </div>
+  {{> bonus-input}}
+  {{> malus-input}}
+  {{> edge-checkbox}}
+</form>

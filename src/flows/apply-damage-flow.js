@@ -1,9 +1,4 @@
-import { getGame, openModifyDamageDialog, renderTemplate } from '@utils/index';
-
-/** @returns {string} */
-function modifyDamageTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/modify-damage-dialog.hbs';
-}
+import { getGame, openModifyDamageDialog } from '@utils/index';
 
 /**
  * Handles the application of physical and stun damage
@@ -20,16 +15,17 @@ export class ApplyDamageFlow {
   static async apply(unresisted, isPhysical, actor, reason) {
     const actorName =
       foundry.utils.getProperty(actor, 'name') ?? 'Unknown Actor';
+    /** @type {import('@models/index').SR4BaseCharacterSystem} */
+    const sys = /** @type {any} */ (actor).system;
+    const effectiveIsPhysical = sys.simpleHp ? true : isPhysical;
     if (unresisted > 0) {
-      const cm = foundry.utils.deepClone(actor.system.conditionMonitor);
-      const overflow = foundry.utils.deepClone(
-        actor.system.derivedStats.overflow
-      );
+      const cm = foundry.utils.deepClone(sys.conditionMonitor);
+      const overflow = foundry.utils.deepClone(sys.derivedStats.overflow);
       const { conditionMonitor: updatedMonitor, messages } =
         ApplyDamageFlow.applyDamage(
           cm,
           unresisted,
-          isPhysical,
+          effectiveIsPhysical,
           actorName,
           overflow,
           reason
@@ -241,13 +237,13 @@ export class ApplyDamageFlow {
       onReroll && !edgeUsed && actor.getAttribute('CURRENTEDGE') > 0;
     if (canUseEdge) {
       buttons.push({
-        label: getGame().i18n.localize('sr4.edge.useEdgePrompt'),
+        label: getGame().i18n.localize('sr4.roll.edge.useEdgePrompt'),
         action: 'reroll',
       });
     }
 
     const action = await foundry.applications.api.DialogV2.wait({
-      window: { title: getGame().i18n.localize('sr4.damage.decisionTitle') },
+      window: { title: getGame().i18n.localize('sr4.damage.decisiontitle') },
       content: `<p>${getGame().i18n.format('sr4.damage.pending', {
         name: actor.name,
         amount,

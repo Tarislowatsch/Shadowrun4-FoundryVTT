@@ -97,6 +97,7 @@
     },
     "conditionMonitor": {
       "physical": "Körperlicher Zustandsmonitor",
+      "simpleHp": "Einfache HP (nur physisch)",
       "stun": "Geistiger Zustandsmonitor"
     },
     "damage": {
@@ -111,8 +112,10 @@
       "electricity": "Elektrizität",
       "modify": "Schaden modifizieren",
       "pending": "Erwarteter Schaden",
+      "result": "Ergebnis",
       "physical": "Körperlich (K)",
       "reason": {
+        "combat": "Kampf",
         "drain": "Entzug"
       },
       "resisted": "{name} hat dem Schaden Widerstanden",
@@ -266,6 +269,7 @@
         "dialogTitle": "Edge einsetzen",
         "glitch": "Patzer! Probe fehlgeschlagen",
         "reroll": "Alle Fehlschläge neu würfeln",
+        "use": "Edge verwenden",
         "useEdgePrompt": "Edge einsetzen?"
       },
       "errorRenderingTemplate": "Fehler beim Rendern des Templates",
@@ -280,9 +284,17 @@
       "rolling": "Würfelt",
       "smartlink": "Smartlink einsetzen",
       "specialization": "Spezialisierung",
+      "extendEdge": "Erweitern + Edge",
+      "extendTest": "Erweiterte Probe fortsetzen",
       "successes": "Erfolge",
       "useEdge": "Edge einsetzen",
       "useEdgeButton": "Edge einsetzen?"
+    },
+    "soak": {
+      "armor": "Rüstung (effektiv)",
+      "incomingDamage": "Eingehender Schaden",
+      "soakBonus": "Widerstandsbonus",
+      "title": "Schadenswiderstand"
     },
     "shooting": {
       "burst": "SF",
@@ -399,6 +411,10 @@
         "physical": "K"
       }
     },
+    "critterPower": {
+      "noPowers": "Keine Kritterkräfte",
+      "powers": "Kritterkräfte"
+    },
     "spirit": {
       "attributes": "Attribute",
       "dropSummoner": "Akteur ziehen um Beschwörer zu verknüpfen",
@@ -472,6 +488,12 @@
     "weapon": {
       "ammo": "Munition",
       "ap": "PB",
+      "apHalf": "½ Rüstung (effektive Rüstung halbieren)",
+      "armorType": {
+        "ballistic": "Ballistisch",
+        "impact": "Aufprall",
+        "label": "Rüstungstyp"
+      },
       "attackSkill": "Waffenfertigkeit",
       "avail": "Verf.",
       "clip": "Magazin",
@@ -489,6 +511,28 @@
       "recoil": "RK",
       "smartlink": "Smartlink",
       "source": "Quelle"
+    },
+    "settings": {
+      "autoSustainEffect": {
+        "name": "Automatische Aufrechterhaltung",
+        "hint": "Erstellt automatisch einen Aufrechterhaltungs-Effekt wenn ein aufrechtzuerhaltender Zauber gewirkt wird."
+      },
+      "combatDefenseWorkflow": {
+        "name": "Kampf: Ausweichen-Workflow",
+        "hint": "Wenn aktiv, werden gezielte Tokens nach einem Angriff automatisch zum Ausweichen aufgefordert. Deaktivieren schaltet auch den Schadenswiderstand-Workflow aus."
+      },
+      "combatSoakWorkflow": {
+        "name": "Kampf: Schadenswiderstand-Workflow",
+        "hint": "Wenn aktiv, werden Verteidiger nach dem Ausweichen zum Schadenswiderstand aufgefordert. Erfordert aktiven Ausweichen-Workflow."
+      },
+      "liveInitiativeReduction": {
+        "name": "Live-Initiativreduktion",
+        "hint": "Reduziert den Initiativwert eines Kämpfers automatisch wenn sein Wundmodifikator steigt."
+      },
+      "spellWorkflow": {
+        "name": "Zauber-Workflow",
+        "hint": "Aktiviert den mehrstufigen Zauber-Workflow (Kraftwahl, Wurf, Entzug)."
+      }
     }
   }
 }

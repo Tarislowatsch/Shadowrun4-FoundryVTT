@@ -32,9 +32,36 @@ export default class SR4NpcSheet extends foundry.applications.api.HandlebarsAppl
   };
 
   static PARTS = {
-    sheet: {
+    tabs: {
+      template: 'templates/generic/tab-navigation.hbs',
+    },
+    main: {
       template: 'systems/shadowrun4e/templates/sheets/characters/npc.sheet.hbs',
       scrollable: [''],
+    },
+    defense: {
+      template:
+        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/defense.tab.hbs',
+      scrollable: [''],
+    },
+    modifiers: {
+      template:
+        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/modifiers.tab.hbs',
+    },
+  };
+
+  static TABS = {
+    primary: {
+      tabs: [
+        { id: 'main', icon: 'fas fa-user', label: 'sr4.tab.main' },
+        { id: 'defense', icon: 'fas fa-shield-alt', label: 'sr4.tab.defense' },
+        {
+          id: 'modifiers',
+          icon: 'fas fa-sliders-h',
+          label: 'sr4.tab.modifiers',
+        },
+      ],
+      initial: 'main',
     },
   };
 
@@ -46,9 +73,8 @@ export default class SR4NpcSheet extends foundry.applications.api.HandlebarsAppl
     const actorData = this.document.toObject(false);
     const items = actorData.items || [];
     const derived = this.document.system.derivedStats;
-    const powers = items.filter((i) => i.type === 'Power');
-
     return {
+      tabs: this._prepareTabs('primary'),
       editMode: this.editMode,
       actor: {
         img: actorData.img,
@@ -57,6 +83,7 @@ export default class SR4NpcSheet extends foundry.applications.api.HandlebarsAppl
       },
       system: actorData.system,
       flags: actorData.flags,
+      // @ts-ignore — CONFIG.SR4 is registered at runtime by the system
       config: CONFIG.SR4,
       attributes: SR4Attributes,
       shootingmodes: Shootingmodes,
@@ -77,14 +104,29 @@ export default class SR4NpcSheet extends foundry.applications.api.HandlebarsAppl
           return labelA.localeCompare(labelB);
         }),
       armor: items.filter((i) => i.type === 'Armor'),
+      critterPowers: items.filter((i) => i.type === 'CritterPower'),
       computedStats: {
         ...actorData.system.sheetStats,
-        INITIATIVE: derived?.initiative?.initiative?.physical ?? 0,
-        MATRIXINITIATIVE: derived?.initiative?.initiative?.matrix ?? 0,
-        ASTRALINITIATIVE: derived?.initiative?.initiative?.astral ?? 0,
+        INITIATIVE: derived?.initiative?.physical ?? 0,
+        MATRIXINITIATIVE: derived?.initiative?.matrix ?? 0,
+        ASTRALINITIATIVE: derived?.initiative?.astral ?? 0,
       },
       derivedKeys: ['INITIATIVE', 'MATRIXINITIATIVE', 'ASTRALINITIATIVE'],
     };
+  }
+
+  async _preparePartContext(partId, context) {
+    switch (partId) {
+      case 'main':
+      case 'defense':
+      case 'modifiers':
+        context.tab = context.tabs[partId];
+        break;
+    }
+    if (partId === 'defense') {
+      context.showSimpleHpToggle = true;
+    }
+    return context;
   }
 
   // ---------------------------------------------------------------------------
@@ -107,6 +149,7 @@ export default class SR4NpcSheet extends foundry.applications.api.HandlebarsAppl
     `;
 
     toggle.querySelector('input')?.addEventListener('change', (ev) => {
+      // @ts-ignore — checked exists on HTMLInputElement at runtime
       this.editMode = ev.currentTarget.checked;
       this.render();
     });

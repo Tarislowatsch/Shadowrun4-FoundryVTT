@@ -1,0 +1,17 @@
+<div class="npc-section">
+  <h3>{{localize 'sr4.critterPower.powers'}}</h3>
+  {{#if critterPowers}}
+    {{#each critterPowers as |power|}}
+    <div class="item-card" data-item-id="{{power._id}}">
+      <div class="item-row">
+        <span class="item-name">{{power.name}}</span>
+        {{#if power.system.source}}<span class="item-source">{{power.system.source}}</span>{{/if}}
+        <button type="button" class="item-edit" data-action="editItem" data-item-id="{{power._id}}"><i class="fas fa-edit"></i></button>
+        <button type="button" class="item-delete" data-action="deleteItem" data-item-id="{{power._id}}"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+    {{/each}}
+  {{else}}
+    <p class="empty-list">{{localize 'sr4.critterPower.noPowers'}}</p>
+  {{/if}}
+</div>

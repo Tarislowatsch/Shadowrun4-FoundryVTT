@@ -3,14 +3,14 @@
     "data": {
       "name": "Athame",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.athame",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "ARG p. 0",
         "type": "Melee"
       },
@@ -24,14 +24,14 @@
     "data": {
       "name": "Ares Bravo Vibrosword",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.ares_bravo_vibrosword",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WAR p. 154",
         "type": "Melee"
       },
@@ -45,14 +45,14 @@
     "data": {
       "name": "Blade Bayonet",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.blade_bayonet",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "WAR p. 155",
         "type": "Melee"
       },
@@ -66,14 +66,14 @@
     "data": {
       "name": "Bayonet",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.bayonet",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -87,14 +87,14 @@
     "data": {
       "name": "Bottle",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.bottle",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -108,14 +108,14 @@
     "data": {
       "name": "Ceramic Knife",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.ceramic_knife",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -129,14 +129,14 @@
     "data": {
       "name": "Claymore",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.claymore",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -150,14 +150,14 @@
     "data": {
       "name": "Combat Axe",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.combat_axe",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "SR4 p. 314",
         "type": "Melee"
       },
@@ -171,14 +171,14 @@
     "data": {
       "name": "Cougar Fineblade Knife, Short",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.cougar_fineblade_knife_short",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -192,14 +192,14 @@
     "data": {
       "name": "Cougar Fineblade Knife, Long",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.cougar_fineblade_knife_long",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -213,14 +213,14 @@
     "data": {
       "name": "Flick Bayonet",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.flick_bayonet",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "WAR p. 156",
         "type": "Melee"
       },
@@ -234,14 +234,14 @@
     "data": {
       "name": "Forearm Snap-Blades",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.forearm_snapblades",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 314",
         "type": "Melee"
       },
@@ -255,14 +255,14 @@
     "data": {
       "name": "Folding Spade",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.folding_spade",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -276,14 +276,14 @@
     "data": {
       "name": "Fork or Utensil",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.fork_or_utensil",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -297,14 +297,14 @@
     "data": {
       "name": "Injection Dagger",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.injection_dagger",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "ARG p. 0",
         "type": "Melee"
       },
@@ -318,14 +318,14 @@
     "data": {
       "name": "Katana",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.katana",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 314",
         "type": "Melee"
       },
@@ -339,14 +339,14 @@
     "data": {
       "name": "Katar",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.katar",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -360,14 +360,14 @@
     "data": {
       "name": "Knife",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.knife",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -381,14 +381,14 @@
     "data": {
       "name": "Kris",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.kris",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -402,14 +402,14 @@
     "data": {
       "name": "Macauitl",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.macauitl",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -423,14 +423,14 @@
     "data": {
       "name": "Monofilament Sword",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.monofilament_sword",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -444,14 +444,14 @@
     "data": {
       "name": "Nodachi",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.nodachi",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -465,14 +465,14 @@
     "data": {
       "name": "Rapier",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.rapier",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 14",
         "type": "Melee"
       },
@@ -486,14 +486,14 @@
     "data": {
       "name": "Spear",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.spear",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 16",
         "type": "Melee"
       },
@@ -507,14 +507,14 @@
     "data": {
       "name": "Survival Knife",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.survival_knife",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -528,14 +528,14 @@
     "data": {
       "name": "Sword",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.sword",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -549,14 +549,14 @@
     "data": {
       "name": "Gentleman's Cane Sword",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Gear",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.gentlemans_cane_sword",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AT p. 154",
         "type": "Melee"
       },
@@ -570,14 +570,14 @@
     "data": {
       "name": "Sword Cane",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.sword_cane",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "ARG p. 0",
         "type": "Melee"
       },
@@ -591,14 +591,14 @@
     "data": {
       "name": "Tomahawk",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.tomahawk",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 16",
         "type": "Melee"
       },
@@ -612,14 +612,14 @@
     "data": {
       "name": "Vibro Knife",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.vibro_knife",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 16",
         "type": "Melee"
       },
@@ -633,14 +633,14 @@
     "data": {
       "name": "Vibro Sword",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.vibro_sword",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 16",
         "type": "Melee"
       },
@@ -654,14 +654,14 @@
     "data": {
       "name": "Victorinox Memory Blade",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_memory_blade",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 16",
         "type": "Melee"
       },
@@ -675,16 +675,17 @@
     "data": {
       "name": "Ares Sierra Stun Baton",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 5,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.ares_sierra_stun_baton",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WAR p. 154",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -696,16 +697,17 @@
     "data": {
       "name": "AZ-150 Stun Baton",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 7,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.az150_stun_baton",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 16",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -717,14 +719,14 @@
     "data": {
       "name": "Baseball Bat",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.baseball_bat",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -738,14 +740,14 @@
     "data": {
       "name": "Bottle",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.bottle",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -759,14 +761,14 @@
     "data": {
       "name": "Chair",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.chair",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -780,14 +782,14 @@
     "data": {
       "name": "Club",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.club",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -801,14 +803,14 @@
     "data": {
       "name": "Extendable Baton",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.extendable_baton",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -822,14 +824,14 @@
     "data": {
       "name": "Frying Pan",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.frying_pan",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -843,14 +845,14 @@
     "data": {
       "name": "Mace",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.mace",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -864,14 +866,14 @@
     "data": {
       "name": "Nunchaku",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.nunchaku",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -885,14 +887,14 @@
     "data": {
       "name": "Pistol",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.pistol",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -906,14 +908,14 @@
     "data": {
       "name": "Pool Cue",
       "system": {
-        "ap": "+2",
+        "ap": 2,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.pool_cue",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -927,14 +929,14 @@
     "data": {
       "name": "Potted Plant",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.potted_plant",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -948,14 +950,14 @@
     "data": {
       "name": "Rattan Stick",
       "system": {
-        "ap": "+2",
+        "ap": 2,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.rattan_stick",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -969,14 +971,14 @@
     "data": {
       "name": "Rifle Butt",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.rifle_butt",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -990,14 +992,14 @@
     "data": {
       "name": "Sap",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.sap",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -1011,14 +1013,14 @@
     "data": {
       "name": "Sledge Hammer",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.sledge_hammer",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -1032,14 +1034,14 @@
     "data": {
       "name": "Staff",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.staff",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -1053,14 +1055,14 @@
     "data": {
       "name": "Steel Pipe",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.steel_pipe",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -1074,16 +1076,17 @@
     "data": {
       "name": "Stun Baton",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 6,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.stun_baton",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "SR4 p. 315",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1095,16 +1098,17 @@
     "data": {
       "name": "Stun Staff",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 6,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.stun_staff",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 17",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1116,14 +1120,14 @@
     "data": {
       "name": "Telescopic Staff",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.telescopic_staff",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -1137,14 +1141,14 @@
     "data": {
       "name": "Tonfa",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.tonfa",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -1158,14 +1162,14 @@
     "data": {
       "name": "Victorinox SmartStaff",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 0,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1179,14 +1183,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Baton",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_baton",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1200,14 +1204,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Mace",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_mace",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1221,14 +1225,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Pick",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_pick",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1242,14 +1246,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Polearm",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_polearm",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1263,14 +1267,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Short Blade",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_short_blade",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1284,14 +1288,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Spear",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_spear",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1305,14 +1309,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Staff",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_staff",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1326,14 +1330,14 @@
     "data": {
       "name": "Victorinox SmartStaff: Sword",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.victorinox_smartstaff_sword",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WAR p. 153",
         "type": "Melee"
       },
@@ -1347,14 +1351,14 @@
     "data": {
       "name": "Chain",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.chain",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 17",
         "type": "Melee"
       },
@@ -1368,14 +1372,14 @@
     "data": {
       "name": "Garrote",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.garrote",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1389,16 +1393,17 @@
     "data": {
       "name": "Goblin Stompers",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.goblin_stompers",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AT p. 155",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1410,14 +1415,14 @@
     "data": {
       "name": "Hardliner Gloves",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.hardliner_gloves",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1431,14 +1436,14 @@
     "data": {
       "name": "Kusarigama, Sickle",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.kusarigama_sickle",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1452,14 +1457,14 @@
     "data": {
       "name": "Kusarigama, Weighted Chain",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.kusarigama_weighted_chain",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1473,14 +1478,14 @@
     "data": {
       "name": "Monofilament Garrote",
       "system": {
-        "ap": "-4",
+        "ap": -4,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 8,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.monofilament_garrote",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1494,14 +1499,14 @@
     "data": {
       "name": "Monofilament Whip",
       "system": {
-        "ap": "-4",
+        "ap": -4,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 8,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.monofilament_whip",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -1515,14 +1520,14 @@
     "data": {
       "name": "Pole Arm",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.pole_arm",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "SR4 p. 315",
         "type": "Melee"
       },
@@ -1536,14 +1541,14 @@
     "data": {
       "name": "Sai",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.sai",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1557,14 +1562,14 @@
     "data": {
       "name": "Whip",
       "system": {
-        "ap": "+2",
+        "ap": 2,
         "attackSkill": "EXOTIC_MELEE",
         "category": "Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.whip",
         "mods": [],
-        "reach": "2",
+        "reach": 2,
         "source": "AR p. 38",
         "type": "Melee"
       },
@@ -1578,16 +1583,17 @@
     "data": {
       "name": "Tesla Gloves",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "EXOTIC_RANGED",
         "category": "Exotic Ranged Weapons",
         "damage": 4,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.tesla_gloves",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AT p. 154",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1599,16 +1605,17 @@
     "data": {
       "name": "Shock Glove",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "UNARMED",
         "category": "Unarmed",
         "damage": 5,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.shock_glove",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 315",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1620,16 +1627,17 @@
     "data": {
       "name": "Pocket Frills",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "UNARMED",
         "category": "Unarmed",
         "damage": 4,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.pocket_frills",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SG p. 160",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1641,16 +1649,17 @@
     "data": {
       "name": "Defiance EX Shocker Melee",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "PISTOLS",
         "category": "Tasers",
         "damage": 8,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.defiance_ex_shocker_melee",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 316",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1662,16 +1671,17 @@
     "data": {
       "name": "Jupiter Taser Club",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 6,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.jupiter_taser_club",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AR p. 20",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1683,14 +1693,14 @@
     "data": {
       "name": "Quills",
       "system": {
-        "ap": "+1",
+        "ap": 1,
         "attackSkill": "NONE",
         "category": "Cyberware Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.quills",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 66",
         "type": "Melee"
       },
@@ -1704,14 +1714,14 @@
     "data": {
       "name": "Hand Blade",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.hand_blade",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 345",
         "type": "Melee"
       },
@@ -1725,14 +1735,14 @@
     "data": {
       "name": "Hand Razors",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.hand_razors",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 345",
         "type": "Melee"
       },
@@ -1746,16 +1756,17 @@
     "data": {
       "name": "Shock Hand",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Clubs",
         "damage": 6,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.shock_hand",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 345",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -1767,14 +1778,14 @@
     "data": {
       "name": "Spur",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.spur",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 345",
         "type": "Melee"
       },
@@ -1788,14 +1799,14 @@
     "data": {
       "name": "Fang Implants",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.fang_implants",
         "mods": [],
-        "reach": "-1",
+        "reach": -1,
         "source": "AU p. 34",
         "type": "Melee"
       },
@@ -1809,14 +1820,14 @@
     "data": {
       "name": "Horn Implants",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Exotic Melee Weapons",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.horn_implants",
         "mods": [],
-        "reach": "-1",
+        "reach": -1,
         "source": "AU p. 35",
         "type": "Melee"
       },
@@ -1830,14 +1841,14 @@
     "data": {
       "name": "Oral Slasher",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "NONE",
         "category": "Cyberware Exotic Melee Weapons",
         "damage": 4,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.oral_slasher",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 43",
         "type": "Melee"
       },
@@ -1851,14 +1862,14 @@
     "data": {
       "name": "Hydraulic Press (pinch)",
       "system": {
-        "ap": "-4",
+        "ap": -4,
         "attackSkill": "NONE",
         "category": "Cyberware Clubs",
         "damage": 10,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.hydraulic_press_pinch",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 46",
         "type": "Melee"
       },
@@ -1872,14 +1883,14 @@
     "data": {
       "name": "Hydraulic Press (strike)",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.hydraulic_press_strike",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 46",
         "type": "Melee"
       },
@@ -1893,14 +1904,14 @@
     "data": {
       "name": "Jackhammer (drill)",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "NONE",
         "category": "Cyberware Exotic Melee Weapons",
         "damage": 6,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.jackhammer_drill",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 47",
         "type": "Melee"
       },
@@ -1914,14 +1925,14 @@
     "data": {
       "name": "Jackhammer (ram)",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Exotic Melee Weapons",
         "damage": 6,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.jackhammer_ram",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 47",
         "type": "Melee"
       },
@@ -1935,14 +1946,14 @@
     "data": {
       "name": "Retractable Climbing Claws",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.retractable_climbing_claws",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 42",
         "type": "Melee"
       },
@@ -1956,14 +1967,14 @@
     "data": {
       "name": "Plastic Bone Lacing",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.plastic_bone_lacing",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 342",
         "type": "Melee"
       },
@@ -1977,14 +1988,14 @@
     "data": {
       "name": "Aluminum Bone Lacing",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.aluminum_bone_lacing",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 342",
         "type": "Melee"
       },
@@ -1998,14 +2009,14 @@
     "data": {
       "name": "Titanium Bone Lacing",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.titanium_bone_lacing",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 342",
         "type": "Melee"
       },
@@ -2019,14 +2030,14 @@
     "data": {
       "name": "Ceramic Bone Lacing",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.ceramic_bone_lacing",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 39",
         "type": "Melee"
       },
@@ -2040,14 +2051,14 @@
     "data": {
       "name": "Commlink: Monofilament Garrote",
       "system": {
-        "ap": "-4",
+        "ap": -4,
         "attackSkill": "NONE",
         "category": "Gear",
         "damage": 8,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.commlink_monofilament_garrote",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SG p. 144",
         "type": "Melee"
       },
@@ -2061,14 +2072,14 @@
     "data": {
       "name": "Foot Anchor",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Cyberware Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.foot_anchor",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "AU p. 40",
         "type": "Melee"
       },
@@ -2082,14 +2093,14 @@
     "data": {
       "name": "Unarmed Attack",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "UNARMED",
         "category": "Unarmed",
         "damage": 2,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.unarmed_attack",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SR4 p. 159",
         "type": "Melee"
       },
@@ -2103,14 +2114,14 @@
     "data": {
       "name": "Unarmed Attack (Smashing Blow)",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "UNARMED",
         "category": "Unarmed",
         "damage": 2,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.unarmed_attack_smashing_blow",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "SM p. 179",
         "type": "Melee"
       },
@@ -2124,14 +2135,14 @@
     "data": {
       "name": "Raptor Beak",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Quality",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.raptor_beak",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "RC p. 111",
         "type": "Melee"
       },
@@ -2145,14 +2156,14 @@
     "data": {
       "name": "Digging Claws",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Quality",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.digging_claws",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "RC p. 112",
         "type": "Melee"
       },
@@ -2166,14 +2177,14 @@
     "data": {
       "name": "Retractable Claws",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Quality",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.retractable_claws",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "RC p. 112",
         "type": "Melee"
       },
@@ -2187,14 +2198,14 @@
     "data": {
       "name": "Fangs",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Quality",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.fangs",
         "mods": [],
-        "reach": "-1",
+        "reach": -1,
         "source": "RC p. 113",
         "type": "Melee"
       },
@@ -2208,14 +2219,14 @@
     "data": {
       "name": "Functional Tail (Thagomizer)",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Quality",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.functional_tail_thagomizer",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "RC p. 113",
         "type": "Melee"
       },
@@ -2229,14 +2240,14 @@
     "data": {
       "name": "Goring Horns",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "NONE",
         "category": "Quality",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.goring_horns",
         "mods": [],
-        "reach": "-1",
+        "reach": -1,
         "source": "RC p. 114",
         "type": "Melee"
       },
@@ -2250,14 +2261,14 @@
     "data": {
       "name": "Barrens Special Melee",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "PISTOLS",
         "category": "Light Pistols",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.barrens_special_melee",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "GH2 p. 57",
         "type": "Melee"
       },
@@ -2271,14 +2282,14 @@
     "data": {
       "name": "Club (2050)",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.club_2050",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "2050 p. 167",
         "type": "Melee"
       },
@@ -2292,14 +2303,14 @@
     "data": {
       "name": "Monofilament Sword (2050)",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.monofilament_sword_2050",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "2050 p. 166",
         "type": "Melee"
       },
@@ -2313,14 +2324,14 @@
     "data": {
       "name": "Sap (2050)",
       "system": {
-        "ap": "0",
+        "ap": 0,
         "attackSkill": "CLUBS",
         "category": "Clubs",
         "damage": 2,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.sap_2050",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "2050 p. 167",
         "type": "Melee"
       },
@@ -2334,16 +2345,17 @@
     "data": {
       "name": "Shock Glove (2050)",
       "system": {
-        "ap": "-half",
+        "ap": 0,
         "attackSkill": "UNARMED",
         "category": "Unarmed",
         "damage": 5,
         "damageType": "STUN",
         "label": "sr4.melee_weapons.shock_glove_2050",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "2050 p. 167",
-        "type": "Melee"
+        "type": "Melee",
+        "apHalf": true
       },
       "type": "Melee Weapon"
     },
@@ -2355,14 +2367,14 @@
     "data": {
       "name": "Survival Knife (2050)",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "BLADES",
         "category": "Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.survival_knife_2050",
         "mods": [],
-        "reach": "0",
+        "reach": 0,
         "source": "2050 p. 167",
         "type": "Melee"
       },
@@ -2376,14 +2388,14 @@
     "data": {
       "name": "Arm Blade",
       "system": {
-        "ap": "-1",
+        "ap": -1,
         "attackSkill": "NONE",
         "category": "Cyberware Blades",
         "damage": 2,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.arm_blade",
         "mods": [],
-        "reach": "1",
+        "reach": 1,
         "source": "WS p. 14",
         "type": "Melee"
       },
@@ -2397,14 +2409,16 @@
     "data": {
       "name": "Monofilament Chainsaw",
       "system": {
-        "ap": "-2",
+        "ap": -2,
         "attackSkill": "NONE",
         "category": "Gear",
         "damage": 5,
         "damageType": "PHYSICAL",
         "label": "sr4.melee_weapons.monofilament_chainsaw",
-        "mods": ["DP Penalty"],
-        "reach": "1",
+        "mods": [
+          "DP Penalty"
+        ],
+        "reach": 1,
         "source": "SR4 p. 335",
         "type": "Melee"
       },

@@ -4,6 +4,7 @@ import { SR4ActiveEffect } from '@effects/index.js';
 import {
   SR4CharacterSheet,
   registerCharacterPartials,
+  registerActorPartials,
   registerHelpers,
   SR4SkillsSheet,
   SR4ItemSheet,
@@ -42,6 +43,7 @@ registerHooks();
 
 Hooks.once('init', async function () {
   await registerCharacterPartials();
+  await registerActorPartials();
   await registerUIPartials();
 
   globalThis.sr4 = game.sr4 = Object.assign(game.system, globalThis.sr4);
@@ -110,6 +112,7 @@ Hooks.once('init', async function () {
       'Program',
       'Action',
       'Power',
+      'CritterPower',
       'Autosoft',
     ],
     makeDefault: true,
@@ -127,43 +130,3 @@ Hooks.once('i18nInit', () => {
     console.warn('game.i18n is undefined');
   }
 });
-
-Hooks.once('ready', async () => {
-  if (!game.user?.isGM) return;
-  await _migrateRemoveEffectItems();
-});
-
-async function _migrateRemoveEffectItems() {
-  // Remove legacy "Effect" items left over from the old custom item type
-  const worldEffects = game.items?.filter((i) => i.type === 'Effect') ?? [];
-  if (worldEffects.length) {
-    await Item.deleteDocuments(worldEffects.map((i) => i.id));
-    console.log(
-      `SR4 | Migrated: deleted ${worldEffects.length} world-level Effect item(s)`
-    );
-  }
-  for (const actor of game.actors ?? []) {
-    const actorEffects = actor.items.filter((i) => i.type === 'Effect');
-    if (actorEffects.length) {
-      await actor.deleteEmbeddedDocuments(
-        'Item',
-        actorEffects.map((i) => i.id)
-      );
-      console.log(
-        `SR4 | Migrated: deleted ${actorEffects.length} Effect item(s) from ${actor.name}`
-      );
-    }
-  }
-}
-
-/**
- * Preloads all Handlebars templates used by the system.
- * @returns {Promise<void>}
- */
-async function preloadHandlebarsTemplates() {
-  const templatePaths = [
-    'systems/shadowrun4e/templates/sheets/characters/player.sheet.hbs',
-    'systems/shadowrun4e/templates/sheets/characters/npc.sheet.hbs',
-  ];
-  return foundry.applications.handlebars.loadTemplates(templatePaths);
-}

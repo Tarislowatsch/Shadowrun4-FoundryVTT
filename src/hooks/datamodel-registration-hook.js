@@ -13,6 +13,7 @@ import {
   SR4ActionData,
   SR4GenericItemData,
   SR4AutosoftData,
+  SR4CritterPowerData,
 } from '@models/index';
 
 /**
@@ -53,6 +54,7 @@ export class DataModelRegistrationHook {
       Focus: SR4GenericItemData,
       Fetish: SR4GenericItemData,
       Item: SR4GenericItemData,
+      CritterPower: SR4CritterPowerData,
     });
   }
 }

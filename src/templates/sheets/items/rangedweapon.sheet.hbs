@@ -1,6 +1,5 @@
 
   <div class="item-sheet-body">
-<pre>{{ log system }}</pre>
     <header class="item-sheet-header">
       <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
       <div class="item-sheet-name">
@@ -22,6 +21,7 @@
           <th>{{localize 'sr4.weapon.damage'}}</th>
           <th>{{localize 'sr4.weapon.damageType'}}</th>
           <th>{{localize 'sr4.weapon.ap'}}</th>
+          <th>{{localize 'sr4.weapon.armorType.label'}}</th>
           <th>{{localize 'sr4.weapon.mode'}}</th>
           <th>{{localize 'sr4.weapon.recoil'}}</th>
           <th>{{localize 'sr4.weapon.range'}}</th>
@@ -44,13 +44,28 @@
               {{selectOptions damagetypes selected=system.damageType localize=true}}
             </select>
           </td>
-          <td><input type="number" name="system.ap" value="{{ system.ap }}" /></td>
+          <td>
+            <input type="number" name="system.ap" value="{{ system.ap }}" {{#if system.apHalf}}disabled{{/if}} />
+            <label title="{{localize 'sr4.weapon.apHalf'}}">
+              <input type="checkbox" data-field="system.apHalf" {{#if system.apHalf}}checked{{/if}} /> ½
+            </label>
+          </td>
+          <td>
+            <select name="system.armorType">
+              <option value="ballistic" {{#if (eq system.armorType "ballistic")}}selected{{/if}}>
+                {{localize "sr4.weapon.armorType.ballistic"}}
+              </option>
+              <option value="impact" {{#if (eq system.armorType "impact")}}selected{{/if}}>
+                {{localize "sr4.weapon.armorType.impact"}}
+              </option>
+            </select>
+          </td>
           <td>
             <select name="system.mode">
               {{selectOptions shootingmodes selected=system.mode localize=true}}
             </select>
           </td>
-          <td><input type="text" name="system.rc" value="{{ system.rc }}" /></td>
+          <td><input type="number" name="system.rc" value="{{ system.rc }}" /></td>
           <td><input type="text" name="system.range" value="{{ system.range }}" /></td>
           <td><input type="text" name="system.ammo" value="{{ system.ammo }}" /></td>
           <td><input type="number" name="system.avail" value="{{ system.avail }}" /></td>

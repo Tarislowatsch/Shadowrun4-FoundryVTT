@@ -126,11 +126,35 @@
       {{/if}}
     </div>
     <div class="cell">
+      <label>{{localize 'sr4.stats.CURRENTEDGE'}}</label>
+      {{#if editMode}}
+        <input type="number" name="system.sheetStats.CURRENTEDGE" value="{{system.sheetStats.CURRENTEDGE}}" />
+      {{else}}
+        <span class="stat-display">{{system.sheetStats.CURRENTEDGE}}</span>
+      {{/if}}
+    </div>
+    <div class="cell">
+      <label>{{localize 'sr4.stats.ESSENCE'}}</label>
+      {{#if editMode}}
+        <input type="number" name="system.sheetStats.ESSENCE" value="{{system.sheetStats.ESSENCE}}" />
+      {{else}}
+        <span class="stat-display">{{system.sheetStats.ESSENCE}}</span>
+      {{/if}}
+    </div>
+    <div class="cell">
       <label>{{localize 'sr4.stats.INITIATIVE'}}</label>
       {{#if editMode}}
         <input type="number" name="system.sheetStats.INITIATIVE" value="{{system.sheetStats.INITIATIVE}}" />
       {{else}}
         <span class="stat-display">{{system.sheetStats.INITIATIVE}}</span>
+      {{/if}}
+    </div>
+    <div class="cell">
+      <label>{{localize 'sr4.stats.ASTRALINITIATIVE'}}</label>
+      {{#if editMode}}
+        <input type="number" name="system.sheetStats.ASTRALINITIATIVE" value="{{system.sheetStats.ASTRALINITIATIVE}}" />
+      {{else}}
+        <span class="stat-display">{{system.sheetStats.ASTRALINITIATIVE}}</span>
       {{/if}}
     </div>
   </div>
@@ -161,24 +185,7 @@
 
   <hr />
 
-  {{!-- Powers --}}
-  <div class="npc-section">
-    <h3>{{localize 'sr4.spirit.powers'}}</h3>
-    {{#if powers}}
-      {{#each powers as |power|}}
-      <div class="item-card" data-item-id="{{power._id}}">
-        <div class="item-row">
-          <span class="item-name">{{power.name}}</span>
-          {{#if power.system.cost}}<span class="item-property">{{power.system.cost}} PP</span>{{/if}}
-          <button type="button" class="item-edit" data-action="editItem" data-item-id="{{power._id}}"><i class="fas fa-edit"></i></button>
-          <button type="button" class="item-delete" data-action="deleteItem" data-item-id="{{power._id}}"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>
-      {{/each}}
-    {{else}}
-      <p class="empty-list">{{localize 'sr4.spirit.noPowers'}}</p>
-    {{/if}}
-  </div>
+  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
 
   {{!-- Skills --}}
   <div class="npc-section">

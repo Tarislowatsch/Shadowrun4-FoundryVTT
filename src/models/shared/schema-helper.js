@@ -42,6 +42,29 @@ export function realmField(initial = 0) {
 }
 
 /**
+ * Minimal derived stats shared by all actor types.
+ * @typedef {object} SR4BaseDerivedStats
+ * @property {number}        physical        - Physical monitor max
+ * @property {number}        woundModifier   - Wound penalty magnitude (positive)
+ * @property {number}        dicePoolModifier - Combined modifier (wounds + effects)
+ * @property {SR4RealmValues} initiative
+ * @property {string}        passesString    - Initiative passes e.g. "1/1/1"
+ */
+
+/**
+ * @returns {object} SchemaField contents for SR4BaseDerivedStats
+ */
+export function baseDerivedStatsFields() {
+  return {
+    physical: new fields.NumberField({ initial: 10, integer: true }),
+    woundModifier: new fields.NumberField({ initial: 0, integer: true }),
+    dicePoolModifier: new fields.NumberField({ initial: 0, integer: true }),
+    initiative: realmField(1),
+    passesString: new fields.StringField({ initial: '1/0/0' }),
+  };
+}
+
+/**
  * @typedef {object} SR4Monitor
  * @property {number} current
  * @property {number} max
@@ -84,9 +107,10 @@ export class SR4GenericItemData extends foundry.abstract.TypeDataModel {
  */
 export function genericWeaponSchema() {
   return {
-    ap: new fields.StringField({ initial: '' }),
+    ap: new fields.NumberField({ initial: 0, integer: true }),
+    apHalf: new fields.BooleanField({ initial: false }),
     attackSkill: new fields.StringField({ initial: '' }),
     damageType: new fields.StringField({ initial: '' }),
-    damage: new fields.StringField({ initial: '' }),
+    damage: new fields.NumberField({ initial: 0, integer: true }),
   };
 }

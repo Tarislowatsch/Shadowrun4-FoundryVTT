@@ -1,4 +1,4 @@
-<div class="sheet-container npc-sheet">
+<div class="npc-main-tab tab {{ tab.cssClass }}" data-group="primary" data-tab="main">
   <div class="npc-header">
     <div class="actor-image">
       <img data-edit="img" name="img" src="{{actor.img}}" alt="{{actor.name}}" />
@@ -20,14 +20,18 @@
 
   <hr />
 
-
   {{> "skills-grid"}}
 
   <hr />
 
+  {{#if critterPowers}}
+  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
+
+  <hr />
+  {{/if}}
 
   <div class="npc-section">
-    <h3>{{localize 'SR4.tab.weapons'}}</h3>
+    <h3>{{localize 'sr4.tab.weapons'}}</h3>
     {{#if weapons}}
       <ul class="weapon-list">
         {{#each weapons as |weapon|}}
@@ -38,9 +42,4 @@
       <p>{{localize 'sr4.weapon.noWeapons'}}</p>
     {{/if}}
   </div>
-
-  <hr />
-
-  {{> "defense-tab"}}
-
 </div>

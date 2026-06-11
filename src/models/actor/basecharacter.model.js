@@ -1,6 +1,10 @@
 const fields = foundry.data.fields;
 
-import { realmField, conditionMonitorField } from '@models/shared';
+import {
+  realmField,
+  conditionMonitorField,
+  baseDerivedStatsFields,
+} from '@models/shared';
 
 /**
  * @typedef {import('@models/shared').SR4ConditionMonitor} SharedSR4ConditionMonitor
@@ -103,36 +107,28 @@ export const modifiersField = () =>
 // ---------------------------------------------------------------------------
 
 /**
- * @typedef {object} SR4DerivedStats
- * @property {number} physical
- * @property {number} stun
- * @property {number} overflow
- * @property {number} essenceLossBio
- * @property {number} essenceLossCyber
- * @property {number} woundModifier
- * @property {number} dicePoolModifier
- * @property {SR4Realms} initiative
- * @property {string} passesString
- * @property {number} judgeIntentions
- * @property {number} liftCarry
- * @property {number} memory
- * @property {number} composure
- * @property {object} augmentedMaximum
- * @property {object} attributeMaximum
- * @property {SR4SheetStats} finalStats
+ * @typedef {import('@models/shared').SR4BaseDerivedStats & {
+ *   stun: number,
+ *   overflow: number,
+ *   essenceLossBio: number,
+ *   essenceLossCyber: number,
+ *   judgeIntentions: number,
+ *   liftCarry: number,
+ *   memory: number,
+ *   composure: number,
+ *   augmentedMaximum: object,
+ *   attributeMaximum: object,
+ *   finalStats: SR4SheetStats,
+ * }} SR4DerivedStats
  */
 
 export const derivedStatsField = () =>
   new fields.SchemaField({
-    physical: new fields.NumberField({ initial: 10, integer: true }),
+    ...baseDerivedStatsFields(),
     stun: new fields.NumberField({ initial: 10, integer: true }),
     overflow: new fields.NumberField({ initial: 0, integer: true }),
     essenceLossBio: new fields.NumberField({ initial: 0 }),
     essenceLossCyber: new fields.NumberField({ initial: 0 }),
-    woundModifier: new fields.NumberField({ initial: 0, integer: true }),
-    dicePoolModifier: new fields.NumberField({ initial: 0, integer: true }),
-    initiative: realmField(1),
-    passesString: new fields.StringField({ initial: '1/1/1' }),
     judgeIntentions: new fields.NumberField({ initial: 6, integer: true }),
     liftCarry: new fields.NumberField({ initial: 6, integer: true }),
     memory: new fields.NumberField({ initial: 6, integer: true }),

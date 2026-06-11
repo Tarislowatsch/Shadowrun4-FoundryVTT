@@ -15,43 +15,7 @@
       </div>
     </div>
 
-    <div class="monitor-tracks">
-      <div class="status-track-card">
-        <h4>{{localize "sr4.conditionMonitor.physical"}}</h4>
-        <div class="monitor-track" data-type="physical">
-          {{#each (range 0 system.conditionMonitor.physical.max)}}
-          <span
-            class="monitor-box {{filledIf ../system.conditionMonitor.physical.current this}}"
-            data-action="monitorBox"
-            data-type="physical"
-            data-index="{{ this }}"
-          ></span>
-          {{/each}}
-          {{#each (range 0 system.derivedStats.overflow)}}
-          <span
-            class="monitor-box overflow {{filledIf ../system.conditionMonitor.physical.current (add ../system.conditionMonitor.physical.max this)}}"
-            data-action="monitorBox"
-            data-type="physical"
-            data-index="{{add ../system.conditionMonitor.physical.max this}}"
-          ></span>
-          {{/each}}
-        </div>
-      </div>
-
-      <div class="status-track-card">
-        <h4>{{localize "sr4.conditionMonitor.stun"}}</h4>
-        <div class="monitor-track" data-type="stun">
-          {{#each (range 0 system.conditionMonitor.stun.max)}}
-          <span
-            class="monitor-box {{filledIf ../system.conditionMonitor.stun.current this}}"
-            data-action="monitorBox"
-            data-type="stun"
-            data-index="{{ this }}"
-          ></span>
-          {{/each}}
-        </div>
-      </div>
-    </div>
+    {{> "condition-monitor" system=system showSimpleHpToggle=showSimpleHpToggle}}
   </div>
 
   {{#if armor}}

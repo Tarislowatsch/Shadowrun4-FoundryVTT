@@ -36,6 +36,7 @@ export class SpellcastingFlow {
    * @returns {Promise<void>}
    */
   static async start(actor, spell) {
+    if (!game.settings.get('shadowrun4e', 'spellWorkflow')) return;
     if (!actor.system.sheetStats.MAGIC) {
       ui?.notifications?.error(
         getGame().i18n?.localize('sr4.magic.magicStatZero')
@@ -46,7 +47,10 @@ export class SpellcastingFlow {
     if (force === null) return;
     const hits = await SpellcastingFlow.rollSpellcasting(actor, spell, force);
     if (hits === null) return;
-    if (spell.system?.duration === 'SUSTAINED') {
+    if (
+      spell.system?.duration === 'SUSTAINED' &&
+      game.settings.get('shadowrun4e', 'autoSustainEffect')
+    ) {
       await actor.applyEffectTemplate('sustain');
     }
     await SpellcastingFlow.handleDrain(actor, spell, force, hits);

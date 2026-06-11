@@ -26,7 +26,7 @@ export async function openModifyDamageDialog(actor, amount, isPhysical) {
   });
 
   return foundry.applications.api.DialogV2.prompt({
-    window: { title: getGame().i18n.localize('sr4.damage.modifyTitle') },
+    window: { title: getGame().i18n.localize('sr4.damage.modify') },
     content,
     ok: {
       label: getGame().i18n.localize('sr4.damage.apply'),

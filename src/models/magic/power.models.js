@@ -39,3 +39,23 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
     };
   }
 }
+
+/**
+ * @typedef {object} SR4CritterPower
+ * @property {string} description - HTML content
+ * @property {string} notes
+ * @property {string} source
+ */
+
+/**
+ * DataModel for Critter / Spirit Powers (type: "CritterPower").
+ */
+export class SR4CritterPowerData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      description: new fields.HTMLField({ initial: '' }),
+      notes: new fields.StringField({ initial: '', blank: true }),
+      source: new fields.StringField({ initial: '', blank: true }),
+    };
+  }
+}

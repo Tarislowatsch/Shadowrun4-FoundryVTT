@@ -91,6 +91,7 @@
     },
     "conditionMonitor": {
       "physical": "Physical Condition Monitor",
+      "simpleHp": "Simple HP (physical only)",
       "stun": "Stun Condition Monitor"
     },
     "damage": {
@@ -105,10 +106,13 @@
       "electricity": "Electricity",
       "modify": "Modify Damage",
       "pending": "Pending Damage",
+      "result": "Result",
       "physical": "Physical",
       "reason": {
+        "combat": "Combat",
         "drain": "Drain"
       },
+      "resisted": "{name} resisted all damage",
       "stun": "Stun"
     },
     "defense": {
@@ -258,17 +262,20 @@
       "diceRollMessage": "Rolling with d6",
       "drainResistanceTest": "Drain Resistance Test",
       "edge": {
-        "add dice": "Roll additional Edge dice",
+        "add-dice": "Roll additional Edge dice",
         "cancel": "Cancel Edge usage",
         "criticalGlitch": "Critical Glitch! Downgrade to a Glitch",
         "dialogTitle": "Use Edge Options",
         "glitch": "Glitch! Your roll has failed",
         "reroll": "Reroll all non success dice",
+        "use": "Use Edge",
         "useEdgePrompt": "Do you want to use Edge?"
       },
       "errorRenderingTemplate": "Error in rendering template",
       "errorRollingDice": "Error in rolling dice",
       "explode": "Explode",
+      "extendEdge": "Extend + Edge",
+      "extendTest": "Extend Test",
       "extended": "Extended roll",
       "failures": "Failures",
       "glitch": "Glitch!",
@@ -281,6 +288,12 @@
       "successes": "Successes",
       "useEdge": "Use edge?",
       "useEdgeButton": "Want to use Edge?"
+    },
+    "soak": {
+      "armor": "Effective Armor",
+      "incomingDamage": "Incoming Damage",
+      "soakBonus": "Soak Bonus",
+      "title": "Soak Roll"
     },
     "shooting": {
       "burst": "BF",
@@ -379,6 +392,10 @@
         "physical": "P"
       }
     },
+    "critterPower": {
+      "noPowers": "No critter powers",
+      "powers": "Critter Powers"
+    },
     "spirit": {
       "attributes": "Attributes",
       "dropSummoner": "Drop actor to link summoner",
@@ -452,6 +469,12 @@
     "weapon": {
       "ammo": "Ammo",
       "ap": "AP",
+      "apHalf": "½ Armor (halve effective armor)",
+      "armorType": {
+        "ballistic": "Ballistic",
+        "impact": "Impact",
+        "label": "Armor Type"
+      },
       "attackSkill": "Attack skill",
       "avail": "Availability",
       "clip": "Clip",
@@ -469,6 +492,28 @@
       "recoil": "RC",
       "smartlink": "Smartlink",
       "source": "Source"
+    },
+    "settings": {
+      "autoSustainEffect": {
+        "name": "Auto Sustain Effect",
+        "hint": "Automatically create a sustain active effect when a sustained spell is cast."
+      },
+      "combatDefenseWorkflow": {
+        "name": "Combat: Defense Workflow",
+        "hint": "When enabled, targeted tokens are automatically prompted to roll defense after an attack. Disabling this also disables the Soak Workflow."
+      },
+      "combatSoakWorkflow": {
+        "name": "Combat: Soak Workflow",
+        "hint": "When enabled, defenders are prompted to roll soak after defense. Requires Combat: Defense Workflow to be active."
+      },
+      "liveInitiativeReduction": {
+        "name": "Live Initiative Reduction",
+        "hint": "Automatically reduce a combatant's initiative score when their wound modifier increases."
+      },
+      "spellWorkflow": {
+        "name": "Spell Workflow",
+        "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain)."
+      }
     }
   }
 }

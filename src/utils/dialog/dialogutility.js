@@ -47,7 +47,7 @@ export async function renderTemplate(path, data) {
  * @property {string} title
  * @property {string} content
  * @property {number} [dice]
- * @property {(dialog: HTMLElement) => Promise<{successes: number, isGlitch: boolean}>} onRoll
+ * @property {(dialog: HTMLElement) => Promise<{successes: number, isGlitch: boolean, [key: string]: unknown}>} onRoll
  */
 
 /**
