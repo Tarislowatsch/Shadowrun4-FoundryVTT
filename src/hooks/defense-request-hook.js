@@ -1,4 +1,4 @@
-import { DefenseFlow } from '@flows/index';
+import { DefenseFlow, startDefenderPickerFlow } from '@flows/index';
 import { getGame } from '@utils/index';
 
 /**
@@ -12,9 +12,16 @@ import { getGame } from '@utils/index';
  */
 
 /**
- * @typedef {object} DefenseSocketMessage
- * @property {'triggerDefense'} action
- * @property {DefenseSocketPayload} payload
+ * @typedef {object} SelectDefenderPayload
+ * @property {string} attackerId
+ * @property {number} successes
+ * @property {import('@models/index').SR4Weapon} weapon
+ * @property {number} [wideDefenseMalus]
+ * @property {number} [burstDamageBonus]
+ */
+
+/**
+ * @typedef {{ action: 'triggerDefense', payload: DefenseSocketPayload } | { action: 'selectDefender', payload: SelectDefenderPayload }} DefenseSocketMessage
  */
 
 /**
@@ -45,6 +52,25 @@ export class DefenseHook {
    * @returns {Promise<void>}
    */
   async _onSocketMessage(data) {
+    if (data.action === 'selectDefender') {
+      if (!getGame().user?.isGM) return;
+      const {
+        attackerId,
+        successes,
+        weapon,
+        wideDefenseMalus = 0,
+        burstDamageBonus = 0,
+      } = data.payload ?? {};
+      await startDefenderPickerFlow(
+        attackerId,
+        successes,
+        weapon,
+        wideDefenseMalus,
+        burstDamageBonus
+      );
+      return;
+    }
+
     if (data.action !== 'triggerDefense') return;
     const {
       defenderId,

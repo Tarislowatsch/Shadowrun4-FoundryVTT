@@ -55,6 +55,7 @@ export async function openDefenseDialog(
   const isMelee = weapon.type.toLowerCase().includes('melee');
   const reaction = defender.getAttribute('REACTION') ?? 0;
   const params = createDialogParameters(defender);
+  params.malus += defender.system.modifiers.defenseModifier;
   const meleeSkills = buildSkillOptions(defender, MELEE_DEFENSE_SKILLS);
   const rangedSkills = buildSkillOptions(defender, RANGED_DEFENSE_SKILLS);
 
@@ -94,7 +95,7 @@ export async function openDefenseDialog(
     const edgeUsed = getChecked(dialog, 'edge');
     const skillName = dialog.querySelector('#skill1')?.value;
     const numDice = resolvePool(dialog, fullDefense);
-    const { successes, isGlitch } = await dialogActions(
+    const { successes, isGlitch, rolledDice } = await dialogActions(
       dialog,
       defender,
       skillName,
@@ -102,7 +103,7 @@ export async function openDefenseDialog(
       weapon,
       { emitDefense: false }
     );
-    return { successes, isGlitch, rolledDice: numDice, edgeUsed };
+    return { successes, isGlitch, rolledDice, edgeUsed };
   };
 
   return await foundry.applications.api.DialogV2.wait({

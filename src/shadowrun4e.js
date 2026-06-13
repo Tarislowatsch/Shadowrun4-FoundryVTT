@@ -1,5 +1,7 @@
 import { SR4 } from './config.js';
 import { SR4Actor } from './documents/actor.js';
+import { SR4Combat } from './documents/combat.js';
+import { createSR4CombatTracker } from './documents/combat-tracker.js';
 import { SR4ActiveEffect } from '@effects/index.js';
 import {
   SR4CharacterSheet,
@@ -59,6 +61,8 @@ Hooks.once('init', async function () {
 
   CONFIG.SR4 = SR4;
   CONFIG.Actor.documentClass = SR4Actor;
+  CONFIG.Combat.documentClass = SR4Combat;
+  CONFIG.ui.combat = createSR4CombatTracker();
   CONFIG.ActiveEffect.documentClass = SR4ActiveEffect;
   CONFIG.statusEffects.push(
     {
@@ -70,6 +74,21 @@ Hooks.once('init', async function () {
       id: 'sr4-disoriented',
       label: 'sr4.effect.templates.disoriented',
       img: 'icons/svg/stoned.svg',
+    },
+    {
+      id: 'sr4-blind',
+      label: 'sr4.effect.templates.blind',
+      img: 'icons/svg/blind.svg',
+    },
+    {
+      id: 'sr4-blind-flare-comp',
+      label: 'sr4.effect.templates.blindFlareComp',
+      img: 'icons/svg/blind.svg',
+    },
+    {
+      id: 'sr4-knocked-down',
+      label: 'sr4.effect.templates.knockedDown',
+      img: 'icons/svg/falling.svg',
     }
   );
   CONFIG.Actor.prototypeToken = {

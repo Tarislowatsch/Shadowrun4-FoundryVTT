@@ -12,7 +12,8 @@ export function computeSpiritDerivedStats(systemData) {
 
   derivedStats.woundModifier =
     Math.floor(monitor.physical.value / 3) + Math.floor(monitor.stun.value / 3);
-  derivedStats.dicePoolModifier = derivedStats.woundModifier;
+  derivedStats.dicePoolModifier =
+    derivedStats.woundModifier + systemData.modifiers.generalModifier;
 
   derivedStats.initiative.physical = sheetStats.INTUITION + sheetStats.REACTION;
   derivedStats.initiative.astral = sheetStats.INTUITION * 2;
@@ -35,7 +36,8 @@ export function computeVehicleDerivedStats(systemData) {
   monitor.physical.max = Math.ceil(8 + systemData.body / 2);
 
   derivedStats.woundModifier = Math.floor(monitor.physical.value / 3);
-  derivedStats.dicePoolModifier = derivedStats.woundModifier;
+  derivedStats.dicePoolModifier =
+    derivedStats.woundModifier + systemData.modifiers.generalModifier;
 
   derivedStats.initiative.physical =
     (systemData.pilot ?? 0) + (systemData.response ?? 0);

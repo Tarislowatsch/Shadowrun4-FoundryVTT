@@ -1,5 +1,9 @@
 const fields = foundry.data.fields;
-import { monitorField, baseDerivedStatsFields } from '@models/shared';
+import {
+  monitorField,
+  baseDerivedStatsFields,
+  modifiersField,
+} from '@models/shared';
 
 /**
  * @typedef {import('@models/shared').SR4BaseDerivedStats} SR4VehicleDerivedStats
@@ -22,6 +26,7 @@ import { monitorField, baseDerivedStatsFields } from '@models/shared';
  * @property {number}  speed
  * @property {number}  accel
  * @property {string}  riggerUuid
+ * @property {import('@models/shared').SR4Modifiers} modifiers
  * @property {SR4VehicleDerivedStats} derivedStats
  * @property {{ physical: import('@models/shared').SR4Monitor }} conditionMonitor
  */
@@ -44,6 +49,7 @@ export class SR4VehicleData extends foundry.abstract.TypeDataModel {
       speed: new fields.NumberField({ initial: 3, integer: true }),
       accel: new fields.NumberField({ initial: 2, integer: true }),
       riggerUuid: new fields.StringField({ initial: '', blank: true }),
+      modifiers: modifiersField(),
       derivedStats: new fields.SchemaField({
         ...baseDerivedStatsFields(),
       }),

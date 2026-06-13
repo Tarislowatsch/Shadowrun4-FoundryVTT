@@ -1,0 +1,11 @@
+<form class="defender-picker-dialog">
+  <p>{{localize 'sr4.settings.gmDefenderPicker.attackerLabel'}}: <strong>{{ attackerName }}</strong> ({{ successes }} {{localize 'sr4.roll.successes'}})</p>
+  <div class="form-group">
+    <label for="defenderId">{{localize 'sr4.settings.gmDefenderPicker.selectLabel'}}</label>
+    <select id="defenderId" name="defenderId">
+      {{#each actors}}
+      <option value="{{ this.id }}">{{ this.name }}</option>
+      {{/each}}
+    </select>
+  </div>
+</form>

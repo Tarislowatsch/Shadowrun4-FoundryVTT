@@ -3384,7 +3384,7 @@
     "data": {
       "name": "Alter Memory",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3405,7 +3405,7 @@
     "data": {
       "name": "Alter Temperature",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -3426,7 +3426,7 @@
     "data": {
       "name": "Animate",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3447,7 +3447,7 @@
     "data": {
       "name": "Armor",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3468,7 +3468,7 @@
     "data": {
       "name": "Astral Armor",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mana",
@@ -3489,7 +3489,7 @@
     "data": {
       "name": "Bind",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3510,7 +3510,7 @@
     "data": {
       "name": "Calm Animal",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3531,7 +3531,7 @@
     "data": {
       "name": "Calm Pack",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental, Area",
@@ -3552,7 +3552,7 @@
     "data": {
       "name": "Catfall",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3573,7 +3573,7 @@
     "data": {
       "name": "Clean [Element]",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -3594,7 +3594,7 @@
     "data": {
       "name": "Compel Truth",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3615,7 +3615,7 @@
     "data": {
       "name": "Control Actions",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3636,7 +3636,7 @@
     "data": {
       "name": "Control Animal",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3657,7 +3657,7 @@
     "data": {
       "name": "Control Emotions",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3678,7 +3678,7 @@
     "data": {
       "name": "Control Pack",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental, Area",
@@ -3699,7 +3699,7 @@
     "data": {
       "name": "Control Thoughts",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -3720,7 +3720,7 @@
     "data": {
       "name": "Critter Form [Critter]",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3741,7 +3741,7 @@
     "data": {
       "name": "Deflection",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3762,7 +3762,7 @@
     "data": {
       "name": "[Elemental] Aura",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental",
@@ -3783,7 +3783,7 @@
     "data": {
       "name": "[Elemental] Cloud",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental",
@@ -3804,7 +3804,7 @@
     "data": {
       "name": "[Elemental] Wall",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -3825,7 +3825,7 @@
     "data": {
       "name": "Fashion",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3846,7 +3846,7 @@
     "data": {
       "name": "Firewater Aura",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental",
@@ -3867,7 +3867,7 @@
     "data": {
       "name": "Fix",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3888,7 +3888,7 @@
     "data": {
       "name": "Fling",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3909,7 +3909,7 @@
     "data": {
       "name": "Gecko Crawl",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3930,7 +3930,7 @@
     "data": {
       "name": "Glue",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3951,7 +3951,7 @@
     "data": {
       "name": "Glue Strip",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical, Area",
@@ -3972,7 +3972,7 @@
     "data": {
       "name": "Hidden Pocket",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -3993,7 +3993,7 @@
     "data": {
       "name": "Ice Sheet",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4014,7 +4014,7 @@
     "data": {
       "name": "Ignite",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4035,7 +4035,7 @@
     "data": {
       "name": "Influence",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental",
@@ -4056,7 +4056,7 @@
     "data": {
       "name": "Interference",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4077,7 +4077,7 @@
     "data": {
       "name": "Levitate",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4098,7 +4098,7 @@
     "data": {
       "name": "Light",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4119,7 +4119,7 @@
     "data": {
       "name": "Lock",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4140,7 +4140,7 @@
     "data": {
       "name": "Looking Glass",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4161,7 +4161,7 @@
     "data": {
       "name": "Magic Fingers",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4182,7 +4182,7 @@
     "data": {
       "name": "Makeover",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4203,7 +4203,7 @@
     "data": {
       "name": "Mana Barrier",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4224,7 +4224,7 @@
     "data": {
       "name": "Mana Bind",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mana",
@@ -4245,7 +4245,7 @@
     "data": {
       "name": "Mana Net",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mana, Area",
@@ -4266,7 +4266,7 @@
     "data": {
       "name": "Mana Static",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4287,7 +4287,7 @@
     "data": {
       "name": "Mass Animate",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4308,7 +4308,7 @@
     "data": {
       "name": "Mist",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4329,7 +4329,7 @@
     "data": {
       "name": "Mob Control",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental, Area",
@@ -4350,7 +4350,7 @@
     "data": {
       "name": "Mob Mind",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental, Area",
@@ -4371,7 +4371,7 @@
     "data": {
       "name": "Mob Mood",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Mental, Area",
@@ -4392,7 +4392,7 @@
     "data": {
       "name": "Napalm Wall",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4413,7 +4413,7 @@
     "data": {
       "name": "Net",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical, Area",
@@ -4434,7 +4434,7 @@
     "data": {
       "name": "Offensive Mana Barrier",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4455,7 +4455,7 @@
     "data": {
       "name": "Petrify",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4476,7 +4476,7 @@
     "data": {
       "name": "Physical Barrier",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4497,7 +4497,7 @@
     "data": {
       "name": "Poltergeist",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4518,7 +4518,7 @@
     "data": {
       "name": "Preserve",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical, Area",
@@ -4539,7 +4539,7 @@
     "data": {
       "name": "Pulse",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4560,7 +4560,7 @@
     "data": {
       "name": "Radiation Barrier",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4581,7 +4581,7 @@
     "data": {
       "name": "Radiation Shield",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental",
@@ -4602,7 +4602,7 @@
     "data": {
       "name": "Recharge",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4623,7 +4623,7 @@
     "data": {
       "name": "Reinforce",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4644,7 +4644,7 @@
     "data": {
       "name": "Shadow",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4665,7 +4665,7 @@
     "data": {
       "name": "Shape [Material]",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4686,7 +4686,7 @@
     "data": {
       "name": "Shapechange",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4707,7 +4707,7 @@
     "data": {
       "name": "Slow",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4728,7 +4728,7 @@
     "data": {
       "name": "Spirit Barrier",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4749,7 +4749,7 @@
     "data": {
       "name": "Spirit Zapper",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Environmental, Area",
@@ -4770,7 +4770,7 @@
     "data": {
       "name": "Sterilize",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical, Area",
@@ -4791,7 +4791,7 @@
     "data": {
       "name": "Turn to Goo",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4812,7 +4812,7 @@
     "data": {
       "name": "Antirad Shield",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4833,7 +4833,7 @@
     "data": {
       "name": "Antirad Barrier",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical, Area",
@@ -4854,7 +4854,7 @@
     "data": {
       "name": "Radiation Therapy",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -4875,7 +4875,7 @@
     "data": {
       "name": "Air Filter",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "",
@@ -4980,7 +4980,7 @@
     "data": {
       "name": "Evaporate",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -5043,7 +5043,7 @@
     "data": {
       "name": "Insulate",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "",
@@ -5064,7 +5064,7 @@
     "data": {
       "name": "Pack Snow",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -5169,7 +5169,7 @@
     "data": {
       "name": "Snow Tunnel",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -5190,7 +5190,7 @@
     "data": {
       "name": "Shape Ice",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -5211,7 +5211,7 @@
     "data": {
       "name": "Body Glove",
       "system": {
-        "category": "Manipulation",
+        "category": "MANIPULATION",
         "damage": "0",
         "description": "",
         "descriptor": "Physical",
@@ -5232,7 +5232,7 @@
     "data": {
       "name": "Geopathic Connection",
       "system": {
-        "category": "Geomancy Ritual",
+        "category": "GEOMANCY",
         "damage": "P",
         "description": "",
         "descriptor": "",
@@ -5253,7 +5253,7 @@
     "data": {
       "name": "Ley Sight",
       "system": {
-        "category": "Geomancy Ritual",
+        "category": "GEOMANCY",
         "damage": "0",
         "description": "",
         "descriptor": "",
@@ -5274,7 +5274,7 @@
     "data": {
       "name": "Manifest Sha",
       "system": {
-        "category": "Geomancy Ritual",
+        "category": "GEOMANCY",
         "damage": "0",
         "description": "",
         "descriptor": "",
@@ -5295,7 +5295,7 @@
     "data": {
       "name": "Yang Zhai",
       "system": {
-        "category": "Geomancy Ritual",
+        "category": "GEOMANCY",
         "damage": "0",
         "description": "",
         "descriptor": "",

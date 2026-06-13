@@ -105,6 +105,7 @@ export async function openAttackDialog(actor, skillName, weapon) {
   if (dice === undefined) return;
 
   const params = createDialogParameters(actor, dice, weapon);
+  params.malus += actor.system.modifiers.attackModifier;
   const fireModeParams = getFireModeParams(weapon);
   const skill = actor.getSkill(skillName);
 

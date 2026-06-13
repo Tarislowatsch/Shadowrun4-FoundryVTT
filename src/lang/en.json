@@ -148,6 +148,9 @@
       "title": "Defense Roll",
       "wideBurstMalus": "Wide Burst"
     },
+    "combat": {
+      "initiativePass": "Initiative Pass {pass} / {maxPass}"
+    },
     "effect": {
       "active": "Active",
       "add": "Add Effect",
@@ -168,12 +171,17 @@
       "source": "Source",
       "templates": {
         "disoriented": "Disoriented (Electricity)",
-        "sustain": "Sustained Spell"
+        "sustain": "Sustained Spell",
+        "blind": "Blinded",
+        "blindFlareComp": "Blinded (Flare Compensation)",
+        "knockedDown": "Knocked Down"
       },
       "value": "Value"
     },
     "effectTarget": {
-      "generalModifier": "General Dice Pool Modifier"
+      "generalModifier": "General Dice Pool Modifier",
+      "attackModifier": "Attack Dice Pool Modifier",
+      "defenseModifier": "Defense Dice Pool Modifier"
     },
     "commlink": {
       "firewall": "Firewall",
@@ -367,6 +375,16 @@
       "spellWorkflow": {
         "name": "Spell Workflow",
         "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain)."
+      },
+      "gmDefenderPicker": {
+        "name": "Combat: GM Defender Picker",
+        "hint": "When no token is targeted before an attack, the GM can manually select the defender to trigger the defense flow.",
+        "dialogTitle": "Select Defender",
+        "attackerLabel": "Attacker",
+        "selectLabel": "Defender",
+        "confirm": "Start Defense",
+        "unknownAttacker": "Unknown",
+        "noValidActors": "No valid actors found to select as defender."
       }
     },
     "shooting": {
@@ -419,7 +437,8 @@
         "detection": "Detection",
         "geomancy": "Geomancy",
         "health": "Health",
-        "illusion": "Illusion"
+        "illusion": "Illusion",
+        "manipulation": "Manipulation"
       },
       "category": "Category",
       "damage": "Damage",

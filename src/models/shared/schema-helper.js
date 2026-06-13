@@ -100,6 +100,89 @@ export class SR4GenericItemData extends foundry.abstract.TypeDataModel {
   }
 }
 
+// ---------------------------------------------------------------------------
+// SheetStats
+// ---------------------------------------------------------------------------
+
+/**
+ * @typedef {object} SR4SheetStats
+ * @property {number} BODY
+ * @property {number} CHARISMA
+ * @property {number} EDGE
+ * @property {number} CURRENTEDGE
+ * @property {number} AGILITY
+ * @property {number} INTUITION
+ * @property {number} ESSENCE
+ * @property {number} ASTRALINITIATIVE
+ * @property {number} REACTION
+ * @property {number} LOGIC
+ * @property {number} INITIATIVE
+ * @property {number} MATRIXINITIATIVE
+ * @property {number} STRENGTH
+ * @property {number} WILLPOWER
+ * @property {number} MAGIC
+ * @property {number} RESONANCE
+ */
+
+export class SR4SheetStatsData extends fields.SchemaField {
+  constructor() {
+    super({
+      BODY: new fields.NumberField({ initial: 1, integer: true }),
+      CHARISMA: new fields.NumberField({ initial: 1, integer: true }),
+      EDGE: new fields.NumberField({ initial: 1, integer: true }),
+      CURRENTEDGE: new fields.NumberField({ initial: 1, integer: true }),
+      AGILITY: new fields.NumberField({ initial: 1, integer: true }),
+      INTUITION: new fields.NumberField({ initial: 1, integer: true }),
+      ESSENCE: new fields.NumberField({ initial: 6 }),
+      ASTRALINITIATIVE: new fields.NumberField({ initial: 0, integer: true }),
+      REACTION: new fields.NumberField({ initial: 1, integer: true }),
+      LOGIC: new fields.NumberField({ initial: 1, integer: true }),
+      INITIATIVE: new fields.NumberField({ initial: 2, integer: true }),
+      MATRIXINITIATIVE: new fields.NumberField({ initial: 2, integer: true }),
+      STRENGTH: new fields.NumberField({ initial: 1, integer: true }),
+      WILLPOWER: new fields.NumberField({ initial: 1, integer: true }),
+      MAGIC: new fields.NumberField({ initial: 0, integer: true }),
+      RESONANCE: new fields.NumberField({ initial: 0, integer: true }),
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Modifiers
+// ---------------------------------------------------------------------------
+
+/**
+ * @typedef {object} SR4Modifiers
+ * @property {{
+ *   bonuses: SR4RealmValues,
+ *   passes: SR4RealmValues
+ * }} initiative
+ * @property {number} overflowBonus
+ * @property {number} woundModBonus
+ * @property {number} soakBonus
+ * @property {number} generalModifier
+ * @property {number} attackModifier
+ * @property {number} defenseModifier
+ */
+
+export const modifiersField = () =>
+  new fields.SchemaField({
+    initiative: new fields.SchemaField({
+      bonuses: realmField(),
+      passes: realmField(0),
+    }),
+    overflowBonus: new fields.NumberField({ initial: 0, integer: true }),
+    woundModBonus: new fields.NumberField({ initial: 0, integer: true }),
+    generalModifier: new fields.NumberField({ initial: 0, integer: true }),
+    attackModifier: new fields.NumberField({ initial: 0, integer: true }),
+    defenseModifier: new fields.NumberField({ initial: 0, integer: true }),
+    soakBonus: new fields.NumberField({ initial: 0, integer: true }),
+  });
+
+// ---------------------------------------------------------------------------
+// Weapons (generic)
+// ---------------------------------------------------------------------------
+
 /**
  * Returns the shared genericWeapon schema fields.
  *

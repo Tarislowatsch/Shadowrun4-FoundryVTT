@@ -1,5 +1,51 @@
 # Changelog
 
+## [1.0.1](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.0...v1.0.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* **defense:** use actual rolled dice pool for edge reroll calculation ([97a9141](https://github.com/Tarislowatsch/sr4foundry/commit/97a9141f548751df9fc26b8cb97d3dc9f9e7c96e))
+* **packs:** restore missing opening bracket in spells.json ([55496d0](https://github.com/Tarislowatsch/sr4foundry/commit/55496d0ad74b1862d05463d7a097da954305ba2e))
+* **release:** sync package.json version from git tag before bump ([c06860e](https://github.com/Tarislowatsch/sr4foundry/commit/c06860ee7fd5e6771576d7523fb84f9387e09d5a))
+* **spells:** normalize category casing and add missing EN translation ([73112b4](https://github.com/Tarislowatsch/sr4foundry/commit/73112b440a83efb908114228ebbb776d40637bfb))
+
+
+### Features
+
+* **combat:** add GM defender picker for untargeted attacks ([df14fcb](https://github.com/Tarislowatsch/sr4foundry/commit/df14fcbf1908693b8a478647bc013d63db5a6b3b))
+* **combat:** add SR4Combat with initiative pass tracking ([6f5d9d0](https://github.com/Tarislowatsch/sr4foundry/commit/6f5d9d01062f26e3956a5bc3bfef9461b17bfdb2))
+* **combat:** add SR4CombatTracker with pass display and inactive dimming ([828047c](https://github.com/Tarislowatsch/sr4foundry/commit/828047c04d4f22bd51096715978eab05ba8044d3))
+* **effects:** add blind, blindFlareComp, knockedDown templates with attack/defense modifiers ([ae6c21e](https://github.com/Tarislowatsch/sr4foundry/commit/ae6c21e9b3aa87680a5d1e8848893a74223831d2))
+
+
+### Reverts
+
+* Revert "chore(release): v1.2.0" ([1f7695e](https://github.com/Tarislowatsch/sr4foundry/commit/1f7695e0ad208e6cbb9a3dc97b9e9f51e7910f7b))
+
+## [1.0.1](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.0...v1.0.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* **defense:** use actual rolled dice pool for edge reroll calculation ([97a9141](https://github.com/Tarislowatsch/sr4foundry/commit/97a9141f548751df9fc26b8cb97d3dc9f9e7c96e))
+* **packs:** restore missing opening bracket in spells.json ([55496d0](https://github.com/Tarislowatsch/sr4foundry/commit/55496d0ad74b1862d05463d7a097da954305ba2e))
+* **release:** sync package.json version from git tag before bump ([c06860e](https://github.com/Tarislowatsch/sr4foundry/commit/c06860ee7fd5e6771576d7523fb84f9387e09d5a))
+* **spells:** normalize category casing and add missing EN translation ([73112b4](https://github.com/Tarislowatsch/sr4foundry/commit/73112b440a83efb908114228ebbb776d40637bfb))
+
+
+### Features
+
+* **combat:** add GM defender picker for untargeted attacks ([df14fcb](https://github.com/Tarislowatsch/sr4foundry/commit/df14fcbf1908693b8a478647bc013d63db5a6b3b))
+* **combat:** add SR4Combat with initiative pass tracking ([6f5d9d0](https://github.com/Tarislowatsch/sr4foundry/commit/6f5d9d01062f26e3956a5bc3bfef9461b17bfdb2))
+* **combat:** add SR4CombatTracker with pass display and inactive dimming ([828047c](https://github.com/Tarislowatsch/sr4foundry/commit/828047c04d4f22bd51096715978eab05ba8044d3))
+* **effects:** add blind, blindFlareComp, knockedDown templates with attack/defense modifiers ([ae6c21e](https://github.com/Tarislowatsch/sr4foundry/commit/ae6c21e9b3aa87680a5d1e8848893a74223831d2))
+
+
+### Reverts
+
+* Revert "chore(release): v1.2.0" ([1f7695e](https://github.com/Tarislowatsch/sr4foundry/commit/1f7695e0ad208e6cbb9a3dc97b9e9f51e7910f7b))
+
 # [1.0.0](https://github.com/Tarislowatsch/sr4foundry/compare/v0.2.0...v1.0.0) (2026-06-13)
 
 # [0.2.0](https://github.com/Tarislowatsch/sr4foundry/compare/v0.1.32...v0.2.0) (2026-06-13)

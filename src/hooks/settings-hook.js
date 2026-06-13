@@ -50,6 +50,15 @@ export class SettingsHook {
         type: Boolean,
         default: true,
       });
+
+      game.settings.register('shadowrun4e', 'gmDefenderPicker', {
+        name: 'sr4.settings.gmDefenderPicker.name',
+        hint: 'sr4.settings.gmDefenderPicker.hint',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: false,
+      });
     });
   }
 }

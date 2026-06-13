@@ -198,7 +198,7 @@ function resolveSmartlink(weapon) {
  * @param {number} numDice
  * @param {import('@models/index').SR4Weapon} [weapon]
  * @param {{ emitDefense?: boolean }} [options]
- * @returns {Promise<{successes: number, isGlitch: boolean}>}
+ * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number}>}
  */
 export async function dialogActions(
   dialog,
@@ -237,7 +237,7 @@ export async function dialogActions(
       burstDamageBonus
     );
 
-  return { successes, isGlitch };
+  return { successes, isGlitch, rolledDice: finalRoll };
 }
 
 /**

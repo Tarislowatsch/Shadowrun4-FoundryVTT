@@ -17,24 +17,15 @@ import { createEdgeRerollHandler } from './util/edge-reroll.handler';
  * @param {number} [burstDamageBonus]
  * @returns {void}
  */
-export function emitDefenseTrigger(
-  actor,
-  weapon,
-  successes,
-  wideDefenseMalus = 0,
-  burstDamageBonus = 0
-) {
-  if (
-    !weapon?.type ||
-    !getGame().user?.targets ||
-    (getGame().user.targets.actor.type !== 'character' &&
-      getGame().user.targets.actor.type !== 'npc')
-  )
-    return;
+/**
+ * @param {import('@models/index').SR4Weapon} weapon
+ * @returns {object}
+ */
+function buildWeaponSnapshot(weapon) {
   /** @type {any} */
   const sys = weapon.system;
   const base = weapon.toObject();
-  const weaponSnapshot = {
+  return {
     ...base,
     system: {
       ...base.system,
@@ -45,7 +36,52 @@ export function emitDefenseTrigger(
       apHalf: sys.effectiveApHalf ?? false,
     },
   };
-  for (const target of getGame().user.targets) {
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {import('@models/index').SR4Weapon} weapon
+ * @param {number} successes
+ * @param {number} [wideDefenseMalus]
+ * @param {number} [burstDamageBonus]
+ * @returns {void}
+ */
+export function emitDefenseTrigger(
+  actor,
+  weapon,
+  successes,
+  wideDefenseMalus = 0,
+  burstDamageBonus = 0
+) {
+  if (!weapon?.type) return;
+
+  const actorId = /** @type {any} */ (actor).id;
+  const validTargets = [...(getGame().user?.targets ?? [])].filter(
+    (t) => t.actor?.type === 'character' || t.actor?.type === 'npc'
+  );
+
+  const weaponSnapshot = buildWeaponSnapshot(weapon);
+
+  if (validTargets.length === 0) {
+    if (
+      game.settings.get('shadowrun4e', 'gmDefenderPicker') &&
+      game.settings.get('shadowrun4e', 'combatDefenseWorkflow')
+    ) {
+      getGame().socket?.emit('system.shadowrun4e', {
+        action: 'selectDefender',
+        payload: {
+          attackerId: actorId,
+          successes,
+          weapon: weaponSnapshot,
+          wideDefenseMalus,
+          burstDamageBonus,
+        },
+      });
+    }
+    return;
+  }
+
+  for (const target of validTargets) {
     const defenderId = target.actor?.id;
     if (!defenderId) continue;
     getGame().socket?.emit('system.shadowrun4e', {

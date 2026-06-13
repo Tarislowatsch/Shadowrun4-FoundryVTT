@@ -32,4 +32,48 @@ export const EFFECT_TEMPLATES = Object.freeze({
     duration: { turns: 2 },
     disabled: false,
   },
+  /** Blinded (e.g. Flash-Pak): -4 to attack rolls for net hits Combat Turns */
+  blind: {
+    name: 'sr4.effect.templates.blind',
+    img: 'icons/svg/blind.svg',
+    statuses: ['sr4-blind'],
+    changes: [
+      {
+        key: 'system.modifiers.attackModifier',
+        mode: 2,
+        value: '-4',
+      },
+    ],
+    duration: { turns: 1 },
+    disabled: false,
+  },
+  /** Blinded with flare compensation: -2 to attack rolls for net hits Combat Turns */
+  blindFlareComp: {
+    name: 'sr4.effect.templates.blindFlareComp',
+    img: 'icons/svg/blind.svg',
+    statuses: ['sr4-blind-flare-comp'],
+    changes: [
+      {
+        key: 'system.modifiers.attackModifier',
+        mode: 2,
+        value: '-2',
+      },
+    ],
+    duration: { turns: 1 },
+    disabled: false,
+  },
+  /** Knocked down: -2 to all dice pools until standing up */
+  knockedDown: {
+    name: 'sr4.effect.templates.knockedDown',
+    img: 'icons/svg/falling.svg',
+    statuses: ['sr4-knocked-down'],
+    changes: [
+      {
+        key: 'system.modifiers.generalModifier',
+        mode: 2,
+        value: '-2',
+      },
+    ],
+    disabled: false,
+  },
 });

@@ -153,6 +153,9 @@
       "title": "Verteidigungsprobe",
       "wideBurstMalus": "Streufeuer"
     },
+    "combat": {
+      "initiativePass": "Initiativdurchgang {pass} / {maxPass}"
+    },
     "effect": {
       "active": "Aktiv",
       "add": "Effekt hinzufügen",
@@ -173,12 +176,17 @@
       "source": "Quelle",
       "templates": {
         "disoriented": "Desorientiert (Elektrizität)",
-        "sustain": "Aufrechterhalten"
+        "sustain": "Aufrechterhalten",
+        "blind": "Geblendet",
+        "blindFlareComp": "Geblendet (Blendschutz)",
+        "knockedDown": "Am Boden"
       },
       "value": "Wert"
     },
     "effectTarget": {
-      "generalModifier": "Allgemeiner Würfelpool-Modifikator"
+      "generalModifier": "Allgemeiner Würfelpool-Modifikator",
+      "attackModifier": "Angriffs-Würfelpool-Modifikator",
+      "defenseModifier": "Verteidigungs-Würfelpool-Modifikator"
     },
     "commlink": {
       "firewall": "Firewall",
@@ -369,6 +377,16 @@
       "spellWorkflow": {
         "name": "Zauber-Workflow",
         "hint": "Aktiviert den mehrstufigen Zauber-Workflow (Kraftwahl, Wurf, Entzug)."
+      },
+      "gmDefenderPicker": {
+        "name": "Kampf: GM Verteidiger-Auswahl",
+        "hint": "Wenn vor einem Angriff kein Ziel ausgewählt wurde, kann der GM den Verteidiger manuell auswählen um den Ausweichen-Workflow zu starten.",
+        "dialogTitle": "Verteidiger auswählen",
+        "attackerLabel": "Angreifer",
+        "selectLabel": "Verteidiger",
+        "confirm": "Ausweichen starten",
+        "unknownAttacker": "Unbekannt",
+        "noValidActors": "Keine gültigen Akteure als Verteidiger verfügbar."
       }
     },
     "shooting": {

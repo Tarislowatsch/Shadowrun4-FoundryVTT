@@ -16,6 +16,8 @@ export const SR4EffectTargets = Object.freeze({
     ])
   ),
   'system.modifiers.generalModifier': 'sr4.effectTarget.generalModifier',
+  'system.modifiers.attackModifier': 'sr4.effectTarget.attackModifier',
+  'system.modifiers.defenseModifier': 'sr4.effectTarget.defenseModifier',
   'system.modifiers.initiative.bonuses.physical':
     'sr4.modifiers.initiative.physicalBonus',
   'system.modifiers.initiative.bonuses.astral':
