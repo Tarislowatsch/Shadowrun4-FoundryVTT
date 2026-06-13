@@ -8,13 +8,13 @@
     flex-direction: row;
     gap: 4px;
     padding: 4px 8px;
-    background: #0d1a1a;
-    border-bottom: 2px solid #00b3a4;
+    background: var(--sr4-bg-header);
+    border-bottom: 2px solid var(--sr4-border);
     width: 100%;
 
     a[data-action='tab'] {
       background: transparent;
-      color: #00b3a4;
+      color: var(--sr4-teal);
       border: 1px solid transparent;
       border-radius: 4px 4px 0 0;
       padding: 6px 12px;
@@ -42,16 +42,16 @@
       }
 
       &:hover {
-        background: rgba(0, 179, 164, 0.15);
-        border-color: #00b3a4;
-        color: #00e5d3;
+        background: var(--sr4-teal-glow);
+        border-color: var(--sr4-border);
+        color: var(--sr4-teal-bright);
       }
 
       &.active {
-        background: rgba(0, 179, 164, 0.2);
-        border-color: #00b3a4;
-        color: #00e5d3;
-        border-bottom: 2px solid #0d1a1a;
+        background: var(--sr4-teal-glow);
+        border-color: var(--sr4-border);
+        color: var(--sr4-teal-bright);
+        border-bottom: 2px solid var(--sr4-bg-header);
         margin-bottom: -2px;
       }
     }

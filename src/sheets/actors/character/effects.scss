@@ -70,7 +70,7 @@
       letter-spacing: 0.03em;
 
       &.positive {
-        color: #4dcc6e;
+        color: var(--sr4-green-positive);
       }
       &.negative {
         color: var(--sr4-red);
@@ -165,13 +165,6 @@
         border-color: var(--sr4-teal);
         box-shadow: 0 0 4px var(--sr4-teal-glow);
       }
-    }
-
-    input[type='checkbox'] {
-      accent-color: var(--sr4-teal);
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
     }
   }
 }

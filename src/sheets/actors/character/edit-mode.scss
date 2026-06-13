@@ -18,7 +18,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--sr4-slider-off);
   transition: 0.4s;
   border-radius: 20px;
 }
@@ -36,7 +36,7 @@
 }
 
 input:checked + .slider {
-  background-color: teal;
+  background-color: var(--sr4-teal);
 }
 
 input:checked + .slider:before {
@@ -44,7 +44,7 @@ input:checked + .slider:before {
 }
 
 #edit-mode-icon {
-  color: teal;
+  color: var(--sr4-teal);
   margin-left: 20px;
 }
 .edit-toggle-wrapper {

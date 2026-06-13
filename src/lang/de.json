@@ -291,15 +291,15 @@
       "defense": "Verteidigungsmodifikatoren",
       "initiative": {
         "astralBonus": "Astraler Bonus",
-        "astralPasses": "Astrale Pässe",
+        "astralPasses": "Astrale Pässe (Bonus)",
         "currentAstral": "Astrale Initiative",
         "currentMatrix": "Matrix Initiative",
         "currentPasses": "Aktuelle Pässe",
         "currentPhysical": "Physische Initiative",
         "matrixBonus": "Matrix Bonus",
-        "matrixPasses": "Matrix Pässe",
+        "matrixPasses": "Matrix Pässe (Bonus)",
         "physicalBonus": "Physischer Bonus",
-        "physicalPasses": "Physische Pässe",
+        "physicalPasses": "Physische Pässe (Bonus)",
         "title": "Initiativmodifikatoren"
       },
       "overview": "Übersicht",

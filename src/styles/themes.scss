@@ -1,0 +1,18 @@
+// Dark theme is the default — defined via :root in variables.scss
+body.theme-light {
+  --sr4-bg-header: #ddf0ee;
+  --sr4-bg-card: #f0f8f7;
+  --sr4-border: #007a70;
+  --sr4-border-dim: #009b8e;
+  --sr4-border-subtle: #a8d0cc;
+  --sr4-teal: #006660;
+  --sr4-teal-bright: #003d38;
+  --sr4-teal-glow: rgba(0, 102, 96, 0.3);
+  --sr4-text: #004d48;
+  --sr4-text-muted: rgba(0, 77, 72, 0.6);
+  --sr4-label: #005f59;
+  --sr4-slider-off: #a0a0a0;
+  --sr4-red: #c0392b;
+  --sr4-green: #1a7a3c;
+  --sr4-green-positive: #1a7a3c;
+}

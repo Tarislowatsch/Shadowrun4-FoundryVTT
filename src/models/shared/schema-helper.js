@@ -33,7 +33,7 @@ export function genericItemSchema() {
  * @param {number} [initial=0]
  * @returns {foundry.data.fields.SchemaField}
  */
-export function realmField(initial = 0) {
+function realmField(initial = 0) {
   return new fields.SchemaField({
     physical: new fields.NumberField({ initial, integer: true }),
     astral: new fields.NumberField({ initial, integer: true }),

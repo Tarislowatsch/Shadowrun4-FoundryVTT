@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.3](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.2...v1.0.3) (2026-06-13)
+
+
+### Bug Fixes
+
+* **styles:** correct import path in npc-sheet.scss after SCSS reorganization ([ae46cc7](https://github.com/Tarislowatsch/sr4foundry/commit/ae46cc74e7e726e00725b66f20c45ae99119642e))
+
+## [1.0.2](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.1...v1.0.2) (2026-06-13)
+
+
+### Bug Fixes
+
+* apply magic-card styles to matrix-card tab ([6829a9a](https://github.com/Tarislowatsch/sr4foundry/commit/6829a9a3b7c9dbd46626e2e0af1861fa6d4ae993))
+* restore item-card margin-top and item-reload hover state ([c753be9](https://github.com/Tarislowatsch/sr4foundry/commit/c753be9d85842c70919b8a2575ea089bcb2b239e))
+* style thread-button, p placeholders and td colors in matrix tab ([f2e1b50](https://github.com/Tarislowatsch/sr4foundry/commit/f2e1b5040c765c7cde1901e90fa5f62a7c409b6a))
+
 ## [1.0.1](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.0...v1.0.1) (2026-06-13)
 
 

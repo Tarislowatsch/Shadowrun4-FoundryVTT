@@ -289,15 +289,15 @@
       "defense": "Defense Modifiers",
       "initiative": {
         "astralBonus": "Astral Bonus",
-        "astralPasses": "Astral Passes",
+        "astralPasses": "Astral Passes (Bonus)",
         "currentAstral": "Current Astral",
         "currentMatrix": "Current Matrix",
         "currentPasses": "Current Passes",
         "currentPhysical": "Current Physical",
         "matrixBonus": "Matrix Bonus",
-        "matrixPasses": "Matrix Passes",
+        "matrixPasses": "Matrix Passes (Bonus)",
         "physicalBonus": "Physical Bonus",
-        "physicalPasses": "Physical Passes",
+        "physicalPasses": "Physical Passes (Bonus)",
         "title": "Initiative Modifiers"
       },
       "overview": "Overview",

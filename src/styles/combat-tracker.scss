@@ -1,0 +1,13 @@
+.sr4-initiative-pass {
+  font-family: Orbitron, sans-serif;
+  font-size: 0.72rem;
+  color: var(--sr4-teal);
+  text-align: center;
+  padding: 2px 0;
+  letter-spacing: 0.04em;
+}
+
+.combat-sidebar .combat-tracker .combatant.sr4-pass-inactive {
+  opacity: 0.35;
+  filter: grayscale(0.5);
+}

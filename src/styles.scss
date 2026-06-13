@@ -1,33 +1,45 @@
-@use 'sheets/items/item-sheet.scss';
-@use 'sheets/actors/actor-sheets.scss';
-/* Importing the character sheet styles */
-@use 'sheets/characters/styling/character-tabs.scss';
-@use 'sheets/characters/styling/base-sheet.scss';
-@use 'sheets/characters/styling/edit-mode.scss';
-@use 'sheets/characters/styling/metadata.scss';
-@use 'sheets/characters/styling/items.scss';
-@use 'sheets/characters/styling/condition-monitor.scss';
-@use 'sheets/characters/styling/modifiers.scss';
-@use 'sheets/characters/styling/npc-sheet.scss';
-@use 'sheets/characters/styling/effects.scss';
+@use 'styles/variables';
+@use 'styles/themes';
+@use 'styles/combat-tracker';
 
-input[type='checkbox'] {
-  border: 1px solid var(--sr4-border-dim);
+@use 'sheets/items/item-sheet';
+@use 'sheets/actors/shared/skill-dialog';
+@use 'sheets/actors/spirit-vehicle';
+@use 'sheets/actors/character/character-tabs';
+@use 'sheets/actors/character/base-sheet';
+@use 'sheets/actors/character/edit-mode';
+@use 'sheets/actors/character/metadata';
+@use 'sheets/actors/character/items';
+@use 'sheets/actors/character/condition-monitor';
+@use 'sheets/actors/character/modifiers';
+@use 'sheets/actors/character/npc-sheet';
+@use 'sheets/actors/character/effects';
+@use 'sheets/actors/character/magic-matrix';
+
+input.sr4-checkbox {
   cursor: pointer;
-  font: revert;
+  width: 1.5em;
+  height: 1.5em;
+  flex-shrink: 0;
 }
 
-// Combat Tracker — Initiative Pass display
-.sr4-initiative-pass {
-  font-family: Orbitron, sans-serif;
-  font-size: 0.72rem;
-  color: var(--sr4-teal);
-  text-align: center;
-  padding: 2px 0;
-  letter-spacing: 0.04em;
-}
+body:not(.theme-light) input.sr4-checkbox {
+  appearance: none !important;
+  border: 1.5px solid var(--sr4-teal) !important;
+  border-radius: 2px;
+  background: transparent !important;
 
-.combat-sidebar .combat-tracker .combatant.sr4-pass-inactive {
-  opacity: 0.35;
-  filter: grayscale(0.5);
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  &:checked {
+    background: var(--sr4-teal) !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 2.5 4.5-4.5' stroke='%23ffffff' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }
