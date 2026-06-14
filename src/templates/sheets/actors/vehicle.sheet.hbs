@@ -82,8 +82,8 @@
             data-tooltip="{{localize 'sr4.vehicle.rollAutonomous'}}">
             <i class="fas fa-dice-d6"></i>
           </button>
-          <button type="button" class="item-edit" data-action="editItem" data-item-id="{{autosoft._id}}"><i class="fas fa-edit"></i></button>
-          <button type="button" class="item-delete" data-action="deleteItem" data-item-id="{{autosoft._id}}"><i class="fas fa-trash"></i></button>
+          {{> item-edit-btn itemId=autosoft._id}}
+          {{> item-delete-btn itemId=autosoft._id}}
         </div>
       </div>
       {{/each}}
@@ -105,8 +105,8 @@
             data-tooltip="{{localize 'sr4.vehicle.rollAutonomous'}}">
             <i class="fas fa-crosshairs"></i>
           </button>
-          <button type="button" class="item-edit" data-action="editItem" data-item-id="{{weapon._id}}"><i class="fas fa-edit"></i></button>
-          <button type="button" class="item-delete" data-action="deleteItem" data-item-id="{{weapon._id}}"><i class="fas fa-trash"></i></button>
+          {{> item-edit-btn itemId=weapon._id}}
+          {{> item-delete-btn itemId=weapon._id}}
         </div>
       </div>
       {{/each}}

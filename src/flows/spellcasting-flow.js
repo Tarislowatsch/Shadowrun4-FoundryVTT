@@ -112,27 +112,40 @@ export class SpellcastingFlow {
       baseDrainValue
     );
     if (drainResult == null) return;
-    const { successes: drainHits, isGlitch } = drainResult;
+    const {
+      successes: drainHits,
+      isGlitch,
+      edgeUsed: drainEdgeUsed,
+    } = drainResult;
 
-    const applyDrain = async (resolvedHits, edgeUsed = false) => {
-      const unresisted = Math.max(baseDrainValue - resolvedHits, 0);
-
-      const onReroll = edgeUsed
-        ? undefined
-        : createEdgeRerollHandler(
-            actor,
-            { successes: resolvedHits, rolledDice: drainPool, isGlitch },
-            (newSuccesses) => applyDrain(newSuccesses, true)
-          );
-      await ApplyDamageFlow.sendDecisionMessage(
-        actor,
-        unresisted,
-        isPhysical,
-        'drain',
-        { onReroll, edgeUsed }
-      );
-    };
-
-    await applyDrain(drainHits);
+    const unresisted = Math.max(baseDrainValue - drainHits, 0);
+    const onReroll = drainEdgeUsed
+      ? undefined
+      : createEdgeRerollHandler(
+          actor,
+          { successes: drainHits, rolledDice: drainPool, isGlitch },
+          async (newSuccesses) => {
+            const newUnresisted = Math.max(baseDrainValue - newSuccesses, 0);
+            await ApplyDamageFlow.sendDecisionMessage(
+              actor,
+              newUnresisted,
+              isPhysical,
+              'drain',
+              {
+                edgeUsed: true,
+              }
+            );
+          }
+        );
+    await ApplyDamageFlow.sendDecisionMessage(
+      actor,
+      unresisted,
+      isPhysical,
+      'drain',
+      {
+        onReroll,
+        edgeUsed: drainEdgeUsed,
+      }
+    );
   }
 }

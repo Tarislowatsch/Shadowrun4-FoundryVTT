@@ -1,4 +1,32 @@
 {
+  "TYPES": {
+    "Actor": {
+      "character": "Character",
+      "npc": "NPC",
+      "vehicle": "Vehicle",
+      "spirit": "Spirit",
+      "device": "Device"
+    },
+    "Item": {
+      "Ranged Weapon": "Ranged Weapon",
+      "Melee Weapon": "Melee Weapon",
+      "Implant": "Implant",
+      "Item": "Item",
+      "Gear": "Gear",
+      "Armor": "Armor",
+      "Skill": "Skill",
+      "Spell": "Spell",
+      "Commlink": "Commlink",
+      "Program": "Program",
+      "Fetish": "Fetish",
+      "Focus": "Focus",
+      "Action": "Action",
+      "Power": "Power",
+      "Vehicle": "Vehicle",
+      "Autosoft": "Autosoft",
+      "Ammo": "Ammo"
+    }
+  },
   "sr4": {
     "action": {
       "actiontype": {
@@ -236,6 +264,7 @@
       "avail": "Availability",
       "capacity": "Capacity",
       "cost": "Cost",
+      "create": "Create Item",
       "delete": "Delete",
       "description": "Description",
       "edit": "Edit",
@@ -394,6 +423,20 @@
       "applyDamageWorkflow": {
         "name": "Damage: Confirmation Workflow",
         "hint": "When enabled, a dialog is shown before applying damage, allowing confirmation or adjustment. Disabling applies damage immediately."
+      },
+      "useDefaultEffectSheet": {
+        "name": "Use Default Effect Sheet",
+        "hint": "When enabled, active effects open with Foundry's built-in sheet instead of the SR4 custom sheet."
+      },
+      "npcSkillsMenu": {
+        "name": "NPC Default Skills",
+        "label": "Configure",
+        "hint": "Choose which skills are added to newly created NPCs.",
+        "title": "NPC Default Skills",
+        "filter": "Filter skills…",
+        "toggleAll": "All / None",
+        "save": "Save",
+        "noSkills": "No skills found in compendium."
       }
     },
     "shooting": {

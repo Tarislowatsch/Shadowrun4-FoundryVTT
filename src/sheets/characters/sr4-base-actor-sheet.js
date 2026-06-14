@@ -14,6 +14,8 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       closeOnSubmit: false,
     },
     actions: {
+      openCreateItemDialog: SR4BaseActorSheet._onOpenCreateItemDialog,
+      createItem: SR4BaseActorSheet._onCreateItem,
       deleteItem: SR4BaseActorSheet._onDeleteItem,
       editItem: SR4BaseActorSheet._onEditItem,
       toggleEquip: SR4BaseActorSheet._onToggleEquip,
@@ -45,7 +47,12 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
 
     toggle.querySelector('input')?.addEventListener('change', (ev) => {
       // @ts-ignore — checked exists on HTMLInputElement at runtime
-      this.editMode = ev.currentTarget.checked;
+      const input = /** @type {HTMLInputElement} */ (ev.currentTarget);
+      // stopPropagation: the outer element is a <form> (tag:"form" in DocumentSheetV2).
+      // Without this, the change event bubbles to the form and triggers submitOnChange,
+      // causing a duplicate actor-update render on top of our own render() call.
+      ev.stopPropagation();
+      this.editMode = input.checked;
       this.render();
     });
 
@@ -116,6 +123,50 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
   // ---------------------------------------------------------------------------
   // Actions
   // ---------------------------------------------------------------------------
+
+  static async _onOpenCreateItemDialog(_event, _target) {
+    const types = [
+      'Ranged Weapon',
+      'Melee Weapon',
+      'Armor',
+      'Implant',
+      'Commlink',
+      'Gear',
+      'Ammo',
+      'Action',
+    ];
+    const options = types
+      .map(
+        (t) =>
+          `<option value="${t}">${game.i18n.localize(`TYPES.Item.${t}`)}</option>`
+      )
+      .join('');
+    const result = await foundry.applications.api.DialogV2.prompt({
+      window: { title: game.i18n.localize('sr4.item.create') },
+      content: `<fieldset><select name="type" style="width:100%">${options}</select></fieldset>`,
+      ok: {
+        label: game.i18n.localize('sr4.item.create'),
+        callback: (event, button) => button.form.elements.type.value,
+      },
+    });
+    if (!result) return;
+    const [item] = await this.actor.createEmbeddedDocuments('Item', [
+      { name: game.i18n.localize(`TYPES.Item.${result}`), type: result },
+    ]);
+    item?.sheet?.render(true);
+  }
+
+  static async _onCreateItem(event, target) {
+    const type = target.dataset.itemType;
+    if (!type) return;
+    const system = target.dataset.itemSubtype
+      ? { type: target.dataset.itemSubtype }
+      : {};
+    const [item] = await this.actor.createEmbeddedDocuments('Item', [
+      { name: game.i18n.localize(`TYPES.Item.${type}`), type, system },
+    ]);
+    item?.sheet?.render(true);
+  }
 
   static async _onDeleteItem(event, target) {
     const itemId = target.closest('[data-item-id]')?.dataset.itemId;

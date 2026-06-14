@@ -1,7 +1,30 @@
 {
   "TYPES": {
     "Actor": {
-      "character": "Charakter"
+      "character": "Charakter",
+      "npc": "NSC",
+      "vehicle": "Fahrzeug",
+      "spirit": "Geist",
+      "device": "Gerät"
+    },
+    "Item": {
+      "Ranged Weapon": "Fernkampfwaffe",
+      "Melee Weapon": "Nahkampfwaffe",
+      "Implant": "Implantat",
+      "Item": "Gegenstand",
+      "Gear": "Ausrüstung",
+      "Armor": "Panzerung",
+      "Skill": "Fertigkeit",
+      "Spell": "Zauber",
+      "Commlink": "Commlink",
+      "Program": "Programm",
+      "Fetish": "Fetisch",
+      "Focus": "Fokus",
+      "Action": "Aktion",
+      "Power": "Kraft",
+      "Vehicle": "Fahrzeug",
+      "Autosoft": "Autosoft",
+      "Ammo": "Munition"
     }
   },
   "sr4": {
@@ -241,6 +264,7 @@
       "avail": "Verfügbarkeit",
       "capacity": "Kapazität",
       "cost": "Kosten",
+      "create": "Item erstellen",
       "description": "Beschreibung",
       "legality": "Legalität",
       "name": "Name",
@@ -396,6 +420,20 @@
       "applyDamageWorkflow": {
         "name": "Schaden: Bestätigungs-Workflow",
         "hint": "Wenn aktiv, wird vor dem Anwenden von Schaden ein Dialog zur Bestätigung oder Anpassung angezeigt. Deaktivieren wendet Schaden sofort an."
+      },
+      "useDefaultEffectSheet": {
+        "name": "Standard-Effekt-Sheet verwenden",
+        "hint": "Wenn aktiv, öffnen aktive Effekte mit Foundrys eingebautem Sheet statt dem SR4-eigenen."
+      },
+      "npcSkillsMenu": {
+        "name": "NSC-Standardfertigkeiten",
+        "label": "Konfigurieren",
+        "hint": "Legt fest, welche Fertigkeiten neu erstellten NSCs automatisch hinzugefügt werden.",
+        "title": "NSC-Standardfertigkeiten",
+        "filter": "Fertigkeiten filtern…",
+        "toggleAll": "Alle / Keine",
+        "save": "Speichern",
+        "noSkills": "Keine Fertigkeiten im Kompendium gefunden."
       }
     },
     "shooting": {

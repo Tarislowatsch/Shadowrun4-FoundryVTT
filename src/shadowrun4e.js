@@ -130,7 +130,7 @@ Hooks.once('init', async function () {
     'sr4',
     SR4ActiveEffectSheet,
     {
-      makeDefault: true,
+      makeDefault: !game.settings.get('shadowrun4e', 'useDefaultEffectSheet'),
       label: 'SR4 Active Effect',
     }
   );

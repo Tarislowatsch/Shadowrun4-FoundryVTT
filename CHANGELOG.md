@@ -1,5 +1,23 @@
 # Changelog
 
+# [1.2.0](https://github.com/Tarislowatsch/sr4foundry/compare/v1.1.0...v1.2.0) (2026-06-14)
+
+
+### Bug Fixes
+
+* **i18n:** add missing TYPES localizations for all actor and item types ([5c980ed](https://github.com/Tarislowatsch/sr4foundry/commit/5c980ed268f6a8e60fd89e660ea9ec13f6a4552a))
+* **sheet:** render lifestyle as text input ([3bb11ea](https://github.com/Tarislowatsch/sr4foundry/commit/3bb11eac99c4c52e39f9a4bfb91d09f8fb3808d3))
+* **sheet:** replace deprecated .mode with .type on ActiveEffect changes ([73bb942](https://github.com/Tarislowatsch/sr4foundry/commit/73bb942cd54a45ef1b3d4c19df0b0e055ef1eecf))
+* **sheet:** stop edit toggle change event from bubbling to form ([3fa83a3](https://github.com/Tarislowatsch/sr4foundry/commit/3fa83a3c9ec32700a85639e63576c0a02237d8f9))
+
+
+### Features
+
+* **datamodel:** register Gear item type ([bc88ec7](https://github.com/Tarislowatsch/sr4foundry/commit/bc88ec75bce61e9953e9591a7b206c881fb24654))
+* **settings:** add configurable NPC default skills menu ([6b01f02](https://github.com/Tarislowatsch/sr4foundry/commit/6b01f02faf598ef38929c2cf9bab088b37846b91))
+* **settings:** allow GMs to use Foundry default effect sheet ([a316ef3](https://github.com/Tarislowatsch/sr4foundry/commit/a316ef3084c757e94bf0ef22e2623a67f3444e78))
+* **sheets:** add item creation buttons to actor sheets ([0f800bd](https://github.com/Tarislowatsch/sr4foundry/commit/0f800bda64f6e1884fb710a20a43ca7e65bea158))
+
 # [1.1.0](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.3...v1.1.0) (2026-06-14)
 
 

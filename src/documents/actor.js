@@ -251,28 +251,6 @@ export class SR4Actor extends foundry.documents.Actor {
     }
   }
 
-  static #NPC_SKILL_ALLOWLIST = new Set([
-    'archery',
-    'automatics',
-    'blades',
-    'clubs',
-    'gunnery',
-    'heavy-weapons',
-    'longarms',
-    'pistols',
-    'throwing-weapons',
-    'unarmed-combat',
-    'counterspelling',
-    'spellcasting',
-    'summoning',
-    'gymnastics',
-    'infiltration',
-    'intimidation',
-    'perception',
-    'running',
-    'swimming',
-  ]);
-
   async _onCreate(data, options, userId) {
     await super._onCreate(data, options, userId);
     if (userId !== game.user?.id) return;
@@ -299,8 +277,11 @@ export class SR4Actor extends foundry.documents.Actor {
     const index = await compendium.getIndex();
     let skillEntries = index.filter((e) => e?.type === 'Skill');
     if (npcOnly) {
+      const allowlist = new Set(
+        JSON.parse(game.settings.get('shadowrun4e', 'npcDefaultSkills'))
+      );
       skillEntries = skillEntries.filter((e) =>
-        SR4Actor.#NPC_SKILL_ALLOWLIST.has(e.name?.toLowerCase())
+        allowlist.has(e.name?.toLowerCase())
       );
     }
     const skills = await Promise.all(

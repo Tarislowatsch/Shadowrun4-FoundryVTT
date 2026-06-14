@@ -18,20 +18,8 @@
       >
         <i class="fas fa-dice-d20"></i>
       </button>
-      <button
-        class="item-edit"
-        data-action="editItem"
-        data-tooltip="{{localize 'sr4.action.edit'}}"
-      >
-        <i class="fas fa-edit"></i>
-      </button>
-      <button
-        class="item-delete"
-        data-action="deleteItem"
-        data-tooltip="{{localize 'sr4.action.delete'}}"
-      >
-        <i class="fas fa-trash"></i>
-      </button>
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
     </div>
   </div>
   <div class="item-body action-stats">

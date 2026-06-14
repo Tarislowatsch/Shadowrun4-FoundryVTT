@@ -3,6 +3,12 @@
   data-group="primary"
   data-tab="inventory"
 >
+  {{#if editMode}}
+  <div style="margin-bottom: 0.5rem;">
+    {{> item-create-btn btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+  </div>
+  {{/if}}
+
   {{!-- Waffen --}}
   <section class="inventory-section">
     <h3>{{localize 'sr4.inventory.weapons'}}</h3>
@@ -39,7 +45,6 @@
   {{#if implants}}
   <section class="inventory-section">
     <h3>{{localize 'sr4.inventory.implants'}}</h3>
-
     <ul class="implant-list">
       {{#each implants as |item|}}
       {{> "implant-card"}}
@@ -82,7 +87,6 @@
   {{#if foci}}
   <section class="inventory-section">
     <h3>{{localize 'sr4.inventory.foci'}}</h3>
-
     <ul class="item-list">
       {{#each foci as |item|}}
       {{> "item-card"}}

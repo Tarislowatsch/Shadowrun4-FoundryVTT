@@ -77,8 +77,8 @@
         <div class="item-row">
           <span class="item-name roll-skill" data-action="rollSkill" data-skill-name="{{skill.name}}">{{skill.name}}</span>
           <span class="item-property">{{skill.system.rating}}</span>
-          <button type="button" class="item-edit" data-action="editItem" data-item-id="{{skill._id}}"><i class="fas fa-edit"></i></button>
-          <button type="button" class="item-delete" data-action="deleteItem" data-item-id="{{skill._id}}"><i class="fas fa-trash"></i></button>
+          {{> item-edit-btn itemId=skill._id}}
+          {{> item-delete-btn itemId=skill._id}}
         </div>
       </div>
       {{/each}}

@@ -11,6 +11,9 @@ export async function registerUIPartials() {
     { path: `${basePath}/smartlink-checkbox.hbs`, name: 'smartlink-checkbox' },
     { path: `${basePath}/tooltip.hbs`, name: 'tooltip' },
     { path: `${basePath}/fire-mode-selector.hbs`, name: 'fire-mode-selector' },
+    { path: `${basePath}/item-create-btn.hbs`, name: 'item-create-btn' },
+    { path: `${basePath}/item-edit-btn.hbs`, name: 'item-edit-btn' },
+    { path: `${basePath}/item-delete-btn.hbs`, name: 'item-delete-btn' },
   ];
   await Promise.all(
     templatePaths.map(async ({ path, name }) => {

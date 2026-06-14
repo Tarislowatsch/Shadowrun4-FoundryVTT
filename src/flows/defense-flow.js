@@ -291,13 +291,7 @@ export class DefenseFlow {
         }
       );
       if (finalDamage === 0) {
-        const msgs = await ApplyDamageFlow.apply(
-          0,
-          isPhysical,
-          defender,
-          'combat'
-        );
-        if (msgs.length > 0) await ApplyDamageFlow.sendMessages(msgs, defender);
+        await ApplyDamageFlow._applyAndSend(0, isPhysical, defender, 'combat');
         return;
       }
 
@@ -324,25 +318,21 @@ export class DefenseFlow {
                 }
               );
               if (rerolledDamage === 0) {
-                const msgs = await ApplyDamageFlow.apply(
+                await ApplyDamageFlow._applyAndSend(
                   0,
                   isPhysical,
                   defender,
                   'combat'
                 );
-                if (msgs.length > 0)
-                  await ApplyDamageFlow.sendMessages(msgs, defender);
                 return;
               }
-              const msgs = await ApplyDamageFlow.apply(
+              await ApplyDamageFlow._applyAndSend(
                 rerolledDamage,
                 isPhysical,
                 defender,
-                'combat'
+                'combat',
+                electricityOnApply
               );
-              if (msgs.length > 0)
-                await ApplyDamageFlow.sendMessages(msgs, defender);
-              if (electricityOnApply) await electricityOnApply();
             }
           );
 

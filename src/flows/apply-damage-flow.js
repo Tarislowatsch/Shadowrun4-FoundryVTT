@@ -1,6 +1,17 @@
 import { getGame, openModifyDamageDialog } from '@utils/index';
 
 /**
+ * @param {boolean} isPhysical
+ * @returns {string}
+ */
+function localizeDamageType(isPhysical) {
+  const i18n = getGame().i18n;
+  return isPhysical
+    ? i18n.localize('sr4.damage.physical')
+    : i18n.localize('sr4.damage.stun');
+}
+
+/**
  * Handles the application of physical and stun damage
  * to a Shadowrun 4 condition monitor.
  */
@@ -185,9 +196,7 @@ export class ApplyDamageFlow {
    */
   static createDamageMessage(actorName, damage, isPhysical, reason) {
     const damageReason = getGame().i18n.localize(`sr4.damage.reason.${reason}`);
-    const damageType = isPhysical
-      ? getGame().i18n.localize('sr4.damage.physical')
-      : getGame().i18n.localize('sr4.damage.stun');
+    const damageType = localizeDamageType(isPhysical);
 
     return {
       content: getGame().i18n.format('sr4.damage.damagesummary', {
@@ -219,20 +228,16 @@ export class ApplyDamageFlow {
     { onReroll, edgeUsed = false, hint, onApply } = {}
   ) {
     if (!game.settings.get('shadowrun4e', 'applyDamageWorkflow')) {
-      const messages = await ApplyDamageFlow.apply(
+      await ApplyDamageFlow._applyAndSend(
         amount,
         isPhysical,
         actor,
-        context
+        context,
+        onApply
       );
-      if (messages.length > 0)
-        await ApplyDamageFlow.sendMessages(messages, actor);
-      if (onApply) await onApply();
       return;
     }
-    const damageType = isPhysical
-      ? getGame().i18n.localize('sr4.damage.physical')
-      : getGame().i18n.localize('sr4.damage.stun');
+    const damageType = localizeDamageType(isPhysical);
 
     const buttons = [
       {
@@ -266,15 +271,13 @@ export class ApplyDamageFlow {
     });
 
     if (action === 'apply') {
-      const messages = await ApplyDamageFlow.apply(
+      await ApplyDamageFlow._applyAndSend(
         amount,
         isPhysical,
         actor,
-        context
+        context,
+        onApply
       );
-      if (messages.length > 0)
-        await ApplyDamageFlow.sendMessages(messages, actor);
-      if (onApply) await onApply();
     } else if (action === 'modify') {
       const finalAmount = await openModifyDamageDialog(
         actor,
@@ -282,18 +285,36 @@ export class ApplyDamageFlow {
         isPhysical
       );
       if (finalAmount === null) return;
-      const messages = await ApplyDamageFlow.apply(
+      await ApplyDamageFlow._applyAndSend(
         finalAmount,
         isPhysical,
         actor,
-        context
+        context,
+        onApply
       );
-      if (messages.length > 0)
-        await ApplyDamageFlow.sendMessages(messages, actor);
-      if (onApply) await onApply();
     } else if (action === 'reroll' && onReroll) {
       await onReroll();
     }
+  }
+
+  /**
+   * @param {number} amount
+   * @param {boolean} isPhysical
+   * @param {import('@documents/index').SR4Actor} actor
+   * @param {string} context
+   * @param {(() => Promise<void>) | undefined} [onApply]
+   * @returns {Promise<void>}
+   */
+  static async _applyAndSend(amount, isPhysical, actor, context, onApply) {
+    const messages = await ApplyDamageFlow.apply(
+      amount,
+      isPhysical,
+      actor,
+      context
+    );
+    if (messages.length > 0)
+      await ApplyDamageFlow.sendMessages(messages, actor);
+    if (onApply) await onApply();
   }
 
   /**
@@ -301,14 +322,12 @@ export class ApplyDamageFlow {
    *
    * @param {string} attackerName
    * @param {string} defenderName
-   * @param {'potential'|'pendingSoak'|'result'|'directSpell'} mode
+   * @param {'potential'|'result'|'directSpell'} mode
    * @param {{ hits?: number, damage?: number, base?: number, soaked?: number, final?: number, spell?: string, isPhysical: boolean }} params
    */
   static async sendCombatSummary(attackerName, defenderName, mode, params) {
     const i18n = getGame().i18n;
-    const type = params.isPhysical
-      ? i18n.localize('sr4.damage.physical')
-      : i18n.localize('sr4.damage.stun');
+    const type = localizeDamageType(params.isPhysical);
 
     let content;
     if (mode === 'potential') {
@@ -316,13 +335,6 @@ export class ApplyDamageFlow {
         attacker: attackerName,
         defender: defenderName,
         hits: params.hits,
-        damage: params.damage,
-        type,
-      });
-    } else if (mode === 'pendingSoak') {
-      content = i18n.format('sr4.damage.chatPendingSoak', {
-        attacker: attackerName,
-        defender: defenderName,
         damage: params.damage,
         type,
       });

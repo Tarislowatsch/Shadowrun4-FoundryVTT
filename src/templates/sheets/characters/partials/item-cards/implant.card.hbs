@@ -31,11 +31,7 @@
     <span class="item-legality">{{ this.system.legality }}</span>
     <span class="item-cost">{{ this.system.cost }}</span>
 
-    <button class="item-edit" data-action="editItem" data-tooltip="{{localize 'sr4.item.edit'}}">
-      <i class="fas fa-edit"></i>
-    </button>
-    <button class="item-delete" data-action="deleteItem" data-tooltip="{{localize 'sr4.item.delete'}}">
-      <i class="fas fa-trash"></i>
-    </button>
+    {{> item-edit-btn}}
+    {{> item-delete-btn}}
   </div>
 </div>

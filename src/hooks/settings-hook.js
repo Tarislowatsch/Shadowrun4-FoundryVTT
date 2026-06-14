@@ -1,4 +1,9 @@
 // @ts-nocheck
+import {
+  NpcSkillsMenu,
+  DEFAULT_NPC_SKILLS_JSON,
+} from '../sheets/settings/npc-skills-menu.js';
+
 export class SettingsHook {
   constructor() {
     Hooks.once('init', () => {
@@ -67,6 +72,33 @@ export class SettingsHook {
         config: true,
         type: Boolean,
         default: true,
+      });
+
+      game.settings.register('shadowrun4e', 'useDefaultEffectSheet', {
+        name: 'sr4.settings.useDefaultEffectSheet.name',
+        hint: 'sr4.settings.useDefaultEffectSheet.hint',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: false,
+        restricted: true,
+        onChange: () => foundry.utils.debouncedReload(),
+      });
+
+      game.settings.registerMenu('shadowrun4e', 'npcSkillsMenu', {
+        name: 'sr4.settings.npcSkillsMenu.name',
+        label: 'sr4.settings.npcSkillsMenu.label',
+        hint: 'sr4.settings.npcSkillsMenu.hint',
+        icon: 'fas fa-list-check',
+        type: NpcSkillsMenu,
+        restricted: true,
+      });
+
+      game.settings.register('shadowrun4e', 'npcDefaultSkills', {
+        scope: 'world',
+        config: false,
+        type: String,
+        default: DEFAULT_NPC_SKILLS_JSON,
       });
     });
   }

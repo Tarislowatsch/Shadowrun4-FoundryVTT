@@ -11,9 +11,17 @@
 <div class="grid">
   {{!-- Header Row: Kategorien --}}
   <div class="full-width">
-    <span class="cell3">{{localize "sr4.skills.active"}}</span>
-    <span class="cell3">{{localize "sr4.skills.active"}}</span>
-    <span class="cell3">{{localize "sr4.skills.knowledgeAndComplexForms"}}</span>
+    <div class="cell3 section-header">
+      <span>{{localize "sr4.skills.active"}}</span>
+      {{#if editMode}}{{> item-create-btn btnAction="createItem" btnItemType="Skill" btnItemSubtype="active" btnTooltip="sr4.skills.active"}}{{/if}}
+    </div>
+    <div class="cell3 section-header">
+      <span>{{localize "sr4.skills.active"}}</span>
+    </div>
+    <div class="cell3 section-header">
+      <span>{{localize "sr4.skills.knowledgeAndComplexForms"}}</span>
+      {{#if editMode}}{{> item-create-btn btnAction="createItem" btnItemType="Skill" btnItemSubtype="knowledge" btnTooltip="sr4.skills.knowledgeAndComplexForms"}}{{/if}}
+    </div>
   </div>
 
   {{!-- Header Row: Spaltenbezeichnungen --}}
@@ -62,12 +70,8 @@
             {{selectOptions ../attributes selected=this.system.attribute localize=true}}
           </select>
           {{#if ../editMode}}
-            <button class="item-edit" type="button" data-action="edit" title="{{localize 'sr4.edit'}}">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="item-delete" type="button" data-action="delete" title="{{localize 'sr4.delete'}}">
-              <i class="fas fa-trash"></i>
-            </button>
+            {{> item-edit-btn}}
+            {{> item-delete-btn}}
           {{/if}}
         </div>
       {{/if}}
@@ -107,12 +111,8 @@
             {{selectOptions ../attributes selected=this.system.attribute localize=true}}
           </select>
           {{#if ../editMode}}
-            <button class="item-edit" type="button" data-action="edit" title="{{localize 'sr4.edit'}}">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="item-delete" type="button" data-action="delete" title="{{localize 'sr4.delete'}}">
-              <i class="fas fa-trash"></i>
-            </button>
+            {{> item-edit-btn}}
+            {{> item-delete-btn}}
           {{/if}}
         </div>
       {{/if}}

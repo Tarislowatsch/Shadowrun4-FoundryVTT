@@ -175,14 +175,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       actiontypes: ActionType,
       attackskills: Attackskill,
       damageTypes: DamageTypes,
-      textFields: [
-        'name',
-        'metatype',
-        'eyecolor',
-        'haircolor',
-        'skincolor',
-        'gender',
-      ],
+      textFields: { lifestyle: true },
       isTechnomancer: actorData.system.technomancer,
       effectTargets: SR4EffectTargets,
     };
@@ -217,9 +210,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         img: e.img ?? 'icons/svg/aura.svg',
         active: !e.disabled,
         key: e.changes[0]?.key ?? '',
-        mode:
-          { 1: 'multiply', 2: 'add', 5: 'override' }[e.changes[0]?.mode] ??
-          'add',
+        mode: e.changes[0]?.type ?? 'add',
         value: Number(e.changes[0]?.value ?? 0),
         description: e.description ?? '',
       })),

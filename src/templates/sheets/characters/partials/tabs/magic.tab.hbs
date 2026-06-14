@@ -122,7 +122,10 @@
   </div>
 
   {{#if system.magic.magician}}
-  <h3>{{localize "sr4.magic.spells"}}</h3>
+  <h3 class="section-header">
+    {{localize "sr4.magic.spells"}}
+    {{#if editMode}}{{> item-create-btn btnAction="createItem" btnItemType="Spell" btnTooltip="sr4.magic.spells"}}{{/if}}
+  </h3>
   {{#if spells}}
   <ul class="spell-list">
     {{#each spells as |spell|}}
@@ -135,7 +138,10 @@
   {{/if}}
 
   {{#if system.magic.adept}}
-  <h3>{{localize "sr4.magic.powers"}}</h3>
+  <h3 class="section-header">
+    {{localize "sr4.magic.powers"}}
+    {{#if editMode}}{{> item-create-btn btnAction="createItem" btnItemType="Power" btnTooltip="sr4.magic.powers"}}{{/if}}
+  </h3>
   {{#if powers}}
   <ul class="spell-list">
     {{#each powers as |power|}}

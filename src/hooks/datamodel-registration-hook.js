@@ -52,6 +52,7 @@ export class DataModelRegistrationHook {
       Commlink: SR4CommlinkData,
       Action: SR4ActionData,
       Autosoft: SR4AutosoftData,
+      Gear: SR4GenericItemData,
       Program: SR4GenericItemData,
       Focus: SR4GenericItemData,
       Fetish: SR4GenericItemData,

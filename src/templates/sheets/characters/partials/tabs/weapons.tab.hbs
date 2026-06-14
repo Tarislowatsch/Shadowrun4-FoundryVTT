@@ -3,6 +3,11 @@
   data-group="primary"
   data-tab="weapons"
 >
+  {{#if editMode}}
+  <div style="margin-bottom: 0.5rem;">
+    {{> item-create-btn btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+  </div>
+  {{/if}}
   {{#if weapons}}
   <ul class="weapon-list">
     {{#each weapons as |weapon|}}

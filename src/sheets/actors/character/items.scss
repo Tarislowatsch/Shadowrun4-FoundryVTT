@@ -139,6 +139,39 @@
   }
 }
 
+.item-create-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--sr4-border-dim);
+  border-radius: 3px;
+  color: var(--sr4-border-dim);
+  font-size: 0.7rem;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+
+  &:hover {
+    color: var(--sr4-text-muted);
+    border-color: var(--sr4-text-muted);
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-right: 1rem;
+}
+
 .roll-skill {
   cursor: pointer;
 

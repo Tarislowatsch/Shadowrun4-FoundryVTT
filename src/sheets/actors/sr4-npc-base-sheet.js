@@ -55,6 +55,7 @@ export class SR4NpcBaseSheet extends foundry.applications.api.HandlebarsApplicat
     wrapper.innerHTML = html;
     const toggle = /** @type {HTMLElement} */ (wrapper.firstElementChild);
     toggle.querySelector('input')?.addEventListener('change', (ev) => {
+      ev.stopPropagation();
       this.editMode = /** @type {HTMLInputElement} */ (
         ev.currentTarget
       ).checked;

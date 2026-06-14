@@ -9,7 +9,7 @@
     "verified": "14"
   },
   "description": "Shadowrun 4th Edition System for Foundry VTT",
-  "download": "https://github.com/Tarislowatsch/Shadowrun4-FoundryVTT/releases/download/v1.1.0/shadowrun4e.zip",
+  "download": "https://github.com/Tarislowatsch/Shadowrun4-FoundryVTT/releases/download/v1.2.0/shadowrun4e.zip",
   "esmodules": [
     "shadowrun4e.js"
   ],
@@ -136,5 +136,5 @@
     "style.css"
   ],
   "title": "Shadowrun 4th Edition",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

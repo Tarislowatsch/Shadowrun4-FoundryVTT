@@ -1,0 +1,35 @@
+<div class="npc-skills-menu" style="display:flex; flex-direction:column; height:100%; padding:8px; box-sizing:border-box;">
+  <input type="search" data-filter placeholder="{{localize 'sr4.settings.npcSkillsMenu.filter'}}"
+    style="margin-bottom:8px; width:100%;" />
+
+  <div class="skill-list" style="overflow-y:auto; flex:1; padding-right:4px;">
+    {{#each categories}}
+      <details class="skill-category" data-category="{{key}}" open>
+        <summary style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:2px 0; margin-bottom:4px;">
+          <strong>{{localize label}}</strong>
+          <button type="button" data-action="toggleCategory" data-category="{{key}}"
+            style="font-size:11px; padding:1px 6px; margin-left:8px;">
+            {{localize "sr4.settings.npcSkillsMenu.toggleAll"}}
+          </button>
+        </summary>
+        <div class="skill-checkboxes"
+          style="display:grid; grid-template-columns:1fr 1fr; gap:2px 8px; margin-bottom:8px; padding-left:8px;">
+          {{#each skills}}
+            <label class="skill-option" style="display:flex; align-items:center; gap:4px;">
+              <input type="checkbox" name="{{id}}" {{#if checked}}checked{{/if}} />
+              <span>{{name}}</span>
+            </label>
+          {{/each}}
+        </div>
+      </details>
+    {{else}}
+      <p>{{localize "sr4.settings.npcSkillsMenu.noSkills"}}</p>
+    {{/each}}
+  </div>
+
+  <footer class="sheet-footer flexrow" style="margin-top:8px; flex-shrink:0;">
+    <button type="button" data-action="save">
+      <i class="fas fa-save"></i> {{localize "sr4.settings.npcSkillsMenu.save"}}
+    </button>
+  </footer>
+</div>
