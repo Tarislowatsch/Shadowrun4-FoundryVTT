@@ -1,5 +1,17 @@
 # Changelog
 
+# [1.1.0](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.3...v1.1.0) (2026-06-14)
+
+
+### Bug Fixes
+
+* **combat:** fix stale chat summary after edge reroll and remove misleading chat messages on dialog cancel ([8fa0135](https://github.com/Tarislowatsch/sr4foundry/commit/8fa01356851af30e74b032746c4f2882c684a207))
+
+
+### Features
+
+* **settings:** add applyDamageWorkflow world setting ([1bd16d0](https://github.com/Tarislowatsch/sr4foundry/commit/1bd16d07b34efa995bab3a23a4ddef4037ce8980))
+
 ## [1.0.3](https://github.com/Tarislowatsch/sr4foundry/compare/v1.0.2...v1.0.3) (2026-06-13)
 
 

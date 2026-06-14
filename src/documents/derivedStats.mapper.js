@@ -1,3 +1,5 @@
+import { SR4 } from '../config.js';
+
 /**
  * @param {import('@models/index').SR4SpiritSystem} systemData
  * @returns {import('@models/index').SR4SpiritDerivedStats}
@@ -7,11 +9,16 @@ export function computeSpiritDerivedStats(systemData) {
   const monitor = systemData.conditionMonitor;
   const derivedStats = { ...systemData.derivedStats };
 
-  monitor.physical.max = Math.ceil(8 + sheetStats.BODY / 2);
-  monitor.stun.max = Math.ceil(8 + sheetStats.WILLPOWER / 2);
+  monitor.physical.max = Math.ceil(
+    SR4.rules.conditionMonitorBase + sheetStats.BODY / 2
+  );
+  monitor.stun.max = Math.ceil(
+    SR4.rules.conditionMonitorBase + sheetStats.WILLPOWER / 2
+  );
 
   derivedStats.woundModifier =
-    Math.floor(monitor.physical.value / 3) + Math.floor(monitor.stun.value / 3);
+    Math.floor(monitor.physical.value / SR4.rules.woundModifierDivisor) +
+    Math.floor(monitor.stun.value / SR4.rules.woundModifierDivisor);
   derivedStats.dicePoolModifier =
     derivedStats.woundModifier + systemData.modifiers.generalModifier;
 
@@ -33,9 +40,13 @@ export function computeVehicleDerivedStats(systemData) {
   const monitor = systemData.conditionMonitor;
   const derivedStats = { ...systemData.derivedStats };
 
-  monitor.physical.max = Math.ceil(8 + systemData.body / 2);
+  monitor.physical.max = Math.ceil(
+    SR4.rules.conditionMonitorBase + systemData.body / 2
+  );
 
-  derivedStats.woundModifier = Math.floor(monitor.physical.value / 3);
+  derivedStats.woundModifier = Math.floor(
+    monitor.physical.value / SR4.rules.woundModifierDivisor
+  );
   derivedStats.dicePoolModifier =
     derivedStats.woundModifier + systemData.modifiers.generalModifier;
 
@@ -66,8 +77,12 @@ export function computeDerivedStats(actorData) {
     return derivedStats;
   }
 
-  monitor.physical.max = Math.ceil(8 + sheetStats.BODY / 2);
-  monitor.stun.max = Math.ceil(8 + sheetStats.WILLPOWER / 2);
+  monitor.physical.max = Math.ceil(
+    SR4.rules.conditionMonitorBase + sheetStats.BODY / 2
+  );
+  monitor.stun.max = Math.ceil(
+    SR4.rules.conditionMonitorBase + sheetStats.WILLPOWER / 2
+  );
 
   derivedStats.overflow = sheetStats.BODY + modifiers.overflowBonus;
   derivedStats.woundModifier = getWoundModifier(
@@ -116,7 +131,7 @@ export function computeDerivedStats(actorData) {
  * @returns {number}
  */
 function getWoundModifier(monitor, woundMod) {
-  const divisor = 3 + (woundMod ?? 0);
+  const divisor = SR4.rules.woundModifierDivisor + (woundMod ?? 0);
   return (
     Math.floor(monitor.physical.value / divisor) +
     Math.floor(monitor.stun.value / divisor)

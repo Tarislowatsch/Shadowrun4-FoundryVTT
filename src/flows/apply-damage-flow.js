@@ -218,6 +218,18 @@ export class ApplyDamageFlow {
     context,
     { onReroll, edgeUsed = false, hint, onApply } = {}
   ) {
+    if (!game.settings.get('shadowrun4e', 'applyDamageWorkflow')) {
+      const messages = await ApplyDamageFlow.apply(
+        amount,
+        isPhysical,
+        actor,
+        context
+      );
+      if (messages.length > 0)
+        await ApplyDamageFlow.sendMessages(messages, actor);
+      if (onApply) await onApply();
+      return;
+    }
     const damageType = isPhysical
       ? getGame().i18n.localize('sr4.damage.physical')
       : getGame().i18n.localize('sr4.damage.stun');
@@ -282,6 +294,57 @@ export class ApplyDamageFlow {
     } else if (action === 'reroll' && onReroll) {
       await onReroll();
     }
+  }
+
+  /**
+   * Sends a public chat message summarising a combat or spell outcome.
+   *
+   * @param {string} attackerName
+   * @param {string} defenderName
+   * @param {'potential'|'pendingSoak'|'result'|'directSpell'} mode
+   * @param {{ hits?: number, damage?: number, base?: number, soaked?: number, final?: number, spell?: string, isPhysical: boolean }} params
+   */
+  static async sendCombatSummary(attackerName, defenderName, mode, params) {
+    const i18n = getGame().i18n;
+    const type = params.isPhysical
+      ? i18n.localize('sr4.damage.physical')
+      : i18n.localize('sr4.damage.stun');
+
+    let content;
+    if (mode === 'potential') {
+      content = i18n.format('sr4.damage.chatPotential', {
+        attacker: attackerName,
+        defender: defenderName,
+        hits: params.hits,
+        damage: params.damage,
+        type,
+      });
+    } else if (mode === 'pendingSoak') {
+      content = i18n.format('sr4.damage.chatPendingSoak', {
+        attacker: attackerName,
+        defender: defenderName,
+        damage: params.damage,
+        type,
+      });
+    } else if (mode === 'result') {
+      content = i18n.format('sr4.damage.chatResult', {
+        attacker: attackerName,
+        defender: defenderName,
+        base: params.base,
+        soaked: params.soaked,
+        final: params.final,
+        type,
+      });
+    } else {
+      content = i18n.format('sr4.damage.chatDirectSpell', {
+        attacker: attackerName,
+        defender: defenderName,
+        spell: params.spell,
+        damage: params.damage,
+        type,
+      });
+    }
+    if (content) await ChatMessage.create({ content });
   }
 
   /**

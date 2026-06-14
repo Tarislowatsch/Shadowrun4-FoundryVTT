@@ -125,9 +125,14 @@
       "pending": "Pending Damage",
       "result": "Result",
       "physical": "Physical",
+      "stun": "Stun",
+      "chatPotential": "{attacker} → {defender}: {hits} hits, {damage} {type} potential",
+      "chatResult": "{attacker} → {defender}: {base} {type} − {soaked} soaked = {final} {type}",
+      "chatDirectSpell": "{attacker} → {defender}: {spell} — {damage} {type}",
       "reason": {
         "combat": "Combat",
-        "drain": "Drain"
+        "drain": "Drain",
+        "spell": "Spell"
       },
       "electricityHint": "Electricity: –2 to all dice pools for 2 + net hits turns. Body + Willpower (3) vs. incapacitation.",
       "resisted": "{name} resisted all damage",
@@ -385,6 +390,10 @@
         "confirm": "Start Defense",
         "unknownAttacker": "Unknown",
         "noValidActors": "No valid actors found to select as defender."
+      },
+      "applyDamageWorkflow": {
+        "name": "Damage: Confirmation Workflow",
+        "hint": "When enabled, a dialog is shown before applying damage, allowing confirmation or adjustment. Disabling applies damage immediately."
       }
     },
     "shooting": {
@@ -425,20 +434,35 @@
       "specialization": "Specialization"
     },
     "soak": {
-      "armor": "Effective Armor",
+      "ap": "AP",
+      "armor": "Armor",
+      "impact": "Impact",
       "incomingDamage": "Incoming Damage",
       "soakBonus": "Soak Bonus",
       "title": "Soak Roll"
     },
     "spell": {
       "cast": "Cast",
+      "combatType": "Combat Type",
+      "combatTypes": {
+        "direct": "Direct",
+        "DIRECT": "Direct",
+        "indirect": "Indirect",
+        "INDIRECT": "Indirect"
+      },
       "categories": {
         "combat": "Combat",
+        "COMBAT": "Combat",
         "detection": "Detection",
+        "DETECTION": "Detection",
         "geomancy": "Geomancy",
+        "GEOMANCY": "Geomancy",
         "health": "Health",
+        "HEALTH": "Health",
         "illusion": "Illusion",
-        "manipulation": "Manipulation"
+        "ILLUSION": "Illusion",
+        "manipulation": "Manipulation",
+        "MANIPULATION": "Manipulation"
       },
       "category": "Category",
       "damage": "Damage",
@@ -484,6 +508,11 @@
         "self": "S",
         "touch": "T"
       },
+      "applyHits": "Net hits to apply",
+      "applyHitsHint": "Each applied hit adds +1 to spell DV and +1 to Drain DV.",
+      "netHits": "Net hits",
+      "noEffect": "Spell has no effect (fully resisted)",
+      "noTargets": "No valid targets selected — damage not applied",
       "source": "Source",
       "type": "Type",
       "types": {

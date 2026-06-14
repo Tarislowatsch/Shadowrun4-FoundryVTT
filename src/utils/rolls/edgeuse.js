@@ -47,8 +47,8 @@ function consumeEdge(
  * @property {SR4Actor} [actor] - The actor spending Edge, if any.
  * @property {() => void} [onComplete] - Callback fired after Edge is spent and the dialog closes.
  * @property {(newSuccesses: number) => void} [onCompleteWithResult] - Callback fired with the new
- *   success count after Edge is spent. For glitch-removal the original success count is passed
- *   through unchanged; for rerolls the new total is passed.
+ *   success count after Edge is spent. For glitch-removal 0 is passed (glitch converted to
+ *   non-glitch with no hits); for rerolls the new total is passed.
  */
 
 /**
@@ -102,9 +102,9 @@ export async function showEdgeDialog(options) {
         .querySelector('.edge-dummy-btn')
         ?.style.setProperty('display', 'none');
 
-      // Glitch → normaler Misserfolg: Erfolgszahl bleibt gleich
+      // Glitch → normaler Misserfolg: Erfolge auf 0 setzen
       html.querySelector('.glitch')?.addEventListener('click', () => {
-        consumeEdge(actor, dialog, onComplete, onCompleteWithResult, successes);
+        consumeEdge(actor, dialog, onComplete, onCompleteWithResult, 0);
         resolve();
       });
 

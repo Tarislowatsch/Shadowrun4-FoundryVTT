@@ -20,17 +20,20 @@
     >
 
     {{#if (eq this.system.category "COMBAT")}}
-    <span class="item-damage"
-      >{{localize "sr4.spell.damage"}}: {{ this.system.damage }}</span
+    <span class="item-combattype"
+      >{{localize "sr4.spell.combatType"}}:
+      {{localize (concat "sr4.spell.combatTypes." this.system.combatType)}}</span
     >
     <span class="item-damagetype"
       >{{localize "sr4.spell.damagetype"}}:
-      {{localize (concat "sr4.damage." this.system.type)}}</span
+      {{localize (concat "sr4.damage." this.system.damageType)}}</span
     >
+    {{#if (eq this.system.combatType "INDIRECT")}}
     <span class="item-element"
       >{{localize "sr4.spell.element"}}:
       {{localize (concat "sr4.spell.elements." this.system.element)}}</span
     >
+    {{/if}}
     {{/if}}
 
     <span class="item-duration"

@@ -1,0 +1,17 @@
+<form class="direct-spell-allocation">
+  <div class="form-group">
+    <strong>{{ spellName }}</strong>{{#if defenderName}} → {{ defenderName }}{{/if}} — {{localize "sr4.spell.force"}}: {{ force }}
+  </div>
+  <div class="form-group">
+    <span>{{localize "sr4.spell.netHits"}}: <strong>{{ netHits }}</strong></span>
+  </div>
+  {{#if bonusHits}}
+  <div class="form-group">
+    <label for="applyHits">{{localize "sr4.spell.applyHits"}}:</label>
+    <input type="number" id="applyHits" name="applyHits" value="0" min="0" max="{{ bonusHits }}" />
+  </div>
+  <div class="form-group hint">
+    <em>{{localize "sr4.spell.applyHitsHint"}}</em>
+  </div>
+  {{/if}}
+</form>

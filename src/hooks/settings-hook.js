@@ -59,6 +59,15 @@ export class SettingsHook {
         type: Boolean,
         default: false,
       });
+
+      game.settings.register('shadowrun4e', 'applyDamageWorkflow', {
+        name: 'sr4.settings.applyDamageWorkflow.name',
+        hint: 'sr4.settings.applyDamageWorkflow.hint',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+      });
     });
   }
 }

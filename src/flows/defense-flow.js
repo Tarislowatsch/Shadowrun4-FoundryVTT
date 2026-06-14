@@ -101,17 +101,21 @@ export function emitDefenseTrigger(
 /**
  * @param {import('@documents/index').SR4Actor} defender
  * @param {import('@models/index').SR4Weapon} weapon
- * @returns {number}
+ * @returns {{ raw: number, ap: number | null, apHalf: boolean, effective: number }}
  */
-function getEffectiveArmor(defender, weapon) {
+function getArmorBreakdown(defender, weapon) {
   /** @type {import('@models/index').SR4BaseCharacterSystem} */
   const sys = /** @type {any} */ (defender).system;
-  const base =
+  const raw =
     weapon.system.armorType === 'impact'
       ? (sys.armor?.impact ?? 0)
       : (sys.armor?.ballistic ?? 0);
-  if (weapon.system.apHalf) return Math.max(Math.floor(base / 2), 0);
-  return Math.max(base + (weapon.system.ap ?? 0), 0);
+  const apHalf = weapon.system.apHalf ?? false;
+  const ap = apHalf ? null : (weapon.system.ap ?? 0);
+  const effective = apHalf
+    ? Math.max(Math.floor(raw / 2), 0)
+    : Math.max(raw + (weapon.system.ap ?? 0), 0);
+  return { raw, ap, apHalf, effective };
 }
 
 export class DefenseFlow {
@@ -159,13 +163,26 @@ export class DefenseFlow {
     wideDefenseMalus = 0,
     burstDamageBonus = 0
   ) {
-    if (!game.settings.get('shadowrun4e', 'combatDefenseWorkflow')) return;
-
     /** @type {import('@documents/index').SR4Actor | undefined} */
     const defender = getGame().actors?.get(defenderId);
     /** @type {import('@documents/index').SR4Actor | undefined} */
     const attacker = getGame().actors?.get(attackerId);
     if (!defender || !attacker) return;
+
+    if (!game.settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
+      if (successes >= 1) {
+        const isPhysical = isPhysicalDamageType(weapon.system.damageType);
+        const potentialDamage =
+          weapon.system.damage + (successes - 1) + burstDamageBonus;
+        await ApplyDamageFlow.sendCombatSummary(
+          attacker.name,
+          defender.name,
+          'potential',
+          { hits: successes, damage: potentialDamage, isPhysical }
+        );
+      }
+      return;
+    }
 
     const {
       successes: rawDefenseHits,
@@ -179,7 +196,20 @@ export class DefenseFlow {
       weapon,
       wideDefenseMalus
     );
-    if (rawDefenseHits === null) return;
+    if (rawDefenseHits === null) {
+      if (successes >= 1) {
+        const isPhysical = isPhysicalDamageType(weapon.system.damageType);
+        const potentialDamage =
+          weapon.system.damage + (successes - 1) + burstDamageBonus;
+        await ApplyDamageFlow.sendCombatSummary(
+          attacker.name,
+          defender.name,
+          'potential',
+          { hits: successes, damage: potentialDamage, isPhysical }
+        );
+      }
+      return;
+    }
 
     // Offer defense Edge reroll if Edge wasn't spent in the roll and actor still has Edge
     let defenseHits = rawDefenseHits;
@@ -204,8 +234,14 @@ export class DefenseFlow {
       const netSuccesses = Math.max(successes - resolvedDefenseHits, 0);
       if (netSuccesses === 0) return;
 
-      const baseDamage = weapon.system.damage + netSuccesses + burstDamageBonus;
-      const effectiveArmor = getEffectiveArmor(defender, weapon);
+      const baseDamage =
+        weapon.system.damage + (netSuccesses - 1) + burstDamageBonus;
+      const {
+        raw: rawArmor,
+        ap,
+        apHalf,
+        effective: effectiveArmor,
+      } = getArmorBreakdown(defender, weapon);
       const dt = weapon.system.damageType;
       let isPhysical = isPhysicalDamageType(dt);
       if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
@@ -237,11 +273,23 @@ export class DefenseFlow {
         defender,
         baseDamage,
         isPhysical,
-        effectiveArmor
+        effectiveArmor,
+        { rawArmor, ap, apHalf }
       );
       if (!soakResult) return;
 
       const finalDamage = Math.max(baseDamage - soakResult.hits, 0);
+      await ApplyDamageFlow.sendCombatSummary(
+        attacker.name,
+        defender.name,
+        'result',
+        {
+          base: baseDamage,
+          soaked: soakResult.hits,
+          final: finalDamage,
+          isPhysical,
+        }
+      );
       if (finalDamage === 0) {
         const msgs = await ApplyDamageFlow.apply(
           0,
@@ -264,6 +312,17 @@ export class DefenseFlow {
             },
             async (newSoakHits) => {
               const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
+              await ApplyDamageFlow.sendCombatSummary(
+                attacker.name,
+                defender.name,
+                'result',
+                {
+                  base: baseDamage,
+                  soaked: newSoakHits,
+                  final: rerolledDamage,
+                  isPhysical,
+                }
+              );
               if (rerolledDamage === 0) {
                 const msgs = await ApplyDamageFlow.apply(
                   0,

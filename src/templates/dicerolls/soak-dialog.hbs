@@ -3,7 +3,17 @@
     <span>{{localize "sr4.soak.incomingDamage"}}: <strong>{{ incomingDamage }} {{ damageType }}</strong></span>
   </div>
   <div class="form-group">
-    <span>{{localize "sr4.stats.BODY"}}: {{ body }} + {{localize "sr4.soak.armor"}}: {{ effectiveArmor }}{{#if soakBonus}} + {{localize "sr4.soak.soakBonus"}}: {{ soakBonus }}{{/if}}</span>
+    <span>
+      {{localize "sr4.stats.BODY"}}: {{ body }} +
+      {{#if apHalf}}
+        {{localize "sr4.soak.impact"}}: {{ rawArmor }} ÷ 2 = {{ effectiveArmor }}
+      {{else if ap}}
+        {{localize "sr4.soak.armor"}}: {{ rawArmor }} {{localize "sr4.soak.ap"}}: {{ ap }} = {{ effectiveArmor }}
+      {{else}}
+        {{localize "sr4.soak.armor"}}: {{ effectiveArmor }}
+      {{/if}}
+      {{#if soakBonus}} + {{localize "sr4.soak.soakBonus"}}: {{ soakBonus }}{{/if}}
+    </span>
   </div>
   {{> bonus-input}}
   {{> malus-input}}

@@ -7,6 +7,7 @@ import {
   Shootingmodes,
   SpellTypes,
   SpellCategories,
+  SpellCombatTypes,
   SpellRanges,
   SpellDurations,
   SpellElements,
@@ -92,6 +93,7 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     context.actiontypes = ActionType;
     context.spelltypes = SpellTypes;
     context.spellcategories = SpellCategories;
+    context.spellcombattypes = SpellCombatTypes;
     context.spellranges = SpellRanges;
     context.spellelements = SpellElements;
     context.spelldurations = SpellDurations;

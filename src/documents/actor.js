@@ -34,6 +34,8 @@ const DEFAULT_STATS = {
 
 /**
  * @interface SR4Actor
+ * @property {string | null} id
+ * @property {string} name
  * @property {SR4ActorType} type
  * @property {import('@models/index').SR4BaseCharacterSystem | import('@models/index').SR4VehicleSystem | import('@models/index').SR4SpiritSystem} system
  * @property {foundry.utils.Collection<foundry.documents.Item>} items

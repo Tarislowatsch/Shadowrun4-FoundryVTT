@@ -1,5 +1,5 @@
 import { DefenseFlow, startDefenderPickerFlow } from '@flows/index';
-import { getGame } from '@utils/index';
+import { getGame, isResponsibleForActor, isPrimaryGM } from '@utils/index';
 
 /**
  * @typedef {object} DefenseSocketPayload
@@ -53,7 +53,7 @@ export class DefenseHook {
    */
   async _onSocketMessage(data) {
     if (data.action === 'selectDefender') {
-      if (!getGame().user?.isGM) return;
+      if (!isPrimaryGM()) return;
       const {
         attackerId,
         successes,
@@ -84,12 +84,7 @@ export class DefenseHook {
     const defender = getGame().actors?.get(defenderId);
     if (!defender) return;
 
-    const isAssignedUser = getGame().user?.character?.id === defenderId;
-    const hasAssignedUser = getGame().users?.some(
-      (u) => u.character?.id === defenderId
-    );
-    const isGM = getGame().user?.isGM;
-    if (!isAssignedUser && !(isGM && !hasAssignedUser)) return;
+    if (!isResponsibleForActor(defenderId)) return;
 
     await DefenseFlow.start(
       defender,

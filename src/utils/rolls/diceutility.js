@@ -1,3 +1,5 @@
+import { SR4 } from '../../config.js';
+
 const ROLL_RESULTS_TEMPLATE =
   'systems/shadowrun4e/templates/dicerolls/roll-results.hbs';
 
@@ -66,7 +68,8 @@ export class DiceUtility {
    * @returns {Promise<{successes: number, isGlitch: boolean}>}
    */
   static async rollInitiative(edgeUsed, numDice) {
-    if (edgeUsed) return { successes: 99, isGlitch: false };
+    if (edgeUsed)
+      return { successes: SR4.rules.edgeInitiativeSentinel, isGlitch: false };
     return this.rollAndShow({ numDice });
   }
 
@@ -87,7 +90,7 @@ export class DiceUtility {
       formula += 'x';
     }
 
-    formula += `cs>=5`;
+    formula += `cs>=${SR4.rules.successThreshold}`;
 
     return formula;
   }
@@ -120,7 +123,10 @@ export class DiceUtility {
    * @returns {{ isSuccess: boolean, isFailure: boolean }}
    */
   static getResults(roll) {
-    return { isSuccess: roll >= 5, isFailure: roll === 1 };
+    return {
+      isSuccess: roll >= SR4.rules.successThreshold,
+      isFailure: roll === 1,
+    };
   }
 
   /**

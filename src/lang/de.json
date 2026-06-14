@@ -131,9 +131,14 @@
       "pending": "Erwarteter Schaden",
       "result": "Ergebnis",
       "physical": "Körperlich (K)",
+      "stun": "Geistig (G)",
+      "chatPotential": "{attacker} → {defender}: {hits} Treffer, potentiell {damage} {type}",
+      "chatResult": "{attacker} → {defender}: {base} {type} − {soaked} resistet = {final} {type}",
+      "chatDirectSpell": "{attacker} → {defender}: {spell} — {damage} {type}",
       "reason": {
         "combat": "Kampf",
-        "drain": "Entzug"
+        "drain": "Entzug",
+        "spell": "Zauber"
       },
       "electricityHint": "Elektrizität: –2 auf alle Würfelpools für 2 + Nettoerfolge Runden. KON + WIL (3) gegen Bewusstlosigkeit.",
       "resisted": "{name} hat dem Schaden Widerstanden",
@@ -387,6 +392,10 @@
         "confirm": "Ausweichen starten",
         "unknownAttacker": "Unbekannt",
         "noValidActors": "Keine gültigen Akteure als Verteidiger verfügbar."
+      },
+      "applyDamageWorkflow": {
+        "name": "Schaden: Bestätigungs-Workflow",
+        "hint": "Wenn aktiv, wird vor dem Anwenden von Schaden ein Dialog zur Bestätigung oder Anpassung angezeigt. Deaktivieren wendet Schaden sofort an."
       }
     },
     "shooting": {
@@ -427,13 +436,22 @@
       "specializations": "Spezialisation"
     },
     "soak": {
-      "armor": "Rüstung (effektiv)",
+      "ap": "AP",
+      "armor": "Rüstung",
+      "impact": "Aufprall",
       "incomingDamage": "Eingehender Schaden",
       "soakBonus": "Widerstandsbonus",
       "title": "Schadenswiderstand"
     },
     "spell": {
       "cast": "Zaubern",
+      "combatType": "Kampftyp",
+      "combatTypes": {
+        "direct": "Direkt",
+        "DIRECT": "Direkt",
+        "indirect": "Indirekt",
+        "INDIRECT": "Indirekt"
+      },
       "categories": {
         "COMBAT": "Kampfzauber",
         "DETECTION": "Detektionszauber",
@@ -503,6 +521,11 @@
         "self": "S",
         "touch": "B"
       },
+      "applyHits": "Netto-Erfolge einsetzen",
+      "applyHitsHint": "Jeder eingesetzte Erfolg erhöht den Zauber-SW und den Entzugs-EW um 1.",
+      "netHits": "Netto-Erfolge",
+      "noEffect": "Zauber hat keinen Effekt (vollständig widerstanden)",
+      "noTargets": "Kein gültiges Ziel ausgewählt — Schaden nicht angewendet",
       "source": "Quelle",
       "type": "Typ",
       "types": {

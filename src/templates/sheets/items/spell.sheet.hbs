@@ -5,12 +5,16 @@
     <thead>
       <tr>
         <th>{{localize 'sr4.spell.category'}}</th>
+        {{#if (eq system.category "COMBAT")}}
+        <th>{{localize 'sr4.spell.combatType'}}</th>
+        {{/if}}
         <th>{{localize 'sr4.spell.type'}}</th>
         <th>{{localize 'sr4.spell.range'}}</th>
         {{#if (eq system.category "COMBAT")}}
-        <th>{{localize 'sr4.spell.damage'}}</th>
         <th>{{localize 'sr4.spell.damagetype'}}</th>
+        {{#if (eq system.combatType "INDIRECT")}}
         <th>{{localize 'sr4.spell.element'}}</th>
+        {{/if}}
         {{/if}}
         <th>{{localize 'sr4.spell.duration'}}</th>
         <th>{{localize 'sr4.spell.dv'}}</th>
@@ -24,6 +28,13 @@
             {{selectOptions spellcategories selected=system.category localize=true}}
           </select>
         </td>
+        {{#if (eq system.category "COMBAT")}}
+        <td>
+          <select name="system.combatType">
+            {{selectOptions spellcombattypes selected=system.combatType localize=true}}
+          </select>
+        </td>
+        {{/if}}
         <td>
           <select name="system.type">
             {{selectOptions spelltypes selected=system.type localize=true}}
@@ -36,18 +47,17 @@
         </td>
         {{#if (eq system.category "COMBAT")}}
         <td>
-          <input type="text" name="system.damage" value="{{ system.damage }}" />
-        </td>
-        <td>
-          <select name="system.damagetype">
+          <select name="system.damageType">
             {{selectOptions damagetypes selected=system.damageType localize=true}}
           </select>
         </td>
+        {{#if (eq system.combatType "INDIRECT")}}
         <td>
           <select name="system.element">
             {{selectOptions spellelements selected=system.element localize=true}}
           </select>
         </td>
+        {{/if}}
         {{/if}}
         <td>
           <select name="system.duration">
