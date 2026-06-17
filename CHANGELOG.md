@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/Tarislowatsch/sr4foundry/compare/v1.3.2...v1.3.3) (2026-06-17)
+
+
+### Bug Fixes
+
+* **ui:** prevent sheet re-render on inline skill edits ([15881d6](https://github.com/Tarislowatsch/sr4foundry/commit/15881d64b017f1916914e32ca9498766253c5332))
+
 ## [1.3.2](https://github.com/Tarislowatsch/sr4foundry/compare/v1.3.1...v1.3.2) (2026-06-17)
 
 

@@ -101,6 +101,11 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
             } else if (target.dataset.dtype === 'Number') {
               value = Number(value);
             }
+            if (item.type === 'Skill') {
+              event.stopPropagation();
+              await item.update({ [field]: value }, { render: false });
+              return;
+            }
             await item.update({ [field]: value });
           },
           { signal }
