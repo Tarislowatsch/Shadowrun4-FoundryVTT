@@ -4,6 +4,10 @@ export async function registerItemPartials() {
   const templatePaths = [
     { path: `${basePath}/item-sheet-header.hbs`, name: 'item-sheet-header' },
     { path: `${basePath}/item-textareas.hbs`, name: 'item-textareas' },
+    {
+      path: `${basePath}/item-actions-effects.hbs`,
+      name: 'item-actions-effects',
+    },
   ];
 
   await Promise.all(

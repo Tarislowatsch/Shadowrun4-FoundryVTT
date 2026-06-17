@@ -5,6 +5,7 @@
       "npc": "NPC",
       "vehicle": "Vehicle",
       "spirit": "Spirit",
+      "sprite": "Sprite",
       "device": "Device"
     },
     "Item": {
@@ -51,6 +52,7 @@
       },
       "delete": "Delete",
       "edit": "Edit",
+      "new": "New Action",
       "noActions": "This Character has no actions",
       "noRatingForAction": "Please add ratings for this action",
       "roll": "Roll",
@@ -187,6 +189,9 @@
     "effect": {
       "active": "Active",
       "add": "Add Effect",
+      "addFromTemplate": "— Add effect —",
+      "templates": "Templates",
+      "existing": "Existing Effects",
       "attribute": "Attribute",
       "changeIcon": "Click to change icon",
       "duration": "Duration (Turns)",
@@ -339,13 +344,30 @@
     },
     "power": {
       "cost": "Cost",
+      "costPerLevel": "Cost/Level",
       "geas": "Geas",
-      "hasRating": "Rated",
+      "actions": {
+        "label": "Actions",
+        "create": "Add linked action"
+      },
+      "noActions": "No linked actions",
       "nopowers": "This is where I keep my powers, if I had any",
       "rating": "Rating",
+      "ratingMode": {
+        "label": "Rating",
+        "none": "No Rating",
+        "rated": "Rated",
+        "ratedNoCost": "Rated (No Cost)"
+      },
       "source": "Source",
       "totalCost": "Total Cost",
-      "totalcost": "Total Cost"
+      "totalcost": "Total Cost",
+      "tooltip": {
+        "cost": "Power Point cost. When rated, this is the cost per level.",
+        "rating": "Invested rating level.",
+        "source": "Rulebook reference, e.g. SR4 p. 172",
+        "totalCost": "Total Power Points spent on this power."
+      }
     },
     "roll": {
       "amount": "Dice Amount",
@@ -529,6 +551,18 @@
       "dv": "Drain Value",
       "element": "Element",
       "elements": {
+        "ACID": "Acid",
+        "BLAST": "Blast",
+        "ELECTRICITY": "Electricity",
+        "FIRE": "Fire",
+        "ICE": "Ice",
+        "LIGHT": "Light",
+        "METAL": "Metal",
+        "RADIATION": "Radiation",
+        "SAND": "Sand",
+        "SMOKE": "Smoke",
+        "SOUND": "Sound",
+        "WATER": "Water",
         "acid": "Acid",
         "blast": "Blast",
         "electricity": "Electricity",
@@ -582,6 +616,19 @@
       "services": "Services",
       "summoner": "Summoner",
       "type": "Spirit Type"
+    },
+    "sprite": {
+      "attributes": "Attributes",
+      "compiler": "Compiler",
+      "dropCompiler": "Drop actor to link compiler",
+      "name": "Name",
+      "noPowers": "No powers",
+      "noSkills": "No skills",
+      "ownerUuid": "Compiler UUID",
+      "powers": "Powers",
+      "rating": "Rating",
+      "tasks": "Tasks",
+      "type": "Sprite Type"
     },
     "stats": {
       "AGILITY": "Agility",

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import {
   computeDerivedStats,
   computeSpiritDerivedStats,
+  computeSpriteDerivedStats,
   computeVehicleDerivedStats,
 } from '../src/documents/derivedStats.mapper.js';
 
@@ -309,7 +310,15 @@ describe('computeSpiritDerivedStats', () => {
     generalModifier = 0,
   } = {}) {
     return {
-      sheetStats: { BODY, WILLPOWER, INTUITION, REACTION },
+      sheetStats: {
+        BODY,
+        WILLPOWER,
+        INTUITION,
+        REACTION,
+        INITIATIVE: 0,
+        ASTRALINITIATIVE: 0,
+        MATRIXINITIATIVE: 0,
+      },
       modifiers: { generalModifier },
       conditionMonitor: {
         physical: { value: physDmg, max: 0 },
@@ -348,6 +357,14 @@ describe('computeSpiritDerivedStats', () => {
     expect(result.initiative.astral).toBe(10);
   });
 
+  it('writes initiative values back to sheetStats', () => {
+    const data = makeSpiritData({ INTUITION: 5, REACTION: 4 });
+    computeSpiritDerivedStats(data);
+    expect(data.sheetStats.INITIATIVE).toBe(9);
+    expect(data.sheetStats.ASTRALINITIATIVE).toBe(10);
+    expect(data.sheetStats.MATRIXINITIATIVE).toBe(0);
+  });
+
   it('matrix initiative is always 0', () => {
     const data = makeSpiritData();
     const result = computeSpiritDerivedStats(data);
@@ -360,10 +377,170 @@ describe('computeSpiritDerivedStats', () => {
     expect(result.woundModifier).toBe(-2);
   });
 
+  it('dicePoolModifier = woundModifier + generalModifier', () => {
+    const data = makeSpiritData({ physDmg: 3, generalModifier: -2 });
+    const result = computeSpiritDerivedStats(data);
+    expect(result.dicePoolModifier).toBe(-3);
+  });
+
   it('passesString is always "2/2/0"', () => {
     const data = makeSpiritData();
     const result = computeSpiritDerivedStats(data);
     expect(result.passesString).toBe('2/2/0');
+  });
+});
+
+describe('computeSpriteDerivedStats', () => {
+  function makeSpriteData({
+    BODY = 4,
+    WILLPOWER = 4,
+    INTUITION = 4,
+    REACTION = 3,
+    physDmg = 0,
+    stunDmg = 0,
+    generalModifier = 0,
+  } = {}) {
+    return {
+      sheetStats: {
+        BODY,
+        WILLPOWER,
+        INTUITION,
+        REACTION,
+        INITIATIVE: 0,
+        ASTRALINITIATIVE: 0,
+        MATRIXINITIATIVE: 0,
+      },
+      modifiers: { generalModifier },
+      conditionMonitor: {
+        physical: { value: physDmg, max: 0 },
+        stun: { value: stunDmg, max: 0 },
+      },
+      derivedStats: {
+        woundModifier: 0,
+        dicePoolModifier: 0,
+        passesString: '',
+        initiative: { physical: 0, astral: 0, matrix: 0 },
+      },
+    };
+  }
+
+  it('sets physical monitor max from BODY', () => {
+    const data = makeSpriteData({ BODY: 4 });
+    computeSpriteDerivedStats(data);
+    expect(data.conditionMonitor.physical.max).toBe(10);
+  });
+
+  it('sets stun monitor max from WILLPOWER', () => {
+    const data = makeSpriteData({ WILLPOWER: 6 });
+    computeSpriteDerivedStats(data);
+    expect(data.conditionMonitor.stun.max).toBe(11);
+  });
+
+  it('physical initiative = INTUITION + REACTION', () => {
+    const data = makeSpriteData({ INTUITION: 5, REACTION: 4 });
+    const result = computeSpriteDerivedStats(data);
+    expect(result.initiative.physical).toBe(9);
+  });
+
+  it('matrix initiative = INTUITION * 2', () => {
+    const data = makeSpriteData({ INTUITION: 5 });
+    const result = computeSpriteDerivedStats(data);
+    expect(result.initiative.matrix).toBe(10);
+  });
+
+  it('astral initiative is always 0', () => {
+    const data = makeSpriteData();
+    const result = computeSpriteDerivedStats(data);
+    expect(result.initiative.astral).toBe(0);
+  });
+
+  it('writes initiative values back to sheetStats', () => {
+    const data = makeSpriteData({ INTUITION: 5, REACTION: 4 });
+    computeSpriteDerivedStats(data);
+    expect(data.sheetStats.INITIATIVE).toBe(9);
+    expect(data.sheetStats.MATRIXINITIATIVE).toBe(10);
+    expect(data.sheetStats.ASTRALINITIATIVE).toBe(0);
+  });
+
+  it('wound modifier stacks physical and stun damage', () => {
+    const data = makeSpriteData({ physDmg: 3, stunDmg: 3 });
+    const result = computeSpriteDerivedStats(data);
+    expect(result.woundModifier).toBe(-2);
+  });
+
+  it('dicePoolModifier = woundModifier + generalModifier', () => {
+    const data = makeSpriteData({ physDmg: 3, generalModifier: -2 });
+    const result = computeSpriteDerivedStats(data);
+    expect(result.dicePoolModifier).toBe(-3);
+  });
+
+  it('passesString is always "2/0/2"', () => {
+    const data = makeSpriteData();
+    const result = computeSpriteDerivedStats(data);
+    expect(result.passesString).toBe('2/0/2');
+  });
+});
+
+describe('spirit vs sprite symmetry/divergence', () => {
+  function makeEntityData({ INTUITION = 5, REACTION = 3 } = {}) {
+    return {
+      sheetStats: {
+        BODY: 4,
+        WILLPOWER: 4,
+        INTUITION,
+        REACTION,
+        INITIATIVE: 0,
+        ASTRALINITIATIVE: 0,
+        MATRIXINITIATIVE: 0,
+      },
+      modifiers: { generalModifier: 0 },
+      conditionMonitor: {
+        physical: { value: 0, max: 0 },
+        stun: { value: 0, max: 0 },
+      },
+      derivedStats: {
+        woundModifier: 0,
+        dicePoolModifier: 0,
+        passesString: '',
+        initiative: { physical: 0, astral: 0, matrix: 0 },
+      },
+    };
+  }
+
+  it('both share the same physical initiative formula', () => {
+    const spirit = computeSpiritDerivedStats(makeEntityData());
+    const sprite = computeSpriteDerivedStats(makeEntityData());
+    expect(spirit.initiative.physical).toBe(sprite.initiative.physical);
+    expect(spirit.initiative.physical).toBe(8);
+  });
+
+  it('spirit has astral initiative, sprite has matrix initiative (same value)', () => {
+    const spirit = computeSpiritDerivedStats(makeEntityData({ INTUITION: 6 }));
+    const sprite = computeSpriteDerivedStats(makeEntityData({ INTUITION: 6 }));
+    expect(spirit.initiative.astral).toBe(12);
+    expect(spirit.initiative.matrix).toBe(0);
+    expect(sprite.initiative.matrix).toBe(12);
+    expect(sprite.initiative.astral).toBe(0);
+  });
+
+  it('both compute identical monitors and wound modifiers', () => {
+    const data1 = makeEntityData();
+    const data2 = makeEntityData();
+    data1.conditionMonitor.physical.value = 4;
+    data2.conditionMonitor.physical.value = 4;
+    const spirit = computeSpiritDerivedStats(data1);
+    const sprite = computeSpriteDerivedStats(data2);
+    expect(spirit.woundModifier).toBe(sprite.woundModifier);
+    expect(data1.conditionMonitor.physical.max).toBe(
+      data2.conditionMonitor.physical.max
+    );
+  });
+
+  it('passesString mirrors astral/matrix passes', () => {
+    const spirit = computeSpiritDerivedStats(makeEntityData());
+    const sprite = computeSpriteDerivedStats(makeEntityData());
+    expect(spirit.passesString).toBe('2/2/0');
+    expect(sprite.passesString).toBe('2/0/2');
   });
 });
 

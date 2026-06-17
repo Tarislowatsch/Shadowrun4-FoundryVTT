@@ -1,0 +1,85 @@
+    <div class="inventory-section">
+      <h3>
+        {{localize 'sr4.power.actions.label'}}
+        {{> item-create-btn btnAction="createLinkedAction" btnTooltip="sr4.power.actions.create"}}
+      </h3>
+      {{#if linkedActions}}
+      <ul class="item-list">
+        {{#each linkedActions}}
+        <li class="item-row" data-item-id="{{id}}">
+          <span class="item-name">{{name}}</span>
+          {{> item-edit-btn itemId=id}}
+          {{> item-delete-btn itemId=id}}
+        </li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <p class="empty-list">{{localize 'sr4.power.noActions'}}</p>
+      {{/if}}
+    </div>
+
+    <div class="inventory-section">
+      <h3>
+        {{localize 'sr4.tab.effects'}}
+        <select class="effect-template-picker" data-action="addEffectTemplate">
+          <option value="">{{localize 'sr4.effect.addFromTemplate'}}</option>
+          <optgroup label="{{localize 'sr4.effect.templates'}}">
+            {{#each effectTemplates}}
+            {{#if (eq type 'template')}}
+            <option value="{{key}}">{{name}}</option>
+            {{/if}}
+            {{/each}}
+          </optgroup>
+          {{#if hasExistingEffects}}
+          <optgroup label="{{localize 'sr4.effect.existing'}}">
+            {{#each effectTemplates}}
+            {{#if (eq type 'existing')}}
+            <option value="{{key}}">{{name}}</option>
+            {{/if}}
+            {{/each}}
+          </optgroup>
+          {{/if}}
+        </select>
+        {{> item-create-btn btnAction="createEffect" btnTooltip="sr4.effect.add"}}
+      </h3>
+      {{#if effects}}
+      <table class="effects-table">
+        <thead>
+          <tr>
+            <th class="effect-icon-col"></th>
+            <th>{{localize 'sr4.effect.name'}}</th>
+            <th>{{localize 'sr4.effect.attribute'}}</th>
+            <th>{{localize 'sr4.effect.mode.label'}}</th>
+            <th>{{localize 'sr4.effect.value'}}</th>
+            <th>{{localize 'sr4.effect.active'}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each effects as |effect|}}
+          <tr class="effect-row {{#unless effect.active}}effect-inactive{{/unless}}" data-effect-id="{{effect.id}}">
+            <td class="effect-icon-col"><img src="{{effect.img}}" class="effect-icon" /></td>
+            <td class="effect-name">{{effect.name}}</td>
+            <td class="effect-attribute">{{localize (lookup @root.effectTargets effect.key)}}</td>
+            <td class="effect-mode">{{localize (concat 'sr4.effect.mode.' effect.mode)}}</td>
+            <td class="effect-value {{#if (gt effect.value 0)}}positive{{else if (lt effect.value 0)}}negative{{/if}}">
+              {{#if (eq effect.mode 'add')}}{{#if (gt effect.value 0)}}+{{/if}}{{effect.value}}
+              {{else if (eq effect.mode 'multiply')}}×{{effect.value}}
+              {{else}}={{effect.value}}{{/if}}
+            </td>
+            <td class="effect-toggle">
+              <input type="checkbox" data-action="toggleEffect"
+                data-effect-id="{{effect.id}}" {{#if effect.active}}checked{{/if}} />
+            </td>
+            <td class="item-controls">
+              <a data-action="editEffect" data-effect-id="{{effect.id}}"><i class="fas fa-edit"></i></a>
+              <a data-action="deleteEffect" data-effect-id="{{effect.id}}"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{else}}
+      <p class="empty-list">{{localize 'sr4.effect.none'}}</p>
+      {{/if}}
+    </div>

@@ -1,0 +1,24 @@
+{{#if this.itemEffects.length}}
+<div class="item-card-effects">
+  {{#each this.itemEffects}}
+  <label class="item-effect-toggle {{#unless active}}effect-inactive{{/unless}}">
+    <input type="checkbox" data-action="toggleItemEffect"
+      data-item-id="{{itemId}}" data-effect-id="{{id}}"
+      {{#if active}}checked{{/if}} />
+    <span>{{name}}</span>
+  </label>
+  {{/each}}
+</div>
+{{/if}}
+{{#if this.linkedActions.length}}
+<div class="item-card-actions">
+  {{#each this.linkedActions}}
+  <button class="roll-action" data-action="rollAction"
+    data-rating1="{{system.rating1}}" data-rating2="{{system.rating2}}"
+    data-action1="{{system.actionPart1}}" data-action2="{{system.actionPart2}}"
+    data-tooltip="{{name}}">
+    <i class="fas fa-dice-d20"></i> {{name}}
+  </button>
+  {{/each}}
+</div>
+{{/if}}

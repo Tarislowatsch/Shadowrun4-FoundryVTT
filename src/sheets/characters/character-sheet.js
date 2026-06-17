@@ -25,7 +25,6 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       editToggle: SR4CharacterSheet.#onEditToggle,
       castSpell: SR4CharacterSheet.#onCastSpell,
       rollSkill: SR4CharacterSheet.#onRollSkill,
-      rollAction: SR4CharacterSheet.#onRollAction,
       threadComplexForm: SR4CharacterSheet.#onThreadComplexForm,
       createEffect: SR4CharacterSheet.#onCreateEffect,
       toggleEffect: SR4CharacterSheet.#onToggleEffect,
@@ -182,13 +181,13 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   }
 
   _getItemContext(items) {
-    const powers = items.filter((i) => i.type === 'Power');
+    const powers = this._enrichItemContext(items, 'Power');
     return {
       weapons: buildWeaponContext(items),
       skills: sortSkillsByLabel(items),
       items: items.filter((i) => i.type === 'Item'),
-      implants: items.filter((i) => i.type === 'Implant'),
-      spells: items.filter((i) => i.type === 'Spell'),
+      implants: this._enrichItemContext(items, 'Implant'),
+      spells: this._enrichItemContext(items, 'Spell'),
       powers,
       totalPowerCost: powers.reduce(
         (sum, p) => sum + (p.system.totalCost ?? 0),
@@ -322,26 +321,6 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   static async #onRollSkill(event, target) {
     const skill = target.dataset.skill;
     if (skill) await handleSkillRoll(this.actor, skill);
-  }
-
-  static async #onRollAction(event, target) {
-    const rating1 = Number(target.dataset.rating1) || 0;
-    const rating2 = Number(target.dataset.rating2) || 0;
-    const action1 = target.dataset.action1;
-    const action2 = target.dataset.action2;
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    const numDice = rating1 + rating2;
-
-    if (!item || numDice < 1) {
-      ui?.notifications?.error(
-        game.i18n.localize('sr4.action.noRatingForAction')
-      );
-      return;
-    }
-
-    const actionName = `${item.name} (${action1}${action2 ? ` + ${action2}` : ''})`;
-    openActionDialog(this.actor, actionName, numDice);
   }
 
   // ── Effect actions ──────────────────────────────────────────────────────────

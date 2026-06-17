@@ -1,10 +1,5 @@
 import { SR4EffectTargets } from '@effects/index.js';
 
-/** @type {Record<number, string>} Maps Foundry AE mode number → display key */
-const MODE_NAMES = { 1: 'multiply', 2: 'add', 5: 'override' };
-/** @type {Record<string, number>} Maps display key → Foundry AE mode number */
-const MODE_NUMBERS = { multiply: 1, add: 2, override: 5 };
-
 /**
  * @typedef {object} SR4ActiveEffectSheetOptions
  * @property {foundry.documents.ActiveEffect} [document] - The ActiveEffect document to edit.
@@ -50,7 +45,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
    */
   async _prepareContext(options) {
     const change = this.document.changes[0] ?? {};
-    const modeKey = MODE_NAMES[change.mode] ?? 'add';
+    const modeKey = change.type ?? 'add';
     return {
       name: this.document.name,
       img: this.document.img ?? 'icons/svg/aura.svg',
@@ -123,7 +118,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
       changes: [
         {
           key: changeKey,
-          mode: MODE_NUMBERS[changeModeKey] ?? 2,
+          type: changeModeKey,
           value: changeValue,
         },
       ],

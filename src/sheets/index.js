@@ -3,6 +3,7 @@ export { default as SR4BaseActorSheet } from './characters/sr4-base-actor-sheet'
 export { default as SR4CharacterSheet } from './characters/character-sheet';
 export { default as SR4NpcSheet } from './characters/npc-sheet';
 export { default as SR4SpiritSheet } from './actors/spirit-sheet';
+export { default as SR4SpriteSheet } from './actors/sprite-sheet';
 export { default as SR4VehicleSheet } from './actors/vehicle-sheet';
 export * from './partials/partials';
 export * from './helpers/index';

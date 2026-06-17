@@ -12,6 +12,7 @@ export class SR4ActionData extends foundry.abstract.TypeDataModel {
       label: new fields.StringField({ initial: '' }),
       description: new fields.StringField({ initial: '' }),
       source: new fields.StringField({ initial: '' }),
+      linkedItemId: new fields.StringField({ initial: '', blank: true }),
     };
   }
 }

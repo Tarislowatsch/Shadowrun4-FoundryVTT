@@ -11,7 +11,7 @@ export const EFFECT_TEMPLATES = Object.freeze({
     changes: [
       {
         key: 'system.modifiers.generalModifier',
-        mode: 2,
+        type: 'add',
         value: '-2',
       },
     ],
@@ -25,7 +25,7 @@ export const EFFECT_TEMPLATES = Object.freeze({
     changes: [
       {
         key: 'system.modifiers.generalModifier',
-        mode: 2,
+        type: 'add',
         value: '-2',
       },
     ],
@@ -40,7 +40,7 @@ export const EFFECT_TEMPLATES = Object.freeze({
     changes: [
       {
         key: 'system.modifiers.attackModifier',
-        mode: 2,
+        type: 'add',
         value: '-4',
       },
     ],
@@ -55,7 +55,7 @@ export const EFFECT_TEMPLATES = Object.freeze({
     changes: [
       {
         key: 'system.modifiers.attackModifier',
-        mode: 2,
+        type: 'add',
         value: '-2',
       },
     ],
@@ -70,7 +70,7 @@ export const EFFECT_TEMPLATES = Object.freeze({
     changes: [
       {
         key: 'system.modifiers.generalModifier',
-        mode: 2,
+        type: 'add',
         value: '-2',
       },
     ],

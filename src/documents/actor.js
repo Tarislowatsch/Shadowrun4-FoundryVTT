@@ -3,6 +3,7 @@ import { Attackskill } from '@models/index';
 import {
   computeDerivedStats,
   computeSpiritDerivedStats,
+  computeSpriteDerivedStats,
   computeVehicleDerivedStats,
 } from './derivedStats.mapper';
 import { getGame } from '@utils/index';
@@ -29,7 +30,7 @@ const DEFAULT_STATS = {
 };
 
 /**
- * @typedef {'character' | 'npc' | 'vehicle' | 'spirit'} SR4ActorType
+ * @typedef {'character' | 'npc' | 'vehicle' | 'spirit' | 'sprite'} SR4ActorType
  */
 
 /**
@@ -71,12 +72,18 @@ export class SR4Actor extends foundry.documents.Actor {
 
       Object.assign(systemData.derivedStats, computeDerivedStats(systemData));
     } else if (self.type === 'spirit') {
-      /** @type {import('@models/index').SR4SpiritSystem} */
       const systemData = self.system;
       if (!systemData?.sheetStats) return;
       Object.assign(
         systemData.derivedStats,
         computeSpiritDerivedStats(systemData)
+      );
+    } else if (self.type === 'sprite') {
+      const systemData = self.system;
+      if (!systemData?.sheetStats) return;
+      Object.assign(
+        systemData.derivedStats,
+        computeSpriteDerivedStats(systemData)
       );
     } else if (self.type === 'vehicle') {
       /** @type {import('@models/index').SR4VehicleSystem} */

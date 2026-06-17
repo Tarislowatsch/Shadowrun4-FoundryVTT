@@ -3,6 +3,36 @@ import { SR4 } from '../../config.js';
 const ROLL_RESULTS_TEMPLATE =
   'systems/shadowrun4e/templates/dicerolls/roll-results.hbs';
 
+// ---------------------------------------------------------------------------
+// Pure evaluation helpers (no Foundry side-effects)
+// ---------------------------------------------------------------------------
+
+/** @param {number} value @returns {{ isSuccess: boolean, isFailure: boolean }} */
+export function evaluateDie(value) {
+  return {
+    isSuccess: value >= SR4.rules.successThreshold,
+    isFailure: value === 1,
+  };
+}
+
+/** @param {{ failures: number, rolls: number[] }} results @param {boolean} [reroll] */
+export function isGlitch(results, reroll = false) {
+  return results.failures >= results.rolls.length / 2 && !reroll;
+}
+
+/** @param {{ successes: number, failures: number, rolls: number[] }} results @param {boolean} [reroll] */
+export function isCriticalGlitch(results, reroll = false) {
+  return isGlitch(results, reroll) && results.successes === 0;
+}
+
+/** @param {{ numDice: number, explode?: boolean }} options @returns {string} */
+export function buildRollFormula(options) {
+  let formula = `${options.numDice}d6`;
+  if (options.explode) formula += 'x';
+  formula += `cs>=${SR4.rules.successThreshold}`;
+  return formula;
+}
+
 export class DiceUtility {
   // ---------------------------------------------------------------------------
   // Roll execution
@@ -74,33 +104,15 @@ export class DiceUtility {
   }
 
   // ---------------------------------------------------------------------------
-  // Roll formula & result evaluation
+  // Roll formula & result evaluation (delegates to free functions)
   // ---------------------------------------------------------------------------
 
-  /**
-   * Builds the Foundry dice formula for a SR4 dice pool.
-   *
-   * @param {import('@models/index').SR4RollOptions} options
-   * @returns {string} The Foundry Roll formula string.
-   */
+  /** @param {import('@models/index').SR4RollOptions} options @returns {string} */
   static rollFormula(options) {
-    let formula = `${options.numDice}d6`;
-
-    if (options.explode) {
-      formula += 'x';
-    }
-
-    formula += `cs>=${SR4.rules.successThreshold}`;
-
-    return formula;
+    return buildRollFormula(options);
   }
 
-  /**
-   * Counts successes (5+) and failures (1s) from a Foundry Roll.
-   *
-   * @param {Roll} roll
-   * @returns {SR4RollResult}
-   */
+  /** @param {Roll} roll @returns {SR4RollResult} */
   static determineSuccess(roll) {
     let successes = 0;
     let failures = 0;
@@ -108,7 +120,7 @@ export class DiceUtility {
     const rolls = [];
     for (const result of roll.terms[0].results) {
       const value = result.result;
-      const { isSuccess, isFailure } = DiceUtility.getResults(value);
+      const { isSuccess, isFailure } = evaluateDie(value);
       rolls.push(value);
       successes += isSuccess ? 1 : 0;
       failures += isFailure ? 1 : 0;
@@ -116,39 +128,19 @@ export class DiceUtility {
     return { successes, failures, rolls };
   }
 
-  /**
-   * Returns whether a single die value is a success or a glitch die.
-   *
-   * @param {number} roll
-   * @returns {{ isSuccess: boolean, isFailure: boolean }}
-   */
+  /** @param {number} roll */
   static getResults(roll) {
-    return {
-      isSuccess: roll >= SR4.rules.successThreshold,
-      isFailure: roll === 1,
-    };
+    return evaluateDie(roll);
   }
 
-  /**
-   * Returns true when more than half the dice show 1s and this is not a reroll.
-   *
-   * @param {SR4RollResult} results
-   * @param {boolean} [reroll=false]
-   * @returns {boolean}
-   */
+  /** @param {SR4RollResult} results @param {boolean} [reroll] */
   static glitchCheck(results, reroll = false) {
-    return results.failures >= results.rolls.length / 2 && !reroll;
+    return isGlitch(results, reroll);
   }
 
-  /**
-   * Returns true when the roll is a glitch and no successes were scored.
-   *
-   * @param {SR4RollResult} results
-   * @param {boolean} [reroll=false]
-   * @returns {boolean}
-   */
+  /** @param {SR4RollResult} results @param {boolean} [reroll] */
   static criticalGlitchCheck(results, reroll = false) {
-    return this.glitchCheck(results, reroll) && results.successes === 0;
+    return isCriticalGlitch(results, reroll);
   }
 
   // ---------------------------------------------------------------------------

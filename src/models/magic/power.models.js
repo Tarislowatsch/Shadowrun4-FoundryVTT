@@ -3,10 +3,12 @@ import { genericItemSchema } from '@models/shared';
 const fields = foundry.data.fields;
 
 /**
+ * @typedef {'none'|'rated'|'ratedNoCost'} SR4PowerRatingMode
+ *
  * @typedef {object} SR4Power
- * @property {boolean}  hasRating    - Whether this power uses a rating at all
+ * @property {SR4PowerRatingMode} ratingMode  - How rating affects PP cost
  * @property {number}   rating       - Power level (integer, minimum 1)
- * @property {number}   cost         - Power point cost per rating (decimal, e.g. 0.5)
+ * @property {number}   cost         - PP cost (flat, or per level when ratingMode='rated')
  * @property {boolean}  geas         - Whether the power requires a geas
  * @property {string}   description  - Full description of the power
  * @property {string}   notes        - GM/player notes
@@ -21,7 +23,11 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...genericItemSchema(),
-      hasRating: new fields.BooleanField({ initial: false }),
+      ratingMode: new fields.StringField({
+        initial: 'none',
+        blank: false,
+        choices: ['none', 'rated', 'ratedNoCost'],
+      }),
       rating: new fields.NumberField({
         initial: 1,
         integer: true,
@@ -41,7 +47,7 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
 
   get totalCost() {
     const self = /** @type {SR4Power} */ (/** @type {unknown} */ (this));
-    return self.hasRating ? self.cost * self.rating : self.cost;
+    return self.ratingMode === 'rated' ? self.cost * self.rating : self.cost;
   }
 }
 

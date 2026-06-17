@@ -1,4 +1,4 @@
-import { handleAttackRoll, reloadWeapon } from '@utils/index';
+import { handleAttackRoll, openActionDialog, reloadWeapon } from '@utils/index';
 
 export default class SR4BaseActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ActorSheetV2
@@ -23,6 +23,8 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       attackRoll: SR4BaseActorSheet._onAttackRoll,
       reloadWeapon: SR4BaseActorSheet._onReloadWeapon,
       editAmmo: SR4BaseActorSheet._onEditAmmo,
+      toggleItemEffect: SR4BaseActorSheet._onToggleItemEffect,
+      rollAction: SR4BaseActorSheet._onRollAction,
     },
   };
 
@@ -126,6 +128,29 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
   }
 
   // ---------------------------------------------------------------------------
+  // Shared context helpers
+  // ---------------------------------------------------------------------------
+
+  _enrichItemContext(items, type) {
+    const actions = items.filter((i) => i.type === 'Action');
+    return items
+      .filter((i) => i.type === type)
+      .map((item) => {
+        item.linkedActions = actions
+          .filter((a) => a.system.linkedItemId === item._id)
+          .map((a) => ({ id: a._id, name: a.name, system: a.system }));
+        const liveItem = this.actor.items.get(item._id);
+        item.itemEffects = (liveItem?.effects.contents ?? []).map((e) => ({
+          id: e.id,
+          name: e.name,
+          active: !e.disabled,
+          itemId: item._id,
+        }));
+        return item;
+      });
+  }
+
+  // ---------------------------------------------------------------------------
   // Actions
   // ---------------------------------------------------------------------------
 
@@ -224,5 +249,35 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     const ammoId = target.dataset.ammoId;
     if (!ammoId) return;
     this.actor.items.get(ammoId)?.sheet?.render(true);
+  }
+
+  static async _onRollAction(event, target) {
+    const rating1 = Number(target.dataset.rating1) || 0;
+    const rating2 = Number(target.dataset.rating2) || 0;
+    const action1 = target.dataset.action1;
+    const action2 = target.dataset.action2;
+    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    const numDice = rating1 + rating2;
+
+    if (!item || numDice < 1) {
+      ui?.notifications?.error(
+        game.i18n.localize('sr4.action.noRatingForAction')
+      );
+      return;
+    }
+
+    const actionName = `${item.name} (${action1}${action2 ? ` + ${action2}` : ''})`;
+    openActionDialog(this.actor, actionName, numDice);
+  }
+
+  static async _onToggleItemEffect(event, target) {
+    const itemId = target.dataset.itemId;
+    const effectId = target.dataset.effectId;
+    if (!itemId || !effectId) return;
+    const item = this.actor.items.get(itemId);
+    const effect = item?.effects.get(effectId);
+    if (!effect) return;
+    await effect.update({ disabled: !effect.disabled });
   }
 }

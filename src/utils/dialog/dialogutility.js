@@ -169,12 +169,28 @@ function getRollParameters(actor, dialog, smartlinkOverride) {
  * @param {boolean} smartlink
  * @returns {number}
  */
-function determineBoni(rollParameters, smartlink) {
+export function determineBoni(rollParameters, smartlink) {
   const edge = rollParameters.explode ? rollParameters.maxEdge : 0;
   return (
     (rollParameters.specialization ? 2 : 0) +
     (rollParameters.smartlink || smartlink ? 2 : 0) +
     edge
+  );
+}
+
+/**
+ * @param {number} baseDice
+ * @param {RollParameters} rollParameters
+ * @param {number} [recoilMalus]
+ * @returns {number}
+ */
+export function computeFinalPool(baseDice, rollParameters, recoilMalus = 0) {
+  return (
+    baseDice +
+    rollParameters.bonus -
+    rollParameters.malus -
+    recoilMalus +
+    determineBoni(rollParameters, rollParameters.smartlink)
   );
 }
 
@@ -213,12 +229,7 @@ export async function dialogActions(
   const recoilMalus = getInt(dialog, 'recoilMalus');
   const wideDefenseMalus = getInt(dialog, 'wideDefenseMalus');
   const burstDamageBonus = getInt(dialog, 'burstBonus');
-  const finalRoll =
-    numDice +
-    rollParameters.bonus -
-    rollParameters.malus -
-    recoilMalus +
-    determineBoni(rollParameters, smartlink);
+  const finalRoll = computeFinalPool(numDice, rollParameters, recoilMalus);
   if (rollParameters.explode) await actor.useEdge();
   const { successes, isGlitch } = await DiceUtility.rollAndShow({
     numDice: finalRoll,

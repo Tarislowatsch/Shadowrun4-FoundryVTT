@@ -1,36 +1,54 @@
 
   <div class="item-sheet-body">
 
-    {{> "item-sheet-header" nameKey="sr4.item.name"}}
+    <header class="item-sheet-header">
+      <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
+      <div class="item-sheet-name">
+        <label>{{localize 'sr4.item.name'}}</label>
+        <input type="text" name="name" value="{{ item.name }}" />
+      </div>
+      <div class="item-sheet-header-extras">
+        <label>
+          <span>{{localize 'sr4.power.geas'}}</span>
+          <input type="checkbox" class="sr4-checkbox" data-field="system.geas" {{#if system.geas}}checked{{/if}} />
+        </label>
+        <label>
+          <span>{{localize 'sr4.power.ratingMode.label'}}</span>
+          <select name="system.ratingMode">
+            <option value="none" {{#if (eq system.ratingMode 'none')}}selected{{/if}}>{{localize 'sr4.power.ratingMode.none'}}</option>
+            <option value="rated" {{#if (eq system.ratingMode 'rated')}}selected{{/if}}>{{localize 'sr4.power.ratingMode.rated'}}</option>
+            <option value="ratedNoCost" {{#if (eq system.ratingMode 'ratedNoCost')}}selected{{/if}}>{{localize 'sr4.power.ratingMode.ratedNoCost'}}</option>
+          </select>
+        </label>
+      </div>
+    </header>
 
     <table class="item-stats-table">
       <thead>
         <tr>
-          <th>{{localize 'sr4.power.hasRating'}}</th>
-          {{#if system.hasRating}}<th>{{localize 'sr4.power.rating'}}</th>{{/if}}
-          <th>{{localize 'sr4.power.cost'}}</th>
-          <th>{{localize 'sr4.power.totalCost'}}</th>
-          <th>{{localize 'sr4.power.geas'}}</th>
-          <th>{{localize 'sr4.power.source'}}</th>
+          {{#if (ne system.ratingMode 'none')}}
+          <th title="{{localize 'sr4.power.tooltip.rating'}}">{{localize 'sr4.power.rating'}}</th>
+          {{/if}}
+          <th title="{{localize 'sr4.power.tooltip.cost'}}">
+            {{#if (eq system.ratingMode 'rated')}}{{localize 'sr4.power.costPerLevel'}}{{else}}{{localize 'sr4.power.cost'}}{{/if}}
+          </th>
+          <th title="{{localize 'sr4.power.tooltip.totalCost'}}">{{localize 'sr4.power.totalCost'}}</th>
+          <th title="{{localize 'sr4.power.tooltip.source'}}">{{localize 'sr4.power.source'}}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>
-            <input type="checkbox" class="sr4-checkbox" name="system.hasRating" {{#if system.hasRating}}checked{{/if}} />
-          </td>
-          {{#if system.hasRating}}
+          {{#if (ne system.ratingMode 'none')}}
           <td><input type="number" name="system.rating" value="{{ system.rating }}" min="1" /></td>
           {{/if}}
           <td><input type="number" name="system.cost" value="{{ system.cost }}" min="0" step="0.25" /></td>
           <td class="computed">{{ system.totalCost }}</td>
-          <td>
-            <input type="checkbox" class="sr4-checkbox" name="system.geas" {{#if system.geas}}checked{{/if}} />
-          </td>
           <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
         </tr>
       </tbody>
     </table>
+
+    {{> "item-actions-effects"}}
 
     {{> "item-textareas"}}
 

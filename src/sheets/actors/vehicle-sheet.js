@@ -1,7 +1,7 @@
 import { openActionDialog } from '@utils/index';
-import { SR4NpcBaseSheet } from './sr4-npc-base-sheet.js';
+import { SR4SummonedEntitySheet } from './sr4-summoned-entity-sheet.js';
 
-export default class SR4VehicleSheet extends SR4NpcBaseSheet {
+export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
   static DEFAULT_OPTIONS = {
     classes: ['shadowrun4e', 'sheet', 'actor', 'vehicle'],
     position: { width: 750, height: 700 },

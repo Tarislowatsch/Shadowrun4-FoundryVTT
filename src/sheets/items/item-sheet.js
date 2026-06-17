@@ -13,6 +13,8 @@ import {
   SpellElements,
   ActionType,
 } from '@models/index';
+import { SR4EffectTargets, EFFECT_TEMPLATES } from '@effects/index';
+import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
 
 export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ItemSheetV2
@@ -26,6 +28,16 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     form: {
       submitOnChange: true,
       closeOnSubmit: false,
+    },
+    actions: {
+      editItem: SR4ItemSheet.#onEditItem,
+      deleteItem: SR4ItemSheet.#onDeleteItem,
+      createLinkedAction: SR4ItemSheet.#onCreateLinkedAction,
+      createEffect: SR4ItemSheet.#onCreateEffect,
+      addEffectTemplate: SR4ItemSheet.#onAddEffectTemplate,
+      toggleEffect: SR4ItemSheet.#onToggleEffect,
+      editEffect: SR4ItemSheet.#onEditEffect,
+      deleteEffect: SR4ItemSheet.#onDeleteEffect,
     },
   };
 
@@ -64,6 +76,10 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     },
     autosoft: {
       template: 'systems/shadowrun4e/templates/sheets/items/autosoft.sheet.hbs',
+    },
+    critterpower: {
+      template:
+        'systems/shadowrun4e/templates/sheets/items/critterpower.sheet.hbs',
     },
     commlink: {
       template: 'systems/shadowrun4e/templates/sheets/items/commlink.sheet.hbs',
@@ -115,6 +131,14 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       context.system.loadedAmmoName = live.loadedAmmoName;
     }
 
+    if (this.item.type === 'Power') {
+      /** @type {any} */
+      const live = this.document.system;
+      context.system.totalCost = live.totalCost;
+    }
+
+    this._prepareActionsEffectsContext(context);
+
     return context;
   }
 
@@ -146,5 +170,143 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
           callback: (path) => this.item.update({ img: path }),
         }).browse();
       });
+  }
+
+  _prepareActionsEffectsContext(context) {
+    context.linkedActions = (this.item.parent?.items ?? [])
+      .filter(
+        (i) => i.type === 'Action' && i.system.linkedItemId === this.item.id
+      )
+      .map((i) => ({ id: i.id, name: i.name }));
+    context.effects = this.document.effects.contents.map((e) => ({
+      id: e.id,
+      name: e.name,
+      img: e.img ?? 'icons/svg/aura.svg',
+      active: !e.disabled,
+      key: e.changes[0]?.key ?? '',
+      mode: e.changes[0]?.type ?? 'add',
+      value: Number(e.changes[0]?.value ?? 0),
+    }));
+    context.effectTargets = SR4EffectTargets;
+
+    const templates = Object.entries(EFFECT_TEMPLATES).map(([key, tpl]) => ({
+      key,
+      name: game.i18n.localize(tpl.name),
+      type: 'template',
+    }));
+    const existing = [];
+    const actor = this.item.parent;
+    if (actor) {
+      const seen = new Set();
+      for (const e of actor.effects.contents) {
+        if (seen.has(e.name)) continue;
+        seen.add(e.name);
+        existing.push({ key: `actor:${e.id}`, name: e.name, type: 'existing' });
+      }
+      for (const item of actor.items) {
+        for (const e of item.effects.contents) {
+          if (seen.has(e.name)) continue;
+          seen.add(e.name);
+          existing.push({
+            key: `item:${item.id}:${e.id}`,
+            name: `${e.name} (${item.name})`,
+            type: 'existing',
+          });
+        }
+      }
+    }
+    context.effectTemplates = [...templates, ...existing];
+    context.hasExistingEffects = existing.length > 0;
+  }
+
+  // -- Actions (linked items on parent actor) --------------------------------
+
+  static async #onEditItem(event, target) {
+    const id = target.closest('[data-item-id]')?.dataset.itemId;
+    if (!id) return;
+    this.item.parent?.items.get(id)?.sheet.render(true);
+  }
+
+  static async #onDeleteItem(event, target) {
+    const id = target.closest('[data-item-id]')?.dataset.itemId;
+    if (!id) return;
+    await this.item.parent?.deleteEmbeddedDocuments('Item', [id]);
+    this.render();
+  }
+
+  static async #onCreateLinkedAction() {
+    if (!this.item.parent) return;
+    const created = await this.item.parent.createEmbeddedDocuments('Item', [
+      {
+        type: 'Action',
+        name: game.i18n.localize('sr4.action.new'),
+        system: { linkedItemId: this.item.id },
+      },
+    ]);
+    if (created[0]) created[0].sheet.render(true);
+    this.render();
+  }
+
+  // -- Effects (embedded on this item) ---------------------------------------
+
+  static async #onCreateEffect() {
+    await this.item.createEmbeddedDocuments('ActiveEffect', [
+      {
+        name: game.i18n.localize('sr4.effect.new'),
+        changes: [{ key: 'system.sheetStats.BODY', type: 'add', value: 0 }],
+        disabled: false,
+        transfer: true,
+      },
+    ]);
+  }
+
+  static async #onAddEffectTemplate(event, target) {
+    const key = target.value;
+    if (!key) return;
+    target.value = '';
+
+    let effectData;
+    if (key.startsWith('actor:') || key.startsWith('item:')) {
+      const parts = key.split(':');
+      const source =
+        parts[0] === 'actor'
+          ? this.item.parent?.effects.get(parts[1])
+          : this.item.parent?.items.get(parts[1])?.effects.get(parts[2]);
+      if (!source) return;
+      effectData = source.toObject();
+      delete effectData._id;
+    } else {
+      const tpl = EFFECT_TEMPLATES[key];
+      if (!tpl) return;
+      effectData = { ...tpl, name: game.i18n.localize(tpl.name) };
+    }
+
+    await this.item.createEmbeddedDocuments('ActiveEffect', [
+      { ...effectData, transfer: true },
+    ]);
+  }
+
+  static async #onToggleEffect(event, target) {
+    const id =
+      target.dataset.effectId ??
+      target.closest('[data-effect-id]')?.dataset.effectId;
+    if (!id) return;
+    const effect = this.item.effects.get(id);
+    if (!effect) return;
+    await effect.update({ disabled: !effect.disabled });
+  }
+
+  static async #onEditEffect(event, target) {
+    const id = target.closest('[data-effect-id]')?.dataset.effectId;
+    if (!id) return;
+    const effect = this.item.effects.get(id);
+    if (!effect) return;
+    new SR4ActiveEffectSheet({ document: effect }).render(true);
+  }
+
+  static async #onDeleteEffect(event, target) {
+    const id = target.closest('[data-effect-id]')?.dataset.effectId;
+    if (!id) return;
+    await this.item.deleteEmbeddedDocuments('ActiveEffect', [id]);
   }
 }

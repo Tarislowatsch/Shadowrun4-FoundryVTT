@@ -24,100 +24,100 @@
       }
     }
   }
+}
 
-  .effects-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.72rem;
+.effects-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
 
-    thead tr {
-      border-bottom: 2px solid var(--sr4-teal);
+  thead tr {
+    border-bottom: 2px solid var(--sr4-teal);
+  }
+
+  th {
+    text-align: left;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sr4-label);
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+
+  td {
+    padding: 4px 8px;
+    border-bottom: 1px solid rgba(0, 179, 164, 0.1);
+    vertical-align: middle;
+    color: var(--sr4-text);
+  }
+
+  .effect-row {
+    transition: background 0.15s;
+
+    &:hover td {
+      background: rgba(0, 179, 164, 0.05);
     }
 
-    th {
-      text-align: left;
-      padding: 4px 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--sr4-label);
-      font-size: 0.65rem;
-      font-weight: 700;
+    &.effect-inactive td {
+      opacity: 0.35;
+      font-style: italic;
     }
+  }
 
-    td {
-      padding: 4px 8px;
-      border-bottom: 1px solid rgba(0, 179, 164, 0.1);
-      vertical-align: middle;
-      color: var(--sr4-text);
+  .effect-value {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+
+    &.positive {
+      color: var(--sr4-green-positive);
     }
-
-    .effect-row {
-      transition: background 0.15s;
-
-      &:hover td {
-        background: rgba(0, 179, 164, 0.05);
-      }
-
-      &.effect-inactive td {
-        opacity: 0.35;
-        font-style: italic;
-      }
+    &.negative {
+      color: var(--sr4-red);
     }
+  }
 
-    .effect-value {
-      font-weight: 700;
-      letter-spacing: 0.03em;
+  .effect-icon-col {
+    width: 24px;
+    padding: 2px 4px;
+  }
 
-      &.positive {
-        color: var(--sr4-green-positive);
-      }
-      &.negative {
-        color: var(--sr4-red);
-      }
-    }
+  .effect-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    border: none;
+  }
 
-    .effect-icon-col {
-      width: 24px;
-      padding: 2px 4px;
-    }
+  .effect-toggle {
+    text-align: center;
+  }
 
-    .effect-icon {
-      width: 18px;
-      height: 18px;
-      object-fit: contain;
-      border: none;
-    }
+  .item-controls {
+    display: flex;
+    gap: 4px;
 
-    .effect-toggle {
-      text-align: center;
-    }
-
-    .item-controls {
+    a {
+      width: 22px;
+      height: 22px;
+      border: 1px solid transparent;
       display: flex;
-      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      color: var(--sr4-border-dim);
+      cursor: pointer;
 
-      a {
-        width: 22px;
-        height: 22px;
-        border: 1px solid transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--sr4-border-dim);
-        cursor: pointer;
+      &:hover {
+        color: var(--sr4-teal);
+        border-color: var(--sr4-teal);
+        background: var(--sr4-teal-glow);
+      }
 
-        &:hover {
-          color: var(--sr4-teal);
-          border-color: var(--sr4-teal);
-          background: var(--sr4-teal-glow);
-        }
-
-        &[data-action='deleteEffect']:hover {
-          color: var(--sr4-red);
-          border-color: var(--sr4-red);
-          background: rgba(224, 48, 48, 0.08);
-        }
+      &[data-action='deleteEffect']:hover {
+        color: var(--sr4-red);
+        border-color: var(--sr4-red);
+        background: rgba(224, 48, 48, 0.08);
       }
     }
   }

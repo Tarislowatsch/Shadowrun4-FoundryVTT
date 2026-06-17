@@ -4,26 +4,26 @@
     {{> "actor-image"}}
     <div class="npc-header-info">
       <div class="meta-field">
-        <label>{{localize 'sr4.spirit.name'}}</label>
+        <label>{{localize 'sr4.sprite.name'}}</label>
         <input type="text" name="name" value="{{actor.name}}" {{#unless editMode}}readonly{{/unless}} />
       </div>
       <div class="meta-field">
-        <label>{{localize 'sr4.spirit.type'}}</label>
-        <input type="text" name="system.spiritType" value="{{system.spiritType}}" {{#unless editMode}}readonly{{/unless}} />
+        <label>{{localize 'sr4.sprite.type'}}</label>
+        <input type="text" name="system.spriteType" value="{{system.spriteType}}" {{#unless editMode}}readonly{{/unless}} />
       </div>
       <div class="meta-field">
-        <label>{{localize 'sr4.spirit.force'}}</label>
-        <input type="number" name="system.force" value="{{system.force}}" {{#unless editMode}}readonly{{/unless}} />
+        <label>{{localize 'sr4.sprite.rating'}}</label>
+        <input type="number" name="system.rating" value="{{system.rating}}" {{#unless editMode}}readonly{{/unless}} />
       </div>
       <div class="meta-field">
-        <label>{{localize 'sr4.spirit.services'}}</label>
-        <input type="number" name="system.services" value="{{system.services}}" />
+        <label>{{localize 'sr4.sprite.tasks'}}</label>
+        <input type="number" name="system.tasks" value="{{system.tasks}}" />
       </div>
     </div>
   </div>
 
   <div class="actor-link-row">
-    <label>{{localize 'sr4.spirit.summoner'}}</label>
+    <label>{{localize 'sr4.sprite.compiler'}}</label>
     <div class="actor-drop-zone" data-drop-type="ownerUuid">
       {{#if ownerName}}
         <span class="linked-actor-name">{{ownerName}}</span>
@@ -31,14 +31,14 @@
           <button type="button" class="link-clear" data-action="clearOwner"><i class="fas fa-times"></i></button>
         {{/if}}
       {{else}}
-        <span class="drop-hint">{{localize 'sr4.spirit.dropSummoner'}}</span>
+        <span class="drop-hint">{{localize 'sr4.sprite.dropCompiler'}}</span>
       {{/if}}
     </div>
   </div>
 
   <hr />
 
-  <h3>{{localize 'sr4.spirit.attributes'}}</h3>
+  <h3>{{localize 'sr4.sprite.attributes'}}</h3>
   <div class="grid">
     {{#each sheetStats as |stat|}}
       {{> "attribute-cell" label=stat.label name=stat.name value=stat.value rollLabel=stat.rollLabel}}
@@ -78,7 +78,7 @@
       </div>
       {{/each}}
     {{else}}
-      <p class="empty-list">{{localize 'sr4.spirit.noSkills'}}</p>
+      <p class="empty-list">{{localize 'sr4.sprite.noSkills'}}</p>
     {{/if}}
   </div>
 

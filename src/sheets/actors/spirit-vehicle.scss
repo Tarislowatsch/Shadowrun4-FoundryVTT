@@ -1,6 +1,7 @@
 @use './shared/actor-sheet-header' as *;
 
 .spirit,
+.sprite,
 .vehicle {
   @include actor-sheet-header(
     $header-margin: 0.75rem,

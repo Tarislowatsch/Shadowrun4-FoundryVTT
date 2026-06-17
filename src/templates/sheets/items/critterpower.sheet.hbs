@@ -1,0 +1,29 @@
+
+  <div class="item-sheet-body">
+
+    <header class="item-sheet-header">
+      <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
+      <div class="item-sheet-name">
+        <label>{{localize 'sr4.item.name'}}</label>
+        <input type="text" name="name" value="{{ item.name }}" />
+      </div>
+    </header>
+
+    <table class="item-stats-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.power.source'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    {{> "item-actions-effects"}}
+
+    {{> "item-textareas"}}
+
+  </div>

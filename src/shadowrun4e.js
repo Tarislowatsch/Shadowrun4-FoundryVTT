@@ -13,6 +13,7 @@ import {
   SR4ItemSheet,
   SR4NpcSheet,
   SR4SpiritSheet,
+  SR4SpriteSheet,
   SR4VehicleSheet,
   SR4ActiveEffectSheet,
   registerUIPartials,
@@ -122,6 +123,12 @@ Hooks.once('init', async function () {
     types: ['spirit'],
     makeDefault: true,
     label: 'SR4 Spirit Sheet',
+  });
+
+  DocumentSheetConfig.registerSheet(Actor, 'sr4', SR4SpriteSheet, {
+    types: ['sprite'],
+    makeDefault: true,
+    label: 'SR4 Sprite Sheet',
   });
 
   DocumentSheetConfig.registerSheet(Actor, 'sr4', SR4VehicleSheet, {

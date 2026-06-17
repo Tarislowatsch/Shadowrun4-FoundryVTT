@@ -39,6 +39,9 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--sr4-border-dim);
   }
 
   .magic-input {

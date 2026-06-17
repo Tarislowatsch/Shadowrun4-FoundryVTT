@@ -53,6 +53,16 @@
   flex-wrap: nowrap;
   min-height: 26px;
   font-size: 0.78rem;
+
+  > span + span {
+    border-left: 1px solid var(--sr4-border-dim);
+    padding-left: 0.4rem;
+  }
+
+  > span:last-of-type {
+    border-left: none;
+    padding-left: 0;
+  }
 }
 
 /* ---------------- PROPERTY ---------------- */
@@ -298,4 +308,51 @@ a.item-toggle-equip {
   text-align: right;
   border: 1px solid var(--sr4-border-dim);
   border-radius: 3px;
+}
+
+/* ---------------- ITEM CARD SUB-SECTIONS ---------------- */
+
+.item-card-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.6rem;
+  margin-top: 0.35rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--sr4-border-dim);
+  font-size: 0.68rem;
+}
+
+.item-effect-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  color: var(--sr4-text);
+
+  &.effect-inactive {
+    opacity: 0.4;
+    font-style: italic;
+  }
+
+  input[type='checkbox'] {
+    margin: 0;
+    cursor: pointer;
+  }
+}
+
+.item-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--sr4-border-dim);
+
+  .roll-action {
+    width: auto;
+    padding: 2px 6px;
+    gap: 0.3rem;
+    font-size: 0.65rem;
+    border: 1px solid var(--sr4-border-dim);
+  }
 }

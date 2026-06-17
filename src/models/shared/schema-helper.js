@@ -188,6 +188,23 @@ export const modifiersField = () =>
  *
  * @returns {object}
  */
+/**
+ * @returns {object} Shared schema fields for summoned entities (spirits, sprites).
+ */
+export function summonedEntityFields() {
+  return {
+    ownerUuid: new fields.StringField({ initial: '', blank: true }),
+    sheetStats: new SR4SheetStatsData(),
+    modifiers: modifiersField(),
+    derivedStats: new fields.SchemaField({
+      ...baseDerivedStatsFields(),
+      stun: new fields.NumberField({ initial: 10, integer: true }),
+    }),
+    conditionMonitor: conditionMonitorField(),
+    notes: new fields.HTMLField({ initial: '' }),
+  };
+}
+
 export function genericWeaponSchema() {
   return {
     ap: new fields.NumberField({ initial: 0, integer: true }),

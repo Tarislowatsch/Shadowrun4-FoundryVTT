@@ -22,12 +22,6 @@
 
   <hr />
 
-  {{#if critterPowers}}
-  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
-
-  <hr />
-  {{/if}}
-
   <div class="npc-section">
     <h3>{{localize 'sr4.tab.weapons'}}</h3>
     {{#if weapons}}
@@ -40,4 +34,8 @@
       <p>{{localize 'sr4.weapon.noWeapons'}}</p>
     {{/if}}
   </div>
+
+  <hr />
+
+  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
 </div>

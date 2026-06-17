@@ -5,6 +5,7 @@
       "npc": "NSC",
       "vehicle": "Fahrzeug",
       "spirit": "Geist",
+      "sprite": "Sprite",
       "device": "Gerät"
     },
     "Item": {
@@ -52,6 +53,7 @@
       },
       "delete": "Löschen",
       "edit": "Bearbeiten",
+      "new": "Neue Aktion",
       "noActions": "Dieser Charakter hat keine Actions",
       "noRatingForAction": "Bitte Werte für diese Handlung hinzufügen",
       "roll": "Probe würfeln",
@@ -187,6 +189,9 @@
     "effect": {
       "active": "Aktiv",
       "add": "Effekt hinzufügen",
+      "addFromTemplate": "— Effekt hinzufügen —",
+      "templates": "Vorlagen",
+      "existing": "Bestehende Effekte",
       "attribute": "Attribut",
       "changeIcon": "Klicken zum Icon ändern",
       "duration": "Dauer (Runden)",
@@ -336,13 +341,30 @@
     },
     "power": {
       "cost": "Kosten",
+      "costPerLevel": "Kosten/Stufe",
       "geas": "Geas",
-      "hasRating": "Hat Stufe",
+      "actions": {
+        "label": "Aktionen",
+        "create": "Verknüpfte Aktion hinzufügen"
+      },
+      "noActions": "Keine verknüpften Aktionen",
       "nopowers": "Keine Kräfte vorhanden",
       "rating": "Stufe",
+      "ratingMode": {
+        "label": "Stufenmodus",
+        "none": "Ohne Stufe",
+        "rated": "Mit Stufe",
+        "ratedNoCost": "Mit Stufe (kostenlos)"
+      },
       "source": "Quelle",
       "totalCost": "Gesamtkosten",
-      "totalcost": "Gesamtkosten"
+      "totalcost": "Gesamtkosten",
+      "tooltip": {
+        "cost": "Kraftpunktekosten. Bei gestuften Kräften Kosten pro Stufe.",
+        "rating": "Investierte Kraftstufe.",
+        "source": "Regelwerkreferenz, z.B. SR4 S. 172",
+        "totalCost": "Gesamte Kraftpunkte für diese Kraft."
+      }
     },
     "roll": {
       "amount": "Würfelanzahl",
@@ -590,6 +612,19 @@
       "services": "Dienste",
       "summoner": "Beschwörer",
       "type": "Geisttyp"
+    },
+    "sprite": {
+      "attributes": "Attribute",
+      "compiler": "Kompilierer",
+      "dropCompiler": "Akteur ziehen um Kompilierer zu verknüpfen",
+      "name": "Name",
+      "noPowers": "Keine Kräfte",
+      "noSkills": "Keine Fertigkeiten",
+      "ownerUuid": "Kompilierer UUID",
+      "powers": "Kräfte",
+      "rating": "Stufe",
+      "tasks": "Dienste",
+      "type": "Spritetyp"
     },
     "stats": {
       "AGILITY": "Geschicklichkeit",

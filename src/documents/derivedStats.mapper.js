@@ -1,10 +1,11 @@
 import { SR4 } from '../config.js';
 
 /**
- * @param {import('@models/index').SR4SpiritSystem} systemData
- * @returns {import('@models/index').SR4SpiritDerivedStats}
+ * @param {object} systemData
+ * @param {{ physical: number, astral: number, matrix: number, passesString: string }} initiative
+ * @returns {object}
  */
-export function computeSpiritDerivedStats(systemData) {
+function computeSummonedEntityStats(systemData, initiative) {
   const sheetStats = systemData.sheetStats;
   const monitor = systemData.conditionMonitor;
   const derivedStats = { ...systemData.derivedStats };
@@ -24,14 +25,36 @@ export function computeSpiritDerivedStats(systemData) {
   derivedStats.dicePoolModifier =
     derivedStats.woundModifier + systemData.modifiers.generalModifier;
 
-  derivedStats.initiative.physical = sheetStats.INTUITION + sheetStats.REACTION;
-  derivedStats.initiative.astral = sheetStats.INTUITION * 2;
-  derivedStats.initiative.matrix = 0;
+  derivedStats.initiative.physical = initiative.physical;
+  derivedStats.initiative.astral = initiative.astral;
+  derivedStats.initiative.matrix = initiative.matrix;
+  derivedStats.passesString = initiative.passesString;
 
-  // TODO: derive from spirit type table; 2 passes covers most common spirits
-  derivedStats.passesString = '2/2/0';
+  sheetStats.INITIATIVE = initiative.physical;
+  sheetStats.ASTRALINITIATIVE = initiative.astral;
+  sheetStats.MATRIXINITIATIVE = initiative.matrix;
 
   return derivedStats;
+}
+
+export function computeSpiritDerivedStats(systemData) {
+  const ss = systemData.sheetStats;
+  return computeSummonedEntityStats(systemData, {
+    physical: ss.INTUITION + ss.REACTION,
+    astral: ss.INTUITION * 2,
+    matrix: 0,
+    passesString: '2/2/0',
+  });
+}
+
+export function computeSpriteDerivedStats(systemData) {
+  const ss = systemData.sheetStats;
+  return computeSummonedEntityStats(systemData, {
+    physical: ss.INTUITION + ss.REACTION,
+    astral: 0,
+    matrix: ss.INTUITION * 2,
+    passesString: '2/0/2',
+  });
 }
 
 /**
