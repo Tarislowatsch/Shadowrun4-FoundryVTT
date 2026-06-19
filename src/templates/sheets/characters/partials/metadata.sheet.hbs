@@ -8,11 +8,8 @@
         <input type="text" name="name" value="{{actor.name}}" data-dtype="String"/>
       </div>
 
-      {{> meta-field label='sr4.metadata.metatype' name='system.descriptionAndNotes.metatype' value=system.descriptionAndNotes.metatype editMode=editMode}}
-
-      {{> meta-field label='sr4.metadata.gender' name='system.descriptionAndNotes.gender' value=system.descriptionAndNotes.gender editMode=editMode}}
-
       {{#each system.metaData}}
+        {{#unless (eq @key 'age')}}
         <div class="meta-field">
           <label>{{localizeKey 'sr4.metadata' @key}}</label>
           {{#if (lookup ../textFields @key)}}
@@ -21,6 +18,7 @@
             <input type="number" name="system.metaData.{{@key}}" value="{{this}}" data-dtype="Number" {{#unless ../editMode}}readonly{{/unless}} />
           {{/if}}
         </div>
+        {{/unless}}
       {{/each}}
     </div>
   </div>
