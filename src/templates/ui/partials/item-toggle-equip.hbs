@@ -1,0 +1,11 @@
+<a class="item-toggle-equip"
+  data-action="toggleEquip"
+  data-id="{{ this._id }}"
+  data-equipped="{{ this.system.equipped }}"
+  data-tooltip="{{localize tooltip}}">
+  {{#if this.system.equipped}}
+  <i class="{{ equippedIcon }}"></i>
+  {{else}}
+  <i class="{{ unequippedIcon }}"></i>
+  {{/if}}
+</a>

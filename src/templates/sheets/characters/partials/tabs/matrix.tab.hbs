@@ -115,21 +115,7 @@
   {{#if complexForms}}
   <ul class="item-list">
     {{#each complexForms as |form|}}
-    <div
-      class="item-card item"
-      data-item-id="{{ form._id }}"
-      title="{{ form.system.description }}"
-    >
-      <div class="item-header item-row">
-        <span class="item-name">{{ form.name }}</span>
-        <span class="item-property">
-          <strong>{{localize "sr4.item.rating"}}</strong>
-          {{ form.system.rating }}
-        </span>
-        {{> item-edit-btn}}
-        {{> item-delete-btn}}
-      </div>
-    </div>
+    {{> "program-card"}}
     {{/each}}
   </ul>
   {{else}}
@@ -155,7 +141,7 @@
   {{#if programs}}
   <ul class="item-list">
     {{#each programs as |item|}}
-    {{> "item-card"}}
+    {{> "program-card"}}
     {{/each}}
   </ul>
   {{else}}

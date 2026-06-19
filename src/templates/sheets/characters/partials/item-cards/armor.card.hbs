@@ -2,19 +2,7 @@
   <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
     <div class="item-actions">
-      <a
-        class="item-toggle-equip"
-        data-action="toggleEquip"
-        data-id="{{ this._id }}"
-        data-equipped="{{ this.system.equipped }}"
-        data-tooltip="{{localize 'sr4.item.toggleEquip'}}"
-      >
-        {{#if this.system.equipped}}
-        <i class="fas fa-shield-alt"></i>
-        {{else}}
-        <i class="fas fa-shield"></i>
-        {{/if}}
-      </a>
+      {{> item-toggle-equip equippedIcon="fas fa-shield-alt" unequippedIcon="fas fa-shield" tooltip="sr4.item.toggleEquip"}}
       {{> item-edit-btn}}
       {{> item-delete-btn}}
     </div>

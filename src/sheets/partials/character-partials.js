@@ -8,6 +8,7 @@ export async function registerCharacterPartials() {
     { path: `${basePath}/tabs/defense.tab.hbs`, name: 'defense-tab' },
     { path: `${basePath}/condition-monitor.hbs`, name: 'condition-monitor' },
     { path: `${basePath}/item-cards/weapon.card.hbs`, name: 'weapon-card' },
+    { path: `${basePath}/item-cards/program.card.hbs`, name: 'program-card' },
     { path: `${basePath}/item-cards/item.card.hbs`, name: 'item-card' },
     { path: `${basePath}/item-cards/implant.card.hbs`, name: 'implant-card' },
     { path: `${basePath}/item-cards/armor.card.hbs`, name: 'armor-card' },

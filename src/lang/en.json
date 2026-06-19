@@ -188,6 +188,11 @@
       "totalKarma": "Total Karma",
       "weight": "Weight"
     },
+    "program": {
+      "category": "Category",
+      "complexform": "Complex Form",
+      "maxrating": "Max. Rating"
+    },
     "quality": {
       "bp": "BP",
       "category": "Category",

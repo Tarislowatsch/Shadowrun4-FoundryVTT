@@ -1,0 +1,22 @@
+<div class="item-card item program-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
+  <div class="item-header item-row">
+    <span class="item-name">{{ this.name }}</span>
+    <div class="item-actions">
+      {{> item-toggle-equip equippedIcon="fas fa-toggle-on" unequippedIcon="fas fa-toggle-off" tooltip="sr4.item.toggleEquip"}}
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
+    <span class="item-property">
+      <strong>{{localize "sr4.item.rating"}}</strong>
+      {{ this.system.rating }}
+    </span>
+    {{#if this.system.category}}
+    <span class="item-property">
+      <strong>{{localize "sr4.program.category"}}</strong>
+      {{ this.system.category }}
+    </span>
+    {{/if}}
+  </div>
+</div>

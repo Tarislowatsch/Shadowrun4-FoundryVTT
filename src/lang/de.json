@@ -188,6 +188,11 @@
       "totalKarma": "Gesamtkarma",
       "weight": "Gewicht"
     },
+    "program": {
+      "category": "Kategorie",
+      "complexform": "Komplexe Form",
+      "maxrating": "Max. Stufe"
+    },
     "quality": {
       "bp": "BP",
       "category": "Kategorie",

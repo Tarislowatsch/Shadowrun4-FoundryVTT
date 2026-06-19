@@ -19,14 +19,7 @@
         <i class="fas fa-bullseye"></i>
       </button>
       {{#if (eq this.type 'Melee Weapon')}}
-      <a class="item-toggle-equip" data-action="toggleEquip" data-id="{{ this._id }}" data-equipped="{{ this.system.equipped }}"
-        data-tooltip="{{localize 'sr4.item.toggleEquip'}}">
-        {{#if this.system.equipped}}
-        <i class="fas fa-hand-fist"></i>
-        {{else}}
-        <i class="far fa-hand"></i>
-        {{/if}}
-      </a>
+      {{> item-toggle-equip equippedIcon="fas fa-hand-fist" unequippedIcon="far fa-hand" tooltip="sr4.item.toggleEquip"}}
       {{/if}}
       {{#if (eq this.type 'Ranged Weapon')}}
         {{#if this.system.maxAmmo}}

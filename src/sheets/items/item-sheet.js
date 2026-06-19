@@ -113,7 +113,10 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
 
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    const type = this.item.type.replace(/\s+/g, '').toLowerCase();
+    let type = this.item.type.replace(/\s+/g, '').toLowerCase();
+    if (!(type in this.constructor.PARTS)) {
+      type = 'item';
+    }
     options.parts = [type];
   }
 
