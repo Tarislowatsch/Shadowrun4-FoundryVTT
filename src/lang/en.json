@@ -369,6 +369,10 @@
         "totalCost": "Total Power Points spent on this power."
       }
     },
+    "program": {
+      "running": "Running",
+      "stopped": "Stopped"
+    },
     "roll": {
       "amount": "Dice Amount",
       "bonus": "Bonus",

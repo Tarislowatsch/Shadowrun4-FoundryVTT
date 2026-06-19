@@ -366,6 +366,10 @@
         "totalCost": "Gesamte Kraftpunkte für diese Kraft."
       }
     },
+    "program": {
+      "running": "Aktiviert",
+      "stopped": "Deaktiviert"
+    },
     "roll": {
       "amount": "Würfelanzahl",
       "bonus": "Bonus",

@@ -132,10 +132,10 @@ export const characterMetaDataField = () =>
     nuyen: new fields.NumberField({ initial: 0, integer: true }),
     totalKarma: new fields.NumberField({ initial: 0, integer: true }),
     karma: new fields.NumberField({ initial: 0, integer: true }),
-    streetCred: new fields.NumberField({ initial: 0, integer: true }),
+    lifestyle: new fields.StringField({ initial: 'low' }),
     notoriety: new fields.NumberField({ initial: 0, integer: true }),
     publicAwareness: new fields.NumberField({ initial: 0, integer: true }),
-    lifestyle: new fields.StringField({ initial: 'low' }),
+    streetCred: new fields.NumberField({ initial: 0, integer: true }),
   });
 
 /**

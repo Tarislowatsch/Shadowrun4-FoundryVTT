@@ -12,3 +12,6 @@
 /packs
 #claude
 .claude
+
+# logs
+*.log
