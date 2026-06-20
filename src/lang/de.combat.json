@@ -64,6 +64,7 @@
       "laser": "Laser",
       "modify": "Schaden modifizieren",
       "pending": "Erwarteter Schaden",
+      "pendingChat": "{name}: {amount} {type}-Schaden ausstehend.",
       "physical": "Körperlich (K)",
       "reason": {
         "combat": "Kampf",
@@ -128,10 +129,13 @@
       "edge": {
         "add-dice": "Edge-Würfel hinzufügen",
         "cancel": "Abbrechen",
+        "chatPrompt": "{name} kann Edge einsetzen ({successes} Erfolge auf {dice} Würfel).",
         "criticalGlitch": "Kritischen Patzer zu Patzer abschwächen",
         "dialogTitle": "Edge einsetzen",
+        "expired": "Edge-Angebot abgelaufen.",
         "glitch": "Patzer! Probe fehlgeschlagen",
         "reroll": "Alle Fehlschläge neu würfeln",
+        "skip": "Überspringen",
         "use": "Edge verwenden",
         "useEdgePrompt": "Edge einsetzen?"
       },

@@ -1,6 +1,5 @@
 import { getGame } from '@utils/game/game';
 import { renderTemplate } from '../dialogutility';
-import { showEdgeDialog } from '@utils/rolls';
 
 /** @returns {string} */
 function modifyDamageTemplatePath() {

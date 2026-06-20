@@ -5,9 +5,9 @@ import {
   openSpellcastingDialog,
   openDrainDialog,
 } from '@utils/index.js';
-import { ApplyDamageFlow } from './apply-damage-flow';
+import { ApplyDamageFlow, resolveDamageDecision } from './apply-damage-flow';
 import { CombatSpellFlow } from './combat-spell-flow';
-import { createEdgeRerollHandler } from './util/edge-reroll.handler';
+import { postEdgeRerollOffer } from './util/edge-reroll.handler';
 
 /**
  * @param {number} force
@@ -119,33 +119,38 @@ export class SpellcastingFlow {
     } = drainResult;
 
     const unresisted = Math.max(baseDrainValue - drainHits, 0);
-    const onReroll = drainEdgeUsed
-      ? undefined
-      : createEdgeRerollHandler(
-          actor,
-          { successes: drainHits, rolledDice: drainPool, isGlitch },
-          async (newSuccesses) => {
-            const newUnresisted = Math.max(baseDrainValue - newSuccesses, 0);
-            await ApplyDamageFlow.sendDecisionMessage(
-              actor,
-              newUnresisted,
-              isPhysical,
-              'drain',
-              {
-                edgeUsed: true,
-              }
-            );
+
+    /** @type {string[]} */
+    const edgeOfferIds = [];
+    /** @type {string | null} */
+    let pendingDecisionId = null;
+
+    if (!drainEdgeUsed && actor.getAttribute('CURRENTEDGE') > 0) {
+      const drainEdgeId = await postEdgeRerollOffer(
+        actor,
+        { successes: drainHits, rolledDice: drainPool, isGlitch },
+        async (newSuccesses) => {
+          if (pendingDecisionId) {
+            await resolveDamageDecision(pendingDecisionId);
           }
-        );
-    await ApplyDamageFlow.sendDecisionMessage(
+          const newUnresisted = Math.max(baseDrainValue - newSuccesses, 0);
+          await ApplyDamageFlow.sendDecisionMessage(
+            actor,
+            newUnresisted,
+            isPhysical,
+            'drain'
+          );
+        }
+      );
+      edgeOfferIds.push(drainEdgeId);
+    }
+
+    pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
       actor,
       unresisted,
       isPhysical,
       'drain',
-      {
-        onReroll,
-        edgeUsed: drainEdgeUsed,
-      }
+      { edgeOfferIds }
     );
   }
 }

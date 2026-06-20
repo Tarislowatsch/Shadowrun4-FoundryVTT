@@ -1,22 +1,10 @@
-import {
-  getGame,
-  openDefenseDialog,
-  openSoakDialog,
-  showEdgeDialog,
-} from '@utils/index';
+import { getGame, openDefenseDialog, openSoakDialog } from '@utils/index';
+import { postEdgeOffer } from '@utils/rolls/edge-offer-card.js';
 import { isPhysicalDamageType } from '@models/index';
 import { SR4ActiveEffect } from '@effects/index';
-import { ApplyDamageFlow } from './apply-damage-flow';
-import { createEdgeRerollHandler } from './util/edge-reroll.handler';
+import { ApplyDamageFlow, resolveDamageDecision } from './apply-damage-flow';
+import { postEdgeRerollOffer } from './util/edge-reroll.handler';
 
-/**
- * @param {import('@documents/index').SR4Actor} actor
- * @param {import('@models/index').SR4Weapon} weapon
- * @param {number} successes
- * @param {number} [wideDefenseMalus]
- * @param {number} [burstDamageBonus]
- * @returns {void}
- */
 /**
  * @param {import('@models/index').SR4Weapon} weapon
  * @returns {object}
@@ -211,26 +199,19 @@ export class DefenseFlow {
       return;
     }
 
-    // Offer defense Edge reroll if Edge wasn't spent in the roll and actor still has Edge
-    let defenseHits = rawDefenseHits;
-    if (!defenseRollEdgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
-      await showEdgeDialog({
-        isCriticalGlitch: false,
-        isGlitch,
-        successes: rawDefenseHits,
-        rolledDice,
-        actor: defender,
-        onCompleteWithResult: (newHits) => {
-          defenseHits = newHits;
-        },
-      });
-    }
+    /** @type {string | null} */
+    let pendingDecisionId = null;
 
     /**
      * @param {number} resolvedDefenseHits
      * @returns {Promise<void>}
      */
     const applyAfterDefense = async (resolvedDefenseHits) => {
+      if (pendingDecisionId) {
+        await resolveDamageDecision(pendingDecisionId);
+        pendingDecisionId = null;
+      }
+
       const netSuccesses = Math.max(successes - resolvedDefenseHits, 0);
       if (netSuccesses === 0) return;
 
@@ -259,7 +240,7 @@ export class DefenseFlow {
           : undefined;
 
       if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
-        await ApplyDamageFlow.sendDecisionMessage(
+        pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
           defender,
           baseDamage,
           isPhysical,
@@ -291,65 +272,88 @@ export class DefenseFlow {
         }
       );
       if (finalDamage === 0) {
-        await ApplyDamageFlow._applyAndSend(0, isPhysical, defender, 'combat');
+        await ApplyDamageFlow.applyAndSend(0, isPhysical, defender, 'combat');
         return;
       }
 
-      const onReroll = soakResult.edgeUsed
-        ? undefined
-        : createEdgeRerollHandler(
-            defender,
-            {
-              successes: soakResult.hits,
-              rolledDice: soakResult.rolledDice,
-              isGlitch: soakResult.isGlitch,
-            },
-            async (newSoakHits) => {
-              const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
-              await ApplyDamageFlow.sendCombatSummary(
-                attacker.name,
-                defender.name,
-                'result',
-                {
-                  base: baseDamage,
-                  soaked: newSoakHits,
-                  final: rerolledDamage,
-                  isPhysical,
-                }
-              );
-              if (rerolledDamage === 0) {
-                await ApplyDamageFlow._applyAndSend(
-                  0,
-                  isPhysical,
-                  defender,
-                  'combat'
-                );
-                return;
+      /** @type {string[]} */
+      const edgeOfferIds = [];
+
+      if (!soakResult.edgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
+        const soakEdgeId = await postEdgeRerollOffer(
+          defender,
+          {
+            successes: soakResult.hits,
+            rolledDice: soakResult.rolledDice,
+            isGlitch: soakResult.isGlitch,
+          },
+          async (newSoakHits) => {
+            if (pendingDecisionId) {
+              await resolveDamageDecision(pendingDecisionId);
+              pendingDecisionId = null;
+            }
+            const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
+            await ApplyDamageFlow.sendCombatSummary(
+              attacker.name,
+              defender.name,
+              'result',
+              {
+                base: baseDamage,
+                soaked: newSoakHits,
+                final: rerolledDamage,
+                isPhysical,
               }
-              await ApplyDamageFlow._applyAndSend(
-                rerolledDamage,
+            );
+            if (rerolledDamage === 0) {
+              await ApplyDamageFlow.applyAndSend(
+                0,
                 isPhysical,
                 defender,
-                'combat',
-                electricityOnApply
+                'combat'
               );
+              return;
             }
-          );
+            pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
+              defender,
+              rerolledDamage,
+              isPhysical,
+              'combat',
+              {
+                hint: electricityHint,
+                onApply: electricityOnApply,
+              }
+            );
+          }
+        );
+        edgeOfferIds.push(soakEdgeId);
+      }
 
-      await ApplyDamageFlow.sendDecisionMessage(
+      pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
         defender,
         finalDamage,
         isPhysical,
         'combat',
         {
-          onReroll,
-          edgeUsed: soakResult.edgeUsed,
+          edgeOfferIds,
           hint: electricityHint,
           onApply: electricityOnApply,
         }
       );
     };
 
-    await applyAfterDefense(defenseHits);
+    if (!defenseRollEdgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
+      await postEdgeOffer({
+        actor: defender,
+        rollResult: {
+          successes: rawDefenseHits,
+          rolledDice,
+          isGlitch,
+          isCriticalGlitch: false,
+        },
+        onReroll: applyAfterDefense,
+      });
+    }
+
+    await applyAfterDefense(rawDefenseHits);
   }
 }

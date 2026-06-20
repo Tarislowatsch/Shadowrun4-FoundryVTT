@@ -83,16 +83,34 @@ function getFireModeParams(weapon) {
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
- * @param {string} skillName
- * @param {SR4Weapon} weapon
+ * @param {SR4Weapon & { type: 'Ranged Weapon', system: import('@models/index').SR4RangedWeaponSystem }} weapon
+ * @param {number} shots
  * @returns {Promise<void>}
  */
-export async function handleAttackRoll(actor, skillName, weapon) {
-  if (isRangedWeapon(weapon)) {
-    await openAttackDialog(actor, skillName, weapon);
-  } else {
-    await openMeleeAttackDialog(actor, skillName, weapon);
+async function depleteAmmo(actor, weapon, shots) {
+  /** @type {Record<string, Record<string, unknown>>} */
+  const byId = {};
+  if (weapon.system.maxAmmo > 0) {
+    byId[weapon.id] = {
+      'system.currentAmmo': Math.max(0, weapon.system.currentAmmo - shots),
+    };
   }
+  if (weapon.system.loadedAmmoId) {
+    const ammo = actor.items?.get(weapon.system.loadedAmmoId);
+    if (ammo) {
+      const newQty = Math.max(0, ammo.system.quantity - shots);
+      byId[ammo.id] = { 'system.quantity': newQty };
+      if (newQty === 0) {
+        byId[weapon.id] ??= {};
+        byId[weapon.id]['system.loadedAmmoId'] = '';
+      }
+    }
+  }
+  const batch = Object.entries(byId).map(([id, data]) => ({
+    _id: id,
+    ...data,
+  }));
+  if (batch.length) await actor.updateEmbeddedDocuments('Item', batch);
 }
 
 /**
@@ -101,14 +119,27 @@ export async function handleAttackRoll(actor, skillName, weapon) {
  * @param {SR4Weapon} weapon
  * @returns {Promise<void>}
  */
-export async function openAttackDialog(actor, skillName, weapon) {
+export async function handleAttackRoll(actor, skillName, weapon) {
+  if (isRangedWeapon(weapon)) {
+    await openRangedAttackDialog(actor, skillName, weapon);
+  } else {
+    await openMeleeAttackDialog(actor, skillName, weapon);
+  }
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} skillName
+ * @param {SR4Weapon & { type: 'Ranged Weapon', system: import('@models/index').SR4RangedWeaponSystem }} weapon
+ * @returns {Promise<void>}
+ */
+async function openRangedAttackDialog(actor, skillName, weapon) {
   const ammoTracking = /** @type {boolean} */ (
     game.settings.get('shadowrun4e', 'ammoTracking')
   );
 
   if (
     ammoTracking &&
-    isRangedWeapon(weapon) &&
     weapon.system.maxAmmo > 0 &&
     weapon.system.currentAmmo === 0
   ) {
@@ -132,7 +163,7 @@ export async function openAttackDialog(actor, skillName, weapon) {
   const skill = actor.getSkill(skillName);
 
   const rangedAmmo =
-    isRangedWeapon(weapon) && weapon.system.maxAmmo > 0
+    weapon.system.maxAmmo > 0
       ? {
           currentAmmo: weapon.system.currentAmmo,
           maxAmmo: weapon.system.maxAmmo,
@@ -201,7 +232,7 @@ export async function openAttackDialog(actor, skillName, weapon) {
             const el = /** @type {HTMLElement|null} */ (
               html.querySelector('#ammoDisplay')
             );
-            if (!el || !isRangedWeapon(weapon)) return;
+            if (!el) return;
             el.style.color =
               weapon.system.currentAmmo < shots ? 'var(--sr4-red)' : '';
           };
@@ -264,34 +295,7 @@ export async function openAttackDialog(actor, skillName, weapon) {
         dice,
         weapon
       );
-      if (isRangedWeapon(weapon) && ammoTracking) {
-        /** @type {Record<string, Record<string, unknown>>} */
-        const byId = {};
-        if (weapon.system.maxAmmo > 0) {
-          byId[weapon.id] = {
-            'system.currentAmmo': Math.max(
-              0,
-              weapon.system.currentAmmo - shots
-            ),
-          };
-        }
-        if (weapon.system.loadedAmmoId) {
-          const ammo = actor.items?.get(weapon.system.loadedAmmoId);
-          if (ammo) {
-            const newQty = Math.max(0, ammo.system.quantity - shots);
-            byId[ammo.id] = { 'system.quantity': newQty };
-            if (newQty === 0) {
-              byId[weapon.id] ??= {};
-              byId[weapon.id]['system.loadedAmmoId'] = '';
-            }
-          }
-        }
-        const batch = Object.entries(byId).map(([id, data]) => ({
-          _id: id,
-          ...data,
-        }));
-        if (batch.length) await actor.updateEmbeddedDocuments('Item', batch);
-      }
+      if (ammoTracking) await depleteAmmo(actor, weapon, shots);
       return result;
     },
   });

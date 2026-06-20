@@ -50,6 +50,16 @@ export class SettingsHook {
         default: true,
       });
 
+      game.settings.register('shadowrun4e', 'edgeCardTimeout', {
+        name: 'sr4.settings.edgeCardTimeout.name',
+        hint: 'sr4.settings.edgeCardTimeout.hint',
+        scope: 'world',
+        config: true,
+        type: Number,
+        default: 120,
+        range: { min: 10, max: 600, step: 10 },
+      });
+
       game.settings.register('shadowrun4e', 'ammoTracking', {
         name: 'sr4.settings.ammoTracking.name',
         hint: 'sr4.settings.ammoTracking.hint',

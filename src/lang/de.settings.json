@@ -28,6 +28,10 @@
         "hint": "Erstellt automatisch einen Aufrechterhaltungs-Effekt wenn ein aufrechtzuerhaltender Zauber gewirkt wird.",
         "name": "Automatische Aufrechterhaltung"
       },
+      "edgeCardTimeout": {
+        "hint": "Wie lange (in Sekunden) die Edge-Angebotskarte im Chat aktiv bleibt, bevor ihre Buttons automatisch entfernt werden.",
+        "name": "Edge-Karten-Timeout"
+      },
       "combatDefenseWorkflow": {
         "hint": "Wenn aktiv, werden gezielte Tokens nach einem Angriff automatisch zum Ausweichen aufgefordert. Deaktivieren schaltet auch den Schadenswiderstand-Workflow aus.",
         "name": "Kampf: Ausweichen-Workflow"

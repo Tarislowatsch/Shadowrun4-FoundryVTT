@@ -28,6 +28,10 @@
         "hint": "Automatically create a sustain active effect when a sustained spell is cast.",
         "name": "Auto Sustain Effect"
       },
+      "edgeCardTimeout": {
+        "hint": "How long (in seconds) the Edge offer card stays active in chat before its buttons are automatically removed.",
+        "name": "Edge Card Timeout"
+      },
       "combatDefenseWorkflow": {
         "hint": "When enabled, targeted tokens are automatically prompted to roll defense after an attack. Disabling this also disables the Soak Workflow.",
         "name": "Combat: Defense Workflow"

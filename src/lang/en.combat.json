@@ -64,6 +64,7 @@
       "laser": "Laser",
       "modify": "Modify Damage",
       "pending": "Pending Damage",
+      "pendingChat": "{name}: {amount} {type} damage pending.",
       "physical": "Physical",
       "reason": {
         "combat": "Combat",
@@ -129,10 +130,13 @@
       "edge": {
         "add-dice": "Roll additional Edge dice",
         "cancel": "Cancel Edge usage",
+        "chatPrompt": "{name} may spend Edge ({successes} hits on {dice} dice).",
         "criticalGlitch": "Critical Glitch! Downgrade to a Glitch",
         "dialogTitle": "Use Edge Options",
+        "expired": "Edge offer expired.",
         "glitch": "Glitch! Your roll has failed",
         "reroll": "Reroll all non success dice",
+        "skip": "Skip",
         "use": "Use Edge",
         "useEdgePrompt": "Do you want to use Edge?"
       },

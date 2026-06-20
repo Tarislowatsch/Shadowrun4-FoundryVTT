@@ -1,22 +1,24 @@
-import { showEdgeDialog } from '@utils/rolls';
+import { postEdgeOffer } from '@utils/rolls/edge-offer-card.js';
 
 /**
- * Creates a ready-to-use `onReroll` callback for `ApplyDamageFlow.sendDecisionMessage`.
- * Centralises the `showEdgeDialog` call so individual flows don't need to import it.
+ * Posts a non-blocking Edge offer chat card. The flow continues immediately;
+ * if the player clicks Edge on the card, `onResult` re-triggers the
+ * remaining flow with the new success count.
  *
- * @param {SR4Actor} actor
+ * @param {import('@documents/index').SR4Actor} actor
  * @param {{ successes: number, rolledDice: number, isGlitch: boolean }} rollResult
- * @param {(newSuccesses: number) => Promise<void>} onResult - called with the new success count after edge is spent
- * @returns {() => Promise<void>}
+ * @param {(newSuccesses: number) => Promise<void>} onResult
+ * @returns {Promise<string>} the edge offer ChatMessage id
  */
-export function createEdgeRerollHandler(actor, rollResult, onResult) {
-  return () =>
-    showEdgeDialog({
-      isCriticalGlitch: false,
-      isGlitch: rollResult.isGlitch,
+export async function postEdgeRerollOffer(actor, rollResult, onResult) {
+  return postEdgeOffer({
+    actor,
+    rollResult: {
       successes: rollResult.successes,
       rolledDice: rollResult.rolledDice,
-      actor,
-      onCompleteWithResult: onResult,
-    });
+      isGlitch: rollResult.isGlitch,
+      isCriticalGlitch: false,
+    },
+    onReroll: onResult,
+  });
 }

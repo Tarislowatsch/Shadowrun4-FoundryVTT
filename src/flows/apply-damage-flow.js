@@ -1,4 +1,49 @@
-import { getGame, openModifyDamageDialog } from '@utils/index';
+import { getGame } from '@utils/index';
+import { resolveEdgeOffer } from '@utils/rolls/edge-offer-card.js';
+
+/**
+ * @typedef {object} DamageDecisionEntry
+ * @property {import('@documents/index').SR4Actor} actor
+ * @property {number} amount
+ * @property {boolean} isPhysical
+ * @property {string} context
+ * @property {string[]} edgeOfferIds
+ * @property {string | undefined} hint
+ * @property {(() => Promise<void>) | undefined} onApply
+ */
+
+/** @type {Map<string, DamageDecisionEntry>} */
+const damageDecisionRegistry = new Map();
+
+/**
+ * @param {string} messageId
+ * @returns {DamageDecisionEntry | undefined}
+ */
+export function getDamageDecisionEntry(messageId) {
+  return damageDecisionRegistry.get(messageId);
+}
+
+/**
+ * @param {string} messageId
+ * @returns {Promise<void>}
+ */
+export async function resolveDamageDecision(messageId) {
+  const entry = damageDecisionRegistry.get(messageId);
+  if (entry) {
+    for (const eid of entry.edgeOfferIds) {
+      await resolveEdgeOffer(eid);
+    }
+    damageDecisionRegistry.delete(messageId);
+  }
+  const message = game.messages?.get(messageId);
+  if (
+    message &&
+    !message.flags?.sr4?.damageDecision?.resolved &&
+    message.isAuthor
+  ) {
+    await message.setFlag('sr4', 'damageDecision.resolved', true);
+  }
+}
 
 /**
  * @param {boolean} isPhysical
@@ -210,91 +255,73 @@ export class ApplyDamageFlow {
   }
 
   /**
-   * Shows a dialog asking the user to either apply damage as-is, modify it,
-   * or trigger an edge reroll (if available).
+   * Posts a non-blocking damage decision chat card. Buttons are rendered
+   * per-client via the renderChatMessageHTML hook in DieChatHook.
    *
    * @param {import('@documents/index').SR4Actor} actor
    * @param {number} amount
    * @param {boolean} isPhysical
    * @param {string} context
-   * @param {{ onReroll?: () => Promise<void>, edgeUsed?: boolean, hint?: string, onApply?: () => Promise<void> }} [options]
-   * @returns {Promise<void>}
+   * @param {{ edgeOfferIds?: string[], hint?: string, onApply?: () => Promise<void> }} [options]
+   * @returns {Promise<string | null>} the ChatMessage id, or null when the workflow is disabled
    */
   static async sendDecisionMessage(
     actor,
     amount,
     isPhysical,
     context,
-    { onReroll, edgeUsed = false, hint, onApply } = {}
+    { edgeOfferIds = [], hint, onApply } = {}
   ) {
     if (!game.settings.get('shadowrun4e', 'applyDamageWorkflow')) {
-      await ApplyDamageFlow._applyAndSend(
+      await ApplyDamageFlow.applyAndSend(
         amount,
         isPhysical,
         actor,
         context,
         onApply
       );
-      return;
+      for (const eid of edgeOfferIds) await resolveEdgeOffer(eid);
+      return null;
     }
+
     const damageType = localizeDamageType(isPhysical);
-
-    const buttons = [
-      {
-        label: `${getGame().i18n.localize('sr4.damage.apply')} (${amount} ${damageType})`,
-        action: 'apply',
-      },
-      {
-        label: getGame().i18n.localize('sr4.damage.modify'),
-        action: 'modify',
-      },
-    ];
-
-    const canUseEdge =
-      onReroll && !edgeUsed && actor.getAttribute('CURRENTEDGE') > 0;
-    if (canUseEdge) {
-      buttons.push({
-        label: getGame().i18n.localize('sr4.roll.edge.useEdgePrompt'),
-        action: 'reroll',
-      });
-    }
-
     const hintHtml = hint ? `<p><em>${hint}</em></p>` : '';
-    const action = await foundry.applications.api.DialogV2.wait({
-      window: { title: getGame().i18n.localize('sr4.damage.decisiontitle') },
-      content: `<p>${getGame().i18n.format('sr4.damage.pending', {
+    const content = `<div class="damage-decision-card"><p>${getGame().i18n.format(
+      'sr4.damage.pendingChat',
+      {
         name: actor.name,
         amount,
         type: damageType,
-      })}</p>${hintHtml}`,
-      buttons,
+      }
+    )}</p>${hintHtml}</div>`;
+
+    const message = await ChatMessage.create({
+      content,
+      speaker: ChatMessage.getSpeaker({ actor }),
+      flags: {
+        sr4: {
+          damageDecision: {
+            actorId: actor.id,
+            amount,
+            isPhysical,
+            context,
+            resolved: false,
+          },
+        },
+      },
     });
 
-    if (action === 'apply') {
-      await ApplyDamageFlow._applyAndSend(
-        amount,
-        isPhysical,
-        actor,
-        context,
-        onApply
-      );
-    } else if (action === 'modify') {
-      const finalAmount = await openModifyDamageDialog(
-        actor,
-        amount,
-        isPhysical
-      );
-      if (finalAmount === null) return;
-      await ApplyDamageFlow._applyAndSend(
-        finalAmount,
-        isPhysical,
-        actor,
-        context,
-        onApply
-      );
-    } else if (action === 'reroll' && onReroll) {
-      await onReroll();
-    }
+    damageDecisionRegistry.set(message.id, {
+      actor,
+      amount,
+      isPhysical,
+      context,
+      edgeOfferIds,
+      hint,
+      onApply,
+    });
+
+    return message.id;
   }
 
   /**
@@ -305,7 +332,7 @@ export class ApplyDamageFlow {
    * @param {(() => Promise<void>) | undefined} [onApply]
    * @returns {Promise<void>}
    */
-  static async _applyAndSend(amount, isPhysical, actor, context, onApply) {
+  static async applyAndSend(amount, isPhysical, actor, context, onApply) {
     const messages = await ApplyDamageFlow.apply(
       amount,
       isPhysical,

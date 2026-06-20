@@ -8,8 +8,11 @@ import {
   renderTemplate,
 } from '../dialogutility';
 import { openSoakDialog } from '../actions/soak';
-import { ApplyDamageFlow } from '@flows/apply-damage-flow';
-import { createEdgeRerollHandler } from '@flows/util/edge-reroll.handler';
+import {
+  ApplyDamageFlow,
+  resolveDamageDecision,
+} from '@flows/apply-damage-flow';
+import { postEdgeRerollOffer } from '@flows/util/edge-reroll.handler';
 import { getGame } from '@utils/game/game.js';
 
 const DIRECT_RESIST_TEMPLATE =
@@ -303,46 +306,51 @@ export async function openIndirectSpellDefenseDialog(
     }
   );
 
-  const onReroll = soakResult.edgeUsed
-    ? undefined
-    : createEdgeRerollHandler(
-        defender,
-        {
-          successes: soakResult.hits,
-          rolledDice: soakResult.rolledDice,
-          isGlitch: soakResult.isGlitch,
-        },
-        async (newSoakHits) => {
-          const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
-          await ApplyDamageFlow.sendCombatSummary(
-            attacker.name,
-            defender.name,
-            'result',
-            {
-              base: baseDamage,
-              soaked: newSoakHits,
-              final: rerolledDamage,
-              isPhysical,
-            }
-          );
-          await ApplyDamageFlow.sendDecisionMessage(
-            defender,
-            rerolledDamage,
-            isPhysical,
-            'spell',
-            { edgeUsed: true }
-          );
-        }
-      );
+  /** @type {string[]} */
+  const edgeOfferIds = [];
+  /** @type {string | null} */
+  let pendingDecisionId = null;
 
-  await ApplyDamageFlow.sendDecisionMessage(
+  if (!soakResult.edgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
+    const soakEdgeId = await postEdgeRerollOffer(
+      defender,
+      {
+        successes: soakResult.hits,
+        rolledDice: soakResult.rolledDice,
+        isGlitch: soakResult.isGlitch,
+      },
+      async (newSoakHits) => {
+        if (pendingDecisionId) {
+          await resolveDamageDecision(pendingDecisionId);
+        }
+        const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
+        await ApplyDamageFlow.sendCombatSummary(
+          attacker.name,
+          defender.name,
+          'result',
+          {
+            base: baseDamage,
+            soaked: newSoakHits,
+            final: rerolledDamage,
+            isPhysical,
+          }
+        );
+        await ApplyDamageFlow.sendDecisionMessage(
+          defender,
+          rerolledDamage,
+          isPhysical,
+          'spell'
+        );
+      }
+    );
+    edgeOfferIds.push(soakEdgeId);
+  }
+
+  pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
     defender,
     finalDamage,
     isPhysical,
     'spell',
-    {
-      onReroll,
-      edgeUsed: soakResult.edgeUsed,
-    }
+    { edgeOfferIds }
   );
 }
