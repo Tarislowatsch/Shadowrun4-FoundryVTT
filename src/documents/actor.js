@@ -274,12 +274,22 @@ export class SR4Actor extends foundry.documents.Actor {
 
   static async #addSkillsFromCompendium(actor, npcOnly) {
     if (actor.items.some((i) => i.type === 'Skill')) return;
+    const skillData = await SR4Actor.buildCompendiumSkillData(npcOnly);
+    if (skillData.length > 0)
+      await actor.createEmbeddedDocuments('Item', skillData);
+  }
+
+  /**
+   * @param {boolean} [npcOnly=false]
+   * @returns {Promise<Array<{ name: string, type: string, img: string|null, system: object, effects: [] }>>}
+   */
+  static async buildCompendiumSkillData(npcOnly = false) {
     const compendium = game?.packs?.get('shadowrun4e.skills');
     if (!compendium) {
       ui.notifications?.error(
         'SR4 | Skill compendium "shadowrun4e.skills" not found.'
       );
-      return;
+      return [];
     }
     const index = await compendium.getIndex();
     let skillEntries = index.filter((e) => e?.type === 'Skill');
@@ -294,7 +304,7 @@ export class SR4Actor extends foundry.documents.Actor {
     const skills = await Promise.all(
       skillEntries.map((e) => compendium.getDocument(e._id))
     );
-    const skillData = skills
+    return skills
       .filter(Boolean)
       .map((s) => {
         const obj = s.toObject();
@@ -307,7 +317,6 @@ export class SR4Actor extends foundry.documents.Actor {
         };
       })
       .filter((s) => s.name && s.type);
-    await actor.createEmbeddedDocuments('Item', skillData);
   }
 
   /**

@@ -11,6 +11,11 @@ export async function registerUIPartials() {
     { path: `${basePath}/smartlink-checkbox.hbs`, name: 'smartlink-checkbox' },
     { path: `${basePath}/tooltip.hbs`, name: 'tooltip' },
     { path: `${basePath}/fire-mode-selector.hbs`, name: 'fire-mode-selector' },
+    { path: `${basePath}/skill-select.hbs`, name: 'skill-select' },
+    {
+      path: 'systems/shadowrun4e/templates/magic/spell-force-header.hbs',
+      name: 'spell-force-header',
+    },
     { path: `${basePath}/item-toggle-equip.hbs`, name: 'item-toggle-equip' },
     { path: `${basePath}/item-create-btn.hbs`, name: 'item-create-btn' },
     { path: `${basePath}/item-edit-btn.hbs`, name: 'item-edit-btn' },

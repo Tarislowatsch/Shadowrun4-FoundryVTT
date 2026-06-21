@@ -4,9 +4,9 @@ import {
   openModifyDamageDialog,
 } from '@utils/index';
 import {
-  getEdgeOfferEntry,
-  resolveEdgeOffer,
-} from '@utils/rolls/edge-offer-card.js';
+  getEdgeDecisionEntry,
+  resolveEdgeDecision,
+} from '@utils/rolls/roll-edge-decision.js';
 import {
   ApplyDamageFlow,
   getDamageDecisionEntry,
@@ -28,7 +28,6 @@ export class DieChatHook {
   constructor() {
     Hooks.on('renderChatMessageHTML', (chatMessage, html) => {
       DieChatHook.appendEdgeButton(chatMessage, html);
-      DieChatHook.renderEdgeOfferCard(chatMessage, html);
       DieChatHook.renderDamageDecisionCard(chatMessage, html);
     });
   }
@@ -50,9 +49,21 @@ export class DieChatHook {
       successes,
       rolledDice,
       options,
+      edgeDecision,
     } = flags;
 
     const container = html.querySelector('.roll-results') ?? html;
+
+    if (edgeDecision) {
+      DieChatHook.renderFlowEdgeDecision(chatMessage, container, actor, {
+        isCriticalGlitch,
+        isGlitch,
+        successes,
+        rolledDice,
+        edgeDecision,
+      });
+      return;
+    }
 
     const canExtend =
       extended && rolledDice > 1 && !isGlitch && !isCriticalGlitch && !reroll;
@@ -138,116 +149,48 @@ export class DieChatHook {
   }
 
   /**
-   * Renders Edge offer card buttons for non-blocking edge prompts.
-   * Only the responsible player sees active buttons; resolved cards
-   * show no buttons. After reload the registry is empty so no stale
-   * buttons appear.
-   *
    * @param {ChatMessage} chatMessage
-   * @param {HTMLElement} html
+   * @param {HTMLElement} container
+   * @param {import('@documents/index').SR4Actor} actor
+   * @param {{ isCriticalGlitch: boolean, isGlitch: boolean, successes: number, rolledDice: number, edgeDecision: { resolved?: boolean } }} data
    */
-  static renderEdgeOfferCard(chatMessage, html) {
-    const offer = chatMessage.flags?.sr4?.edgeOffer;
-    if (!offer) return;
-    if (offer.resolved) return;
-    if (!isResponsibleForActor(offer.actorId)) return;
+  static renderFlowEdgeDecision(chatMessage, container, actor, data) {
+    const { isCriticalGlitch, isGlitch, successes, rolledDice, edgeDecision } =
+      data;
+    if (edgeDecision.resolved) return;
 
-    const entry = getEdgeOfferEntry(chatMessage.id);
+    const entry = getEdgeDecisionEntry(chatMessage.id);
     if (!entry) return;
-    if (entry.actor.getAttribute('CURRENTEDGE') <= 0) return;
+    if (actor.getAttribute('CURRENTEDGE') <= 0) return;
 
-    const container = html.querySelector('.edge-offer-card') ?? html;
     const btnWrap = document.createElement('div');
     btnWrap.className = 'edge-offer-buttons';
-
     const cleanup = () => btnWrap.remove();
 
-    if (offer.isCriticalGlitch || offer.isGlitch) {
-      const glitchBtn = document.createElement('button');
-      glitchBtn.className = 'glitch';
-      glitchBtn.textContent = game.i18n.localize(
-        offer.isCriticalGlitch
-          ? 'sr4.roll.edge.criticalGlitch'
-          : 'sr4.roll.edge.glitch'
-      );
-      glitchBtn.addEventListener(
-        'click',
-        async () => {
-          if (entry.actor.getAttribute('CURRENTEDGE') <= 0) {
-            cleanup();
-            await resolveEdgeOffer(chatMessage.id);
-            return;
-          }
-          cleanup();
-          await entry.actor.useEdge();
-          await resolveEdgeOffer(chatMessage.id);
-          await entry.onReroll(0);
-        },
-        { once: true }
-      );
-      btnWrap.appendChild(glitchBtn);
-    } else {
-      const rerollBtn = document.createElement('button');
-      rerollBtn.className = 'reroll-failure';
-      rerollBtn.textContent = game.i18n.localize('sr4.roll.edge.reroll');
-      rerollBtn.addEventListener(
-        'click',
-        async () => {
-          if (entry.actor.getAttribute('CURRENTEDGE') <= 0) {
-            cleanup();
-            await resolveEdgeOffer(chatMessage.id);
-            return;
-          }
-          cleanup();
-          const failedDice = offer.rolledDice - offer.successes;
-          if (failedDice <= 0) {
-            await entry.actor.useEdge();
-            await resolveEdgeOffer(chatMessage.id);
-            await entry.onReroll(offer.successes);
-            return;
-          }
-          const result = await DiceUtility.followUpRoll({
-            numDice: failedDice,
-            explode: false,
-            reroll: true,
-            edgeAvailable: false,
-            prevSuccesses: offer.successes,
-          });
-          await entry.actor.useEdge();
-          await resolveEdgeOffer(chatMessage.id);
-          await entry.onReroll(result ?? offer.successes);
-        },
-        { once: true }
-      );
-      btnWrap.appendChild(rerollBtn);
-
-      const addDiceBtn = document.createElement('button');
-      addDiceBtn.className = 'add-edge-dice';
-      addDiceBtn.textContent = game.i18n.localize('sr4.roll.edge.add-dice');
-      addDiceBtn.addEventListener(
-        'click',
-        async () => {
-          if (entry.actor.getAttribute('CURRENTEDGE') <= 0) {
-            cleanup();
-            await resolveEdgeOffer(chatMessage.id);
-            return;
-          }
-          cleanup();
-          const result = await DiceUtility.followUpRoll({
-            numDice: entry.actor.getAttribute('EDGE') ?? 6,
-            explode: true,
-            reroll: true,
-            edgeAvailable: false,
-            prevSuccesses: offer.successes,
-          });
-          await entry.actor.useEdge();
-          await resolveEdgeOffer(chatMessage.id);
-          await entry.onReroll(result ?? offer.successes);
-        },
-        { once: true }
-      );
-      btnWrap.appendChild(addDiceBtn);
-    }
+    const edgeBtn = document.createElement('button');
+    edgeBtn.className = 'edge-use-button';
+    edgeBtn.textContent = game.i18n.localize('sr4.roll.edge.use');
+    edgeBtn.addEventListener(
+      'click',
+      async () => {
+        cleanup();
+        await showEdgeDialog({
+          isCriticalGlitch,
+          isGlitch,
+          successes,
+          rolledDice,
+          actor,
+          onCompleteWithResult: (newSuccesses) =>
+            resolveEdgeDecision(chatMessage.id, newSuccesses),
+        });
+        // Modal aborted without spending Edge → continue with the original hits.
+        if (getEdgeDecisionEntry(chatMessage.id)) {
+          await resolveEdgeDecision(chatMessage.id);
+        }
+      },
+      { once: true }
+    );
+    btnWrap.appendChild(edgeBtn);
 
     const skipBtn = document.createElement('button');
     skipBtn.className = 'abort';
@@ -256,7 +199,7 @@ export class DieChatHook {
       'click',
       async () => {
         cleanup();
-        await resolveEdgeOffer(chatMessage.id);
+        await resolveEdgeDecision(chatMessage.id);
       },
       { once: true }
     );

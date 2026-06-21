@@ -1,4 +1,4 @@
-import { getGame } from '@utils/index.js';
+import { getGame, getValidTargetActors } from '@utils/index.js';
 import { openDirectSpellAllocationDialog } from '@utils/dialog/magic/combat-spell.js';
 
 export class CombatSpellFlow {
@@ -38,13 +38,8 @@ export class CombatSpellFlow {
    * @returns {Promise<number>} total drain modifier across all targets
    */
   static async _handleDirect(caster, spell, castingHits, force) {
-    const targets = CombatSpellFlow._getTargets();
-    if (targets.length === 0) {
-      ui?.notifications?.warn(
-        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`
-      );
-      return 0;
-    }
+    const targets = CombatSpellFlow._getTargetsOrWarn(spell);
+    if (targets.length === 0) return 0;
     const isMana = spell.system?.type === 'MANA';
     const isPhysical = spell.system?.damageType !== 'STUN';
 
@@ -160,13 +155,8 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async _handleIndirect(caster, spell, castingHits, force) {
-    const targets = CombatSpellFlow._getTargets();
-    if (targets.length === 0) {
-      ui?.notifications?.warn(
-        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`
-      );
-      return 0;
-    }
+    const targets = CombatSpellFlow._getTargetsOrWarn(spell);
+    if (targets.length === 0) return 0;
 
     const spellSnapshot = spell.toObject();
     for (const target of targets) {
@@ -188,13 +178,16 @@ export class CombatSpellFlow {
   }
 
   /**
+   * @param {import('@models/index').SR4Spell} spell
    * @returns {import('@documents/index').SR4Actor[]}
    */
-  static _getTargets() {
-    return /** @type {import('@documents/index').SR4Actor[]} */ (
-      [...(getGame().user?.targets ?? [])]
-        .map((t) => t.actor)
-        .filter((a) => !!(a && (a.type === 'character' || a.type === 'npc')))
-    );
+  static _getTargetsOrWarn(spell) {
+    const targets = getValidTargetActors();
+    if (targets.length === 0) {
+      ui?.notifications?.warn(
+        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`
+      );
+    }
+    return targets;
   }
 }

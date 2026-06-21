@@ -1,0 +1,10 @@
+<div class="form-group">
+  <label for="{{ id }}">{{localize labelKey}}</label>
+  <select id="{{ id }}" name="{{ name }}">
+    {{#each skills}}
+    <option value="{{ this.value }}" data-rating="{{ this.rating }}">
+      {{ this.label }} ({{ this.rating }})
+    </option>
+    {{/each}}
+  </select>
+</div>

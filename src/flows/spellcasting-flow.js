@@ -5,9 +5,9 @@ import {
   openSpellcastingDialog,
   openDrainDialog,
 } from '@utils/index.js';
-import { ApplyDamageFlow, resolveDamageDecision } from './apply-damage-flow';
+import { ApplyDamageFlow } from './apply-damage-flow';
 import { CombatSpellFlow } from './combat-spell-flow';
-import { postEdgeRerollOffer } from './util/edge-reroll.handler';
+import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
 
 /**
  * @param {number} force
@@ -116,41 +116,27 @@ export class SpellcastingFlow {
       successes: drainHits,
       isGlitch,
       edgeUsed: drainEdgeUsed,
+      messageId: drainMessageId,
     } = drainResult;
 
-    const unresisted = Math.max(baseDrainValue - drainHits, 0);
+    const finalDrainHits = await resolveEdgeForRoll(
+      actor,
+      {
+        successes: drainHits,
+        rolledDice: drainPool,
+        isGlitch,
+        edgeUsed: drainEdgeUsed,
+        messageId: drainMessageId,
+      },
+      baseDrainValue
+    );
 
-    /** @type {string[]} */
-    const edgeOfferIds = [];
-    /** @type {string | null} */
-    let pendingDecisionId = null;
-
-    if (!drainEdgeUsed && actor.getAttribute('CURRENTEDGE') > 0) {
-      const drainEdgeId = await postEdgeRerollOffer(
-        actor,
-        { successes: drainHits, rolledDice: drainPool, isGlitch },
-        async (newSuccesses) => {
-          if (pendingDecisionId) {
-            await resolveDamageDecision(pendingDecisionId);
-          }
-          const newUnresisted = Math.max(baseDrainValue - newSuccesses, 0);
-          await ApplyDamageFlow.sendDecisionMessage(
-            actor,
-            newUnresisted,
-            isPhysical,
-            'drain'
-          );
-        }
-      );
-      edgeOfferIds.push(drainEdgeId);
-    }
-
-    pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
+    const unresisted = Math.max(baseDrainValue - finalDrainHits, 0);
+    await ApplyDamageFlow.sendDecisionMessage(
       actor,
       unresisted,
       isPhysical,
-      'drain',
-      { edgeOfferIds }
+      'drain'
     );
   }
 }

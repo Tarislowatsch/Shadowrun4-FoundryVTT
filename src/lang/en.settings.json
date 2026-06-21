@@ -1,5 +1,18 @@
 {
   "sr4": {
+    "characterImporter": {
+      "button": "Import Character",
+      "createError": "Could not create actor: {error}",
+      "hint": "Upload a single Chummer character XML export to create a new character actor.",
+      "import": "Import Character",
+      "itemCount": "Items",
+      "parseError": "Could not parse \"{file}\": {error}",
+      "preview": "Preview",
+      "skillCount": "Skills",
+      "success": "Imported character \"{name}\".",
+      "title": "Character Importer",
+      "upload": "Character XML file"
+    },
     "importer": {
       "colCategory": "Category",
       "colCount": "Entries",
@@ -28,9 +41,9 @@
         "hint": "Automatically create a sustain active effect when a sustained spell is cast.",
         "name": "Auto Sustain Effect"
       },
-      "edgeCardTimeout": {
-        "hint": "How long (in seconds) the Edge offer card stays active in chat before its buttons are automatically removed.",
-        "name": "Edge Card Timeout"
+      "flowEdgeTimeout": {
+        "hint": "How long (in seconds) the Edge buttons stay active on a roll card during a combat or magic flow before they are automatically removed and the flow continues with the original result.",
+        "name": "Flow Edge Timeout"
       },
       "combatDefenseWorkflow": {
         "hint": "When enabled, targeted tokens are automatically prompted to roll defense after an attack. Disabling this also disables the Soak Workflow.",

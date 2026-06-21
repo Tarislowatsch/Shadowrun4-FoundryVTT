@@ -8,11 +8,8 @@ import {
   renderTemplate,
 } from '../dialogutility';
 import { openSoakDialog } from '../actions/soak';
-import {
-  ApplyDamageFlow,
-  resolveDamageDecision,
-} from '@flows/apply-damage-flow';
-import { postEdgeRerollOffer } from '@flows/util/edge-reroll.handler';
+import { ApplyDamageFlow } from '@flows/apply-damage-flow';
+import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
 import { getGame } from '@utils/game/game.js';
 
 const DIRECT_RESIST_TEMPLATE =
@@ -81,10 +78,7 @@ export async function openDirectSpellResistDialog(
     title: `${localize('sr4.spell.combatTypes.direct')} — ${spellName}`,
     content,
     dice: resistPool,
-    onRoll: (dialog) =>
-      dialogActions(dialog, defender, attr, resistPool, undefined, {
-        emitDefense: false,
-      }),
+    onRoll: (dialog) => dialogActions(dialog, defender, attr, resistPool),
   });
 
   getGame().socket?.emit('system.shadowrun4e', {
@@ -199,9 +193,7 @@ export async function openIndirectSpellDefenseDialog(
     const dialog = button.closest('dialog');
     if (!dialog) return null;
     const numDice = resolvePool(dialog, fullDefense);
-    return dialogActions(dialog, defender, 'REACTION', numDice, undefined, {
-      emitDefense: false,
-    });
+    return dialogActions(dialog, defender, 'REACTION', numDice);
   };
 
   const buttons = [
@@ -293,64 +285,36 @@ export async function openIndirectSpellDefenseDialog(
   );
   if (!soakResult) return;
 
-  const finalDamage = Math.max(baseDamage - soakResult.hits, 0);
+  let soakHits = soakResult.hits;
+  if (!soakResult.edgeUsed && soakResult.hits < baseDamage) {
+    soakHits = await awaitEdgeDecision({
+      messageId: soakResult.messageId,
+      actor: defender,
+      rollResult: {
+        successes: soakResult.hits,
+        rolledDice: soakResult.rolledDice,
+        isGlitch: soakResult.isGlitch,
+      },
+    });
+  }
+
+  const finalDamage = Math.max(baseDamage - soakHits, 0);
   await ApplyDamageFlow.sendCombatSummary(
     attacker.name,
     defender.name,
     'result',
     {
       base: baseDamage,
-      soaked: soakResult.hits,
+      soaked: soakHits,
       final: finalDamage,
       isPhysical,
     }
   );
 
-  /** @type {string[]} */
-  const edgeOfferIds = [];
-  /** @type {string | null} */
-  let pendingDecisionId = null;
-
-  if (!soakResult.edgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
-    const soakEdgeId = await postEdgeRerollOffer(
-      defender,
-      {
-        successes: soakResult.hits,
-        rolledDice: soakResult.rolledDice,
-        isGlitch: soakResult.isGlitch,
-      },
-      async (newSoakHits) => {
-        if (pendingDecisionId) {
-          await resolveDamageDecision(pendingDecisionId);
-        }
-        const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
-        await ApplyDamageFlow.sendCombatSummary(
-          attacker.name,
-          defender.name,
-          'result',
-          {
-            base: baseDamage,
-            soaked: newSoakHits,
-            final: rerolledDamage,
-            isPhysical,
-          }
-        );
-        await ApplyDamageFlow.sendDecisionMessage(
-          defender,
-          rerolledDamage,
-          isPhysical,
-          'spell'
-        );
-      }
-    );
-    edgeOfferIds.push(soakEdgeId);
-  }
-
-  pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
+  await ApplyDamageFlow.sendDecisionMessage(
     defender,
     finalDamage,
     isPhysical,
-    'spell',
-    { edgeOfferIds }
+    'spell'
   );
 }

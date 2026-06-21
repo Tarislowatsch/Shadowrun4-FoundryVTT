@@ -1,21 +1,10 @@
 <form class="spell-defense-dialog">
-  <div class="form-group">
-    <span>{{ spellName }} ({{localize "sr4.spell.force"}}: <strong>{{ force }}</strong>{{#if element}} · {{localize "sr4.spell.element"}}: {{ element }}{{/if}})</span>
-  </div>
+  {{> spell-force-header}}
   <div class="form-group">
     <span>{{localize "sr4.spell.cast"}}: <strong>{{ castingHits }}</strong> · {{localize "sr4.stats.REACTION"}}: <strong>{{ reaction }}</strong></span>
   </div>
   {{#if rangedSkills.length}}
-  <div class="form-group">
-    <label for="skill1">{{localize "sr4.defense.skill"}}</label>
-    <select id="skill1" name="skill1">
-      {{#each rangedSkills}}
-      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
-        {{ this.label }} ({{ this.rating }})
-      </option>
-      {{/each}}
-    </select>
-  </div>
+  {{> skill-select id="skill1" name="skill1" labelKey="sr4.defense.skill" skills=rangedSkills}}
   {{/if}}
   {{> bonus-input}}
   {{> malus-input}}

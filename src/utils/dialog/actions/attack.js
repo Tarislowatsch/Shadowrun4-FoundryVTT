@@ -11,6 +11,8 @@ import {
 } from '../dialogutility';
 import { openMeleeAttackDialog } from './melee';
 import { reloadWeapon } from '../../weapons.js';
+import { emitDefenseTrigger } from '@flows/defense-flow.js';
+import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
 
@@ -178,7 +180,7 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
     ...rangedAmmo,
   });
 
-  await createRollDialog({
+  const result = await createRollDialog({
     title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} ${skill.system.specialization ?? ''}`,
     content,
     dice,
@@ -288,15 +290,44 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
       : undefined,
     onRoll: async (dialog) => {
       const shots = getInt(dialog, 'shotCount') || 1;
+      const wideDefenseMalus = getInt(dialog, 'wideDefenseMalus');
+      const burstDamageBonus = getInt(dialog, 'burstBonus');
       const result = await dialogActions(
         dialog,
         actor,
         skillName,
         dice,
-        weapon
+        weapon,
+        {
+          edgeAvailableOverride: false,
+        }
       );
       if (ammoTracking) await depleteAmmo(actor, weapon, shots);
-      return result;
+      return { ...result, wideDefenseMalus, burstDamageBonus };
     },
   });
+
+  if (!result || result.isGlitch) return;
+
+  let finalSuccesses = result.successes;
+  if (!result.edgeUsed) {
+    finalSuccesses = await awaitEdgeDecision({
+      messageId: result.messageId,
+      actor,
+      rollResult: {
+        successes: result.successes,
+        rolledDice: result.rolledDice,
+        isGlitch: result.isGlitch,
+      },
+    });
+  }
+  if (finalSuccesses > 0) {
+    emitDefenseTrigger(
+      actor,
+      weapon,
+      finalSuccesses,
+      result.wideDefenseMalus,
+      result.burstDamageBonus
+    );
+  }
 }

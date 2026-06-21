@@ -13,7 +13,7 @@ import {
  * @param {HTMLElement} dialog
  * @param {import('@documents/index').SR4Actor} actor
  * @param {number} drainPool - Base drain resistance pool.
- * @returns {Promise<{successes: number, isGlitch: boolean, edgeUsed: boolean}>}
+ * @returns {Promise<{successes: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null}>}
  */
 async function drainDialogActions(dialog, actor, drainPool) {
   const useEdge = getChecked(dialog, 'edge');
@@ -28,7 +28,7 @@ async function drainDialogActions(dialog, actor, drainPool) {
   const result = await DiceUtility.rollAndShow({
     numDice: finalPool,
     explode: useEdge,
-    edgeAvailable: !useEdge && actor.getAttribute('CURRENTEDGE') > 0,
+    edgeAvailable: false,
     actor,
     skillName: localize('sr4.roll.drainResistanceTest'),
     extended: false,
@@ -43,7 +43,7 @@ async function drainDialogActions(dialog, actor, drainPool) {
  * @param {number} force
  * @param {number} drainPool
  * @param {number} drainValue
- * @returns {Promise<{successes: number, isGlitch: boolean, edgeUsed: boolean} | null>}
+ * @returns {Promise<{successes: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null} | null>}
  */
 export async function openDrainDialog(
   actor,

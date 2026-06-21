@@ -97,7 +97,7 @@ function buildSkillOptions(defender, skillKeys) {
  * @param {number} attackSuccesses
  * @param {import('@models/index').SR4Weapon} weapon
  * @param {number} [wideDefenseMalus]
- * @returns {Promise<{ successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean } | null>}
+ * @returns {Promise<{ successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null } | null>}
  */
 export async function openDefenseDialog(
   defender,
@@ -156,15 +156,15 @@ export async function openDefenseDialog(
     const edgeUsed = getChecked(dialog, 'edge');
     const skillName = dialog.querySelector('#skill1')?.value;
     const numDice = resolvePool(dialog, fullDefense);
-    const { successes, isGlitch, rolledDice } = await dialogActions(
+    const { successes, isGlitch, rolledDice, messageId } = await dialogActions(
       dialog,
       defender,
       skillName,
       numDice,
       weapon,
-      { emitDefense: false }
+      { edgeAvailableOverride: false }
     );
-    return { successes, isGlitch, rolledDice, edgeUsed };
+    return { successes, isGlitch, rolledDice, edgeUsed, messageId };
   };
 
   return await foundry.applications.api.DialogV2.wait({

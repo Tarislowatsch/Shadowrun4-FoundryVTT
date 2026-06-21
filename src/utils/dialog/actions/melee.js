@@ -8,6 +8,8 @@ import {
   renderTemplate,
 } from '../dialogutility';
 import { getGame } from '../../game/game.js';
+import { emitDefenseTrigger } from '@flows/defense-flow.js';
+import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
 
@@ -60,11 +62,31 @@ export async function openMeleeAttackDialog(actor, skillName, weapon) {
     reachModifier,
   });
 
-  await createRollDialog({
+  const result = await createRollDialog({
     title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} ${skill.system.specialization ?? ''}`,
     content,
     dice: totalDice,
     onRoll: (dialog) =>
-      dialogActions(dialog, actor, skillName, totalDice, weapon),
+      dialogActions(dialog, actor, skillName, totalDice, weapon, {
+        edgeAvailableOverride: false,
+      }),
   });
+
+  if (!result || result.isGlitch) return;
+
+  let finalSuccesses = result.successes;
+  if (!result.edgeUsed) {
+    finalSuccesses = await awaitEdgeDecision({
+      messageId: result.messageId,
+      actor,
+      rollResult: {
+        successes: result.successes,
+        rolledDice: result.rolledDice,
+        isGlitch: result.isGlitch,
+      },
+    });
+  }
+  if (finalSuccesses > 0) {
+    emitDefenseTrigger(actor, weapon, finalSuccesses);
+  }
 }

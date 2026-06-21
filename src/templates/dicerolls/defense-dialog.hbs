@@ -24,41 +24,13 @@
 
   {{#if isMelee}}
   {{#if meleeSkills.length}}
-  <div class="form-group">
-    <label for="skill1">{{localize "sr4.defense.skill1"}}</label>
-    <select id="skill1" name="skill1">
-      {{#each meleeSkills}}
-      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
-        {{ this.label }} ({{ this.rating }})
-      </option>
-      {{/each}}
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="skill2">{{localize "sr4.defense.skill2"}}</label>
-    <select id="skill2" name="skill2">
-      {{#each meleeSkills}}
-      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
-        {{ this.label }} ({{ this.rating }})
-      </option>
-      {{/each}}
-    </select>
-  </div>
+  {{> skill-select id="skill1" name="skill1" labelKey="sr4.defense.skill1" skills=meleeSkills}}
+  {{> skill-select id="skill2" name="skill2" labelKey="sr4.defense.skill2" skills=meleeSkills}}
   {{/if}}
 
   {{else}}
   {{#if rangedSkills.length}}
-  <div class="form-group">
-    <label for="skill1">{{localize "sr4.defense.skill"}}</label>
-    <select id="skill1" name="skill1">
-      {{#each rangedSkills}}
-      <option value="{{ this.value }}" data-rating="{{ this.rating }}">
-        {{ this.label }} ({{ this.rating }})
-      </option>
-      {{/each}}
-    </select>
-  </div>
+  {{> skill-select id="skill1" name="skill1" labelKey="sr4.defense.skill" skills=rangedSkills}}
   {{/if}}
   {{/if}}
 

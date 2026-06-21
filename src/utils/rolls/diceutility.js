@@ -42,10 +42,8 @@ export class DiceUtility {
   // ---------------------------------------------------------------------------
 
   /**
-   * Rolls a dice pool and displays the result in chat.
-   *
    * @param {SR4RollOptions} options
-   * @returns {Promise<{successes: number, isGlitch: boolean}>} The number of successes.
+   * @returns {Promise<{successes: number, isGlitch: boolean, messageId: string | null}>} The roll outcome and the created chat message id.
    */
   static async rollAndShow(options) {
     options.numDice = Math.max(1, options.numDice);
@@ -54,7 +52,7 @@ export class DiceUtility {
 
     const { successes, failures, rolls } = DiceUtility.determineSuccess(roll);
 
-    await this.showResults({
+    const messageId = await this.showResults({
       successes,
       failures,
       rolls,
@@ -62,13 +60,10 @@ export class DiceUtility {
       options: { ...options, reroll: false },
     });
 
-    return { successes, isGlitch: isGlitch({ failures, rolls }) };
+    return { successes, isGlitch: isGlitch({ failures, rolls }), messageId };
   }
 
   /**
-   * Rolls additional dice for a follow-up (reroll or extended test) and
-   * displays the result in chat, accumulating previous successes.
-   *
    * @param {SR4RollOptions} options
    * @returns {Promise<number>}
    */
@@ -93,8 +88,6 @@ export class DiceUtility {
   }
 
   /**
-   * Returns the initiative value for an actor, or 99 if Edge was used.
-   *
    * @param {boolean} edgeUsed
    * @param {number} numDice
    * @returns {Promise<{successes: number, isGlitch: boolean}>}
@@ -130,13 +123,8 @@ export class DiceUtility {
   // ---------------------------------------------------------------------------
 
   /**
-   * Renders the roll result to chat.
-   * Buttons are NOT baked into the flavor HTML — they are injected per-client
-   * via renderChatMessageHTML in dice-chat-hooks.js so that only the owning
-   * user sees them.
-   *
    * @param {{ successes: number, failures: number, rolls: number[], roll: Roll, options: SR4RollOptions }} data
-   * @returns {Promise<void>}
+   * @returns {Promise<string | null>} the created chat message id, or null on failure.
    */
   static async showResults(data) {
     const { successes, failures, rolls, roll, options } = data;
@@ -189,12 +177,14 @@ export class DiceUtility {
 
       if (!message) {
         Hooks.off('renderChatMessageHTML', hookId);
-        return;
+        return null;
       }
       targetId = message.id;
+      return message.id;
     } catch (err) {
       if (hookId !== undefined) Hooks.off('renderChatMessageHTML', hookId);
       console.error('Roll rendering failed:', err);
+      return null;
     }
   }
 }

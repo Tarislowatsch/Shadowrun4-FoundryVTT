@@ -4,6 +4,7 @@ import { CombatSpellHook } from './combat-spell-hook';
 import { DieChatHook } from './die-chat-hook';
 import { InitiativeHook } from './initiative-hook';
 import { SettingsHook } from './settings-hook';
+import { ActorDirectoryHook } from './actor-directory-hook';
 
 export function registerHooks() {
   new SettingsHook();
@@ -12,4 +13,5 @@ export function registerHooks() {
   new DataModelRegistrationHook();
   new InitiativeHook();
   new DieChatHook();
+  new ActorDirectoryHook();
 }

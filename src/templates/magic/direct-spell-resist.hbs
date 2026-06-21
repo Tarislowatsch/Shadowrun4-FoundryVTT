@@ -1,7 +1,5 @@
 <form class="direct-spell-resist-dialog">
-  <div class="form-group">
-    <span>{{ spellName }} ({{localize "sr4.spell.force"}}: <strong>{{ force }}</strong>)</span>
-  </div>
+  {{> spell-force-header}}
   <div class="form-group">
     <span>{{localize "sr4.spell.cast"}}: <strong>{{ castingHits }}</strong> · {{ resistAttrLabel }}: <strong>{{ resistPool }}</strong></span>
   </div>

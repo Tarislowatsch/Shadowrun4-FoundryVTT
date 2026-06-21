@@ -14,7 +14,7 @@ import {
  * @param {boolean} isPhysical
  * @param {number} effectiveArmor
  * @param {{ rawArmor?: number, ap?: number | null, apHalf?: boolean }} [breakdown]
- * @returns {Promise<{ hits: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean } | null>}
+ * @returns {Promise<{ hits: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null } | null>}
  */
 export async function openSoakDialog(
   defender,
@@ -58,9 +58,7 @@ export async function openSoakDialog(
         dialog,
         defender,
         localize('sr4.soak.title'),
-        soakPool,
-        undefined,
-        { emitDefense: false }
+        soakPool
       );
     },
   });
@@ -71,5 +69,6 @@ export async function openSoakDialog(
     isGlitch: result.isGlitch,
     rolledDice: soakPool,
     edgeUsed,
+    messageId: result.messageId,
   };
 }

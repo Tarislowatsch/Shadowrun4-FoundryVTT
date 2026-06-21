@@ -1,5 +1,18 @@
 {
   "sr4": {
+    "characterImporter": {
+      "button": "Charakter importieren",
+      "createError": "Actor konnte nicht erstellt werden: {error}",
+      "hint": "Lade eine einzelne Chummer-Charakter-XML hoch, um einen neuen Charakter-Actor zu erstellen.",
+      "import": "Charakter importieren",
+      "itemCount": "Gegenstände",
+      "parseError": "„{file}“ konnte nicht gelesen werden: {error}",
+      "preview": "Vorschau",
+      "skillCount": "Fertigkeiten",
+      "success": "Charakter „{name}“ importiert.",
+      "title": "Charakter-Importer",
+      "upload": "Charakter-XML-Datei"
+    },
     "importer": {
       "colCategory": "Kategorie",
       "colCount": "Einträge",
@@ -28,9 +41,9 @@
         "hint": "Erstellt automatisch einen Aufrechterhaltungs-Effekt wenn ein aufrechtzuerhaltender Zauber gewirkt wird.",
         "name": "Automatische Aufrechterhaltung"
       },
-      "edgeCardTimeout": {
-        "hint": "Wie lange (in Sekunden) die Edge-Angebotskarte im Chat aktiv bleibt, bevor ihre Buttons automatisch entfernt werden.",
-        "name": "Edge-Karten-Timeout"
+      "flowEdgeTimeout": {
+        "hint": "Wie lange (in Sekunden) die Edge-Buttons auf einer Wurfkarte während eines Kampf- oder Magie-Flows aktiv bleiben, bevor sie automatisch entfernt werden und der Flow mit dem ursprünglichen Ergebnis weiterläuft.",
+        "name": "Flow-Edge-Timeout"
       },
       "combatDefenseWorkflow": {
         "hint": "Wenn aktiv, werden gezielte Tokens nach einem Angriff automatisch zum Ausweichen aufgefordert. Deaktivieren schaltet auch den Schadenswiderstand-Workflow aus.",

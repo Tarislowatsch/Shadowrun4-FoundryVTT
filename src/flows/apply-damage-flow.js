@@ -1,5 +1,4 @@
 import { getGame } from '@utils/index';
-import { resolveEdgeOffer } from '@utils/rolls/edge-offer-card.js';
 
 /**
  * @typedef {object} DamageDecisionEntry
@@ -7,7 +6,6 @@ import { resolveEdgeOffer } from '@utils/rolls/edge-offer-card.js';
  * @property {number} amount
  * @property {boolean} isPhysical
  * @property {string} context
- * @property {string[]} edgeOfferIds
  * @property {string | undefined} hint
  * @property {(() => Promise<void>) | undefined} onApply
  */
@@ -28,20 +26,14 @@ export function getDamageDecisionEntry(messageId) {
  * @returns {Promise<void>}
  */
 export async function resolveDamageDecision(messageId) {
-  const entry = damageDecisionRegistry.get(messageId);
-  if (entry) {
-    for (const eid of entry.edgeOfferIds) {
-      await resolveEdgeOffer(eid);
-    }
-    damageDecisionRegistry.delete(messageId);
-  }
+  damageDecisionRegistry.delete(messageId);
   const message = game.messages?.get(messageId);
   if (
     message &&
     !message.flags?.sr4?.damageDecision?.resolved &&
     message.isAuthor
   ) {
-    await message.setFlag('sr4', 'damageDecision.resolved', true);
+    await message.update({ 'flags.sr4.damageDecision.resolved': true });
   }
 }
 
@@ -270,7 +262,7 @@ export class ApplyDamageFlow {
     amount,
     isPhysical,
     context,
-    { edgeOfferIds = [], hint, onApply } = {}
+    { hint, onApply } = {}
   ) {
     if (!game.settings.get('shadowrun4e', 'applyDamageWorkflow')) {
       await ApplyDamageFlow.applyAndSend(
@@ -280,7 +272,6 @@ export class ApplyDamageFlow {
         context,
         onApply
       );
-      for (const eid of edgeOfferIds) await resolveEdgeOffer(eid);
       return null;
     }
 
@@ -316,7 +307,6 @@ export class ApplyDamageFlow {
       amount,
       isPhysical,
       context,
-      edgeOfferIds,
       hint,
       onApply,
     });

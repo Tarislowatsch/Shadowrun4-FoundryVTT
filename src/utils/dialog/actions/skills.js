@@ -7,6 +7,8 @@ import {
   renderTemplate,
   standardTemplatePath,
 } from '../dialogutility';
+import { emitDefenseTrigger } from '@flows/defense-flow.js';
+import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
@@ -35,11 +37,31 @@ export async function openSkillDialog(actor, skillName, dice, weapon) {
     skillName,
     weapon,
   });
-  await createRollDialog({
+  const result = await createRollDialog({
     title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} ${skill.system.specialization ?? ''}`,
     content,
     dice: dice,
     onRoll: (dialog) =>
-      dialogActions(dialog, actor, skillName, dice ?? 0, weapon),
+      dialogActions(dialog, actor, skillName, dice ?? 0, weapon, {
+        edgeAvailableOverride: weapon ? false : undefined,
+      }),
   });
+
+  if (!weapon || !result || result.isGlitch) return;
+
+  let finalSuccesses = result.successes;
+  if (!result.edgeUsed) {
+    finalSuccesses = await awaitEdgeDecision({
+      messageId: result.messageId,
+      actor,
+      rollResult: {
+        successes: result.successes,
+        rolledDice: result.rolledDice,
+        isGlitch: result.isGlitch,
+      },
+    });
+  }
+  if (finalSuccesses > 0) {
+    emitDefenseTrigger(actor, weapon, finalSuccesses);
+  }
 }

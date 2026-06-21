@@ -1,9 +1,13 @@
-import { getGame, openDefenseDialog, openSoakDialog } from '@utils/index';
-import { postEdgeOffer } from '@utils/rolls/edge-offer-card.js';
+import {
+  getGame,
+  getValidTargetActors,
+  openDefenseDialog,
+  openSoakDialog,
+} from '@utils/index';
+import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
 import { isPhysicalDamageType } from '@models/index';
 import { SR4ActiveEffect } from '@effects/index';
-import { ApplyDamageFlow, resolveDamageDecision } from './apply-damage-flow';
-import { postEdgeRerollOffer } from './util/edge-reroll.handler';
+import { ApplyDamageFlow } from './apply-damage-flow';
 
 /**
  * @param {import('@models/index').SR4Weapon} weapon
@@ -44,9 +48,7 @@ export function emitDefenseTrigger(
   if (!weapon?.type) return;
 
   const actorId = /** @type {any} */ (actor).id;
-  const validTargets = [...(getGame().user?.targets ?? [])].filter(
-    (t) => t.actor?.type === 'character' || t.actor?.type === 'npc'
-  );
+  const validTargets = getValidTargetActors();
 
   const weaponSnapshot = buildWeaponSnapshot(weapon);
 
@@ -70,7 +72,7 @@ export function emitDefenseTrigger(
   }
 
   for (const target of validTargets) {
-    const defenderId = target.actor?.id;
+    const defenderId = /** @type {any} */ (target).id;
     if (!defenderId) continue;
     getGame().socket?.emit('system.shadowrun4e', {
       action: 'triggerDefense',
@@ -109,6 +111,33 @@ function getArmorBreakdown(defender, weapon) {
 export class DefenseFlow {
   /**
    * @param {import('@documents/index').SR4Actor} defender
+   * @param {import('@documents/index').SR4Actor} attacker
+   * @param {number} successes
+   * @param {import('@models/index').SR4Weapon} weapon
+   * @param {number} burstDamageBonus
+   * @returns {Promise<void>}
+   */
+  static async _sendPotentialSummary(
+    defender,
+    attacker,
+    successes,
+    weapon,
+    burstDamageBonus
+  ) {
+    if (successes < 1) return;
+    const isPhysical = isPhysicalDamageType(weapon.system.damageType);
+    const potentialDamage =
+      weapon.system.damage + (successes - 1) + burstDamageBonus;
+    await ApplyDamageFlow.sendCombatSummary(
+      attacker.name,
+      defender.name,
+      'potential',
+      { hits: successes, damage: potentialDamage, isPhysical }
+    );
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} defender
    * @param {string} attackerId
    * @param {number} successes
    * @param {import('@models/index').SR4Weapon} weapon
@@ -124,236 +153,121 @@ export class DefenseFlow {
     wideDefenseMalus = 0,
     burstDamageBonus = 0
   ) {
-    await new DefenseFlow().handleDefenseRequest(
-      defender.id,
-      attackerId,
-      successes,
-      weapon,
-      wideDefenseMalus,
-      burstDamageBonus
-    );
-  }
-
-  /**
-   * @param {string} defenderId
-   * @param {string} attackerId
-   * @param {number} successes
-   * @param {import('@models/index').SR4Weapon} weapon
-   * @param {number} [wideDefenseMalus]
-   * @param {number} [burstDamageBonus]
-   * @returns {Promise<void>}
-   */
-  async handleDefenseRequest(
-    defenderId,
-    attackerId,
-    successes,
-    weapon,
-    wideDefenseMalus = 0,
-    burstDamageBonus = 0
-  ) {
-    /** @type {import('@documents/index').SR4Actor | undefined} */
-    const defender = getGame().actors?.get(defenderId);
     /** @type {import('@documents/index').SR4Actor | undefined} */
     const attacker = getGame().actors?.get(attackerId);
     if (!defender || !attacker) return;
 
     if (!game.settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
-      if (successes >= 1) {
-        const isPhysical = isPhysicalDamageType(weapon.system.damageType);
-        const potentialDamage =
-          weapon.system.damage + (successes - 1) + burstDamageBonus;
-        await ApplyDamageFlow.sendCombatSummary(
-          attacker.name,
-          defender.name,
-          'potential',
-          { hits: successes, damage: potentialDamage, isPhysical }
-        );
-      }
+      await DefenseFlow._sendPotentialSummary(
+        defender,
+        attacker,
+        successes,
+        weapon,
+        burstDamageBonus
+      );
       return;
     }
 
-    const {
-      successes: rawDefenseHits,
-      isGlitch,
-      rolledDice,
-      edgeUsed: defenseRollEdgeUsed,
-    } = await openDefenseDialog(
+    const defenseResult = await openDefenseDialog(
       defender,
       attacker,
       successes,
       weapon,
       wideDefenseMalus
     );
-    if (rawDefenseHits === null) {
-      if (successes >= 1) {
-        const isPhysical = isPhysicalDamageType(weapon.system.damageType);
-        const potentialDamage =
-          weapon.system.damage + (successes - 1) + burstDamageBonus;
-        await ApplyDamageFlow.sendCombatSummary(
-          attacker.name,
-          defender.name,
-          'potential',
-          { hits: successes, damage: potentialDamage, isPhysical }
-        );
-      }
+    if (defenseResult === null || defenseResult.successes === null) {
+      await DefenseFlow._sendPotentialSummary(
+        defender,
+        attacker,
+        successes,
+        weapon,
+        burstDamageBonus
+      );
       return;
     }
 
-    /** @type {string | null} */
-    let pendingDecisionId = null;
+    const defenseHits = await resolveEdgeForRoll(
+      defender,
+      defenseResult,
+      successes
+    );
 
-    /**
-     * @param {number} resolvedDefenseHits
-     * @returns {Promise<void>}
-     */
-    const applyAfterDefense = async (resolvedDefenseHits) => {
-      if (pendingDecisionId) {
-        await resolveDamageDecision(pendingDecisionId);
-        pendingDecisionId = null;
-      }
+    const netSuccesses = Math.max(successes - defenseHits, 0);
+    if (netSuccesses === 0) return;
 
-      const netSuccesses = Math.max(successes - resolvedDefenseHits, 0);
-      if (netSuccesses === 0) return;
+    const baseDamage =
+      weapon.system.damage + (netSuccesses - 1) + burstDamageBonus;
+    const {
+      raw: rawArmor,
+      ap,
+      apHalf,
+      effective: effectiveArmor,
+    } = getArmorBreakdown(defender, weapon);
+    const dt = weapon.system.damageType;
+    let isPhysical = isPhysicalDamageType(dt);
+    if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
+    const electricityHint =
+      dt === 'ELECTRICITY'
+        ? getGame().i18n.localize('sr4.damage.electricityHint')
+        : undefined;
+    const electricityOnApply =
+      dt === 'ELECTRICITY'
+        ? async () => {
+            await SR4ActiveEffect.fromTemplate('disoriented', defender, {
+              duration: { turns: 2 + netSuccesses },
+            });
+          }
+        : undefined;
 
-      const baseDamage =
-        weapon.system.damage + (netSuccesses - 1) + burstDamageBonus;
-      const {
-        raw: rawArmor,
-        ap,
-        apHalf,
-        effective: effectiveArmor,
-      } = getArmorBreakdown(defender, weapon);
-      const dt = weapon.system.damageType;
-      let isPhysical = isPhysicalDamageType(dt);
-      if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
-      const electricityHint =
-        dt === 'ELECTRICITY'
-          ? getGame().i18n.localize('sr4.damage.electricityHint')
-          : undefined;
-      const electricityOnApply =
-        dt === 'ELECTRICITY'
-          ? async () => {
-              await SR4ActiveEffect.fromTemplate('disoriented', defender, {
-                duration: { turns: 2 + netSuccesses },
-              });
-            }
-          : undefined;
-
-      if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
-        pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
-          defender,
-          baseDamage,
-          isPhysical,
-          'combat',
-          { hint: electricityHint, onApply: electricityOnApply }
-        );
-        return;
-      }
-
-      const soakResult = await openSoakDialog(
+    if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
+      await ApplyDamageFlow.sendDecisionMessage(
         defender,
         baseDamage,
         isPhysical,
-        effectiveArmor,
-        { rawArmor, ap, apHalf }
-      );
-      if (!soakResult) return;
-
-      const finalDamage = Math.max(baseDamage - soakResult.hits, 0);
-      await ApplyDamageFlow.sendCombatSummary(
-        attacker.name,
-        defender.name,
-        'result',
-        {
-          base: baseDamage,
-          soaked: soakResult.hits,
-          final: finalDamage,
-          isPhysical,
-        }
-      );
-      if (finalDamage === 0) {
-        await ApplyDamageFlow.applyAndSend(0, isPhysical, defender, 'combat');
-        return;
-      }
-
-      /** @type {string[]} */
-      const edgeOfferIds = [];
-
-      if (!soakResult.edgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
-        const soakEdgeId = await postEdgeRerollOffer(
-          defender,
-          {
-            successes: soakResult.hits,
-            rolledDice: soakResult.rolledDice,
-            isGlitch: soakResult.isGlitch,
-          },
-          async (newSoakHits) => {
-            if (pendingDecisionId) {
-              await resolveDamageDecision(pendingDecisionId);
-              pendingDecisionId = null;
-            }
-            const rerolledDamage = Math.max(baseDamage - newSoakHits, 0);
-            await ApplyDamageFlow.sendCombatSummary(
-              attacker.name,
-              defender.name,
-              'result',
-              {
-                base: baseDamage,
-                soaked: newSoakHits,
-                final: rerolledDamage,
-                isPhysical,
-              }
-            );
-            if (rerolledDamage === 0) {
-              await ApplyDamageFlow.applyAndSend(
-                0,
-                isPhysical,
-                defender,
-                'combat'
-              );
-              return;
-            }
-            pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
-              defender,
-              rerolledDamage,
-              isPhysical,
-              'combat',
-              {
-                hint: electricityHint,
-                onApply: electricityOnApply,
-              }
-            );
-          }
-        );
-        edgeOfferIds.push(soakEdgeId);
-      }
-
-      pendingDecisionId = await ApplyDamageFlow.sendDecisionMessage(
-        defender,
-        finalDamage,
-        isPhysical,
         'combat',
-        {
-          edgeOfferIds,
-          hint: electricityHint,
-          onApply: electricityOnApply,
-        }
+        { hint: electricityHint, onApply: electricityOnApply }
       );
-    };
-
-    if (!defenseRollEdgeUsed && defender.getAttribute('CURRENTEDGE') > 0) {
-      await postEdgeOffer({
-        actor: defender,
-        rollResult: {
-          successes: rawDefenseHits,
-          rolledDice,
-          isGlitch,
-          isCriticalGlitch: false,
-        },
-        onReroll: applyAfterDefense,
-      });
+      return;
     }
 
-    await applyAfterDefense(rawDefenseHits);
+    const soakResult = await openSoakDialog(
+      defender,
+      baseDamage,
+      isPhysical,
+      effectiveArmor,
+      { rawArmor, ap, apHalf }
+    );
+    if (!soakResult) return;
+
+    const soakHits = await resolveEdgeForRoll(
+      defender,
+      { ...soakResult, successes: soakResult.hits },
+      baseDamage
+    );
+
+    const finalDamage = Math.max(baseDamage - soakHits, 0);
+    await ApplyDamageFlow.sendCombatSummary(
+      attacker.name,
+      defender.name,
+      'result',
+      {
+        base: baseDamage,
+        soaked: soakHits,
+        final: finalDamage,
+        isPhysical,
+      }
+    );
+    if (finalDamage === 0) {
+      await ApplyDamageFlow.applyAndSend(0, isPhysical, defender, 'combat');
+      return;
+    }
+
+    await ApplyDamageFlow.sendDecisionMessage(
+      defender,
+      finalDamage,
+      isPhysical,
+      'combat',
+      { hint: electricityHint, onApply: electricityOnApply }
+    );
   }
 }

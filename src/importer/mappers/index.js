@@ -1,5 +1,6 @@
 export * from './helpers.js';
 export * from './armor.js';
+export * from './character.js';
 export * from './gear.js';
 export * from './implants.js';
 export * from './mods.js';

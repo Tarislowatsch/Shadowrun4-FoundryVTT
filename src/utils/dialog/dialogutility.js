@@ -1,7 +1,6 @@
 import { isRangedWeapon } from '@models/index';
 import { getGame } from '../game/game.js';
 import { DiceUtility } from '../rolls/diceutility.js';
-import { emitDefenseTrigger } from '@flows/index';
 
 /** @typedef {import('@models/index').SR4RangedWeaponData} SR4RangedWeaponData */
 /** @typedef {import('@models/index').SR4MeleeWeaponData} SR4MeleeWeaponData */
@@ -67,13 +66,13 @@ export async function renderTemplate(path, data) {
  * @property {string} title
  * @property {string} content
  * @property {number} [dice]
- * @property {(dialog: HTMLElement) => Promise<{successes: number, isGlitch: boolean, [key: string]: unknown}>} onRoll
+ * @property {(dialog: HTMLElement) => Promise<Record<string, unknown> & {successes: number, isGlitch: boolean}>} onRoll
  * @property {(html: HTMLElement, updateLabel: () => void) => void} [onRender]
  */
 
 /**
  * @param {RollDialogConfig} config
- * @returns {Promise<{successes: number, isGlitch: boolean}>}
+ * @returns {Promise<Record<string, unknown> & {successes: number, isGlitch: boolean}>}
  */
 export async function createRollDialog(config) {
   return foundry.applications.api.DialogV2.prompt({
@@ -217,8 +216,8 @@ function resolveSmartlink(weapon) {
  * @param {string} rollLabel
  * @param {number} numDice
  * @param {import('@models/index').SR4Weapon} [weapon]
- * @param {{ emitDefense?: boolean }} [options]
- * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number}>}
+ * @param {{ edgeAvailableOverride?: boolean }} [options]
+ * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}>}
  */
 export async function dialogActions(
   dialog,
@@ -226,33 +225,30 @@ export async function dialogActions(
   rollLabel,
   numDice,
   weapon,
-  { emitDefense = true } = {}
+  { edgeAvailableOverride } = {}
 ) {
   const smartlink = resolveSmartlink(weapon);
   const rollParameters = getRollParameters(actor, dialog, smartlink);
   const recoilMalus = getInt(dialog, 'recoilMalus');
-  const wideDefenseMalus = getInt(dialog, 'wideDefenseMalus');
-  const burstDamageBonus = getInt(dialog, 'burstBonus');
   const finalRoll = computeFinalPool(numDice, rollParameters, recoilMalus);
   if (rollParameters.explode) await actor.useEdge();
-  const { successes, isGlitch } = await DiceUtility.rollAndShow({
+  const edgeFlag = edgeAvailableOverride ?? rollParameters.edgeAvailable;
+  const { successes, isGlitch, messageId } = await DiceUtility.rollAndShow({
     numDice: finalRoll,
     explode: rollParameters.explode,
-    edgeAvailable: rollParameters.edgeAvailable,
+    edgeAvailable: edgeFlag,
     actor,
     skillName: rollLabel,
     extended: rollParameters.extended,
   });
-  if (weapon && emitDefense && successes > 0 && !isGlitch)
-    emitDefenseTrigger(
-      actor,
-      weapon,
-      successes,
-      wideDefenseMalus,
-      burstDamageBonus
-    );
 
-  return { successes, isGlitch, rolledDice: finalRoll };
+  return {
+    successes,
+    isGlitch,
+    rolledDice: finalRoll,
+    edgeUsed: rollParameters.explode,
+    messageId,
+  };
 }
 
 /**
