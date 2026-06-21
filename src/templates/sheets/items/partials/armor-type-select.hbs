@@ -1,0 +1,8 @@
+<select name="system.armorType">
+  <option value="ballistic" {{#if (eq system.armorType "ballistic")}}selected{{/if}}>
+    {{localize "sr4.weapon.armorType.ballistic"}}
+  </option>
+  <option value="impact" {{#if (eq system.armorType "impact")}}selected{{/if}}>
+    {{localize "sr4.weapon.armorType.impact"}}
+  </option>
+</select>

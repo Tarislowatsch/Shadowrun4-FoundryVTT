@@ -1,0 +1,27 @@
+<div class="mods-section">
+  <label>{{localize installedKey}}</label>
+  {{#if warning}}
+    <small class="warning">{{localize warningKey}}</small>
+  {{/if}}
+  <small>{{localize usageKey}}: {{ used }} / {{ max }}</small>
+  {{#if installedMods.length}}
+  <ul class="installed-mods-list">
+    {{#each installedMods as |mod|}}
+    <li>
+      <span>{{ mod.name }}</span>
+      {{> item-edit-btn itemId=mod.id}}
+      <button type="button" class="item-delete" data-action="removeMod" data-mod-id="{{ mod.id }}" data-tooltip="{{localize 'sr4.item.delete'}}"><i class="fas fa-times"></i></button>
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  {{#if availableMods.length}}
+  <select data-action="addMod">
+    <option value="">— {{localize addKey}} —</option>
+    {{#each availableMods as |m|}}
+    <option value="{{ m.id }}">{{ m.name }}</option>
+    {{/each}}
+  </select>
+  {{/if}}
+  {{> item-create-btn btnAction="createMod" btnItemType=createType btnTooltip=addKey}}
+</div>

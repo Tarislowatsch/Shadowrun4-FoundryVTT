@@ -1,13 +1,7 @@
 
   <div class="item-sheet-body">
 
-    <header class="item-sheet-header">
-      <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
-      <div class="item-sheet-name">
-        <label>{{localize 'sr4.item.name'}}</label>
-        <input type="text" name="name" value="{{ item.name }}" />
-      </div>
-    </header>
+    {{> "item-sheet-header" nameKey="sr4.item.name"}}
 
     <table class="item-stats-table">
       <thead>

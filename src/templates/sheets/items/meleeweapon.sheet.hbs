@@ -1,17 +1,10 @@
 <div class="item-sheet-body">
-  <header class="item-sheet-header">
-    <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
-    <div class="item-sheet-name">
-      <label>{{localize 'sr4.weapon.name'}}</label>
-      <input type="text" name="name" value="{{ item.name }}" />
-    </div>
-    <div class="item-sheet-header-extras">
-      <label>
-        <span>{{localize 'sr4.weapon.noStrengthBonus'}}</span>
-        <input type="checkbox" class="sr4-checkbox" data-field="system.noStrengthBonus" {{#if system.noStrengthBonus}}checked{{/if}} />
-      </label>
-    </div>
-  </header>
+  {{#> "item-sheet-header" nameKey="sr4.weapon.name"}}
+    <label>
+      <span>{{localize 'sr4.weapon.noStrengthBonus'}}</span>
+      <input type="checkbox" class="sr4-checkbox" data-field="system.noStrengthBonus" {{#if system.noStrengthBonus}}checked{{/if}} />
+    </label>
+  {{/"item-sheet-header"}}
 
   <table class="item-stats-table">
     <thead>
@@ -51,14 +44,7 @@
           <input type="number" name="system.ap" value="{{ system.ap }}" />
         </td>
         <td>
-          <select name="system.armorType">
-            <option value="ballistic" {{#if (eq system.armorType "ballistic")}}selected{{/if}}>
-              {{localize "sr4.weapon.armorType.ballistic"}}
-            </option>
-            <option value="impact" {{#if (eq system.armorType "impact")}}selected{{/if}}>
-              {{localize "sr4.weapon.armorType.impact"}}
-            </option>
-          </select>
+          {{> "armor-type-select"}}
         </td>
         <td>
           <input type="number" name="system.reach" value="{{ system.reach }}" />
@@ -83,33 +69,17 @@
     </tbody>
   </table>
 
-  <div class="mods-section">
-    <label>{{localize 'sr4.weaponmod.installed'}}</label>
-    {{#if system.modSlotWarning}}
-      <small class="warning">{{localize 'sr4.weaponmod.slotWarning'}}</small>
-    {{/if}}
-    <small>{{localize 'sr4.weaponmod.slotsUsed'}}: {{ system.usedModSlots }} / {{ system.modSlots }}</small>
-    {{#if installedMods.length}}
-    <ul class="installed-mods-list">
-      {{#each installedMods as |mod|}}
-      <li>
-        <span>{{ mod.name }}</span>
-        {{> item-edit-btn itemId=mod.id}}
-        <button type="button" class="item-delete" data-action="removeMod" data-mod-id="{{ mod.id }}" data-tooltip="{{localize 'sr4.item.delete'}}"><i class="fas fa-times"></i></button>
-      </li>
-      {{/each}}
-    </ul>
-    {{/if}}
-    {{#if availableWeaponMods.length}}
-    <select data-action="addMod">
-      <option value="">— {{localize 'sr4.weaponmod.add'}} —</option>
-      {{#each availableWeaponMods as |m|}}
-      <option value="{{ m.id }}">{{ m.name }}</option>
-      {{/each}}
-    </select>
-    {{/if}}
-    {{> item-create-btn btnAction="createMod" btnItemType="Weapon Mod" btnTooltip="sr4.weaponmod.add"}}
-  </div>
+  {{> "mods-section"
+    installedKey="sr4.weaponmod.installed"
+    warning=system.modSlotWarning
+    warningKey="sr4.weaponmod.slotWarning"
+    usageKey="sr4.weaponmod.slotsUsed"
+    used=system.usedModSlots
+    max=system.modSlots
+    availableMods=availableWeaponMods
+    addKey="sr4.weaponmod.add"
+    createType="Weapon Mod"
+  }}
 
   {{> "item-textareas"}}
 </div>

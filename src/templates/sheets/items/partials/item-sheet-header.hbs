@@ -4,4 +4,9 @@
     <label>{{localize nameKey}}</label>
     <input type="text" name="name" value="{{ item.name }}" />
   </div>
+  {{#if @partial-block}}
+  <div class="item-sheet-header-extras">
+    {{> @partial-block}}
+  </div>
+  {{/if}}
 </header>

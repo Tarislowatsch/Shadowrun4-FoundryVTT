@@ -6,16 +6,26 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 ## Actors
 
-* Player character, NPC, Spirit, and Vehicle actor sheets
+* Player character, NPC, Spirit, Sprite, and Vehicle actor sheets
+* Dedicated summoned-entity sheet shared by Spirits and Sprites
 * Attribute and skill management
 * Condition monitors (Physical / Stun)
 * Lifestyle field
 * Edit-mode toggle for locked sheets
+* Character import from Chummer XML (GM tool, *unstable*)
 
 ## Items
 
-* Skills
-* Generic item support for system automation
+* Ranged & melee weapons, with weapon mods
+* Armor, with armor mods
+* Ammunition
+* Cyberware / bioware (implants)
+* Commlinks, programs, and autosofts
+* Spells, adept/critter powers, foci, and fetishes
+* Qualities
+* Skills and actions
+* Vehicle mods
+* Generic gear / item fallback for system automation
 
 ## Roll System
 
@@ -26,12 +36,23 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Spell casting & drain rolls
 * Free rolls and action rolls
 * Combat defense rolls with automatic soak
+* Edge offered after a roll resolves; Edge on initiative
+
+## Magic
+
+* Guided spellcasting flow with force selection and drain resistance
+* Direct and indirect combat spells with networked defender resolution
+* Automatic Sustain effect creation for sustained spells (client setting)
+* Adept and critter powers
 
 ## Combat
 
 * SR4Combat: initiative pass tracking
 * SR4CombatTracker: pass display and inactive-combatant dimming
+* Initiative formula with wound-penalty reduction
 * GM defender picker for untargeted attacks
+* Ammunition tracking on weapon attacks
+* Combat spell defense (direct mana/physical resist, indirect dodge & soak)
 * Configurable damage application workflow (world setting)
 
 ## Active Effects
@@ -43,14 +64,28 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 ## Settings
 
-* Configurable NPC default skill list
-* XML Importer (GM tool for bulk item import)
+* Configurable NPC default skill list (GM menu)
+* Combat defense workflow toggle, with automatic soak sub-toggle
+* GM defender picker for untargeted attacks
 * Damage application workflow toggle
+* Edge decision timeout for interactive flows
+* Ammunition tracking toggle
+* Live initiative reduction from wound penalties
+* Spell workflow & automatic Sustain effect (client settings)
 * Optional Foundry default effect sheet for GMs
+* XML Importer (GM tool for bulk item import, *unstable*)
+
+## Character Importer
+
+> **Unstable.** Results are not perfect yet — review the imported actor before play.
+
+A GM tool, reachable from the button in the **Actor Directory**. Point it at a single character XML export — the kind any decent *chummer* keeps on hand — and it creates a full `character` actor: attributes, skills (with ratings), magic, qualities, gear, weapons, armor, spells, powers, implants, and portrait.
 
 ## XML Importer
 
-Oi, if you're a real *chummer*, you've probably got an XML file or two lying around to pull your gear from. The importer lives in the **game settings** (System Settings → "XML Data Importer", GM only) — feed it your statblock XML and it drops weapons, armor, gear, ammo, cyberware, bioware, spells, powers, programs and skills into tidy per-category world compendia.
+> **Unstable.** Results are not perfect yet — expect to clean up after an import.
+
+A GM tool for bulk item import, found under **System Settings → "XML Data Importer"**. Point it at a statblock XML and it imports weapons, armor, gear, ammo, cyberware, bioware, spells, powers, programs and skills into tidy per-category world compendia.
 
 No data is shipped with the system; bring your own.
 
