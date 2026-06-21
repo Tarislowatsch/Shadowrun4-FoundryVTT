@@ -36,8 +36,6 @@ const RANGED_DEFENSE_KEYS = Object.keys(DEFENSE_SKILLS).filter(
 /** @typedef {import('@models/index').SR4Modifiers} SR4Modifiers */
 
 /**
- * Defense pool modifier that applies based on the incoming attack's range.
- * Bonus convention: positive = bonus, negative = malus.
  * @param {SR4Modifiers} mods
  * @param {boolean} isMelee
  * @returns {number}
@@ -49,9 +47,6 @@ export function rangeDefenseModifier(mods, isMelee) {
 }
 
 /**
- * Attack-range-independent defender modifier: the generic defenseModifier plus
- * the range-specific one. Skill-specific modifiers are resolved separately once
- * a defense skill is chosen.
  * @param {SR4Modifiers} mods
  * @param {boolean} isMelee
  * @returns {number}
@@ -61,7 +56,6 @@ export function baseDefenseModifier(mods, isMelee) {
 }
 
 /**
- * Defense pool modifier for the selected defense skill (dodge/block/parry).
  * @param {SR4Modifiers} mods
  * @param {string} [skillKey]
  * @returns {number}

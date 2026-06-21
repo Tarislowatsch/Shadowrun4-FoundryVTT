@@ -1,22 +1,3 @@
-/**
- * Single source of truth for weapon and armor "effective stat" math.
- *
- * These are pure functions: they take already-resolved data (system data +
- * an array of installed-mod system data) and return derived numbers. They
- * have NO knowledge of Foundry Documents, actors, or item lookups — that
- * resolution is the caller's job, because the two call sites resolve mods
- * differently:
- *
- *   - DataModel#prepareDerivedData() resolves mods via `actor.items.get(id)`
- *     (live Documents, walked at runtime).
- *   - Sheet context builders (e.g. buildWeaponContext/buildArmorContext)
- *     resolve mods via a Map built from a flat `toObject()` item array.
- *
- * Keeping resolution out of this module is what lets both call sites share
- * the exact same formula without forcing one of them into the other's data
- * shape.
- */
-
 export const AP_HALF_TYPES = new Set([
   'ELECTRICITY',
   'FIRE',
@@ -47,11 +28,6 @@ function computeUsedModSlots(mods) {
 }
 
 /**
- * Filters a raw resolved-item array down to ones of a given type, as a
- * defensive narrowing step. Mirrors the `m?.type === 'Weapon Mod'` guard
- * that lived in the DataModel, now shared so context builders get the same
- * protection against stale/mistyped ids.
- *
  * @param {any[]} items
  * @param {string} type
  */
@@ -60,7 +36,6 @@ export function filterModsByType(items, type) {
 }
 
 /**
- * Sums a numeric `system[key]` field across a list of resolved mods.
  * @param {any[]} mods
  * @param {string} key
  */
@@ -77,17 +52,10 @@ function computeTotalCost(mods, baseCost) {
 }
 
 /**
- * Computes effective stats for a ranged weapon.
- *
- * @param {object} system - the weapon's system data (damage, ap, rc, smartlink, damageType, armorType, cost, ...)
- * @param {object|null} ammo - resolved loaded-ammo data, or null. Shape: `{ name, system: { damageOverride?, damageBonus?, apBonus?, damageTypeOverride? } }`
- * @param {any[]} mods - resolved installed Weapon Mod items (each with `.system`)
- * @returns {{
- *   effectiveDamage: number, effectiveAP: number, effectiveRC: number,
- *   effectiveSmartlink: boolean, effectiveDamageType: string, effectiveApHalf: boolean,
- *   effectiveArmorType: string, loadedAmmoName: string|null,
- *   usedModSlots: number, modSlotWarning: boolean, totalCost: number,
- * }}
+ * @param {object} system
+ * @param {object|null} ammo
+ * @param {any[]} mods
+ * @returns {{ effectiveDamage: number, effectiveAP: number, effectiveRC: number, effectiveSmartlink: boolean, effectiveDamageType: string, effectiveApHalf: boolean, effectiveArmorType: string, loadedAmmoName: string|null, usedModSlots: number, modSlotWarning: boolean, totalCost: number }}
  */
 export function computeRangedWeaponDerived(system, ammo, mods) {
   const ammoDamageOverride = ammo?.system?.damageOverride;
@@ -132,16 +100,9 @@ export function computeRangedWeaponDerived(system, ammo, mods) {
 }
 
 /**
- * Computes effective stats for a melee weapon.
- *
- * @param {object} system - the weapon's system data (damage, ap, attackSkill, noStrengthBonus, damageType, armorType, cost, ...)
- * @param {any[]} mods - resolved installed Weapon Mod items (each with `.system`)
- * @param {{ strengthBonus?: number, meleeDamageModifier?: number, unarmedDamageModifier?: number }} [modifiers]
- *   Caller-supplied source values. The DataModel derives `strengthBonus` from
- *   `actor.getAttribute('STRENGTH')` directly; the sheet context builder
- *   instead receives a pre-calculated `meleeDmgBonus`. Both are passed in
- *   here as the same named param so the formula itself never has to know
- *   which source produced the number.
+ * @param {object} system
+ * @param {any[]} mods
+ * @param {object} [modifiers]
  */
 export function computeMeleeWeaponDerived(
   system,

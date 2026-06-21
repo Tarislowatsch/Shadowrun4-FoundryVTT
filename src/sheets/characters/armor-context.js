@@ -5,7 +5,7 @@ import {
 } from '@sheets/shared/mod-resolution';
 
 /**
- * @param {any[]} items - Flat item array from actor.toObject(false)
+ * @param {any[]} items
  * @returns {any[]}
  */
 export function buildArmorContext(items) {

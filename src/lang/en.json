@@ -79,6 +79,7 @@
     },
     "bio": {
       "bio": "Biography",
+      "connections": "Connections",
       "notes": "Notes",
       "physicalDescription": "Description",
       "qualities": "Qualities"
@@ -88,6 +89,20 @@
       "overflowBonus": "Overflow Bonus",
       "soakBonus": "Soak Bonus",
       "woundModBonus": "Wound Mod. Bonus"
+    },
+    "connection": {
+      "archetype": "Archetype",
+      "connection": "Connection",
+      "contact": "Contact",
+      "create": "Add Connection",
+      "delete": "Delete Connection",
+      "enemy": "Enemy",
+      "groupConnection": "Group Connection",
+      "loyalty": "Loyalty",
+      "name": "Name",
+      "noConnections": "No connections present",
+      "notes": "Notes",
+      "type": "Type"
     },
     "conditionMonitor": {
       "physical": "Physical Condition Monitor",
@@ -183,6 +198,7 @@
       "notoriety": "Notoriety",
       "nuyen": "Nuyen",
       "publicAwareness": "Public Awareness",
+      "realName": "Real Name",
       "skin": "Skin Color",
       "streetCred": "Street Cred",
       "totalKarma": "Total Karma",

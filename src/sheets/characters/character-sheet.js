@@ -31,6 +31,8 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       toggleEffect: SR4CharacterSheet.#onToggleEffect,
       editEffect: SR4CharacterSheet.#onEditEffect,
       deleteEffect: SR4CharacterSheet.#onDeleteEffect,
+      createConnection: SR4CharacterSheet.#onCreateConnection,
+      deleteConnection: SR4CharacterSheet.#onDeleteConnection,
     },
   };
 
@@ -199,7 +201,12 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         0
       ),
       armor: buildArmorContext(items),
-      qualities: items.filter((i) => i.type === 'Quality'),
+      positiveQualities: items.filter(
+        (i) => i.type === 'Quality' && i.system.category !== 'Negative'
+      ),
+      negativeQualities: items.filter(
+        (i) => i.type === 'Quality' && i.system.category === 'Negative'
+      ),
       actions: items.filter((i) => i.type === 'Action'),
       foci: items.filter((i) => i.type === 'Focus' || i.type === 'Fetish'),
       commlinks: items.filter((i) => i.type === 'Commlink'),
@@ -363,5 +370,21 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     const effectId = target.closest('[data-effect-id]')?.dataset.effectId;
     if (!effectId) return;
     await this.actor.deleteEmbeddedDocuments('ActiveEffect', [effectId]);
+  }
+
+  // ── Connection actions ──────────────────────────────────────────────────────
+
+  static async #onCreateConnection(event, target) {
+    await this.actor.update({
+      [`system.connections.${foundry.utils.randomID()}`]: {},
+    });
+  }
+
+  static async #onDeleteConnection(event, target) {
+    const key =
+      target.dataset.connectionKey ??
+      target.closest('[data-connection-key]')?.dataset.connectionKey;
+    if (!key) return;
+    await this.actor.update({ [`system.connections.-=${key}`]: null });
   }
 }

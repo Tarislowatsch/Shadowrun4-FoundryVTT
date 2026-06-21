@@ -14,12 +14,15 @@
       "upload": "Character XML file"
     },
     "importer": {
+      "button": "Import XML",
       "colCategory": "Category",
       "colCount": "Entries",
       "colTarget": "Target compendium",
       "empty": "No entries yet — select one or more XML files.",
       "hint": "Upload one or more XML statblock files. Detected entries are listed below and imported into dedicated world compendia.",
       "import": "Import",
+      "importError": "Import failed: {error}",
+      "importing": "Importing… {percent}%",
       "parseError": "Could not parse \"{file}\": {error}",
       "result": "Import complete: {created} created, {skipped} skipped.",
       "skipDuplicates": "Skip entries whose name already exists in the target compendium",

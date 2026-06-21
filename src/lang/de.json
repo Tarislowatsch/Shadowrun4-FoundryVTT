@@ -80,6 +80,7 @@
     },
     "bio": {
       "bio": "Biografie",
+      "connections": "Kontakte",
       "notes": "Notizen",
       "physicalDescription": "Beschreibung",
       "qualities": "Gaben & Handicaps"
@@ -89,6 +90,20 @@
       "overflowBonus": "Overflow Bonus",
       "soakBonus": "Schadenswiderstands Bonus",
       "woundModBonus": "Wundmodifikator Bonus"
+    },
+    "connection": {
+      "archetype": "Archetyp",
+      "connection": "Beziehung",
+      "contact": "Kontakt",
+      "create": "Kontakt hinzufügen",
+      "delete": "Kontakt löschen",
+      "enemy": "Feind",
+      "groupConnection": "Gruppen-Beziehung",
+      "loyalty": "Loyalität",
+      "name": "Name",
+      "noConnections": "Keine Kontakte vorhanden",
+      "notes": "Notizen",
+      "type": "Typ"
     },
     "conditionMonitor": {
       "physical": "Körperlicher Zustandsmonitor",
@@ -183,6 +198,7 @@
       "notoriety": "Bekanntheitsgrad",
       "nuyen": "¥",
       "publicAwareness": "Öffentliche Bekanntheit",
+      "realName": "Echter Name",
       "skin": "Hautfarbe",
       "streetCred": "Straßenruf",
       "totalKarma": "Gesamtkarma",

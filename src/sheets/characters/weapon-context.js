@@ -9,10 +9,8 @@ import {
 } from '@sheets/shared/mod-resolution';
 
 /**
- * Maps raw item source data into weapon view-model objects for character/NPC sheets.
- *
- * @param {any[]} items - Flat item array from actor.toObject(false)
- * @param {{ meleeDmgBonus?: number, meleeDamageModifier?: number, unarmedDamageModifier?: number }} [opts]
+ * @param {any[]} items
+ * @param {object} [opts]
  * @returns {any[]}
  */
 export function buildWeaponContext(

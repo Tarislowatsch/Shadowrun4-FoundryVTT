@@ -80,5 +80,9 @@ export function extractCharacter(xmlString) {
     ...characterEl.querySelectorAll(':scope > skills > skill'),
   ].map(elementToRecord);
 
+  character.contacts = [
+    ...characterEl.querySelectorAll(':scope > contacts > contact'),
+  ].map(elementToRecord);
+
   return { character, items, skills };
 }

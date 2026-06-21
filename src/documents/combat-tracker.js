@@ -2,7 +2,6 @@
 import { getPhysicalPassCount } from './combat.js';
 
 // foundry.applications.ui.CombatTracker is not available at module load time.
-// Call this function inside the 'init' hook and assign the result to CONFIG.ui.combat.
 export function createSR4CombatTracker() {
   return class SR4CombatTracker extends CONFIG.ui.combat {
     async _onRender(context, options) {

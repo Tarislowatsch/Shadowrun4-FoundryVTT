@@ -8,11 +8,6 @@ import { buildImportGroups, buildTypeTree } from '@importer/grouping.js';
  */
 const CHUNK_SIZE = 100;
 
-/**
- * GM-facing tool that reads XML statblock files and creates the contained
- * entries as items inside dedicated world compendia, organised by type,
- * subcategory and source book in a hierarchical tree.
- */
 export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
@@ -27,6 +22,9 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
 
   /** @type {Set<string>} */
   #enabledSources = new Set();
+
+  /** @type {boolean} */
+  #importing = false;
 
   static DEFAULT_OPTIONS = {
     id: 'sr4-xml-importer',
@@ -241,68 +239,103 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
    * @returns {Promise<void>}
    */
   static async #onImport() {
-    await game.settings.set('shadowrun4e', 'importerEnabledSources', [
-      ...this.#enabledSources,
-    ]);
+    if (this.#importing) return;
+    this.#importing = true;
 
-    const skipDuplicates =
-      this.element.querySelector('[name="skipDuplicates"]')?.checked ?? true;
-    const checked = new Set(
-      [...this.element.querySelectorAll('[data-group]:checked')].map(
-        (input) => input.dataset.group
-      )
-    );
+    const button = this.element.querySelector('[data-action="import"]');
+    const originalLabel = button?.innerHTML;
+    const setProgress = (percent) => {
+      if (!button) return;
+      button.disabled = true;
+      button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${game.i18n.format(
+        'sr4.importer.importing',
+        { percent }
+      )}`;
+    };
 
-    let created = 0;
-    let skipped = 0;
+    try {
+      await game.settings.set('shadowrun4e', 'importerEnabledSources', [
+        ...this.#enabledSources,
+      ]);
 
-    /** @type {Map<string, string>} */
-    const folderCache = new Map();
-
-    for (const group of this.#groups) {
-      if (!checked.has(group.id)) continue;
-      if (group.records.length === 0) continue;
-
-      if (!folderCache.has(group.typeLabel)) {
-        folderCache.set(
-          group.typeLabel,
-          await this.#getOrCreateFolder(group.typeLabel)
-        );
-      }
-
-      const pack = await this.#getOrCreatePack(
-        group.compendiumName,
-        group.compendiumLabel,
-        folderCache.get(group.typeLabel)
+      const skipDuplicates =
+        this.element.querySelector('[name="skipDuplicates"]')?.checked ?? true;
+      const checked = new Set(
+        [...this.element.querySelectorAll('[data-group]:checked')].map(
+          (input) => input.dataset.group
+        )
       );
 
-      let known = new Set();
-      if (skipDuplicates) {
-        const index = await pack.getIndex();
-        known = new Set([...index].map((e) => e.name.toLowerCase()));
-      }
+      const selected = this.#groups.filter(
+        (group) => checked.has(group.id) && group.records.length > 0
+      );
+      const total = selected.reduce(
+        (sum, group) => sum + group.records.length,
+        0
+      );
 
-      const docs = [];
-      for (const record of group.records) {
-        const data = group.map(record);
-        if (skipDuplicates && known.has(data.name.toLowerCase())) {
-          skipped += 1;
-          continue;
+      let created = 0;
+      let skipped = 0;
+      let processed = 0;
+      setProgress(0);
+
+      /** @type {Map<string, string>} */
+      const folderCache = new Map();
+
+      for (const group of selected) {
+        if (!folderCache.has(group.typeLabel)) {
+          folderCache.set(
+            group.typeLabel,
+            await this.#getOrCreateFolder(group.typeLabel)
+          );
         }
-        known.add(data.name.toLowerCase());
-        docs.push(data);
+
+        const pack = await this.#getOrCreatePack(
+          group.compendiumName,
+          group.compendiumLabel,
+          folderCache.get(group.typeLabel)
+        );
+
+        let known = new Set();
+        if (skipDuplicates) {
+          const index = await pack.getIndex();
+          known = new Set([...index].map((e) => e.name.toLowerCase()));
+        }
+
+        const docs = [];
+        for (const record of group.records) {
+          const data = group.map(record);
+          if (skipDuplicates && known.has(data.name.toLowerCase())) {
+            skipped += 1;
+            continue;
+          }
+          known.add(data.name.toLowerCase());
+          docs.push(data);
+        }
+
+        for (let i = 0; i < docs.length; i += CHUNK_SIZE) {
+          await Item.createDocuments(docs.slice(i, i + CHUNK_SIZE), {
+            pack: pack.collection,
+          });
+        }
+        created += docs.length;
+        processed += group.records.length;
+        setProgress(total ? Math.round((processed / total) * 100) : 100);
       }
 
-      for (let i = 0; i < docs.length; i += CHUNK_SIZE) {
-        await Item.createDocuments(docs.slice(i, i + CHUNK_SIZE), {
-          pack: pack.collection,
-        });
+      ui.notifications.info(
+        game.i18n.format('sr4.importer.result', { created, skipped })
+      );
+    } catch (err) {
+      ui.notifications.error(
+        game.i18n.format('sr4.importer.importError', { error: err.message })
+      );
+    } finally {
+      this.#importing = false;
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = originalLabel;
       }
-      created += docs.length;
     }
-
-    ui.notifications.info(
-      game.i18n.format('sr4.importer.result', { created, skipped })
-    );
   }
 }

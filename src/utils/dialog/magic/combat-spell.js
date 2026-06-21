@@ -38,10 +38,6 @@ function buildSpellDodgeSkills(defender) {
 }
 
 /**
- * Opens a resistance roll dialog on the DEFENDER's client for Direct Combat Spells.
- * Defender rolls Body (Physical spells) or Willpower (Mana spells).
- * Result is emitted back to the caster via `directSpellResisted`.
- *
  * @param {import('@documents/index').SR4Actor} defender
  * @param {string} spellName
  * @param {number} castingHits
@@ -92,14 +88,11 @@ export async function openDirectSpellResistDialog(
 }
 
 /**
- * Opens the allocation dialog on the CASTER's client after the defender has rolled.
- * Shows fixed net hits, lets caster choose how many bonus hits to apply (+1 DV, +1 Drain each).
- *
  * @param {string} spellName
  * @param {number} force
  * @param {number} netHits
  * @param {string} [defenderName]
- * @returns {Promise<number>} appliedHits (0 if dialog cancelled)
+ * @returns {Promise<number>}
  */
 export async function openDirectSpellAllocationDialog(
   spellName,
@@ -142,10 +135,6 @@ export async function openDirectSpellAllocationDialog(
 }
 
 /**
- * Opens a dodge dialog for Indirect Combat Spells on the defender's client.
- * Supports normal dodge (Reaction) and full defense (Reaction + Dodge/Gymnastics).
- * If not fully dodged, continues to a soak roll (Body + ½ Impact armor).
- *
  * @param {import('@documents/index').SR4Actor} defender
  * @param {import('@documents/index').SR4Actor} attacker
  * @param {import('@models/index').SR4Spell} spell

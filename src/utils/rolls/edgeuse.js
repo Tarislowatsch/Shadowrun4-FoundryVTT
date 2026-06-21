@@ -52,10 +52,6 @@ function consumeEdge(
  */
 
 /**
- * Renders and opens the Edge use dialog, allowing the player to choose how to
- * spend Edge after a roll. Handles unglitching, rerolling failures, and adding
- * bonus Edge dice.
- *
  * @param {EdgeUseOptions} options
  * @returns {Promise<void>}
  */

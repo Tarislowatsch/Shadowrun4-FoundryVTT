@@ -27,8 +27,6 @@ export class SR4ImplantData extends foundry.abstract.TypeDataModel {
 // ---------------------------------------------------------------------------
 
 /**
- * Available implant grade options, determining essence cost and availability.
- *
  * @enum {string}
  * @readonly
  */
@@ -41,8 +39,6 @@ export const ImplantGrades = Object.freeze({
 });
 
 /**
- * Available implant type categories.
- *
  * @enum {string}
  * @readonly
  */

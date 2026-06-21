@@ -76,6 +76,7 @@ export const derivedStatsField = () =>
  * @typedef {object} SR4DescriptionAndNotes
  * @property {string} bio
  * @property {string} notes
+ * @property {string} realName
  * @property {string} gender
  * @property {string} metatype
  * @property {string} height
@@ -89,6 +90,7 @@ export const descriptionField = () =>
   new fields.SchemaField({
     bio: new fields.HTMLField({ initial: '' }),
     notes: new fields.HTMLField({ initial: '' }),
+    realName: new fields.StringField({ initial: '' }),
     gender: new fields.StringField({ initial: 'Unknown' }),
     metatype: new fields.StringField({ initial: 'Human' }),
     height: new fields.StringField({ initial: '180' }),
@@ -174,6 +176,38 @@ export const magicField = () =>
     traditionBonus: new fields.NumberField({ initial: 0, integer: true }),
   });
 // ---------------------------------------------------------------------------
+// Connections
+// ---------------------------------------------------------------------------
+
+/**
+ * @typedef {object} SR4Connection
+ * @property {string} name
+ * @property {number} connection
+ * @property {number} groupConnection
+ * @property {number} loyalty
+ * @property {'Contact' | 'Enemy'} type
+ * @property {string} archetype
+ * @property {string} notes
+ */
+
+export const connectionsField = () =>
+  new fields.TypedObjectField(
+    new fields.SchemaField({
+      name: new fields.StringField({ initial: '' }),
+      connection: new fields.NumberField({ initial: 1, integer: true, min: 1 }),
+      groupConnection: new fields.NumberField({ initial: 0, integer: true }),
+      loyalty: new fields.NumberField({ initial: 1, integer: true, min: 1 }),
+      type: new fields.StringField({
+        initial: 'Contact',
+        choices: ['Contact', 'Enemy'],
+        blank: false,
+      }),
+      archetype: new fields.StringField({ initial: '' }),
+      notes: new fields.StringField({ initial: '' }),
+    })
+  );
+
+// ---------------------------------------------------------------------------
 // BaseCharacterData
 // ---------------------------------------------------------------------------
 
@@ -224,7 +258,7 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
 // ---------------------------------------------------------------------------
 
 /**
- * @typedef {SR4BaseCharacterSystem & { metaData: SR4CharacterMetaData }} SR4CharacterSystem
+ * @typedef {SR4BaseCharacterSystem & { metaData: SR4CharacterMetaData, connections: Record<string, SR4Connection> }} SR4CharacterSystem
  * @typedef {SR4BaseCharacterData & { system: SR4CharacterSystem }} SR4Character
  */
 
@@ -233,6 +267,7 @@ export class SR4CharacterData extends SR4BaseCharacterData {
     return {
       ...super.defineSchema(),
       metaData: characterMetaDataField(),
+      connections: connectionsField(),
       vehicles: new fields.ArrayField(new fields.StringField({ blank: true })),
     };
   }

@@ -5,6 +5,7 @@ import { DieChatHook } from './die-chat-hook';
 import { InitiativeHook } from './initiative-hook';
 import { SettingsHook } from './settings-hook';
 import { ActorDirectoryHook } from './actor-directory-hook';
+import { CompendiumDirectoryHook } from './compendium-directory-hook';
 
 export function registerHooks() {
   new SettingsHook();
@@ -14,4 +15,5 @@ export function registerHooks() {
   new InitiativeHook();
   new DieChatHook();
   new ActorDirectoryHook();
+  new CompendiumDirectoryHook();
 }

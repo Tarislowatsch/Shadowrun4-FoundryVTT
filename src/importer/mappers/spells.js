@@ -17,7 +17,6 @@ const TYPE_MAP = { P: 'PHYSICAL', M: 'MANA' };
 const DURATION_MAP = { I: 'INSTANT', S: 'SUSTAINED', P: 'PERMANENT' };
 
 /**
- * Keyword patterns used to infer an elemental descriptor from the spell name.
  * @type {Array<[RegExp, string]>}
  */
 const ELEMENT_PATTERNS = [
@@ -36,8 +35,6 @@ const ELEMENT_PATTERNS = [
 ];
 
 /**
- * Resolves the spell range key and whether the spell is an area effect.
- *
  * @param {string} [raw]
  * @returns {{ range: string, area: boolean }}
  */
@@ -56,8 +53,6 @@ function parseRange(raw) {
 }
 
 /**
- * Extracts the additive drain constant from a drain formula (e.g. "(F/2)+3").
- *
  * @param {string} [raw]
  * @returns {number}
  */
@@ -67,8 +62,6 @@ function parseDrain(raw) {
 }
 
 /**
- * Infers an elemental descriptor from the spell name.
- *
  * @param {string} [name]
  * @returns {string}
  */
@@ -80,8 +73,6 @@ function inferElement(name) {
 }
 
 /**
- * Maps a spell record to a "Spell" item.
- *
  * @param {Record<string, string | string[]>} record
  * @returns {{ name: string, type: string, system: object }}
  */

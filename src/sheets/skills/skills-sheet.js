@@ -4,12 +4,6 @@ import {
   SR4Attributes,
 } from '@models/index';
 
-/**
- * Sheet class for displaying and editing Shadowrun 4e skill items.
- * Uses ApplicationV2 / HandlebarsApplicationMixin (Sheets V2).
- *
- * @extends {foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2)}
- */
 export default class SR4SkillsSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ItemSheetV2
 ) {

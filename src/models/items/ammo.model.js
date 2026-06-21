@@ -7,9 +7,7 @@ const fields = foundry.data.fields;
  * @property {number} damageBonus
  * @property {number} apBonus
  * @property {string} damageTypeOverride
- * @property {number|null} damageOverride - Absolute damage that replaces the
- *   weapon's base value (e.g. Stick-n-Shock 6S). `null` means no override and
- *   {@link SR4AmmoSystem.damageBonus} is applied additively instead.
+ * @property {number|null} damageOverride — `null` = no override, damageBonus applies additively
  * @property {number} quantity
  */
 

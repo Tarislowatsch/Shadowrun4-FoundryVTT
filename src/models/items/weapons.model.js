@@ -173,10 +173,6 @@ function resolveWeaponMods(ids, actor) {
 const RANGED_WEAPON_TYPE = 'Ranged Weapon';
 
 /**
- * Returns true when the item is a ranged weapon.
- * Use this to narrow the item type before accessing ranged-only properties
- * like `smartlink`, `mode`, or `ammo`.
- *
  * @param {SR4Weapon} item
  * @returns {item is SR4Weapon & { type: 'Ranged Weapon', system: SR4RangedWeaponSystem }}
  */

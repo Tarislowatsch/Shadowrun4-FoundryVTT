@@ -10,11 +10,9 @@ export class SR4ActiveEffect extends foundry.documents.ActiveEffect {
   }
 
   /**
-   * Creates an ActiveEffect on `parent` from a named template.
-   * @param {string} key - Key into EFFECT_TEMPLATES
+   * @param {string} key
    * @param {foundry.documents.Actor} parent
-   * @param {Record<string, unknown>} [overrides] - Top-level fields shallow-merged onto the template clone.
-   *   Nested keys (e.g. `duration`) replace the template value wholesale; they are not deep-merged.
+   * @param {Record<string, unknown>} [overrides]
    * @returns {Promise<SR4ActiveEffect>}
    */
   static fromTemplate(key, parent, overrides = {}) {

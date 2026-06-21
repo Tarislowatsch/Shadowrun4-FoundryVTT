@@ -1,9 +1,9 @@
 /**
  * @typedef {object} SR4Rules
- * @property {number} successThreshold     Minimum die value that counts as a hit (default 5).
- * @property {number} conditionMonitorBase Base boxes added before the stat-derived term (default 8).
- * @property {number} woundModifierDivisor Boxes of damage per –1 wound penalty (default 3).
- * @property {number} edgeInitiativeSentinel Sentinel value used when Edge is spent on initiative (default 99).
+ * @property {number} successThreshold
+ * @property {number} conditionMonitorBase
+ * @property {number} woundModifierDivisor
+ * @property {number} edgeInitiativeSentinel
  */
 
 /**

@@ -5,9 +5,6 @@
 import { commerceFields, parseNumber, sourceOf } from './helpers.js';
 
 /**
- * Resolves an ammunition damage type code into a system damage type.
- * Unlike weapon damage, the "(f)" flechette marker is not treated as fire.
- *
  * @param {string} [raw]
  * @returns {string}
  */
@@ -20,8 +17,6 @@ function parseAmmoDamageType(raw) {
 }
 
 /**
- * Maps a weapon bonus block into the ammo combat-modifier fields.
- *
  * @param {Record<string, string>} bonus
  * @returns {{ damageBonus: number, apBonus: number, damageTypeOverride: string, damageOverride: number|null }}
  */

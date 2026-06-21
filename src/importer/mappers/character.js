@@ -59,8 +59,6 @@ function resolveTradition(raw) {
 }
 
 /**
- * Drain formulas read "WIL + X (n)"; the system stores the secondary attribute X.
- *
  * @param {unknown} drain
  * @param {string} tradition
  * @returns {'LOGIC' | 'CHARISMA' | 'INTUITION'}
@@ -90,9 +88,48 @@ function mapSheetStats(attributes) {
 }
 
 /**
- * Only raw attributes and current damage are written; condition-monitor maxima,
- * initiative and wound modifiers are left to the actor's own derivation.
- *
+ * @param {unknown} raw
+ * @returns {{ connection: number, groupConnection: number }}
+ */
+export function parseConnectionRating(raw) {
+  const match = String(raw ?? '').match(/(\d+)(?:\s*\((\d+)\))?/);
+  return {
+    connection: match ? parseInt(match[1], 10) : 1,
+    groupConnection: match?.[2] ? parseInt(match[2], 10) : 0,
+  };
+}
+
+/**
+ * @param {Array<Record<string, unknown>>} contacts
+ * @returns {Record<string, SR4Connection>}
+ */
+export function mapConnections(contacts) {
+  /** @type {Record<string, object>} */
+  const connections = {};
+  (contacts ?? []).forEach((contact, index) => {
+    const rawName = String(contact.name ?? '').trim();
+    const suffix = rawName.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+    const { connection, groupConnection } = parseConnectionRating(
+      contact.connection
+    );
+    connections[`c${index}`] = {
+      name: suffix ? suffix[1].trim() : rawName,
+      archetype: suffix ? suffix[2].trim() : '',
+      connection,
+      groupConnection,
+      loyalty: parseNumber(contact.loyalty, 1),
+      type: upper(contact.type) === 'ENEMY' ? 'Enemy' : 'Contact',
+      notes: '',
+    };
+  });
+  return connections;
+}
+
+/**
+ * @typedef {import('@models/actor/basecharacter.model').SR4Connection} SR4Connection
+ */
+
+/**
  * @param {Record<string, any>} character
  * @returns {{ name: string, img: string|null, system: object }}
  */
@@ -101,7 +138,10 @@ export function mapCharacterSystem(character) {
   const mugshot = String(character.mugshotbase64 ?? '').trim();
 
   return {
-    name: String(character.name ?? '').trim() || 'Imported Character',
+    name:
+      String(character.alias ?? '').trim() ||
+      String(character.name ?? '').trim() ||
+      'Imported Character',
     img: mugshot ? `data:image/jpeg;base64,${mugshot}` : null,
     system: {
       sheetStats: mapSheetStats(character.attributes ?? {}),
@@ -132,6 +172,7 @@ export function mapCharacterSystem(character) {
         drainAttribute: resolveDrainAttribute(character.drain, tradition),
       },
       technomancer: parseBool(character.technomancer),
+      connections: mapConnections(character.contacts),
       conditionMonitor: {
         physical: { value: parseNumber(character.physicalcmfilled, 0) },
         stun: { value: parseNumber(character.stuncmfilled, 0) },

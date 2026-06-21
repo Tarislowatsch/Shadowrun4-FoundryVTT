@@ -2,6 +2,7 @@
   <section class="bio-description">
     <h3>{{localize 'sr4.bio.physicalDescription'}}</h3>
     <div class="info-columns">
+      {{> meta-field label='sr4.metadata.realName' name='system.descriptionAndNotes.realName' value=system.descriptionAndNotes.realName editMode=editMode}}
       {{> meta-field label='sr4.metadata.metatype' name='system.descriptionAndNotes.metatype' value=system.descriptionAndNotes.metatype editMode=editMode}}
       {{> meta-field label='sr4.metadata.gender' name='system.descriptionAndNotes.gender' value=system.descriptionAndNotes.gender editMode=editMode}}
       {{> meta-field label='sr4.metadata.age' name='system.metaData.age' value=system.metaData.age numeric=true editMode=editMode}}
@@ -24,21 +25,98 @@
 
   <hr />
 
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.bio.qualities'}}</h3>
+  <section class="inventory-section connections-section">
+    <h3>{{localize 'sr4.bio.connections'}}</h3>
+    {{#if editMode}}
+    <div style="margin-bottom: 0.5rem;">
+      {{> item-create-btn btnAction="createConnection" btnTooltip="sr4.connection.create"}}
+    </div>
+    {{/if}}
+    <table class="connections-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.connection.name'}}</th>
+          <th>{{localize 'sr4.connection.archetype'}}</th>
+          <th class="num-col">{{localize 'sr4.connection.connection'}}</th>
+          <th class="num-col">{{localize 'sr4.connection.groupConnection'}}</th>
+          <th class="num-col">{{localize 'sr4.connection.loyalty'}}</th>
+          <th class="type-col">{{localize 'sr4.connection.type'}}</th>
+          {{#if editMode}}<th class="controls-col"></th>{{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each system.connections as |conn key|}}
+        <tr class="connection-row" data-connection-key="{{key}}">
+          <td><input type="text" name="{{concat 'system.connections.' key '.name'}}" value="{{conn.name}}" {{#unless ../editMode}}readonly{{/unless}} /></td>
+          <td><input type="text" name="{{concat 'system.connections.' key '.archetype'}}" value="{{conn.archetype}}" {{#unless ../editMode}}readonly{{/unless}} /></td>
+          <td class="num-col"><input type="number" data-dtype="Number" name="{{concat 'system.connections.' key '.connection'}}" value="{{conn.connection}}" {{#unless ../editMode}}readonly{{/unless}} /></td>
+          <td class="num-col"><input type="number" data-dtype="Number" name="{{concat 'system.connections.' key '.groupConnection'}}" value="{{conn.groupConnection}}" {{#unless ../editMode}}readonly{{/unless}} /></td>
+          <td class="num-col"><input type="number" data-dtype="Number" name="{{concat 'system.connections.' key '.loyalty'}}" value="{{conn.loyalty}}" {{#unless ../editMode}}readonly{{/unless}} /></td>
+          <td class="type-col">
+            <select name="{{concat 'system.connections.' key '.type'}}" {{#unless ../editMode}}disabled{{/unless}}>
+              <option value="Contact" {{#if (eq conn.type 'Contact')}}selected{{/if}}>{{localize 'sr4.connection.contact'}}</option>
+              <option value="Enemy" {{#if (eq conn.type 'Enemy')}}selected{{/if}}>{{localize 'sr4.connection.enemy'}}</option>
+            </select>
+          </td>
+          {{#if ../editMode}}
+          <td class="item-controls">
+            <a data-action="deleteConnection" data-connection-key="{{key}}"
+              data-tooltip="{{localize 'sr4.connection.delete'}}"><i class="fas fa-trash"></i></a>
+          </td>
+          {{/if}}
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="7" class="empty-list">{{localize 'sr4.connection.noConnections'}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <hr />
+
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.bio.qualities'}}</h3>
+    </summary>
     {{#if editMode}}
     <div style="margin-bottom: 0.5rem;">
       {{> item-create-btn btnAction="createItem" btnItemType="Quality" btnTooltip="sr4.quality.create"}}
     </div>
     {{/if}}
-    {{#if qualities}}
-    <ul class="item-list">
-      {{#each qualities as |item|}}
-      {{> "quality-card"}}
-      {{/each}}
-    </ul>
-    {{else}}
-    <p class="empty-list">{{localize 'sr4.quality.noQualities'}}</p>
-    {{/if}}
-  </section>
+
+    <details class="collapsible-subsection" open>
+      <summary class="collapsible-subheader">
+        <i class="fas fa-chevron-right collapse-icon"></i>
+        <h4>{{localize 'sr4.quality.positive'}}</h4>
+      </summary>
+      {{#if positiveQualities}}
+      <ul class="item-list">
+        {{#each positiveQualities as |item|}}
+        {{> "quality-card"}}
+        {{/each}}
+      </ul>
+      {{else}}
+      <p class="empty-list">{{localize 'sr4.quality.noQualities'}}</p>
+      {{/if}}
+    </details>
+
+    <details class="collapsible-subsection" open>
+      <summary class="collapsible-subheader">
+        <i class="fas fa-chevron-right collapse-icon"></i>
+        <h4>{{localize 'sr4.quality.negative'}}</h4>
+      </summary>
+      {{#if negativeQualities}}
+      <ul class="item-list">
+        {{#each negativeQualities as |item|}}
+        {{> "quality-card"}}
+        {{/each}}
+      </ul>
+      {{else}}
+      <p class="empty-list">{{localize 'sr4.quality.noQualities'}}</p>
+      {{/if}}
+    </details>
+  </details>
 </div>

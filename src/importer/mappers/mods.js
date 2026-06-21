@@ -33,9 +33,6 @@ function resolveBonus(value, rating) {
 }
 
 /**
- * Classifies a shared `<mod>` record (the tag is reused by armor, weapon and
- * vehicle data) by its field/category signature.
- *
  * @param {Record<string, unknown>} record
  * @returns {'armor'|'weapon'|'vehicle'}
  */
@@ -53,8 +50,6 @@ export function modKind(record) {
 }
 
 /**
- * Maps a weapon accessory or weapon-mod record to a "Weapon Mod" item.
- *
  * @param {Record<string, unknown>} record
  * @returns {{ name: string, type: string, system: object }}
  */

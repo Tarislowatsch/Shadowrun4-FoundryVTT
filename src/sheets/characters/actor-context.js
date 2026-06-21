@@ -19,9 +19,8 @@ export function sortSkillsByLabel(items) {
 }
 
 /**
- * Builds the computedStats and derivedKeys used by both character and NPC sheets.
- * @param {object} actorData - result of this.document.toObject(false)
- * @param {object} derivedStats - this.document.system.derivedStats
+ * @param {object} actorData
+ * @param {object} derivedStats
  */
 export function buildComputedStats(actorData, derivedStats) {
   return {

@@ -33,6 +33,7 @@ export default [
         ui: 'readonly',
 
         Item: 'readonly',
+        Folder: 'readonly',
         Token: 'readonly',
         ChatMessage: 'readonly',
 

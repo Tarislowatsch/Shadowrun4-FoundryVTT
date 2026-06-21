@@ -6,8 +6,6 @@ export function getGame() {
 }
 
 /**
- * Returns the current user's targeted actors, filtered to characters and NPCs.
- *
  * @returns {import('@documents/index').SR4Actor[]}
  */
 export function getValidTargetActors() {

@@ -1,28 +1,8 @@
 /**
- * Shared helper for resolving "installed mods" + "available mods" pairs from
- * a flat item array, used by both the actor-sheet context builders
- * (buildWeaponContext/buildArmorContext) and SR4ItemSheet#_prepareContext.
- *
- * This is the single place that knows how to go from
- * `installedModIds + a pool of mod items` to:
- *   - the resolved installed mod objects (for cost/stat math)
- *   - the "available to install" list (pool minus already-installed)
- *
- * Previously this logic was hand-duplicated per mod type (Weapon Mod,
- * Armor Mod, and — eventually — Vehicle Mod), differing only in the type
- * string and a couple of property names. Any behavioral change (sort order,
- * capacity validation, filtering orphaned mods, etc.) now only needs to
- * happen here.
- */
-
-/**
- * @param {{ id: string, name: string, system: any }[]} modPool - all mod items of the relevant type, already mapped to {id, name, system}
+ * @param {any[]} modPool
  * @param {string[]} installedModIds
- * @param {Set<string>} [allClaimedIds] - IDs claimed by ANY host item; when provided, available = pool minus claimed (prevents double-install across hosts)
- * @returns {{
- *   installedMods: { id: string, name: string, system: any }[],
- *   availableMods: { id: string, name: string, system: any }[],
- * }}
+ * @param {Set<string>} [allClaimedIds]
+ * @returns {{ installedMods: { id: string, name: string, system: any }[], availableMods: { id: string, name: string, system: any }[] }}
  */
 export function resolveModsAndAvailability(
   modPool,
@@ -42,11 +22,8 @@ export function resolveModsAndAvailability(
 }
 
 /**
- * Builds a `{id, name, system}` mod pool from a flat item array (e.g. the
- * output of `actor.toObject(false).items`), filtered to one item type.
- *
  * @param {any[]} items
- * @param {string} type - e.g. 'Weapon Mod', 'Armor Mod', 'Vehicle Mod'
+ * @param {string} type
  */
 export function buildModPoolFromItems(items, type) {
   return items
@@ -55,11 +32,7 @@ export function buildModPoolFromItems(items, type) {
 }
 
 /**
- * Builds a `{id, name, system}` mod pool from live actor-embedded items
- * (e.g. `actor.items`), filtered to one item type. Used by sheets that
- * operate on a single Document (SR4ItemSheet) rather than a flat array.
- *
- * @param {any} actorItemsCollection - a Foundry EmbeddedCollection (actor.items)
+ * @param {any} actorItemsCollection
  * @param {string} type
  */
 export function buildModPoolFromCollection(actorItemsCollection, type) {

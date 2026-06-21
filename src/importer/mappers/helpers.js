@@ -4,10 +4,6 @@
  */
 
 /**
- * Maps a weapon category to the system attack-skill key.
- * Values mirror the uppercase keys used by the shipped weapon compendia
- * (see `Attackskill` in `@models/items/weapons.model`).
- *
  * @type {Record<string, string>}
  */
 export const CATEGORY_TO_ATTACKSKILL = {
@@ -44,9 +40,6 @@ export const CATEGORY_TO_ATTACKSKILL = {
 };
 
 /**
- * Maps a three-letter attribute abbreviation to the full uppercase key
- * used by the system stat block.
- *
  * @type {Record<string, string>}
  */
 export const ATTRIBUTE_ABBR_TO_KEY = {
@@ -65,9 +58,6 @@ export const ATTRIBUTE_ABBR_TO_KEY = {
 };
 
 /**
- * Extracts the first signed integer from a string.
- * Symbolic values such as "-", "-half" or "Variable(…)" yield the fallback.
- *
  * @param {unknown} value
  * @param {number} [fallback=0]
  * @returns {number}
@@ -80,9 +70,6 @@ export function parseNumber(value, fallback = 0) {
 }
 
 /**
- * Extracts the first decimal number from a string. Formula values such as
- * "Rating * 0.01" yield the first numeric literal (0.01) as a best estimate.
- *
  * @param {unknown} value
  * @param {number} [fallback=0]
  * @returns {number}
@@ -95,8 +82,6 @@ export function parseDecimal(value, fallback = 0) {
 }
 
 /**
- * Combines a source book and page into a single citation string.
- *
  * @param {string} [source]
  * @param {string} [page]
  * @returns {string}
@@ -109,8 +94,6 @@ export function formatSource(source, page) {
 }
 
 /**
- * Resolves the citation string from a statblock record's `source`/`page` fields.
- *
  * @param {Record<string, unknown>} record
  * @returns {string}
  */
@@ -122,8 +105,6 @@ export function sourceOf(record) {
 }
 
 /**
- * Extracts the cost/availability fields shared by all purchasable items.
- *
  * @param {Record<string, unknown>} record
  * @returns {{ cost: number, avail: number, availability: string }}
  */
@@ -136,8 +117,6 @@ export function commerceFields(record) {
 }
 
 /**
- * Trims and upper-cases a record value, treating nullish as empty.
- *
  * @param {unknown} value
  * @returns {string}
  */
@@ -155,8 +134,6 @@ export function upper(value) {
  */
 
 /**
- * Parses a weapon damage code (e.g. "5S(e)", "6P", "(STR/2+1)P").
- *
  * @param {string} [raw]
  * @returns {ParsedDamage}
  */
@@ -192,8 +169,6 @@ export function parseDamage(raw) {
  */
 
 /**
- * Parses a magazine string (e.g. "30(c)", "1(m)", "10(c) or external source").
- *
  * @param {string} [raw]
  * @returns {ParsedAmmo}
  */
@@ -208,8 +183,6 @@ export function parseAmmo(raw) {
 }
 
 /**
- * Normalises a firing mode string; the placeholder "0" becomes empty.
- *
  * @param {string} [raw]
  * @returns {string}
  */

@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   mapCharacterSystem,
   mapCharacterSkill,
+  mapConnections,
+  parseConnectionRating,
 } from '@importer/mappers/index.js';
 import { buildActorData } from '@importer/build-character.js';
 
@@ -106,6 +108,65 @@ describe('mapCharacterSystem', () => {
     });
     expect(system.magic.tradition).toBe('HERMETIC');
     expect(system.magic.drainAttribute).toBe('LOGIC');
+  });
+
+  it('prefers the alias as the actor name and falls back to the real name', () => {
+    expect(
+      mapCharacterSystem({ ...baseCharacter, alias: 'Jenkins' }).name
+    ).toBe('Jenkins');
+    expect(mapCharacterSystem({ ...baseCharacter, alias: '   ' }).name).toBe(
+      'Daryl Higgins'
+    );
+  });
+});
+
+describe('parseConnectionRating', () => {
+  it('splits "1 (3)" into connection and group connection', () => {
+    expect(parseConnectionRating('1 (3)')).toEqual({
+      connection: 1,
+      groupConnection: 3,
+    });
+  });
+
+  it('handles a bare rating without a group value', () => {
+    expect(parseConnectionRating('4')).toEqual({
+      connection: 4,
+      groupConnection: 0,
+    });
+  });
+});
+
+describe('mapConnections', () => {
+  it('maps contacts into a keyed object with archetype split and type mapping', () => {
+    const connections = mapConnections([
+      {
+        name: 'One Guy (Schieber)',
+        connection: '1 (3)',
+        loyalty: '1',
+        type: 'Contact',
+      },
+      { name: 'Silver Vixen', connection: '1', loyalty: '1', type: 'Enemy' },
+    ]);
+
+    expect(connections.c0).toEqual({
+      name: 'One Guy',
+      archetype: 'Schieber',
+      connection: 1,
+      groupConnection: 3,
+      loyalty: 1,
+      type: 'Contact',
+      notes: '',
+    });
+    expect(connections.c1).toMatchObject({
+      name: 'Silver Vixen',
+      archetype: '',
+      type: 'Enemy',
+    });
+  });
+
+  it('returns an empty object when there are no contacts', () => {
+    expect(mapConnections(undefined)).toEqual({});
+    expect(mapConnections([])).toEqual({});
   });
 });
 

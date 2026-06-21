@@ -8,8 +8,6 @@ import {
 } from '../dialogutility';
 
 /**
- * Opens a two-step dialog asking the player to choose a spell force.
- * Returns null when the dialog is cancelled.
  * @param {import('@models/index').SR4Spell} spell
  * @param {import('@documents/index').SR4Actor} actor
  * @returns {Promise<number | null>}

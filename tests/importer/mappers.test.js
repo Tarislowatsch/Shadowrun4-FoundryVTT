@@ -133,6 +133,13 @@ describe('simple mappers', () => {
       system: { category: 'Negative' },
     },
     {
+      label: 'quality: reads Chummer qualitytype field',
+      map: mapQuality,
+      input: { name: 'Bad Luck', bp: '20', qualitytype: 'Negative' },
+      type: 'Quality',
+      system: { category: 'Negative' },
+    },
+    {
       label: 'skill: active attribute and category',
       map: mapSkill,
       input: {

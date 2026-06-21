@@ -1,12 +1,4 @@
 /**
- * Registers the `range` Handlebars helper.
- * Generates an array of consecutive integers from `start` (inclusive) to
- * `end` (exclusive), enabling numeric iteration loops inside Handlebars templates.
- *
- * @example
- * // In a Handlebars template:
- * // {{#each (range 0 10)}}...{{/each}}
- *
  * @returns {void}
  */
 export function rangeHelper() {

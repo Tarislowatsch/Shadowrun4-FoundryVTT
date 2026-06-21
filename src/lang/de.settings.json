@@ -14,12 +14,15 @@
       "upload": "Charakter-XML-Datei"
     },
     "importer": {
+      "button": "XML importieren",
       "colCategory": "Kategorie",
       "colCount": "Einträge",
       "colTarget": "Ziel-Kompendium",
       "empty": "Noch keine Einträge — wähle eine oder mehrere XML-Dateien.",
       "hint": "Lade eine oder mehrere XML-Statblock-Dateien hoch. Erkannte Einträge werden unten aufgelistet und in eigene Welt-Kompendien importiert.",
       "import": "Importieren",
+      "importError": "Import fehlgeschlagen: {error}",
+      "importing": "Importiere… {percent}%",
       "parseError": "„{file}“ konnte nicht gelesen werden: {error}",
       "result": "Import abgeschlossen: {created} erstellt, {skipped} übersprungen.",
       "skipDuplicates": "Einträge überspringen, deren Name im Ziel-Kompendium bereits existiert",

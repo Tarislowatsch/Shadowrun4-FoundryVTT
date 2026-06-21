@@ -237,6 +237,56 @@ a.item-toggle-equip {
   color: var(--sr4-text-muted);
 }
 
+.collapsible-section {
+  .collapsible-header,
+  .collapsible-subheader {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    .collapse-icon {
+      flex: 0 0 auto;
+      font-size: 0.7rem;
+      color: var(--sr4-text-muted);
+      transition: transform 0.15s ease;
+    }
+
+    h3,
+    h4 {
+      flex: 1 1 auto;
+    }
+  }
+
+  &[open] > .collapsible-header > .collapse-icon,
+  .collapsible-subsection[open] > .collapsible-subheader > .collapse-icon {
+    transform: rotate(90deg);
+  }
+
+  .collapsible-subsection {
+    margin: 0.4rem 0 0 0.5rem;
+  }
+
+  .collapsible-subheader {
+    margin-bottom: 0.3rem;
+
+    h4 {
+      margin: 0;
+      padding-bottom: 0.15rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--sr4-text-muted);
+    }
+  }
+}
+
 /* ---------------- WEAPON ---------------- */
 
 .weapon-stats {

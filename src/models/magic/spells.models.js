@@ -17,8 +17,6 @@ export const SpellCombatTypes = Object.freeze({
 });
 
 /**
- * Localisation keys for spell categories.
- *
  * @enum {string}
  * @readonly
  */
@@ -43,7 +41,6 @@ export const SpellTypes = Object.freeze({
 });
 
 /**
- * Localisation keys for elemental spell descriptors.
  * @enum {string}
  * @readonly
  */

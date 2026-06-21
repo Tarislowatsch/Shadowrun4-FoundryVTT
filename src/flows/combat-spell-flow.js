@@ -3,21 +3,11 @@ import { openDirectSpellAllocationDialog } from '@utils/dialog/magic/combat-spel
 
 export class CombatSpellFlow {
   /**
-   * Handles the combat damage phase after a successful spellcasting roll.
-   *
-   * Direct spells: triggers a resistance roll on the defender's client, awaits
-   * the result via socket, then opens an allocation dialog on the caster's client.
-   * Each applied hit raises DV by 1 and Drain DV by 1 (SR4 p.183).
-   * Returns the applied hits as drain modifier.
-   *
-   * Indirect spells: fires a socket event immediately; the dodge + soak flow
-   * runs on the defender's client.
-   *
    * @param {import('@documents/index').SR4Actor} caster
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} castingHits
    * @param {number} force
-   * @returns {Promise<number>} drainModifier — added to base Drain DV (Direct only)
+   * @returns {Promise<number>}
    */
   static async start(caster, spell, castingHits, force) {
     if (!game.settings.get('shadowrun4e', 'spellWorkflow')) return 0;
@@ -63,9 +53,6 @@ export class CombatSpellFlow {
   }
 
   /**
-   * Runs the full direct-spell sequence against a single defender:
-   * triggers resist roll → awaits result → allocation → damage.
-   *
    * @param {import('@documents/index').SR4Actor} caster
    * @param {string} spellName
    * @param {number} castingHits
@@ -74,7 +61,7 @@ export class CombatSpellFlow {
    * @param {boolean} isPhysical
    * @param {string} defenderId
    * @param {string} defenderName
-   * @returns {Promise<number>} appliedHits
+   * @returns {Promise<number>}
    */
   static async _directSpellVsTarget(
     caster,
