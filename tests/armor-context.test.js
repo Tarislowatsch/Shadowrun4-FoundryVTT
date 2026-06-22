@@ -9,6 +9,7 @@ function makeArmorItem(id, overrides = {}) {
     system: {
       ballisticarmor: 8,
       impactarmor: 6,
+      stackingType: 'standard',
       capacity: null,
       cost: 500,
       installedModIds: [],

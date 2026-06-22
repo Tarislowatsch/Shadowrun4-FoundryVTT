@@ -13,6 +13,14 @@
         <label>{{localize "sr4.armor.impactarmor"}}</label>
         <span>{{ system.armor.impact }}</span>
       </div>
+      {{#if system.armor.encumbrance}}
+      <div class="defense-field encumbrance-warning">
+        <i class="fas fa-weight-hanging warning"></i>
+        <span data-tooltip="{{localize 'sr4.armor.encumbranceWarning'}}">
+          {{localize "sr4.armor.encumbrance"}}: −{{ system.armor.encumbrance }}
+        </span>
+      </div>
+      {{/if}}
     </div>
 
     {{> "condition-monitor" system=system showSimpleHpToggle=showSimpleHpToggle}}

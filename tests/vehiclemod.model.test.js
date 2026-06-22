@@ -28,6 +28,15 @@ function prepareVehicle(vehicleFields = {}, mods = []) {
     sensor: 2,
     body: 8,
     pilot: 1,
+    response: 1,
+    modifiers: { generalModifier: 0 },
+    conditionMonitor: { physical: { value: 0, max: 0 } },
+    derivedStats: {
+      woundModifier: 0,
+      dicePoolModifier: 0,
+      passesString: '',
+      initiative: { physical: 0, astral: 0, matrix: 0 },
+    },
     parent: { items: mods },
     ...vehicleFields,
   });

@@ -77,33 +77,6 @@
     {{/if}}
   </div>
 
-  <div class="item-card-mods">
-    {{#each this.installedMods as |mod|}}
-    <span class="mod-entry">
-      <span class="mod-name">{{ mod.name }}</span>
-      {{> item-edit-btn itemId=mod.id}}
-      <button type="button" class="item-delete" data-action="removeMod" data-mod-id="{{ mod.id }}" data-tooltip="{{localize 'sr4.item.delete'}}"><i class="fas fa-times"></i></button>
-    </span>
-    {{/each}}
-    {{#if this.installedMods.length}}
-    <span class="mod-entry">
-      <small>{{localize 'sr4.weaponmod.slotsUsed'}}: {{ this.system.usedModSlots }} / {{ this.system.modSlots }}</small>
-      {{#if this.system.modSlotWarning}}
-        <i class="fas fa-exclamation-triangle warning" data-tooltip="{{localize 'sr4.weaponmod.slotWarning'}}"></i>
-      {{/if}}
-    </span>
-    {{/if}}
-    {{#if this.availableWeaponMods.length}}
-    <select class="mod-add-select">
-      <option value="">+ {{localize 'sr4.weaponmod.add'}}</option>
-      {{#each this.availableWeaponMods as |m|}}
-      <option value="{{ m.id }}">{{ m.name }}</option>
-      {{/each}}
-    </select>
-    {{/if}}
-    {{> item-create-btn btnAction="createMod" btnItemType="Weapon Mod" btnTooltip="sr4.weaponmod.add"}}
-  </div>
-
   {{#if (eq this.type 'Ranged Weapon')}}
   {{#if this.system.maxAmmo}}
   <div class="item-body weapon-ammo">
@@ -145,7 +118,6 @@
       {{#if (gte this.loadedAmmo.apBonus 0)}}+{{/if}}{{ this.loadedAmmo.apBonus }}
       {{/if}}
     </span>
-    <span class="item-property item-property--empty"></span>
     <span class="item-property{{#unless this.loadedAmmo}} item-property--empty{{/unless}}">
       {{#if this.loadedAmmo}}
       <strong>{{localize "sr4.ammo.quantity"}}</strong>
@@ -155,4 +127,31 @@
   </div>
   {{/if}}
   {{/if}}
+
+  <div class="item-card-mods">
+    {{#each this.installedMods as |mod|}}
+    <span class="mod-entry">
+      <span class="mod-name">{{ mod.name }}</span>
+      {{> item-edit-btn itemId=mod.id}}
+      <button type="button" class="item-delete" data-action="removeMod" data-mod-id="{{ mod.id }}" data-tooltip="{{localize 'sr4.item.delete'}}"><i class="fas fa-times"></i></button>
+    </span>
+    {{/each}}
+    {{#if this.installedMods.length}}
+    <span class="mod-entry">
+      <small>{{localize 'sr4.weaponmod.slotsUsed'}}: {{ this.system.usedModSlots }} / {{ this.system.modSlots }}</small>
+      {{#if this.system.modSlotWarning}}
+        <i class="fas fa-exclamation-triangle warning" data-tooltip="{{localize 'sr4.weaponmod.slotWarning'}}"></i>
+      {{/if}}
+    </span>
+    {{/if}}
+    {{#if this.availableWeaponMods.length}}
+    <select class="mod-add-select">
+      <option value="">+ {{localize 'sr4.weaponmod.add'}}</option>
+      {{#each this.availableWeaponMods as |m|}}
+      <option value="{{ m.id }}">{{ m.name }}</option>
+      {{/each}}
+    </select>
+    {{/if}}
+    {{> item-create-btn btnAction="createMod" btnItemType="Weapon Mod" btnTooltip="sr4.weaponmod.add"}}
+  </div>
 </div>

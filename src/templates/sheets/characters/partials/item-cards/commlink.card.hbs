@@ -1,28 +1,27 @@
 <div class="item-card item commlink-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
   <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
-
+    <div class="item-actions">
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
     <span class="item-property">
       <strong>{{localize "sr4.commlink.response"}}</strong>
       {{ this.system.response }}
     </span>
-
     <span class="item-property">
       <strong>{{localize "sr4.commlink.signal"}}</strong>
       {{ this.system.signal }}
     </span>
-
     <span class="item-property">
       <strong>{{localize "sr4.commlink.firewall"}}</strong>
       {{ this.system.firewall }}
     </span>
-
     <span class="item-property">
       <strong>{{localize "sr4.commlink.os"}}</strong>
       {{ this.system.os }}
     </span>
-
-    {{> item-edit-btn}}
-    {{> item-delete-btn}}
   </div>
 </div>

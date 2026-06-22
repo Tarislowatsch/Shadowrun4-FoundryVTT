@@ -17,6 +17,14 @@ export async function registerUIPartials() {
       name: 'spell-force-header',
     },
     { path: `${basePath}/item-toggle-equip.hbs`, name: 'item-toggle-equip' },
+    {
+      path: `${basePath}/collapsible-section.hbs`,
+      name: 'collapsible-section',
+    },
+    {
+      path: `${basePath}/collapsible-subsection.hbs`,
+      name: 'collapsible-subsection',
+    },
     { path: `${basePath}/item-create-btn.hbs`, name: 'item-create-btn' },
     { path: `${basePath}/item-edit-btn.hbs`, name: 'item-edit-btn' },
     { path: `${basePath}/item-delete-btn.hbs`, name: 'item-delete-btn' },

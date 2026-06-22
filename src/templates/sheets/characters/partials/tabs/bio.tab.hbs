@@ -76,22 +76,14 @@
 
   <hr />
 
-  <details class="inventory-section collapsible-section" open>
-    <summary class="collapsible-header">
-      <i class="fas fa-chevron-right collapse-icon"></i>
-      <h3>{{localize 'sr4.bio.qualities'}}</h3>
-    </summary>
+  {{#> collapsible-section title=(localize 'sr4.bio.qualities')}}
     {{#if editMode}}
     <div style="margin-bottom: 0.5rem;">
       {{> item-create-btn btnAction="createItem" btnItemType="Quality" btnTooltip="sr4.quality.create"}}
     </div>
     {{/if}}
 
-    <details class="collapsible-subsection" open>
-      <summary class="collapsible-subheader">
-        <i class="fas fa-chevron-right collapse-icon"></i>
-        <h4>{{localize 'sr4.quality.positive'}}</h4>
-      </summary>
+    {{#> collapsible-subsection title=(localize 'sr4.quality.positive')}}
       {{#if positiveQualities}}
       <ul class="item-list">
         {{#each positiveQualities as |item|}}
@@ -101,13 +93,9 @@
       {{else}}
       <p class="empty-list">{{localize 'sr4.quality.noQualities'}}</p>
       {{/if}}
-    </details>
+    {{/collapsible-subsection}}
 
-    <details class="collapsible-subsection" open>
-      <summary class="collapsible-subheader">
-        <i class="fas fa-chevron-right collapse-icon"></i>
-        <h4>{{localize 'sr4.quality.negative'}}</h4>
-      </summary>
+    {{#> collapsible-subsection title=(localize 'sr4.quality.negative')}}
       {{#if negativeQualities}}
       <ul class="item-list">
         {{#each negativeQualities as |item|}}
@@ -117,6 +105,6 @@
       {{else}}
       <p class="empty-list">{{localize 'sr4.quality.noQualities'}}</p>
       {{/if}}
-    </details>
-  </details>
+    {{/collapsible-subsection}}
+  {{/collapsible-section}}
 </div>

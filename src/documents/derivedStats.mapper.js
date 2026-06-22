@@ -1,5 +1,16 @@
 import { SR4 } from '../config.js';
 
+function computeMonitorMax(stat) {
+  return Math.ceil(SR4.rules.conditionMonitorBase + stat / 2);
+}
+
+function computeWoundModifier(monitor, woundModBonus = 0) {
+  const divisor = SR4.rules.woundModifierDivisor + woundModBonus;
+  const physical = Math.floor((monitor.physical?.value ?? 0) / divisor);
+  const stun = Math.floor((monitor.stun?.value ?? 0) / divisor);
+  return -(physical + stun) || 0;
+}
+
 /**
  * @param {object} systemData
  * @param {{ physical: number, astral: number, matrix: number, passesString: string }} initiative
@@ -10,18 +21,10 @@ function computeSummonedEntityStats(systemData, initiative) {
   const monitor = systemData.conditionMonitor;
   const derivedStats = { ...systemData.derivedStats };
 
-  monitor.physical.max = Math.ceil(
-    SR4.rules.conditionMonitorBase + sheetStats.BODY / 2
-  );
-  monitor.stun.max = Math.ceil(
-    SR4.rules.conditionMonitorBase + sheetStats.WILLPOWER / 2
-  );
+  monitor.physical.max = computeMonitorMax(sheetStats.BODY);
+  monitor.stun.max = computeMonitorMax(sheetStats.WILLPOWER);
 
-  derivedStats.woundModifier =
-    -(
-      Math.floor(monitor.physical.value / SR4.rules.woundModifierDivisor) +
-      Math.floor(monitor.stun.value / SR4.rules.woundModifierDivisor)
-    ) || 0;
+  derivedStats.woundModifier = computeWoundModifier(monitor);
   derivedStats.dicePoolModifier =
     derivedStats.woundModifier + systemData.modifiers.generalModifier;
   derivedStats.meleeDamageBonus = Math.ceil((sheetStats.STRENGTH ?? 0) / 2);
@@ -66,12 +69,9 @@ export function computeVehicleDerivedStats(systemData) {
   const monitor = systemData.conditionMonitor;
   const derivedStats = { ...systemData.derivedStats };
 
-  monitor.physical.max = Math.ceil(
-    SR4.rules.conditionMonitorBase + systemData.body / 2
-  );
+  monitor.physical.max = computeMonitorMax(systemData.body);
 
-  derivedStats.woundModifier =
-    -Math.floor(monitor.physical.value / SR4.rules.woundModifierDivisor) || 0;
+  derivedStats.woundModifier = computeWoundModifier(monitor);
   derivedStats.dicePoolModifier =
     derivedStats.woundModifier + systemData.modifiers.generalModifier;
 
@@ -102,15 +102,11 @@ export function computeDerivedStats(actorData) {
     return derivedStats;
   }
 
-  monitor.physical.max = Math.ceil(
-    SR4.rules.conditionMonitorBase + sheetStats.BODY / 2
-  );
-  monitor.stun.max = Math.ceil(
-    SR4.rules.conditionMonitorBase + sheetStats.WILLPOWER / 2
-  );
+  monitor.physical.max = computeMonitorMax(sheetStats.BODY);
+  monitor.stun.max = computeMonitorMax(sheetStats.WILLPOWER);
 
   derivedStats.overflow = sheetStats.BODY + modifiers.overflowBonus;
-  derivedStats.woundModifier = getWoundModifier(
+  derivedStats.woundModifier = computeWoundModifier(
     monitor,
     modifiers.woundModBonus
   );
@@ -150,18 +146,3 @@ export function computeDerivedStats(actorData) {
 // actor's metatype racial maximums, not just base * 1.5. Re-enable once metatype
 // data is available on the actor.
 // function computeAugmentedMaximum(stats) { ... }
-
-/**
- * @param {import('@models/index').SR4ConditionMonitor} monitor
- * @param {number} woundMod
- * @returns {number}
- */
-function getWoundModifier(monitor, woundMod) {
-  const divisor = SR4.rules.woundModifierDivisor + (woundMod ?? 0);
-  return (
-    -(
-      Math.floor(monitor.physical.value / divisor) +
-      Math.floor(monitor.stun.value / divisor)
-    ) || 0
-  );
-}

@@ -7,6 +7,7 @@ const fields = foundry.data.fields;
  * @typedef {object} SR4ArmorSystem
  * @property {number} ballisticarmor
  * @property {number} impactarmor
+ * @property {'standard'|'accessory'|'formFitting'} stackingType
  * @property {string[]} installedModIds
  * @property {number} effectiveBallistic
  * @property {number} effectiveImpact
@@ -21,6 +22,11 @@ export class SR4ArmorData extends foundry.abstract.TypeDataModel {
       ...genericItemSchema(),
       ballisticarmor: new fields.NumberField({ initial: 0, integer: true }),
       impactarmor: new fields.NumberField({ initial: 0, integer: true }),
+      stackingType: new fields.StringField({
+        initial: 'standard',
+        choices: ['standard', 'accessory', 'formFitting'],
+        blank: false,
+      }),
       installedModIds: new fields.ArrayField(new fields.StringField()),
     };
   }

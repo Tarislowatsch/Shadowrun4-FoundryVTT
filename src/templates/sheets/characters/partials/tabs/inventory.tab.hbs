@@ -10,8 +10,7 @@
   {{/if}}
 
   {{!-- Waffen --}}
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.inventory.weapons'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.weapons')}}
     {{#if weapons}}
     <ul class="weapon-list">
       {{#each weapons as |weapon|}}
@@ -21,13 +20,12 @@
     {{else}}
     <p class="empty-list">{{localize 'sr4.weapon.noWeapons'}}</p>
     {{/if}}
-  </section>
+  {{/collapsible-section}}
 
   <hr />
 
   {{!-- Rüstung --}}
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.inventory.armor'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.armor')}}
     {{#if armor}}
     <ul class="armor-list">
       {{#each armor as |item|}}
@@ -37,39 +35,36 @@
     {{else}}
     <p class="empty-list">{{localize 'sr4.armor.noarmors'}}</p>
     {{/if}}
-  </section>
+  {{/collapsible-section}}
 
   <hr />
 
   {{!-- Cyberware / Bioware --}}
   {{#if implants}}
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.inventory.implants'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.implants')}}
     <ul class="implant-list">
       {{#each implants as |item|}}
       {{> "implant-card"}}
       {{/each}}
     </ul>
-  </section>
+  {{/collapsible-section}}
   <hr />
   {{/if}}
 
   {{!-- Commlinks --}}
   {{#if commlinks}}
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.inventory.commlinks'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.commlinks')}}
     <ul class="item-list">
       {{#each commlinks as |item|}}
       {{> "commlink-card"}}
       {{/each}}
     </ul>
-  </section>
+  {{/collapsible-section}}
   <hr />
   {{/if}}
 
   {{!-- Ausrüstung --}}
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.inventory.items'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.items')}}
     {{#if items}}
     <ul class="item-list">
       {{#each items as |item|}}
@@ -79,26 +74,24 @@
     {{else}}
     <p class="empty-list">{{localize 'sr4.item.noItems'}}</p>
     {{/if}}
-  </section>
+  {{/collapsible-section}}
 
   <hr />
 
   {{!-- Foki / Fetische --}}
   {{#if foci}}
-  <section class="inventory-section">
-    <h3>{{localize 'sr4.inventory.foci'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.foci')}}
     <ul class="item-list">
       {{#each foci as |item|}}
       {{> "item-card"}}
       {{/each}}
     </ul>
-  </section>
+  {{/collapsible-section}}
   {{/if}}
   <hr />
 
   {{!-- Fahrzeuge (vorbereitet) --}}
-  <section class="inventory-section inventory-section--vehicles">
-    <h3>{{localize 'sr4.inventory.vehicles'}}</h3>
+  {{#> collapsible-section title=(localize 'sr4.inventory.vehicles')}}
     <p class="empty-list">{{localize 'sr4.vehicle.notImplemented'}}</p>
-  </section>
+  {{/collapsible-section}}
 </div>

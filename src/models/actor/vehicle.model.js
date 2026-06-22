@@ -5,6 +5,7 @@ import {
   modifiersField,
   sumModField,
 } from '@models/shared';
+import { computeVehicleDerivedStats } from '@documents/derivedStats.mapper';
 
 /**
  * @typedef {import('@models/shared').SR4BaseDerivedStats} SR4VehicleDerivedStats
@@ -85,5 +86,7 @@ export class SR4VehicleData extends foundry.abstract.TypeDataModel {
     self.usedSlots = sumModField(mods, 'slotCost');
     self.slotWarning = self.usedSlots > self.body;
     self.totalModCost = sumModField(mods, 'cost');
+
+    Object.assign(self.derivedStats, computeVehicleDerivedStats(self));
   }
 }

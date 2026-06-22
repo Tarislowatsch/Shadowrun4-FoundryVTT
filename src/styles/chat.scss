@@ -37,7 +37,7 @@
       &:hover {
         color: var(--sr4-red);
         border-color: var(--sr4-red);
-        background: rgba(224, 48, 48, 0.08);
+        background: var(--sr4-red-glow);
       }
     }
   }
@@ -79,7 +79,7 @@
       border-color: var(--sr4-red);
 
       &:hover {
-        background: rgba(224, 48, 48, 0.08);
+        background: var(--sr4-red-glow);
       }
     }
   }

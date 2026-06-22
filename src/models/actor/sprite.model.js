@@ -1,5 +1,6 @@
 const fields = foundry.data.fields;
 import { summonedEntityFields } from '@models/shared';
+import { computeSpriteDerivedStats } from '@documents/derivedStats.mapper';
 
 export class SR4SpriteData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -9,5 +10,11 @@ export class SR4SpriteData extends foundry.abstract.TypeDataModel {
       tasks: new fields.NumberField({ initial: 0, integer: true }),
       ...summonedEntityFields(),
     };
+  }
+
+  prepareDerivedData() {
+    const self = /** @type {any} */ (this);
+    if (!self.sheetStats) return;
+    Object.assign(self.derivedStats, computeSpriteDerivedStats(self));
   }
 }

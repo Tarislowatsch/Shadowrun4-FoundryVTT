@@ -1,38 +1,49 @@
 <div
-  class="item-card"
+  class="item-card implant-card"
   data-item-id="{{ this._id }}"
   id="{{ this._id }}"
   title="{{ this.system.description }}"
 >
-  <div class="item-row">
+  <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
-
-    <span class="item-type"
-      >{{localize "sr4.item.type"}}: {{ this.system.type }}</span
-    >
-
-    <span class="item-grade"
-      >{{localize "sr4.item.grade"}}: {{ this.system.grade }}</span
-    >
-
-    <span class="item-rating"
-      >{{localize "sr4.item.rating"}}: {{ this.system.rating }}</span
-    >
-
-    <span class="item-essence"
-      >{{localize "sr4.item.essence"}}: {{ this.system.essence }}</span
-    >
-
-    <span class="item-essence-effective">
-      {{localize "sr4.item.essenceActual"}}: {{ this.system.essenceActual }}
+    <div class="item-actions">
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
+    <span class="item-property">
+      <strong>{{localize "sr4.item.type"}}</strong>
+      {{ this.system.type }}
     </span>
-
-    <span class="item-availability">{{ this.system.avail }}</span>
-    <span class="item-legality">{{ this.system.legality }}</span>
-    <span class="item-cost">{{ this.system.cost }}</span>
-
-    {{> item-edit-btn}}
-    {{> item-delete-btn}}
+    <span class="item-property">
+      <strong>{{localize "sr4.item.grade"}}</strong>
+      {{ this.system.grade }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.item.rating"}}</strong>
+      {{ this.system.rating }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.item.essence"}}</strong>
+      {{ this.system.essence }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.item.essenceActual"}}</strong>
+      {{ this.system.essenceActual }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.item.avail"}}</strong>
+      {{ this.system.avail }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.item.legality"}}</strong>
+      {{ this.system.legality }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.item.cost"}}</strong>
+      {{ this.system.cost }}
+    </span>
   </div>
   {{> item-card-actions-effects}}
 </div>

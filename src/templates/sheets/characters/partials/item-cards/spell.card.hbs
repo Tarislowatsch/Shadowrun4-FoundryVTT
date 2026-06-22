@@ -1,57 +1,65 @@
 <div
-  class="item-card"
+  class="item-card spell-card"
   id="{{ this._id }}"
   data-item-id="{{ this._id }}"
   title="{{ this.system.description }}"
 >
-  <div class="item-row">
+  <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
-    <span class="item-category"
-      >{{localize "sr4.spell.category"}}:
-      {{localize (concat "sr4.spell.categories." this.system.category)}}</span
-    >
-    <span class="item-type"
-      >{{localize "sr4.spell.type"}}:
-      {{localize (concat "sr4.spell.types." this.system.type)}}</span
-    >
-    <span class="item-range"
-      >{{localize "sr4.spell.range"}}:
-      {{localize (concat "sr4.spell.ranges." this.system.range)}}</span
-    >
+    <div class="item-actions">
+      <button class="spell-cast" data-action="castSpell"
+        data-tooltip="{{localize 'sr4.spell.cast'}}">
+        <i class="fas fa-dice-d20"></i>
+      </button>
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.category"}}</strong>
+      {{localize (concat "sr4.spell.categories." this.system.category)}}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.type"}}</strong>
+      {{localize (concat "sr4.spell.types." this.system.type)}}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.range"}}</strong>
+      {{localize (concat "sr4.spell.ranges." this.system.range)}}
+    </span>
 
     {{#if (eq this.system.category "COMBAT")}}
-    <span class="item-combattype"
-      >{{localize "sr4.spell.combatType"}}:
-      {{localize (concat "sr4.spell.combatTypes." this.system.combatType)}}</span
-    >
-    <span class="item-damagetype"
-      >{{localize "sr4.spell.damagetype"}}:
-      {{localize (concat "sr4.damage." this.system.damageType)}}</span
-    >
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.combatType"}}</strong>
+      {{localize (concat "sr4.spell.combatTypes." this.system.combatType)}}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.damagetype"}}</strong>
+      {{localize (concat "sr4.damage." this.system.damageType)}}
+    </span>
     {{#if (eq this.system.combatType "INDIRECT")}}
-    <span class="item-element"
-      >{{localize "sr4.spell.element"}}:
-      {{localize (concat "sr4.spell.elements." this.system.element)}}</span
-    >
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.element"}}</strong>
+      {{localize (concat "sr4.spell.elements." this.system.element)}}
+    </span>
     {{/if}}
     {{/if}}
 
-    <span class="item-duration"
-      >{{localize "sr4.spell.duration"}}:
-      {{localize (concat "sr4.spell.durations." this.system.duration)}}</span
-    >
-    <span class="item-dv"
-      >{{localize "sr4.spell.dv"}}: {{ this.system.dv }}</span
-    >
-    <span class="item-source"
-      >{{localize "sr4.spell.source"}}: {{ this.system.source }}</span
-    >
-    <button class="spell-cast" data-action="castSpell"
-      data-tooltip="{{localize 'sr4.spell.cast'}}">
-      <i class="fas fa-dice-d20"></i>
-    </button>
-    {{> item-edit-btn}}
-    {{> item-delete-btn}}
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.duration"}}</strong>
+      {{localize (concat "sr4.spell.durations." this.system.duration)}}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.dv"}}</strong>
+      {{ this.system.dv }}
+    </span>
+    {{#if this.system.source}}
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.source"}}</strong>
+      {{ this.system.source }}
+    </span>
+    {{/if}}
   </div>
   {{> item-card-actions-effects}}
 </div>

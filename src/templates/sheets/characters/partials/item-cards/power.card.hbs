@@ -4,22 +4,34 @@
   data-item-id="{{ this._id }}"
   title="{{ this.system.description }}"
 >
-  <div class="item-row">
+  <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
-    <span class="item-cost"
-      >{{localize "sr4.power.totalCost"}}: {{ this.system.totalCost }}</span
-    >
-    <span class="item-rating"
-      >{{localize "sr4.power.rating"}}: {{ this.system.rating }}</span
-    >
+    <div class="item-actions">
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
+    <span class="item-property">
+      <strong>{{localize "sr4.power.totalCost"}}</strong>
+      {{ this.system.totalCost }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.power.rating"}}</strong>
+      {{ this.system.rating }}
+    </span>
     {{#if this.system.geas}}
-    <span class="item-geas">{{localize "sr4.power.geas"}}</span>
+    <span class="item-property">
+      <strong>{{localize "sr4.power.geas"}}</strong>
+      &#10003;
+    </span>
     {{/if}}
-    <span class="item-source"
-      >{{localize "sr4.power.source"}}: {{ this.system.source }}</span
-    >
-    {{> item-edit-btn}}
-    {{> item-delete-btn}}
+    {{#if this.system.source}}
+    <span class="item-property">
+      <strong>{{localize "sr4.power.source"}}</strong>
+      {{ this.system.source }}
+    </span>
+    {{/if}}
   </div>
   {{> item-card-actions-effects}}
 </div>

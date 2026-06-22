@@ -23,8 +23,16 @@
       "armorrating": "Armor Rating",
       "armortype": "Armor Type",
       "ballisticarmor": "Ballistic Armor",
+      "encumbrance": "Armor Encumbrance",
+      "encumbranceWarning": "Armor exceeds Body × 2, penalizing Agility and Reaction",
       "impactarmor": "Impact Armor",
-      "noarmors": "This is where I keep my armors, if I had any"
+      "noarmors": "This is where I keep my armors, if I had any",
+      "stackingType": {
+        "label": "Stacking Type",
+        "standard": "Standard",
+        "accessory": "Accessory (Helmet/Shield)",
+        "formFitting": "Form-Fitting"
+      }
     },
     "attack": {
       "archery": "Archery",

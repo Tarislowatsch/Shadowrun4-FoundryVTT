@@ -1,11 +1,5 @@
 import { SpellcastingFlow } from '@flows/index';
 import { Attackskill } from '@models/index';
-import {
-  computeDerivedStats,
-  computeSpiritDerivedStats,
-  computeSpriteDerivedStats,
-  computeVehicleDerivedStats,
-} from './derivedStats.mapper';
 import { getGame } from '@utils/index';
 import { SR4ActiveEffect } from '@effects/index';
 
@@ -44,55 +38,6 @@ const DEFAULT_STATS = {
 export class SR4Actor extends foundry.documents.Actor {
   get actor() {
     return this;
-  }
-
-  prepareDerivedData() {
-    /** @type {any} */
-    const self = this;
-
-    if (self.type === 'character' || self.type === 'npc') {
-      /** @type {import('@models/index').SR4BaseCharacterSystem} */
-      const systemData = self.system;
-      if (!systemData?.sheetStats) return;
-
-      /** @type {any[]} */
-      const equipped = self.items.filter(
-        (i) => i.type === 'Armor' && i.system?.equipped === true
-      );
-      const armorBonus = {
-        ballistic: systemData.armor.ballistic,
-        impact: systemData.armor.impact,
-      };
-      systemData.armor.ballistic =
-        equipped.reduce((s, i) => s + (i.system.ballisticarmor || 0), 0) +
-        armorBonus.ballistic;
-      systemData.armor.impact =
-        equipped.reduce((s, i) => s + (i.system.impactarmor || 0), 0) +
-        armorBonus.impact;
-
-      Object.assign(systemData.derivedStats, computeDerivedStats(systemData));
-    } else if (self.type === 'spirit') {
-      const systemData = self.system;
-      if (!systemData?.sheetStats) return;
-      Object.assign(
-        systemData.derivedStats,
-        computeSpiritDerivedStats(systemData)
-      );
-    } else if (self.type === 'sprite') {
-      const systemData = self.system;
-      if (!systemData?.sheetStats) return;
-      Object.assign(
-        systemData.derivedStats,
-        computeSpriteDerivedStats(systemData)
-      );
-    } else if (self.type === 'vehicle') {
-      /** @type {import('@models/index').SR4VehicleSystem} */
-      const systemData = self.system;
-      Object.assign(
-        systemData.derivedStats,
-        computeVehicleDerivedStats(systemData)
-      );
-    }
   }
 
   /** @returns {import('@models/index').SR4SheetStats} */

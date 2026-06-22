@@ -60,6 +60,21 @@
     </tbody>
   </table>
 
+  <div class="form-group stacking-type-row">
+    <label>{{localize "sr4.armor.stackingType.label"}}</label>
+    <select name="system.stackingType">
+      <option value="standard" {{#if (eq system.stackingType "standard")}}selected{{/if}}>
+        {{localize "sr4.armor.stackingType.standard"}}
+      </option>
+      <option value="accessory" {{#if (eq system.stackingType "accessory")}}selected{{/if}}>
+        {{localize "sr4.armor.stackingType.accessory"}}
+      </option>
+      <option value="formFitting" {{#if (eq system.stackingType "formFitting")}}selected{{/if}}>
+        {{localize "sr4.armor.stackingType.formFitting"}}
+      </option>
+    </select>
+  </div>
+
   {{> "mods-section"
     installedKey="sr4.armormod.installed"
     warning=system.capacityWarning

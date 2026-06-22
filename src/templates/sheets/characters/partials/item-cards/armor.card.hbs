@@ -8,6 +8,15 @@
     </div>
   </div>
   <div class="item-body">
+    {{#if (or (eq this.system.stackingType "accessory") (eq this.system.stackingType "formFitting"))}}
+    <span class="item-property armor-stacking-badge">
+      {{#if (eq this.system.stackingType "accessory")}}
+        <i class="fas fa-helmet-safety" data-tooltip="{{localize 'sr4.armor.stackingType.accessory'}}"></i>
+      {{else}}
+        <i class="fas fa-tshirt" data-tooltip="{{localize 'sr4.armor.stackingType.formFitting'}}"></i>
+      {{/if}}
+    </span>
+    {{/if}}
     <span class="item-property">
       <strong>{{localize "sr4.armor.ballisticarmor"}}</strong>
       {{#if (eq this.system.effectiveBallistic this.system.ballisticarmor)}}

@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 /* ---------------- ITEM BASE ---------------- */
 
 .item-card {
@@ -61,10 +63,9 @@
 }
 
 .item-body {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.35rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.35rem 0.5rem;
 }
 
 /* ---------------- PROPERTY ---------------- */
@@ -74,7 +75,7 @@
   flex-direction: column;
   gap: 1px;
   padding: 3px 6px;
-  background: rgba(0, 128, 128, 0.07);
+  background: var(--sr4-teal-bg-subtle);
   border: 1px solid var(--sr4-border-subtle);
   border-radius: 3px;
   font-size: 0.72rem;
@@ -95,6 +96,23 @@
   background: transparent;
 }
 
+.item-quantity {
+  width: 48px;
+  background: transparent;
+  border: 1px solid var(--sr4-border-dim);
+  border-radius: 3px;
+  color: var(--sr4-text);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  text-align: center;
+  padding: 1px 2px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--sr4-teal);
+  }
+}
+
 /* ---------------- ACTIONS ---------------- */
 
 .item-actions {
@@ -110,25 +128,9 @@
 .item-reload,
 .spell-cast,
 .attack {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  min-width: 22px;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  background: none;
-  color: var(--sr4-border-dim);
-  cursor: pointer;
+  @include sr4-icon-btn;
   font-size: 0.75rem;
   line-height: 1;
-  flex: 0 0 auto;
-  transition:
-    color 0.15s,
-    border-color 0.15s,
-    background 0.15s;
 }
 
 .roll-action,
@@ -136,39 +138,18 @@
 .attack,
 .item-edit,
 .item-reload {
-  &:hover {
-    background: var(--sr4-teal-glow);
-    border-color: var(--sr4-teal);
-    color: var(--sr4-teal);
-  }
+  @include sr4-teal-hover;
 }
 
 .item-delete {
-  &:hover {
-    color: var(--sr4-red);
-    border-color: var(--sr4-red);
-    background: rgba(224, 48, 48, 0.08);
-  }
+  @include sr4-delete-hover;
 }
 
 .item-create-btn {
+  @include sr4-icon-btn(18px);
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  padding: 0;
-  background: none;
-  border: 1px solid var(--sr4-border-dim);
-  border-radius: 3px;
-  color: var(--sr4-border-dim);
+  border-color: var(--sr4-border-dim);
   font-size: 0.7rem;
-  cursor: pointer;
-  flex: 0 0 auto;
-  transition:
-    color 0.15s,
-    border-color 0.15s;
 
   &:hover {
     color: var(--sr4-text-muted);
@@ -219,14 +200,7 @@ a.item-toggle-equip {
   margin-bottom: 0.75rem;
 
   h3 {
-    margin: 0 0 0.4rem 0;
-    padding-bottom: 0.2rem;
-    border-bottom: 1px solid var(--sr4-border-dim);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--sr4-teal);
+    @include sr4-section-h3;
   }
 }
 
@@ -304,17 +278,35 @@ a.item-toggle-equip {
 }
 
 .weapon-card:has(.weapon-ammo) {
-  .weapon-stats,
-  .weapon-ammo {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  column-gap: 0.4rem;
+
+  > * {
+    grid-column: 1 / -1;
+  }
+
+  .weapon-stats {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: subgrid;
     gap: 0.4rem;
+  }
+
+  .weapon-ammo {
+    grid-column: 5 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: 0.3rem;
+
+    > .item-property:first-of-type {
+      grid-column: 1 / -1;
+    }
   }
 }
 
 .weapon-ammo {
   position: relative;
-  margin-top: 0.6rem;
+  margin-top: 0.3rem;
 }
 
 .weapon-ammo-edit {
@@ -426,7 +418,7 @@ a.item-toggle-equip {
     align-items: center;
     gap: 0.2rem;
     padding: 1px 4px;
-    background: rgba(0, 128, 128, 0.1);
+    background: var(--sr4-teal-bg-subtle);
     border: 1px solid var(--sr4-border-subtle);
     border-radius: 3px;
   }

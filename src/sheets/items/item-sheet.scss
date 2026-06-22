@@ -1,31 +1,4 @@
-// --------------------------------
-// Mixins
-// --------------------------------
-
-@mixin sr4-input {
-  background: transparent;
-  border: 1px solid var(--sr4-border-dim);
-  border-radius: 3px;
-  color: var(--sr4-text);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.75rem;
-  padding: 2px 4px;
-}
-
-@mixin sr4-input-focus {
-  &:focus {
-    outline: none;
-    border-color: var(--sr4-teal);
-    background: rgba(0, 179, 164, 0.05);
-  }
-}
-
-@mixin sr4-label {
-  font-size: 0.62rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--sr4-label);
-}
+@use '../../styles/mixins' as *;
 
 // --------------------------------
 // Sheet Root
@@ -192,7 +165,7 @@
     flex: 1;
     min-height: 80px;
     resize: vertical;
-    background: rgba(0, 128, 128, 0.05);
+    background: var(--sr4-teal-bg-subtle);
     border: 1px solid var(--sr4-border-dim);
     border-radius: 3px;
     color: var(--sr4-text);
@@ -204,7 +177,7 @@
     &:focus {
       outline: none;
       border-color: var(--sr4-teal);
-      background: rgba(0, 179, 164, 0.04);
+      background: var(--sr4-teal-bg-hover);
     }
   }
 }
@@ -253,21 +226,8 @@
   }
 
   .item-create-btn {
-    width: 22px;
-    height: 22px;
-    border: 1px solid transparent;
-    background: none;
-    color: var(--sr4-border-dim);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      color: var(--sr4-teal);
-      border-color: var(--sr4-teal);
-      background: var(--sr4-teal-glow);
-    }
+    @include sr4-icon-btn;
+    @include sr4-teal-hover;
   }
 
   .item-list {
@@ -284,7 +244,7 @@
     font-size: 0.72rem;
 
     &:hover {
-      background: rgba(0, 179, 164, 0.05);
+      background: var(--sr4-teal-bg-hover);
     }
 
     .item-name {
@@ -294,27 +254,12 @@
 
   .item-edit,
   .item-delete {
-    width: 22px;
-    height: 22px;
-    border: 1px solid transparent;
-    background: none;
-    color: var(--sr4-border-dim);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      color: var(--sr4-teal);
-      border-color: var(--sr4-teal);
-      background: var(--sr4-teal-glow);
-    }
+    @include sr4-icon-btn;
+    @include sr4-teal-hover;
   }
 
-  .item-delete:hover {
-    color: var(--sr4-red);
-    border-color: var(--sr4-red);
-    background: rgba(224, 48, 48, 0.08);
+  .item-delete {
+    @include sr4-delete-hover;
   }
 
   .empty-list {
@@ -378,7 +323,7 @@
     font-size: 0.72rem;
 
     &:hover {
-      background: rgba(0, 179, 164, 0.05);
+      background: var(--sr4-teal-bg-hover);
     }
 
     span {

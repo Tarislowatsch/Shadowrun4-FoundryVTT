@@ -23,8 +23,16 @@
       "armorrating": "Panzerungswert",
       "armortype": "Panzerungstyp",
       "ballisticarmor": "Ballistische Panzerung",
+      "encumbrance": "Rüstungsbehinderung",
+      "encumbranceWarning": "Rüstung übersteigt Konstitution × 2, Malus auf Geschicklichkeit und Reaktion",
       "impactarmor": "Aufprallpanzerung",
-      "noarmors": "Keine Panzerungen vorhanden"
+      "noarmors": "Keine Panzerungen vorhanden",
+      "stackingType": {
+        "label": "Stapeltyp",
+        "standard": "Standard",
+        "accessory": "Zubehör (Helm/Schild)",
+        "formFitting": "Form-Fitting"
+      }
     },
     "attack": {
       "archery": "Projektilwaffen",

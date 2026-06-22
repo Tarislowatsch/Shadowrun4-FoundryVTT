@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 // --------------------------------
 // Magic / Matrix Card (actor sheet)
 // --------------------------------
@@ -7,14 +9,8 @@
   padding: 0.5rem;
 
   h3 {
-    margin: 0.75rem 0 0.4rem;
-    padding-bottom: 0.2rem;
-    border-bottom: 1px solid var(--sr4-border-dim);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--sr4-teal);
+    @include sr4-section-h3;
+    margin-top: 0.75rem;
   }
 
   .magic-grid {
@@ -24,7 +20,7 @@
     margin-bottom: 1rem;
   }
 
-  .magic-collumn {
+  .magic-column {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;

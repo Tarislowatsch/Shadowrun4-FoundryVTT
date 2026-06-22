@@ -6,6 +6,7 @@ import {
   SR4SheetStatsData,
   modifiersField,
 } from '@models/shared';
+import { computeDerivedStats } from '@documents/derivedStats.mapper';
 
 /**
  * @typedef {import('@models/shared').SR4ConditionMonitor} SharedSR4ConditionMonitor
@@ -24,12 +25,14 @@ export { SR4SheetStatsData, modifiersField };
  * @typedef {object} SR4Armor
  * @property {number} ballistic
  * @property {number} impact
+ * @property {number} encumbrance
  */
 
 export const armorField = () =>
   new fields.SchemaField({
     ballistic: new fields.NumberField({ initial: 0, integer: true }),
     impact: new fields.NumberField({ initial: 0, integer: true }),
+    encumbrance: new fields.NumberField({ initial: 0, integer: true }),
   });
 
 // ---------------------------------------------------------------------------
@@ -129,15 +132,15 @@ export const baseMetaDataField = () =>
 
 export const characterMetaDataField = () =>
   new fields.SchemaField({
+    nuyen: new fields.NumberField({ initial: 0, integer: true }),
     movement: new fields.NumberField({ initial: 0, integer: true }),
     age: new fields.NumberField({ initial: 25, integer: true }),
-    nuyen: new fields.NumberField({ initial: 0, integer: true }),
     totalKarma: new fields.NumberField({ initial: 0, integer: true }),
     karma: new fields.NumberField({ initial: 0, integer: true }),
+    lifestyle: new fields.StringField({ initial: 'low' }),
     streetCred: new fields.NumberField({ initial: 0, integer: true }),
     notoriety: new fields.NumberField({ initial: 0, integer: true }),
     publicAwareness: new fields.NumberField({ initial: 0, integer: true }),
-    lifestyle: new fields.StringField({ initial: 'low' }),
   });
 
 /**
@@ -208,6 +211,90 @@ export const connectionsField = () =>
   );
 
 // ---------------------------------------------------------------------------
+// Armor Stacking & Encumbrance (SR4 p.161, Form-Fitting: Arsenal p.48)
+// ---------------------------------------------------------------------------
+
+/**
+ * @param {any} item
+ * @param {'effectiveBallistic'|'effectiveImpact'} key
+ */
+function armorValue(item, key) {
+  return (
+    item.system?.[key] ??
+    item.system?.[
+      key === 'effectiveBallistic' ? 'ballisticarmor' : 'impactarmor'
+    ] ??
+    0
+  );
+}
+
+/**
+ * @param {any[]} equipped
+ * @param {{ ballistic: number, impact: number }} bonus
+ * @param {number} body
+ * @returns {{ ballistic: number, impact: number, encumbrance: number }}
+ */
+export function computeArmorStacking(equipped, bonus, body) {
+  const standard = [];
+  const accessories = [];
+  const formFitting = [];
+  for (const item of equipped) {
+    const type = item.system?.stackingType ?? 'standard';
+    if (type === 'accessory') accessories.push(item);
+    else if (type === 'formFitting') formFitting.push(item);
+    else standard.push(item);
+  }
+
+  const sum = (arr, key) => arr.reduce((s, i) => s + armorValue(i, key), 0);
+
+  const bestBallistic = standard.reduce(
+    (m, i) => Math.max(m, armorValue(i, 'effectiveBallistic')),
+    0
+  );
+  const bestImpact = standard.reduce(
+    (m, i) => Math.max(m, armorValue(i, 'effectiveImpact')),
+    0
+  );
+
+  const ballistic =
+    bestBallistic +
+    sum(formFitting, 'effectiveBallistic') +
+    sum(accessories, 'effectiveBallistic') +
+    bonus.ballistic;
+  const impact =
+    bestImpact +
+    sum(formFitting, 'effectiveImpact') +
+    sum(accessories, 'effectiveImpact') +
+    bonus.impact;
+
+  const encumbranceBallistic =
+    sum(standard, 'effectiveBallistic') +
+    sum(accessories, 'effectiveBallistic') +
+    formFitting.reduce(
+      (s, i) => s + Math.floor(armorValue(i, 'effectiveBallistic') / 2),
+      0
+    ) +
+    bonus.ballistic;
+  const encumbranceImpact =
+    sum(standard, 'effectiveImpact') +
+    sum(accessories, 'effectiveImpact') +
+    formFitting.reduce(
+      (s, i) => s + Math.floor(armorValue(i, 'effectiveImpact') / 2),
+      0
+    ) +
+    bonus.impact;
+
+  const maxAllowed = body * 2;
+  const excess = Math.max(
+    0,
+    Math.max(encumbranceBallistic, encumbranceImpact) - maxAllowed
+  );
+  const encumbrance = excess > 0 ? Math.ceil(excess / 2) : 0;
+
+  return { ballistic, impact, encumbrance };
+}
+
+// ---------------------------------------------------------------------------
 // BaseCharacterData
 // ---------------------------------------------------------------------------
 
@@ -250,6 +337,43 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
         }),
       }),
     };
+  }
+
+  prepareDerivedData() {
+    const self = /** @type {any} */ (this);
+    if (!self.sheetStats) return;
+    const actor = this.parent;
+    if (!actor) return;
+
+    const equipped = actor.items.filter(
+      (i) => i.type === 'Armor' && i.system?.equipped === true
+    );
+    const bonus = {
+      ballistic: self.armor.ballistic,
+      impact: self.armor.impact,
+    };
+    const { ballistic, impact, encumbrance } = computeArmorStacking(
+      equipped,
+      bonus,
+      self.sheetStats.BODY
+    );
+
+    self.armor.ballistic = ballistic;
+    self.armor.impact = impact;
+    self.armor.encumbrance = encumbrance;
+
+    if (encumbrance > 0) {
+      self.sheetStats.AGILITY = Math.max(
+        0,
+        self.sheetStats.AGILITY - encumbrance
+      );
+      self.sheetStats.REACTION = Math.max(
+        0,
+        self.sheetStats.REACTION - encumbrance
+      );
+    }
+
+    Object.assign(self.derivedStats, computeDerivedStats(self));
   }
 }
 
