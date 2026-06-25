@@ -291,62 +291,72 @@ a.item-toggle-equip {
 
 /* ---------------- WEAPON ---------------- */
 
+.weapon-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* obere Waffenwerte */
+
 .weapon-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.35rem 0.5rem;
+  gap: 0.4rem;
 
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
+  .item-property {
+    height: 100%;
   }
 }
 
-.weapon-card:has(.weapon-ammo) {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  column-gap: 0.4rem;
-
-  > * {
-    grid-column: 1 / -1;
-  }
-
-  .weapon-stats {
-    display: grid;
-    grid-template-columns: subgrid;
-    gap: 0.4rem;
-  }
-
-  .weapon-ammo {
-    grid-column: 5 / -1;
-    display: grid;
-    grid-template-columns: subgrid;
-    gap: 0.3rem;
-
-    > .item-property:first-of-type {
-      grid-column: 1 / -1;
-    }
-  }
-}
+/* Ammo Bereich */
 
 .weapon-ammo {
   position: relative;
-  margin-top: 0.3rem;
+
+  display: grid;
+  gap: 0.4rem;
+
+  margin-top: 0.2rem;
+
+  .item-property {
+    height: 100%;
+  }
 }
+
+/* Select-Feld */
+
+.weapon-ammo-select {
+  select {
+    width: 100%;
+    min-height: 32px;
+
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+
+    background: transparent;
+    color: var(--sr4-text);
+
+    border: 1px solid var(--sr4-border-dim);
+    border-radius: 3px;
+  }
+}
+
+/* Edit Button */
 
 .weapon-ammo-edit {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
 }
+
+/* Smartlink */
 
 .weapon-smartlink {
   display: flex;
-  gap: 0.3rem;
   align-items: center;
+  gap: 0.3rem;
 }
 
 /* ---------------- DEFENSE ---------------- */

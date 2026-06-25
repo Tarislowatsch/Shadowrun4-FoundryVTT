@@ -81,54 +81,25 @@
   {{#if this.system.maxAmmo}}
   <div class="item-body weapon-ammo">
     {{#if this.loadedAmmo}}
-    <button class="item-edit weapon-ammo-edit" data-action="editAmmo" data-ammo-id="{{ this.system.loadedAmmoId }}"
-      data-tooltip="{{localize 'sr4.weapon.editAmmo'}}">
-      <i class="fas fa-edit"></i>
-    </button>
+      {{> ammo-stats this=this.loadedAmmo}}
+    {{else}}
+      <span class="item-property item-property--empty"></span>
+      <span class="item-property item-property--empty"></span>
+      <span class="item-property item-property--empty"></span>
+      <span class="item-property item-property--empty"></span>
+      <span class="item-property item-property--empty"></span>
     {{/if}}
-    <span class="item-property">
-      <strong>{{localize "sr4.ammo.loaded"}}{{> tooltip text=(localize "sr4.tooltip.loadedAmmo")}}</strong>
+
+    <span class="item-property weapon-ammo-select">
+      <strong>{{localize "sr4.ammo.loaded"}}</strong>
       <select name="system.loadedAmmoId">
         <option value="">—</option>
         {{#each this.availableAmmo as |a|}}
-        <option value="{{ a.id }}" {{#if (eq ../system.loadedAmmoId a.id)}}selected{{/if}}>{{ a.name }}</option>
+        <option value="{{ a.id }}" {{#if (eq ../system.loadedAmmoId a.id)}}selected{{/if}}>
+          {{ a.name }}
+        </option>
         {{/each}}
       </select>
-    </span>
-    <span class="item-property{{#unless this.loadedAmmo}} item-property--empty{{/unless}}">
-      {{#if this.loadedAmmo}}
-        {{#if (ne this.loadedAmmo.damageOverride null)}}
-        <strong>{{localize "sr4.ammo.damageOverride"}}</strong>
-        {{ this.loadedAmmo.damageOverride }}
-        {{else}}
-        <strong>{{localize "sr4.ammo.damageBonus"}}</strong>
-        {{#if (gte this.loadedAmmo.damageBonus 0)}}+{{/if}}{{ this.loadedAmmo.damageBonus }}
-        {{/if}}
-      {{/if}}
-    </span>
-    <span class="item-property{{#unless this.loadedAmmo.displayDamageTypeOverride}} item-property--empty{{/unless}}">
-      {{#if this.loadedAmmo.displayDamageTypeOverride}}
-      <strong>{{localize "sr4.ammo.damageTypeOverride"}}</strong>
-      {{localize this.loadedAmmo.displayDamageTypeOverride}}
-      {{/if}}
-    </span>
-    <span class="item-property{{#unless this.loadedAmmo}} item-property--empty{{/unless}}">
-      {{#if this.loadedAmmo}}
-      <strong>{{localize "sr4.ammo.apBonus"}}</strong>
-      {{#if (gte this.loadedAmmo.apBonus 0)}}+{{/if}}{{ this.loadedAmmo.apBonus }}
-      {{/if}}
-    </span>
-    <span class="item-property{{#unless this.loadedAmmo}} item-property--empty{{/unless}}">
-      {{#if this.loadedAmmo}}
-      <strong>{{localize "sr4.ammo.quantity"}}</strong>
-      {{ this.loadedAmmo.quantity }}
-      {{/if}}
-    </span>
-    <span class="item-property{{#unless this.loadedAmmo.displayCategory}} item-property--empty{{/unless}}">
-      {{#if this.loadedAmmo.displayCategory}}
-      <strong>{{localize "sr4.ammo.category"}}</strong>
-      {{localize this.loadedAmmo.displayCategory}}
-      {{/if}}
     </span>
   </div>
   {{/if}}

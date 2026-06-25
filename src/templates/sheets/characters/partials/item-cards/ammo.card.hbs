@@ -11,29 +11,7 @@
     </div>
   </div>
   <div class="item-body">
-    {{#if this.displayCategory}}
-    <span class="item-property">
-      <strong>{{localize "sr4.ammo.category"}}</strong>
-      {{localize this.displayCategory}}
-    </span>
-    {{/if}}
-    <span class="item-property">
-      <strong>{{localize "sr4.ammo.damageBonus"}}</strong>
-      {{#if (gte this.system.damageBonus 0)}}+{{/if}}{{ this.system.damageBonus }}
-    </span>
-    <span class="item-property">
-      <strong>{{localize "sr4.ammo.apBonus"}}</strong>
-      {{#if (gte this.system.apBonus 0)}}+{{/if}}{{ this.system.apBonus }}
-    </span>
-    <span class="item-property">
-      <strong>{{localize "sr4.ammo.quantity"}}</strong>
-      <input
-        class="item-quantity"
-        type="number"
-        name="system.quantity"
-        value="{{ this.system.quantity }}"
-        data-dtype="Number"
-      />
-    </span>
+    {{> ammo-stats this=this}}
+    <input class="item-quantity" type="number" name="system.quantity" value="{{ this.system.quantity }}" data-dtype="Number" />
   </div>
 </div>

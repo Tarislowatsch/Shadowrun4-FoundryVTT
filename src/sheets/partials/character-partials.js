@@ -28,6 +28,10 @@ export async function registerCharacterPartials() {
     { path: `${basePath}/tabs/magic.tab.hbs`, name: 'magic-tab' },
     { path: `${basePath}/tabs/matrix.tab.hbs`, name: 'matrix-tab' },
     { path: `${basePath}/modifier-field.hbs`, name: 'modifier-field' },
+    {
+      path: `${basePath}/item-cards/partials/ammo-stats.hbs`,
+      name: 'ammo-stats',
+    },
   ];
 
   await Promise.all(
