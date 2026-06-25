@@ -315,4 +315,50 @@ describe('buildActorData', () => {
     const data = buildActorData(parsed, canonicalSkills);
     expect(data.ammoLinks).toEqual([]);
   });
+
+  it('matches hyphenated canonical names to space-separated Chummer names', () => {
+    const canonical = [
+      {
+        name: 'Pilot-Ground-Craft',
+        type: 'Skill',
+        system: {
+          label: 'sr4.skills.pilotgroundcraft',
+          rating: 0,
+          attribute: 'REACTION',
+        },
+      },
+      {
+        name: 'Unarmed-Combat',
+        type: 'Skill',
+        system: {
+          label: 'sr4.skills.unarmedcombat',
+          rating: 0,
+          attribute: 'AGILITY',
+        },
+      },
+    ];
+    const data = buildActorData(
+      {
+        character: baseCharacter,
+        items: {},
+        skills: [
+          {
+            name: 'Pilot Ground Craft',
+            knowledge: 'False',
+            rating: '4',
+            spec: 'Wheeled',
+          },
+          { name: 'Unarmed Combat', knowledge: 'False', rating: '3', spec: '' },
+        ],
+      },
+      canonical
+    );
+
+    const pilot = data.items.find((i) => i.name === 'Pilot-Ground-Craft');
+    expect(pilot.system.rating).toBe(4);
+    expect(pilot.system.specialization).toBe('Wheeled');
+
+    const unarmed = data.items.find((i) => i.name === 'Unarmed-Combat');
+    expect(unarmed.system.rating).toBe(3);
+  });
 });

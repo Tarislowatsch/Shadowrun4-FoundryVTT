@@ -37,6 +37,17 @@ const COLLECTION_MAPPERS = {
 };
 
 /**
+ * @param {string} name
+ * @returns {string}
+ */
+function normalizeSkillName(name) {
+  return String(name ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/-/g, ' ');
+}
+
+/**
  * @param {Array<Record<string, any>>} skills
  * @returns {Map<string, { rating: number, specialization: string }>}
  */
@@ -48,9 +59,7 @@ function buildSkillRatingMap(skills) {
     const rating = parseInt(String(skill.rating ?? '0'), 10) || 0;
     const specialization = String(skill.spec ?? '').trim();
     if (rating <= 0 && !specialization) continue;
-    const name = String(skill.name ?? '')
-      .trim()
-      .toLowerCase();
+    const name = normalizeSkillName(skill.name);
     if (name) map.set(name, { rating, specialization });
   }
   return map;
@@ -66,7 +75,7 @@ function buildSkillRatingMap(skills) {
  */
 function mergeSkillRatings(canonicalSkills, ratings) {
   return canonicalSkills.map((skill) => {
-    const override = ratings.get(String(skill.name ?? '').toLowerCase());
+    const override = ratings.get(normalizeSkillName(skill.name));
     if (!override) return skill;
     return {
       ...skill,
