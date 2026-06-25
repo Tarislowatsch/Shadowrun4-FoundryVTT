@@ -8,8 +8,6 @@ import { XmlImporterApp } from '../sheets/importer/importer-app.js';
 export class SettingsHook {
   constructor() {
     Hooks.once('init', () => {
-      // --- Combat ---
-
       game.settings.register('shadowrun4e', 'combatDefenseWorkflow', {
         name: 'sr4.settings.combatDefenseWorkflow.name',
         hint: 'sr4.settings.combatDefenseWorkflow.hint',
@@ -78,8 +76,6 @@ export class SettingsHook {
         default: true,
       });
 
-      // --- Magic ---
-
       game.settings.register('shadowrun4e', 'spellWorkflow', {
         name: 'sr4.settings.spellWorkflow.name',
         hint: 'sr4.settings.spellWorkflow.hint',
@@ -97,8 +93,6 @@ export class SettingsHook {
         type: Boolean,
         default: true,
       });
-
-      // --- System / UI ---
 
       game.settings.register('shadowrun4e', 'useDefaultEffectSheet', {
         name: 'sr4.settings.useDefaultEffectSheet.name',
@@ -129,7 +123,24 @@ export class SettingsHook {
         restricted: true,
       });
 
-      // --- Hidden (no config UI) ---
+      game.settings.register('shadowrun4e', 'defaultTokenVision', {
+        name: 'sr4.settings.defaultTokenVision.name',
+        hint: 'sr4.settings.defaultTokenVision.hint',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+      });
+
+      game.settings.register('shadowrun4e', 'defaultTokenVisionRange', {
+        name: 'sr4.settings.defaultTokenVisionRange.name',
+        hint: 'sr4.settings.defaultTokenVisionRange.hint',
+        scope: 'world',
+        config: true,
+        type: Number,
+        default: 60,
+        range: { min: 0, max: 200, step: 5 },
+      });
 
       game.settings.register('shadowrun4e', 'importerEnabledSources', {
         scope: 'world',

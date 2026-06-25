@@ -127,6 +127,22 @@ describe('buildImportGroups', () => {
     expect(medical.records).toHaveLength(1);
   });
 
+  it('groups category-only ammo (no weaponbonus) into Ammunition typeLabel', () => {
+    const parsed = {
+      gear: [
+        {
+          name: 'Regular Ammo',
+          category: 'Ammunition',
+          source: 'SR4',
+        },
+      ],
+    };
+    const groups = buildImportGroups(parsed);
+    expect(groups).toHaveLength(1);
+    expect(groups[0].typeLabel).toBe('Ammunition');
+    expect(groups[0].subcategory).toBe('Ammunition');
+  });
+
   it('falls back gear without category or weaponbonus to "Gear"', () => {
     const parsed = {
       gear: [{ name: 'Mysterious Widget', source: 'SR4' }],

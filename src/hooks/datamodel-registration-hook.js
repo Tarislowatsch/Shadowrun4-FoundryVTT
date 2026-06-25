@@ -22,24 +22,16 @@ import {
   SR4QualityData,
   SR4VehicleModData,
   SR4WeaponModData,
+  SR4MetatypeData,
+  SR4CritterTemplateData,
 } from '@models/index';
 
-/**
- * Hooks into Foundry VTT's `init` event to register all SR4 DataModels
- * with CONFIG.Actor.dataModels and CONFIG.Item.dataModels.
- * Instantiated once at module load time.
- */
 export class DataModelRegistrationHook {
   constructor() {
     Hooks.once('init', this.onInit.bind(this));
   }
 
-  /**
-   * Registers all SR4 Actor and Item DataModels with Foundry.
-   * Must run during `init` — before any documents are loaded.
-   *
-   * @returns {void}
-   */
+  /** @returns {void} */
   onInit() {
     Object.assign(CONFIG.Actor.dataModels, {
       character: SR4CharacterData,
@@ -71,6 +63,8 @@ export class DataModelRegistrationHook {
       'Weapon Mod': SR4WeaponModData,
       'Armor Mod': SR4ArmorModData,
       'Vehicle Mod': SR4VehicleModData,
+      Metatype: SR4MetatypeData,
+      CritterTemplate: SR4CritterTemplateData,
     });
   }
 }

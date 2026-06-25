@@ -23,6 +23,7 @@
           value="{{lookup @root.system.sheetStats key}}"
           data-dtype="Number"
           {{#if (includes @root.derivedKeys key)}}readonly{{/if}}
+          {{#if @root.hasMetatypeLimits}}min="{{lookup @root.attributeMinimum key}}" max="{{lookup @root.attributeMaximum key}}" data-tooltip="Min {{lookup @root.attributeMinimum key}} / Max {{lookup @root.attributeMaximum key}} / Aug {{lookup @root.augmentedMaximum key}}"{{/if}}
         />
       {{else}}
         <span class="stat-display">

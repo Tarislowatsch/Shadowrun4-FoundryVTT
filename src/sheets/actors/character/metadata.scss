@@ -44,11 +44,7 @@
 }
 
 .tab.bio {
-  section + hr {
-    margin: 1rem 0;
-  }
-
-  .bio-text .item-textareas textarea {
+  .item-textareas textarea {
     min-height: 140px;
   }
 }

@@ -1,7 +1,7 @@
 <form class="spell-defense-dialog">
   {{> spell-force-header}}
   <div class="form-group">
-    <span>{{localize "sr4.spell.cast"}}: <strong>{{ castingHits }}</strong> · {{localize "sr4.stats.REACTION"}}: <strong>{{ reaction }}</strong></span>
+    <span>{{localize "sr4.spell.cast"}}: <strong>{{ castingHits }}</strong> · {{localize "sr4.stats.REACTION"}}: <strong>{{ reaction }}</strong>{{#if counterspelling}} + {{localize "sr4.skills.counterspelling"}}: <strong>{{ counterspelling }}</strong>{{/if}}</span>
   </div>
   {{#if rangedSkills.length}}
   {{> skill-select id="skill1" name="skill1" labelKey="sr4.defense.skill" skills=rangedSkills}}

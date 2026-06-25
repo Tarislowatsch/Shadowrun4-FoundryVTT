@@ -3,18 +3,27 @@
   data-group="primary"
   data-tab="weapons"
 >
-  {{#if editMode}}
-  <div style="margin-bottom: 0.5rem;">
-    {{> item-create-btn btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
-  </div>
-  {{/if}}
-  {{#if weapons}}
-  <ul class="weapon-list">
-    {{#each weapons as |weapon|}}
-    {{> "weapon-card"}}
-    {{/each}}
-  </ul>
-  {{else}}
-  <p>{{localize 'sr4.weapon.noWeapons'}}</p>
-  {{/if}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.weapons') btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+    {{#if weapons}}
+    <ul class="weapon-list">
+      {{#each weapons as |weapon|}}
+      {{> "weapon-card"}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p>{{localize 'sr4.weapon.noWeapons'}}</p>
+    {{/if}}
+  {{/collapsible-section}}
+
+  {{#> collapsible-section title=(localize 'sr4.inventory.ammo') btnAction="createItem" btnItemType="Ammo" btnTooltip="sr4.item.create"}}
+    {{#if ammo}}
+    <ul class="item-list">
+      {{#each ammo as |item|}}
+      {{> "ammo-card"}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p>{{localize 'sr4.ammo.noAmmo'}}</p>
+    {{/if}}
+  {{/collapsible-section}}
 </div>

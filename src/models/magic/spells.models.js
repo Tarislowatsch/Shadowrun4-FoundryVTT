@@ -140,6 +140,7 @@ const fields = foundry.data.fields;
  * @property {string} duration    - Spell duration (e.g. 'PERMANENT', 'SUSTAINED')
  * @property {number} dv          - Drain value (integer)
  * @property {string} damageType  - 'PHYSICAL' or 'STUN' (COMBAT spells; base DV = cast Force)
+ * @property {boolean} opposed    - Whether non-combat spells require an Opposed Test
  */
 
 /**
@@ -181,6 +182,7 @@ export class SR4SpellData extends foundry.abstract.TypeDataModel {
       duration: new fields.StringField({ initial: 'PERMANENT' }),
       dv: new fields.NumberField({ initial: 2, integer: true }),
       damageType: new fields.StringField({ initial: 'PHYSICAL' }),
+      opposed: new fields.BooleanField({ initial: false }),
     };
   }
 }

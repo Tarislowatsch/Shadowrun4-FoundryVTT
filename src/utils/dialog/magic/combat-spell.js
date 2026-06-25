@@ -11,6 +11,15 @@ import { openSoakDialog } from '../actions/soak';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow';
 import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
 import { getGame } from '@utils/game/game.js';
+import {
+  computeElementArmorRules,
+  getElementResistance,
+  buildElementOnApply,
+} from '@models/index';
+import {
+  getSpellEffectData,
+  sendEffectDecisionMessage,
+} from '@flows/apply-effects-flow';
 
 const DIRECT_RESIST_TEMPLATE =
   'systems/shadowrun4e/templates/magic/direct-spell-resist.hbs';
@@ -55,7 +64,10 @@ export async function openDirectSpellResistDialog(
   casterId
 ) {
   const attr = isMana ? 'WILLPOWER' : 'BODY';
-  const resistPool = defender.getAttribute(attr) ?? 0;
+  const baseResist = defender.getAttribute(attr) ?? 0;
+  const counterspelling =
+    defender.getSkill('counterspelling')?.system?.rating ?? 0;
+  const resistPool = baseResist + counterspelling;
   const resistAttrLabel = isMana
     ? localize('sr4.stats.WILLPOWER')
     : localize('sr4.stats.BODY');
@@ -66,8 +78,9 @@ export async function openDirectSpellResistDialog(
     spellName,
     castingHits,
     force,
-    resistPool,
+    baseResist,
     resistAttrLabel,
+    counterspelling,
   });
 
   const result = await createRollDialog({
@@ -77,12 +90,25 @@ export async function openDirectSpellResistDialog(
     onRoll: (dialog) => dialogActions(dialog, defender, attr, resistPool),
   });
 
+  let resistHits = result?.successes ?? null;
+  if (result && !result.edgeUsed && result.successes < castingHits) {
+    resistHits = await awaitEdgeDecision({
+      messageId: result.messageId,
+      actor: defender,
+      rollResult: {
+        successes: result.successes,
+        rolledDice: resistPool,
+        isGlitch: result.isGlitch,
+      },
+    });
+  }
+
   getGame().socket?.emit('system.shadowrun4e', {
     action: 'directSpellResisted',
     payload: {
       casterId,
       defenderId: defender.id,
-      resistHits: result?.successes ?? null,
+      resistHits,
     },
   });
 }
@@ -150,7 +176,10 @@ export async function openIndirectSpellDefenseDialog(
   force
 ) {
   const reaction = defender.getAttribute('REACTION') ?? 0;
-  const params = createDialogParameters(defender, reaction);
+  const counterspelling =
+    defender.getSkill('counterspelling')?.system?.rating ?? 0;
+  const basePool = reaction + counterspelling;
+  const params = createDialogParameters(defender, basePool);
   const rangedSkills = buildSpellDodgeSkills(defender);
 
   const elementKey = spell.system?.element
@@ -163,6 +192,7 @@ export async function openIndirectSpellDefenseDialog(
     force,
     castingHits,
     reaction,
+    counterspelling,
     element: elementKey,
     rangedSkills,
   });
@@ -170,12 +200,12 @@ export async function openIndirectSpellDefenseDialog(
   const maxEdge = defender.getAttribute('EDGE') ?? 0;
 
   const resolvePool = (dialog, fullDefense) => {
-    if (!fullDefense) return reaction;
+    if (!fullDefense) return basePool;
     const skillRating =
       parseInt(
         dialog.querySelector('#skill1')?.selectedOptions[0]?.dataset.rating
       ) || 0;
-    return reaction + skillRating;
+    return basePool + skillRating;
   };
 
   const makeCallback = (fullDefense) => async (_event, button) => {
@@ -217,13 +247,13 @@ export async function openIndirectSpellDefenseDialog(
           'button[data-action="fullDefense"]'
         );
         if (dodgeBtn)
-          dodgeBtn.textContent = `${localize('sr4.defense.defend')} (${reaction + mod})`;
+          dodgeBtn.textContent = `${localize('sr4.defense.defend')} (${basePool + mod})`;
         if (fullDefBtn) {
           const skillRating =
             parseInt(
               html.querySelector('#skill1')?.selectedOptions[0]?.dataset.rating
             ) || 0;
-          fullDefBtn.textContent = `${localize('sr4.defense.fullDefense')} (${reaction + skillRating + mod})`;
+          fullDefBtn.textContent = `${localize('sr4.defense.fullDefense')} (${basePool + skillRating + mod})`;
         }
       };
       html.querySelectorAll('input, select').forEach((el) => {
@@ -247,20 +277,34 @@ export async function openIndirectSpellDefenseDialog(
     return;
   }
 
-  const baseDamage = force + Math.min(force, netHits);
+  const spellEffects = getSpellEffectData(spell);
+  if (spellEffects.length > 0) {
+    await sendEffectDecisionMessage(defender, spellEffects, spell.name);
+  }
+
+  const element = spell.system?.element || undefined;
   /** @type {any} */
   const sys = defender.system;
   const rawArmor = sys.armor?.impact ?? 0;
-  const effectiveArmor = Math.max(Math.floor(rawArmor / 2), 0);
+  const elementRules = computeElementArmorRules(element, rawArmor);
+  const effectiveArmor = elementRules.noArmor ? 0 : elementRules.effectiveArmor;
+
+  const baseDamage = force + Math.min(force, netHits) + elementRules.dvBonus;
+
   let isPhysical = spell.system?.damageType !== 'STUN';
   if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
+
+  const elementResistance = getElementResistance(defender, element);
+  const hint = elementRules.hint;
+  const onApply = buildElementOnApply(element, defender, netHits);
 
   if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
     await ApplyDamageFlow.sendDecisionMessage(
       defender,
       baseDamage,
       isPhysical,
-      'spell'
+      'spell',
+      { hint, onApply }
     );
     return;
   }
@@ -270,7 +314,11 @@ export async function openIndirectSpellDefenseDialog(
     baseDamage,
     isPhysical,
     effectiveArmor,
-    { rawArmor, apHalf: true }
+    {
+      rawArmor,
+      apHalf: elementRules.apHalf,
+      elementResistance,
+    }
   );
   if (!soakResult) return;
 
@@ -304,6 +352,7 @@ export async function openIndirectSpellDefenseDialog(
     defender,
     finalDamage,
     isPhysical,
-    'spell'
+    'spell',
+    { hint, onApply }
   );
 }

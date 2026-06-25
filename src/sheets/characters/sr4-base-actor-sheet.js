@@ -1,4 +1,5 @@
 import { handleAttackRoll, openActionDialog, reloadWeapon } from '@utils/index';
+import { RESISTANCE_ELEMENTS } from '@models/actor/basecharacter.model';
 
 export default class SR4BaseActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ActorSheetV2
@@ -27,6 +28,8 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       createMod: SR4BaseActorSheet._onCreateMod,
       toggleItemEffect: SR4BaseActorSheet._onToggleItemEffect,
       rollAction: SR4BaseActorSheet._onRollAction,
+      createElementResistance: SR4BaseActorSheet._onCreateElementResistance,
+      deleteElementResistance: SR4BaseActorSheet._onDeleteElementResistance,
     },
   };
 
@@ -333,5 +336,28 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     const effect = item?.effects.get(effectId);
     if (!effect) return;
     await effect.update({ disabled: !effect.disabled });
+  }
+
+  // ── Element Resistance actions ────────────────────────────────────────────
+
+  static async _onCreateElementResistance(event, target) {
+    await this.actor.update({
+      [`system.elementResistances.${foundry.utils.randomID()}`]: {},
+    });
+  }
+
+  static async _onDeleteElementResistance(event, target) {
+    const key =
+      target.dataset.resistanceKey ??
+      target.closest('[data-resistance-key]')?.dataset.resistanceKey;
+    if (!key) return;
+    await this.actor.update({ [`system.elementResistances.-=${key}`]: null });
+  }
+
+  static _buildResistanceElements() {
+    return RESISTANCE_ELEMENTS.map((el) => ({
+      value: el,
+      label: game.i18n.localize(`sr4.resistance.${el}`),
+    }));
   }
 }

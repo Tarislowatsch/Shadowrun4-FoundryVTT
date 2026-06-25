@@ -7,8 +7,13 @@ import {
   renderTemplate,
   standardTemplatePath,
 } from '../dialogutility';
-import { emitDefenseTrigger } from '@flows/defense-flow.js';
+import {
+  emitDefenseTrigger,
+  emitDefenseTriggerForTarget,
+} from '@flows/defense-flow.js';
 import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
+import { openDicePoolSplitDialog } from '../dice-pool-split.js';
+import { getValidTargetActors } from '@utils/game/game.js';
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
@@ -19,6 +24,35 @@ import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
 export async function handleSkillRoll(actor, skillName, weapon) {
   const dice = getSkillDicePool(actor, skillName);
   if (dice === undefined) return;
+
+  if (weapon) {
+    const targets = getValidTargetActors();
+    if (targets.length > 1) {
+      const splitTargets = targets.map((t) => ({
+        id: /** @type {any} */ (t).id ?? '',
+        name: t.name,
+      }));
+      const allocations = await openDicePoolSplitDialog(
+        dice,
+        splitTargets,
+        weapon.name
+      );
+      if (!allocations) return;
+      for (const { targetId, allocatedDice } of allocations) {
+        const t = targets.find((a) => /** @type {any} */ (a).id === targetId);
+        await _rollSkillForTarget(
+          actor,
+          skillName,
+          allocatedDice,
+          weapon,
+          targetId,
+          t?.name ?? ''
+        );
+      }
+      return;
+    }
+  }
+
   await openSkillDialog(actor, skillName, dice, weapon);
 }
 
@@ -63,5 +97,57 @@ export async function openSkillDialog(actor, skillName, dice, weapon) {
   }
   if (finalSuccesses > 0) {
     emitDefenseTrigger(actor, weapon, finalSuccesses);
+  }
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} skillName
+ * @param {number} dice
+ * @param {SR4Weapon} weapon
+ * @param {string} targetId
+ * @param {string} targetName
+ * @returns {Promise<void>}
+ */
+async function _rollSkillForTarget(
+  actor,
+  skillName,
+  dice,
+  weapon,
+  targetId,
+  targetName
+) {
+  const params = createDialogParameters(actor, dice, weapon);
+  const skill = actor.getSkill(skillName);
+  const content = await renderTemplate(standardTemplatePath(), {
+    ...params,
+    skillName,
+    weapon,
+  });
+  const result = await createRollDialog({
+    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} → ${targetName}`,
+    content,
+    dice,
+    onRoll: (dialog) =>
+      dialogActions(dialog, actor, skillName, dice, weapon, {
+        edgeAvailableOverride: false,
+      }),
+  });
+  if (!result || result.isGlitch) return;
+
+  let finalSuccesses = result.successes;
+  if (!result.edgeUsed) {
+    finalSuccesses = await awaitEdgeDecision({
+      messageId: result.messageId,
+      actor,
+      rollResult: {
+        successes: result.successes,
+        rolledDice: result.rolledDice,
+        isGlitch: result.isGlitch,
+      },
+    });
+  }
+  if (finalSuccesses > 0) {
+    emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetId);
   }
 }

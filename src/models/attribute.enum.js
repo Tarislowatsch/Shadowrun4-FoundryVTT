@@ -30,4 +30,6 @@ export const SR4Attributes = Object.freeze({
   MAGIC: 'sr4.attributeAbr.magic',
   /** @type {string} Localisation key for the Resonance attribute. */
   RESONANCE: 'sr4.attributeAbr.resonance',
+  /** @type {string} Localisation key for the Essence attribute. */
+  ESSENCE: 'sr4.attributeAbr.essence',
 });

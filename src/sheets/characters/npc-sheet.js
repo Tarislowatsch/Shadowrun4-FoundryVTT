@@ -81,6 +81,7 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
       armor: buildArmorContext(items),
       critterPowers: this._enrichItemContext(items, 'CritterPower'),
       isTechnomancer: actorData.system.technomancer,
+      resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
       ...buildComputedStats(actorData, derived),
     };
   }

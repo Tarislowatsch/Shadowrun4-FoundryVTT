@@ -23,7 +23,7 @@
         {{localize 'sr4.tab.effects'}}
         <select class="effect-template-picker" data-action="addEffectTemplate">
           <option value="">{{localize 'sr4.effect.addFromTemplate'}}</option>
-          <optgroup label="{{localize 'sr4.effect.templates'}}">
+          <optgroup label="{{localize 'sr4.effect.templates.label'}}">
             {{#each effectTemplates}}
             {{#if (eq type 'template')}}
             <option value="{{key}}">{{name}}</option>

@@ -231,6 +231,7 @@ export function genericWeaponSchema() {
   return {
     ap: new fields.NumberField({ initial: 0, integer: true }),
     attackSkill: new fields.StringField({ initial: '' }),
+    category: new fields.StringField({ initial: '', blank: true }),
     damageType: new fields.StringField({ initial: '' }),
     damage: new fields.NumberField({ initial: 0, integer: true }),
     installedModIds: new fields.ArrayField(new fields.StringField()),

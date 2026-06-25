@@ -4,6 +4,7 @@
 
 import {
   CATEGORY_TO_ATTACKSKILL,
+  XML_CATEGORY_TO_ENUM,
   normalizeMode,
   parseAmmo,
   parseDamage,
@@ -50,6 +51,8 @@ export function mapMeleeWeapon(record) {
       damageType,
       ap: parseNumber(record.ap, 0),
       attackSkill: attackSkillFor(/** @type {string} */ (record.category)),
+      category:
+        XML_CATEGORY_TO_ENUM[String(record.category ?? '').trim()] ?? '',
       reach: parseNumber(record.reach, 0),
       noStrengthBonus: !strengthBased,
       source: sourceOf(record),
@@ -76,6 +79,8 @@ export function mapRangedWeapon(record) {
       damageType,
       ap: parseNumber(record.ap, 0),
       attackSkill: attackSkillFor(/** @type {string} */ (record.category)),
+      category:
+        XML_CATEGORY_TO_ENUM[String(record.category ?? '').trim()] ?? '',
       mode: normalizeMode(/** @type {string} */ (record.mode)),
       rc: parseNumber(record.rc, 0),
       maxAmmo: capacity,

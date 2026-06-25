@@ -14,7 +14,14 @@ import {
   mapWeaponMod,
   mapMod,
   parseMount,
+  isAmmunition,
+  isCommlink,
+  XML_CATEGORY_TO_ENUM,
+  CATEGORY_TO_ATTACKSKILL,
+  ATTRIBUTE_ABBR_TO_KEY,
 } from '@importer/mappers/index.js';
+import { WeaponCategory, Attackskill } from '@models/items/weapon.enums.js';
+import { SR4Attributes } from '@models/attribute.enum.js';
 
 describe('simple mappers', () => {
   it.each([
@@ -231,6 +238,7 @@ describe('weapon mappers', () => {
     expect(item.type).toBe('Melee Weapon');
     expect(item.system).toMatchObject({
       attackSkill: 'BLADES',
+      category: 'BLADES',
       reach: 2,
       ap: -4,
       damage: 5,
@@ -255,6 +263,7 @@ describe('weapon mappers', () => {
     expect(item.type).toBe('Ranged Weapon');
     expect(item.system).toMatchObject({
       attackSkill: 'PISTOLS',
+      category: 'HEAVY_PISTOLS',
       damage: 5,
       ap: -1,
       mode: 'SA',
@@ -296,6 +305,7 @@ describe('gear mapper', () => {
     const item = mapGear({
       name: 'Ammo: APDS',
       category: 'Ammunition',
+      extra: 'Heavy Pistols',
       weaponbonus: { ap: '-4' },
     });
     expect(item.type).toBe('Ammo');
@@ -304,6 +314,7 @@ describe('gear mapper', () => {
       damageBonus: 0,
       damageOverride: null,
       damageTypeOverride: '',
+      category: 'HEAVY_PISTOLS',
     });
   });
 
@@ -329,6 +340,41 @@ describe('gear mapper', () => {
     expect(item.system.damageTypeOverride).toBe('PHYSICAL');
   });
 
+  it('parses flat weaponbonusdamage/weaponbonusap from character export', () => {
+    const item = mapGear({
+      name: 'Ammo: Flechette Rounds',
+      category: 'Ammunition',
+      extra: 'Shotguns',
+      weaponbonusdamage: '+2P(f)',
+      weaponbonusap: '+5',
+      qty: '24',
+    });
+    expect(item.type).toBe('Ammo');
+    expect(item.system).toMatchObject({
+      damageBonus: 2,
+      apBonus: 5,
+      damageTypeOverride: 'PHYSICAL',
+      damageOverride: null,
+      category: 'SHOTGUNS',
+      quantity: 24,
+    });
+  });
+
+  it('falls back to zero bonus when flat weaponbonusdamage has no number', () => {
+    const item = mapGear({
+      name: 'Weird Ammo',
+      category: 'Ammunition',
+      weaponbonusdamage: 'S',
+      weaponbonusap: '+3',
+    });
+    expect(item.type).toBe('Ammo');
+    expect(item.system).toMatchObject({
+      damageBonus: 0,
+      apBonus: 3,
+      damageTypeOverride: '',
+    });
+  });
+
   it('maps Stick-n-Shock damagereplace as absolute override', () => {
     const item = mapGear({
       name: 'Ammo: Stick-n-Shock',
@@ -339,6 +385,149 @@ describe('gear mapper', () => {
       damageOverride: 6,
       damageTypeOverride: 'ELECTRICITY',
     });
+  });
+
+  it('maps Regular Ammo (category only, no weaponbonus) as Ammo', () => {
+    const item = mapGear({
+      name: 'Regular Ammo',
+      category: 'Ammunition',
+      qty: '100',
+    });
+    expect(item.type).toBe('Ammo');
+    expect(item.system).toMatchObject({
+      damageBonus: 0,
+      apBonus: 0,
+      damageTypeOverride: '',
+      damageOverride: null,
+      quantity: 100,
+      category: '',
+    });
+  });
+
+  it('keeps Speed Loader as Item despite Ammunition category', () => {
+    expect(mapGear({ name: 'Speed Loader', category: 'Ammunition' }).type).toBe(
+      'Item'
+    );
+  });
+
+  it('maps qty field to quantity', () => {
+    const item = mapGear({
+      name: 'Ammo: APDS',
+      category: 'Ammunition',
+      weaponbonus: { ap: '-4' },
+      qty: '50',
+    });
+    expect(item.system.quantity).toBe(50);
+  });
+});
+
+describe('isAmmunition', () => {
+  it('returns true for gear with weaponbonus', () => {
+    expect(isAmmunition({ weaponbonus: { ap: '-4' } })).toBe(true);
+  });
+
+  it('returns true for Ammunition category without weaponbonus', () => {
+    expect(isAmmunition({ name: 'Regular Ammo', category: 'Ammunition' })).toBe(
+      true
+    );
+  });
+
+  it('returns false for Spare Clip', () => {
+    expect(isAmmunition({ name: 'Spare Clip', category: 'Ammunition' })).toBe(
+      false
+    );
+  });
+
+  it('returns false for non-Ammunition category', () => {
+    expect(isAmmunition({ name: 'Medkit', category: 'Medical' })).toBe(false);
+  });
+});
+
+describe('commlink mapper', () => {
+  it('maps commlink with matrix stats', () => {
+    const item = mapGear({
+      name: 'Meta Link',
+      iscommlink: 'True',
+      response: '1',
+      signal: '2',
+      firewall: '0',
+      system: '0',
+      cost: '100',
+    });
+    expect(item.type).toBe('Commlink');
+    expect(item.system).toMatchObject({
+      response: 1,
+      signal: 2,
+      firewall: 0,
+      os: 0,
+      cost: 100,
+    });
+  });
+
+  it('defaults matrix stats to 1 when fields are missing', () => {
+    const item = mapGear({ name: 'Unknown Link', iscommlink: 'True' });
+    expect(item.type).toBe('Commlink');
+    expect(item.system).toMatchObject({
+      response: 1,
+      signal: 1,
+      firewall: 1,
+      os: 1,
+    });
+  });
+
+  it('keeps non-commlink gear as Item', () => {
+    const item = mapGear({
+      name: 'Medkit',
+      iscommlink: 'False',
+      category: 'Medical',
+    });
+    expect(item.type).toBe('Item');
+  });
+
+  it('treats missing iscommlink as non-commlink', () => {
+    expect(mapGear({ name: 'Medkit', category: 'Medical' }).type).toBe('Item');
+  });
+});
+
+describe('isCommlink', () => {
+  it('returns true for iscommlink True', () => {
+    expect(isCommlink({ iscommlink: 'True' })).toBe(true);
+  });
+
+  it('is case-insensitive', () => {
+    expect(isCommlink({ iscommlink: 'true' })).toBe(true);
+    expect(isCommlink({ iscommlink: 'TRUE' })).toBe(true);
+  });
+
+  it('returns false for False', () => {
+    expect(isCommlink({ iscommlink: 'False' })).toBe(false);
+  });
+
+  it('returns false when missing', () => {
+    expect(isCommlink({})).toBe(false);
+  });
+});
+
+describe('enum consistency', () => {
+  it('XML_CATEGORY_TO_ENUM values are valid WeaponCategory keys', () => {
+    const validKeys = new Set(Object.keys(WeaponCategory));
+    for (const [xmlName, key] of Object.entries(XML_CATEGORY_TO_ENUM)) {
+      expect(validKeys.has(key), `${xmlName} → ${key}`).toBe(true);
+    }
+  });
+
+  it('CATEGORY_TO_ATTACKSKILL values are valid Attackskill keys', () => {
+    const validKeys = new Set(Object.keys(Attackskill));
+    for (const [xmlName, key] of Object.entries(CATEGORY_TO_ATTACKSKILL)) {
+      expect(validKeys.has(key), `${xmlName} → ${key}`).toBe(true);
+    }
+  });
+
+  it('ATTRIBUTE_ABBR_TO_KEY values are valid SR4Attributes keys', () => {
+    const validKeys = new Set(Object.keys(SR4Attributes));
+    for (const [abbr, key] of Object.entries(ATTRIBUTE_ABBR_TO_KEY)) {
+      expect(validKeys.has(key), `${abbr} → ${key}`).toBe(true);
+    }
   });
 });
 
@@ -368,6 +557,22 @@ describe('spell mapper', () => {
       dv: 5,
       damageType: 'PHYSICAL',
     });
+  });
+
+  it('reads descriptors (plural) from character-import XML', () => {
+    const item = mapSpell({
+      name: 'Fireball',
+      descriptors: 'Indirect, Elemental, Area',
+      category: 'Combat',
+      type: 'P',
+      range: 'LOS (A)',
+      damage: 'P',
+      duration: 'I',
+      dv: '(F/2)+3',
+    });
+    expect(item.system.combatType).toBe('INDIRECT');
+    expect(item.system.element).toBe('FIRE');
+    expect(item.system.area).toBe(true);
   });
 
   it('maps mana touch spells without element', () => {

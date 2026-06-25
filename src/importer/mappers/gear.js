@@ -2,7 +2,17 @@
  * @fileoverview Pure mapper turning gear statblock records into SR4 item data.
  */
 
-import { commerceFields, parseNumber, sourceOf } from './helpers.js';
+import { DamageTypes } from '@models/items/weapon.enums.js';
+
+import {
+  commerceFields,
+  parseNumber,
+  sourceOf,
+  upper,
+  XML_CATEGORY_TO_ENUM,
+} from './helpers.js';
+
+const dt = Object.fromEntries(Object.keys(DamageTypes).map((k) => [k, k]));
 
 /**
  * @param {string} [raw]
@@ -11,10 +21,18 @@ import { commerceFields, parseNumber, sourceOf } from './helpers.js';
 function parseAmmoDamageType(raw) {
   const str = (raw ?? '').trim();
   if (!str) return '';
-  if (/\(e\)/i.test(str)) return 'ELECTRICITY';
+  if (/\(e\)/i.test(str)) return dt.ELECTRICITY;
   const code = str.replace(/\([^)]*\)/g, '');
-  return /^s/i.test(code) ? 'STUN' : 'PHYSICAL';
+  return /^s/i.test(code) ? dt.STUN : dt.PHYSICAL;
 }
+
+/** @type {{ damageBonus: number, apBonus: number, damageTypeOverride: string, damageOverride: number|null }} */
+const EMPTY_WEAPON_BONUS = Object.freeze({
+  damageBonus: 0,
+  apBonus: 0,
+  damageTypeOverride: '',
+  damageOverride: null,
+});
 
 /**
  * @param {Record<string, string>} bonus
@@ -43,22 +61,89 @@ export function hasWeaponBonus(record) {
 
 /**
  * @param {Record<string, unknown>} record
+ * @returns {Record<string, string>|null}
+ */
+function parseFlatWeaponBonus(record) {
+  const rawDmg = String(record.weaponbonusdamage ?? '').trim();
+  const rawAp = String(record.weaponbonusap ?? '').trim();
+  if (!rawDmg && !rawAp) return null;
+  const match = rawDmg.match(/^([+-]?\d+)\s*(.*)$/);
+  return {
+    damage: match?.[1] ?? '0',
+    damagetype: match?.[2] ?? '',
+    ap: rawAp || '0',
+  };
+}
+
+const AMMO_ACCESSORY_NAMES = new Set(['spare clip', 'speed loader']);
+
+/**
+ * @param {Record<string, unknown>} record
+ * @returns {boolean}
+ */
+export function isAmmunition(record) {
+  if (hasWeaponBonus(record) || parseFlatWeaponBonus(record)) return true;
+  if (
+    String(record.category ?? '')
+      .trim()
+      .toLowerCase() !== 'ammunition'
+  )
+    return false;
+  return !AMMO_ACCESSORY_NAMES.has(
+    String(record.name ?? '')
+      .trim()
+      .toLowerCase()
+  );
+}
+
+/**
+ * @param {Record<string, unknown>} record
+ * @returns {boolean}
+ */
+export function isCommlink(record) {
+  return upper(record.iscommlink) === 'TRUE';
+}
+
+/**
+ * @param {Record<string, unknown>} record
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapGear(record) {
   const base = {
     ...commerceFields(record),
     rating: parseNumber(record.rating, 0),
+    quantity: parseNumber(record.qty, 0),
     source: sourceOf(record),
   };
 
-  if (hasWeaponBonus(record)) {
+  if (isAmmunition(record)) {
+    const flat = parseFlatWeaponBonus(record);
+    const bonus = hasWeaponBonus(record)
+      ? mapWeaponBonus(/** @type {any} */ (record.weaponbonus))
+      : flat
+        ? mapWeaponBonus(flat)
+        : EMPTY_WEAPON_BONUS;
     return {
       name: /** @type {string} */ (record.name) ?? 'Unnamed Ammo',
       type: 'Ammo',
       system: {
         ...base,
-        ...mapWeaponBonus(/** @type {any} */ (record.weaponbonus)),
+        ...bonus,
+        category: XML_CATEGORY_TO_ENUM[String(record.extra ?? '').trim()] ?? '',
+      },
+    };
+  }
+
+  if (isCommlink(record)) {
+    return {
+      name: /** @type {string} */ (record.name) ?? 'Unnamed Commlink',
+      type: 'Commlink',
+      system: {
+        ...base,
+        response: parseNumber(record.response, 1),
+        signal: parseNumber(record.signal, 1),
+        firewall: parseNumber(record.firewall, 1),
+        os: parseNumber(record.system, 1),
       },
     };
   }

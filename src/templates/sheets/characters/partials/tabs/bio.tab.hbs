@@ -1,6 +1,24 @@
 <div class="tab bio {{ tab.cssClass }}" data-group="primary" data-tab="bio">
-  <section class="bio-description">
-    <h3>{{localize 'sr4.bio.physicalDescription'}}</h3>
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.bio.metatype'}}</h3>
+      {{#unless metatypeItem}}
+        {{#if editMode}}
+          {{> item-create-btn btnAction="createItem" btnItemType="Metatype" btnTooltip="sr4.metatype.create"}}
+        {{/if}}
+      {{/unless}}
+    </summary>
+    {{#if metatypeItem}}
+      {{#with metatypeItem}}
+      {{> "metatype-card"}}
+      {{/with}}
+    {{else}}
+      <p class="empty-list">{{localize 'sr4.metatype.noMetatype'}}</p>
+    {{/if}}
+  </details>
+
+  {{#> collapsible-section title=(localize 'sr4.bio.physicalDescription')}}
     <div class="info-columns">
       {{> meta-field label='sr4.metadata.realName' name='system.descriptionAndNotes.realName' value=system.descriptionAndNotes.realName editMode=editMode}}
       {{> meta-field label='sr4.metadata.metatype' name='system.descriptionAndNotes.metatype' value=system.descriptionAndNotes.metatype editMode=editMode}}
@@ -12,26 +30,16 @@
       {{> meta-field label='sr4.metadata.hair' name='system.descriptionAndNotes.hair' value=system.descriptionAndNotes.hair editMode=editMode}}
       {{> meta-field label='sr4.metadata.skin' name='system.descriptionAndNotes.skin' value=system.descriptionAndNotes.skin editMode=editMode}}
     </div>
-  </section>
+  {{/collapsible-section}}
 
-  <hr />
-
-  <section class="bio-text">
+  {{#> collapsible-section title=(localize 'sr4.bio.biography')}}
     <div class="item-textareas">
       {{> textarea-field label='sr4.bio.bio' name='system.descriptionAndNotes.bio' value=system.descriptionAndNotes.bio}}
       {{> textarea-field label='sr4.bio.notes' name='system.descriptionAndNotes.notes' value=system.descriptionAndNotes.notes}}
     </div>
-  </section>
+  {{/collapsible-section}}
 
-  <hr />
-
-  <section class="inventory-section connections-section">
-    <h3>{{localize 'sr4.bio.connections'}}</h3>
-    {{#if editMode}}
-    <div style="margin-bottom: 0.5rem;">
-      {{> item-create-btn btnAction="createConnection" btnTooltip="sr4.connection.create"}}
-    </div>
-    {{/if}}
+  {{#> collapsible-section title=(localize 'sr4.bio.connections') btnAction="createConnection" btnTooltip="sr4.connection.create"}}
     <table class="connections-table">
       <thead>
         <tr>
@@ -72,17 +80,9 @@
         {{/each}}
       </tbody>
     </table>
-  </section>
+  {{/collapsible-section}}
 
-  <hr />
-
-  {{#> collapsible-section title=(localize 'sr4.bio.qualities')}}
-    {{#if editMode}}
-    <div style="margin-bottom: 0.5rem;">
-      {{> item-create-btn btnAction="createItem" btnItemType="Quality" btnTooltip="sr4.quality.create"}}
-    </div>
-    {{/if}}
-
+  {{#> collapsible-section title=(localize 'sr4.bio.qualities') btnAction="createItem" btnItemType="Quality" btnTooltip="sr4.quality.create"}}
     {{#> collapsible-subsection title=(localize 'sr4.quality.positive')}}
       {{#if positiveQualities}}
       <ul class="item-list">

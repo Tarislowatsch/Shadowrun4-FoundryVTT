@@ -13,6 +13,7 @@
         {{localize "sr4.soak.armor"}}: {{ effectiveArmor }}
       {{/if}}
       {{#if soakBonus}} + {{localize "sr4.soak.soakBonus"}}: {{ soakBonus }}{{/if}}
+      {{#if elementResistance}} + {{localize "sr4.resistance.title"}}: {{ elementResistance }}{{/if}}
     </span>
   </div>
   {{> bonus-input}}

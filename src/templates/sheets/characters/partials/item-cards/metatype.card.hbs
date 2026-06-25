@@ -1,0 +1,45 @@
+<div
+  class="item-card metatype-card"
+  data-item-id="{{ this._id }}"
+  id="{{ this._id }}"
+>
+  <div class="item-header item-row">
+    <img src="{{ this.img }}" />
+    <span class="item-name">{{ this.name }}</span>
+    {{#if this.system.baseMetatype}}
+      <span class="item-property metatype-variant-tag">{{ this.system.baseMetatype }}</span>
+    {{/if}}
+    <div class="item-actions">
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
+    <span class="item-property">
+      <strong>{{localize "sr4.metatype.category"}}</strong>
+      {{ this.system.category }}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.metatype.bp"}}</strong>
+      {{ this.system.bp }}
+    </span>
+    {{#if this.system.movement}}
+    <span class="item-property">
+      <strong>{{localize "sr4.metatype.movement"}}</strong>
+      {{ this.system.movement }}
+    </span>
+    {{/if}}
+    {{#if this.system.reach}}
+    <span class="item-property">
+      <strong>{{localize "sr4.metatype.reach"}}</strong>
+      {{ this.system.reach }}
+    </span>
+    {{/if}}
+    {{#if this.system.source}}
+    <span class="item-property">
+      <strong>{{localize "sr4.item.source"}}</strong>
+      {{ this.system.source }}
+    </span>
+    {{/if}}
+  </div>
+</div>

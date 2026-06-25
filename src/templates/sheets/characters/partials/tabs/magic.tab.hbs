@@ -122,34 +122,30 @@
   </div>
 
   {{#if system.magic.magician}}
-  <h3 class="section-header">
-    {{localize "sr4.magic.spells"}}
-    {{#if editMode}}{{> item-create-btn btnAction="createItem" btnItemType="Spell" btnTooltip="sr4.magic.spells"}}{{/if}}
-  </h3>
-  {{#if spells}}
-  <ul class="spell-list">
-    {{#each spells as |spell|}}
-    {{> "spell-card" spell}}
-    {{/each}}
-  </ul>
-  {{else}}
-  <p>{{localize "sr4.spell.nospells"}}</p>
-  {{/if}}
+  {{#> collapsible-section title=(localize "sr4.magic.spells") btnAction="createItem" btnItemType="Spell" btnTooltip="sr4.magic.spells"}}
+    {{#if spells}}
+    <ul class="spell-list">
+      {{#each spells as |spell|}}
+      {{> "spell-card" spell}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p>{{localize "sr4.spell.noSpells"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
   {{/if}}
 
   {{#if system.magic.adept}}
-  <h3 class="section-header">
-    {{localize "sr4.magic.powers"}}
-    {{#if editMode}}{{> item-create-btn btnAction="createItem" btnItemType="Power" btnTooltip="sr4.magic.powers"}}{{/if}}
-  </h3>
-  {{#if powers}}
-  <ul class="spell-list">
-    {{#each powers as |power|}}
-    {{> "power-card" power}}
-    {{/each}}
-  </ul>
-  {{else}}
-  <p>{{localize "sr4.power.nopowers"}}</p>
-  {{/if}}
+  {{#> collapsible-section title=(localize "sr4.magic.powers") btnAction="createItem" btnItemType="Power" btnTooltip="sr4.magic.powers"}}
+    {{#if powers}}
+    <ul class="spell-list">
+      {{#each powers as |power|}}
+      {{> "power-card" power}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p>{{localize "sr4.power.nopowers"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
   {{/if}}
 </div>

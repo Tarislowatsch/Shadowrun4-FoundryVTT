@@ -73,19 +73,44 @@ function inferElement(name) {
 }
 
 /**
+ * @param {string} category
+ * @param {string} descriptor
+ * @returns {boolean}
+ */
+function inferOpposed(category, descriptor) {
+  switch (category) {
+    case 'DETECTION':
+      return /active/i.test(descriptor);
+    case 'ILLUSION':
+      return descriptor !== '' && !/obvious/i.test(descriptor);
+    case 'MANIPULATION':
+      return /mental/i.test(descriptor);
+    case 'HEALTH':
+      return /negative/i.test(descriptor);
+    default:
+      return false;
+  }
+}
+
+/**
  * @param {Record<string, string | string[]>} record
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapSpell(record) {
   const name = /** @type {string} */ (record.name) ?? 'Unnamed Spell';
-  const descriptor = String(record.descriptor ?? '');
+  const descriptor = String(record.descriptor ?? record.descriptors ?? '');
+  const category = upper(record.category ?? 'COMBAT');
   const combatType = /indirect/i.test(descriptor) ? 'INDIRECT' : 'DIRECT';
-  const { range, area } = parseRange(/** @type {string} */ (record.range));
+  const { range, area: rangeArea } = parseRange(
+    /** @type {string} */ (record.range)
+  );
+  const area =
+    rangeArea || (category !== 'DETECTION' && /\barea\b/i.test(descriptor));
   return {
     name,
     type: 'Spell',
     system: {
-      category: upper(record.category ?? 'COMBAT'),
+      category,
       type: TYPE_MAP[upper(record.type)] ?? 'PHYSICAL',
       combatType,
       range,
@@ -94,6 +119,7 @@ export function mapSpell(record) {
       duration: DURATION_MAP[upper(record.duration)] ?? 'PERMANENT',
       dv: parseDrain(/** @type {string} */ (record.dv)),
       damageType: upper(record.damage) === 'S' ? 'STUN' : 'PHYSICAL',
+      opposed: inferOpposed(category, descriptor),
       source: sourceOf(record),
     },
   };

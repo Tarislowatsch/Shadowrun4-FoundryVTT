@@ -1,4 +1,9 @@
-import { Attackskill, DamageTypes, Shootingmodes } from '@models/index';
+import {
+  Attackskill,
+  DamageTypes,
+  Shootingmodes,
+  AmmoCategory,
+} from '@models/index';
 import {
   computeRangedWeaponDerived,
   computeMeleeWeaponDerived,
@@ -17,10 +22,10 @@ export function buildWeaponContext(
   items,
   { meleeDmgBonus = 0, meleeDamageModifier = 0, unarmedDamageModifier = 0 } = {}
 ) {
-  const availableAmmo = items
+  const allAmmo = items
     .filter((i) => i.type === 'Ammo')
     .map((i) => ({ id: i._id, name: i.name, system: i.system }));
-  const ammoById = new Map(availableAmmo.map((a) => [a.id, a]));
+  const ammoById = new Map(allAmmo.map((a) => [a.id, a]));
 
   const weaponModPool = buildModPoolFromItems(items, 'Weapon Mod');
   const weapons = items.filter(
@@ -66,7 +71,15 @@ export function buildWeaponContext(
         derived.effectiveDamageType ??
         '',
       displayMode: Shootingmodes[w.system?.mode] ?? w.system?.mode ?? '',
-      availableAmmo: w.type === 'Ranged Weapon' ? availableAmmo : [],
+      availableAmmo:
+        w.type === 'Ranged Weapon'
+          ? allAmmo.filter(
+              (a) =>
+                !a.system.category ||
+                !w.system?.category ||
+                a.system.category === w.system.category
+            )
+          : [],
       availableWeaponMods: availableMods,
       installedMods: mods,
       loadedAmmo: loadedAmmoItem
@@ -83,6 +96,10 @@ export function buildWeaponContext(
                 loadedAmmoItem.system.damageTypeOverride)
               : null,
             quantity: loadedAmmoItem.system.quantity ?? 0,
+            displayCategory: loadedAmmoItem.system.category
+              ? (AmmoCategory[loadedAmmoItem.system.category] ??
+                loadedAmmoItem.system.category)
+              : null,
           }
         : null,
     };

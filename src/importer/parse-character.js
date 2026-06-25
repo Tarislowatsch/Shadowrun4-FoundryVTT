@@ -57,6 +57,8 @@ export function extractCharacter(xmlString) {
 
   /** @type {Record<string, string>} */
   const attributes = {};
+  /** @type {Record<string, { min: string, max: string, aug: string }>} */
+  const attributeLimits = {};
   for (const attr of characterEl.querySelectorAll(
     ':scope > attributes > attribute'
   )) {
@@ -64,16 +66,67 @@ export function extractCharacter(xmlString) {
     const total = attr.querySelector(':scope > total')?.textContent?.trim();
     const base = attr.querySelector(':scope > base')?.textContent?.trim();
     if (name) attributes[name] = total ?? base ?? '0';
+    const min = attr.querySelector(':scope > min')?.textContent?.trim();
+    const max = attr.querySelector(':scope > max')?.textContent?.trim();
+    const aug = attr.querySelector(':scope > aug')?.textContent?.trim();
+    if (name && (min || max || aug)) {
+      attributeLimits[name] = {
+        min: min ?? '0',
+        max: max ?? '0',
+        aug: aug ?? '0',
+      };
+    }
   }
   character.attributes = attributes;
+  character.attributeLimits = attributeLimits;
 
   /** @type {Record<string, Array<Record<string, unknown>>>} */
   const items = {};
+  /** @type {Element[]|undefined} */
+  let weaponEls;
+  /** @type {Element[]|undefined} */
+  let gearEls;
   for (const [child, container] of COLLECTIONS) {
     const els = [
       ...characterEl.querySelectorAll(`:scope > ${container} > ${child}`),
     ];
-    if (els.length > 0) items[child] = els.map(elementToRecord);
+    if (els.length === 0) continue;
+    items[child] = els.map(elementToRecord);
+    if (child === 'weapon') weaponEls = els;
+    if (child === 'gear') gearEls = els;
+  }
+
+  if (gearEls) {
+    for (const gearEl of gearEls) {
+      const childGearEls = [
+        ...gearEl.querySelectorAll(':scope > children > gear'),
+      ];
+      for (const childEl of childGearEls) {
+        items.gear.push(elementToRecord(childEl));
+      }
+    }
+  }
+
+  if (weaponEls && items.weapon) {
+    for (let i = 0; i < weaponEls.length; i++) {
+      const clipEls = [
+        ...weaponEls[i].querySelectorAll(':scope > clips > clip'),
+      ];
+      if (clipEls.length > 0) {
+        items.weapon[i]._clips = clipEls
+          .map((clip) => ({
+            gearGuid:
+              clip.querySelector(':scope > id')?.textContent?.trim() ?? '',
+            count:
+              parseInt(
+                clip.querySelector(':scope > count')?.textContent?.trim() ??
+                  '0',
+                10
+              ) || 0,
+          }))
+          .filter((c) => c.gearGuid);
+      }
+    }
   }
 
   const skills = [

@@ -31,9 +31,9 @@
 
   <hr />
 
-  <h3>{{localize 'sr4.sprite.attributes'}}</h3>
+  <h3>{{localize 'sr4.sprite.matrixPersona'}}</h3>
   <div class="grid">
-    {{#each sheetStats as |stat|}}
+    {{#each matrixStats as |stat|}}
       {{> "attribute-cell" label=stat.label name=stat.name value=stat.value rollLabel=stat.rollLabel}}
     {{/each}}
   </div>
@@ -56,6 +56,26 @@
   <hr />
 
   {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
+
+  <div class="npc-section">
+    <h3>
+      {{localize 'sr4.sprite.complexForms'}}
+      {{#if editMode}}{{> item-create-btn btnAction="createComplexForm" btnTooltip="sr4.sprite.complexForms"}}{{/if}}
+    </h3>
+    {{#if complexForms.length}}
+      {{#each complexForms as |cf|}}
+      <div class="item-card power-card" data-item-id="{{cf._id}}">
+        <div class="item-row">
+          <span class="item-name">{{cf.name}}</span>
+          {{> item-edit-btn itemId=cf._id}}
+          {{> item-delete-btn itemId=cf._id}}
+        </div>
+      </div>
+      {{/each}}
+    {{else}}
+      <p class="empty-list">{{localize 'sr4.sprite.noComplexForms'}}</p>
+    {{/if}}
+  </div>
 
   {{> "npc-skills-section" skills=skills emptyKey="sr4.sprite.noSkills"}}
 

@@ -1,0 +1,189 @@
+<div class="item-sheet-body">
+  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize 'sr4.critter.category'}}</th>
+        <th>{{localize 'sr4.critter.actorType'}}</th>
+        <th>{{localize 'sr4.metatype.movement'}}</th>
+        <th>{{localize 'sr4.metatype.reach'}}</th>
+        <th>{{localize 'sr4.item.source'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ system.category }}</td>
+        <td>{{ system.actorType }}{{#if system.forceBased}} (Force){{/if}}</td>
+        <td><input type="text" name="system.movement" value="{{ system.movement }}" /></td>
+        <td><input type="number" name="system.reach" value="{{ system.reach }}" /></td>
+        <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.critter.attributes'}}</h3>
+    </summary>
+    <table class="item-stats-table metatype-attributes-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.metatype.attribute'}}</th>
+          {{#if system.forceBased}}
+          <th>{{localize 'sr4.critter.formula'}}</th>
+          {{else}}
+          <th>{{localize 'sr4.critter.value'}}</th>
+          {{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each critterAttributeRows as |row|}}
+        <tr>
+          <td>{{localize row.label}}</td>
+          {{#if row.hasFormula}}
+          <td><input type="text" name="system.attributes.{{row.key}}.formula" value="{{row.formula}}" /></td>
+          {{else}}
+          <td><input type="number" name="system.attributes.{{row.key}}.value" value="{{row.value}}" /></td>
+          {{/if}}
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </details>
+
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.metatype.armorBonus'}}</h3>
+    </summary>
+    <table class="item-stats-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.armor.ballistic'}}</th>
+          <th>{{localize 'sr4.armor.impact'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="number" name="system.armorBallistic" value="{{ system.armorBallistic }}" /></td>
+          <td><input type="number" name="system.armorImpact" value="{{ system.armorImpact }}" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+
+  {{#if system.skills.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.critter.skills'}}</h3>
+    </summary>
+    <table class="item-stats-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.skill.name'}}</th>
+          <th>{{localize 'sr4.skill.rating'}}</th>
+          <th>{{localize 'sr4.skill.spec'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each system.skills as |s|}}
+        <tr>
+          <td>{{s.name}}</td>
+          <td>{{#if s.ratingFormula}}{{s.ratingFormula}}{{else}}{{s.rating}}{{/if}}</td>
+          <td>{{s.spec}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </details>
+  {{/if}}
+
+  {{#if system.qualities.positive.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.quality.positive'}}</h3>
+    </summary>
+    <ul class="metatype-quality-list">
+      {{#each system.qualities.positive as |q|}}
+      <li>{{q}}</li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  {{#if system.qualities.negative.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.quality.negative'}}</h3>
+    </summary>
+    <ul class="metatype-quality-list">
+      {{#each system.qualities.negative as |q|}}
+      <li>{{q}}</li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  {{#if system.powers.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.metatype.powers'}}</h3>
+    </summary>
+    <ul class="metatype-quality-list">
+      {{#each system.powers as |p|}}
+      <li>{{p}}</li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  {{#if system.optionalPowers.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.metatype.optionalPowers'}}</h3>
+    </summary>
+    <ul class="metatype-quality-list">
+      {{#each system.optionalPowers as |p|}}
+      <li>{{p}}</li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  {{#if system.complexForms.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.critter.complexForms'}}</h3>
+    </summary>
+    <ul class="metatype-quality-list">
+      {{#each system.complexForms as |cf|}}
+      <li>{{cf}}</li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  {{#if system.optionalComplexForms.length}}
+  <details class="inventory-section collapsible-section" open>
+    <summary class="collapsible-header">
+      <i class="fas fa-chevron-right collapse-icon"></i>
+      <h3>{{localize 'sr4.critter.optionalComplexForms'}}</h3>
+    </summary>
+    <ul class="metatype-quality-list">
+      {{#each system.optionalComplexForms as |cf|}}
+      <li>{{cf}}</li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  {{> "item-textareas"}}
+</div>

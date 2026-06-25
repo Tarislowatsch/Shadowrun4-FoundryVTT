@@ -29,10 +29,14 @@
       "Vehicle": "Fahrzeug",
       "Weapon Mod": "Waffenmodifikation",
       "Armor Mod": "Panzerungsmodifikation",
-      "Vehicle Mod": "Fahrzeugmodifikation"
+      "Vehicle Mod": "Fahrzeugmodifikation",
+      "Metatype": "Metatyp",
+      "CritterPower": "Critterkraft",
+      "CritterTemplate": "Critter-Vorlage"
     }
   },
   "sr4": {
+    "cancel": "Abbrechen",
     "action": {
       "actiontype": {
         "complex": "Komplexe Handlung",
@@ -60,7 +64,9 @@
       "new": "Neue Aktion",
       "noActions": "Dieser Charakter hat keine Actions",
       "noRatingForAction": "Bitte Werte für diese Handlung hinzufügen",
+      "parts": "Bestandteile",
       "roll": "Probe würfeln",
+      "rollAction": "Aktion würfeln",
       "source": "Quelle",
       "type": "Typ"
     },
@@ -80,7 +86,9 @@
     },
     "bio": {
       "bio": "Biografie",
+      "biography": "Biografie",
       "connections": "Kontakte",
+      "metatype": "Metatyp",
       "notes": "Notizen",
       "physicalDescription": "Beschreibung",
       "qualities": "Gaben & Handicaps"
@@ -133,18 +141,27 @@
       "showOnToken": "Am Token anzeigen",
       "source": "Quelle",
       "templates": {
+        "label": "Vorlagen",
         "blind": "Geblendet",
         "blindFlareComp": "Geblendet (Blendschutz)",
         "disoriented": "Desorientiert (Elektrizität)",
         "knockedDown": "Am Boden",
         "sustain": "Aufrechterhalten"
       },
-      "value": "Wert"
+      "value": "Wert",
+      "applyToTarget": "Effekte anwenden",
+      "pendingEffects": "{name}: Effekte von {spell} ausstehend."
     },
     "effectTarget": {
       "attackModifier": "Angriffs-Würfelpool-Modifikator",
       "defenseModifier": "Verteidigungs-Würfelpool-Modifikator",
       "generalModifier": "Allgemeiner Würfelpool-Modifikator"
+    },
+    "focus": {
+      "noFoci": "Keine Foki vorhanden"
+    },
+    "implant": {
+      "noImplants": "Keine Implantate vorhanden"
     },
     "inventory": {
       "armor": "Panzerung",
@@ -157,6 +174,7 @@
       "lifestyle": "Lebensstil",
       "other": "andere",
       "programs": "Programme",
+      "ammo": "Munition",
       "vehicles": "Fahrzeuge",
       "weapons": "Waffen"
     },
@@ -170,6 +188,9 @@
       "cost": "Kosten",
       "create": "Item erstellen",
       "delete": "Löschen",
+      "essence": "Essenz",
+      "essenceActual": "Tatsächliche Essenz",
+      "grade": "Grad",
       "description": "Beschreibung",
       "edit": "Bearbeiten",
       "legality": "Legalität",
@@ -180,10 +201,9 @@
       "rating": "Stufe",
       "rating1": "Rating Teil 1",
       "rating2": "Rating Teil 2",
+      "source": "Quelle",
       "toggleEquip": "An-/Ablegen",
-      "type": {
-        "Action": "Handlung"
-      }
+      "type": "Typ"
     },
     "metadata": {
       "age": "Alter",
@@ -209,6 +229,24 @@
       "category": "Kategorie",
       "complexform": "Komplexe Form",
       "maxrating": "Max. Stufe"
+    },
+    "metatype": {
+      "attribute": "Attribut",
+      "attributeLimits": "Attributsgrenzen",
+      "aug": "Augmentiert",
+      "armorBonus": "Natürliche Panzerung",
+      "baseMetatype": "Basis-Metatyp",
+      "bp": "BP",
+      "category": "Kategorie",
+      "max": "Maximum",
+      "min": "Minimum",
+      "movement": "Bewegung",
+      "optionalPowers": "Optionale Kräfte",
+      "powers": "Rassenkräfte",
+      "create": "Metatyp erstellen",
+      "noMetatype": "Kein Metatyp gesetzt. Einen aus einem Kompendium hierher ziehen.",
+      "onlyOneAllowed": "Nur ein Metatyp pro Charakter erlaubt.",
+      "reach": "Reichweite"
     },
     "quality": {
       "bp": "BP",
@@ -245,8 +283,10 @@
       "name": "Name",
       "rating": "Stufe",
       "search": "Skillsuche",
+      "group": "Fertigkeitsgruppe",
       "source": "Quelle",
-      "specializations": "Spezialisation"
+      "specialization": "Spezialisierung",
+      "type": "Typ"
     },
     "stats": {
       "AGILITY": "Geschicklichkeit",
@@ -280,6 +320,7 @@
       "main": "Übersicht",
       "matrix": "Matrix",
       "modifiers": "Modifikatoren",
+      "skills": "Fertigkeiten",
       "weapons": "Waffen"
     }
   }

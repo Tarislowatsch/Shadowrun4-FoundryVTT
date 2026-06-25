@@ -10,3 +10,5 @@ export * from './qualities.js';
 export * from './skills.js';
 export * from './spells.js';
 export * from './weapons.js';
+export * from './metatype.js';
+export * from './critter.js';

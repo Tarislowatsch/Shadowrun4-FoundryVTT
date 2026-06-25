@@ -9,6 +9,7 @@
           <th>{{localize 'sr4.ammo.damageOverride'}}</th>
           <th>{{localize 'sr4.ammo.apBonus'}}</th>
           <th>{{localize 'sr4.ammo.damageTypeOverride'}}</th>
+          <th>{{localize 'sr4.ammo.category'}}</th>
           <th>{{localize 'sr4.ammo.quantity'}}</th>
           <th>{{localize 'sr4.weapon.avail'}}</th>
           <th>{{localize 'sr4.weapon.legality'}}</th>
@@ -24,6 +25,12 @@
             <select name="system.damageTypeOverride">
               <option value="" {{#unless system.damageTypeOverride}}selected{{/unless}}>—</option>
               {{selectOptions damagetypes selected=system.damageTypeOverride localize=true}}
+            </select>
+          </td>
+          <td>
+            <select name="system.category">
+              <option value="" {{#unless system.category}}selected{{/unless}}>—</option>
+              {{selectOptions ammocategories selected=system.category localize=true}}
             </select>
           </td>
           <td><input type="number" name="system.quantity" value="{{ system.quantity }}" /></td>

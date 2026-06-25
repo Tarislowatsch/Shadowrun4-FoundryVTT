@@ -9,3 +9,5 @@ export * from './quality.model';
 export * from './vehiclemod.model';
 export * from './weaponmod.model';
 export * from './weapons.model';
+export * from './metatype.model';
+export * from './crittertemplate.model';

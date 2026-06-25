@@ -6,9 +6,13 @@
 import {
   mapArmor,
   mapBioware,
+  mapCritter,
+  mapCritterVariant,
   mapCyberware,
   mapGear,
   mapMod,
+  mapMetatype,
+  mapMetavariant,
   mapPower,
   mapProgram,
   mapQuality,
@@ -17,7 +21,8 @@ import {
   mapWeapon,
   mapWeaponMod,
   modKind,
-  hasWeaponBonus,
+  isAmmunition,
+  isCommlink,
 } from './mappers/index.js';
 
 const MOD_TYPE_LABEL = {
@@ -46,6 +51,7 @@ function categoryOr(fallback) {
  * @property {(record: Record<string, unknown>) => { name: string, type: string, system: object }} map
  * @property {(record: Record<string, unknown>) => string} typeLabel
  * @property {(record: Record<string, unknown>) => string} subcategory
+ * @property {string} [parentFolder]
  */
 
 /** @type {TagConfig[]} */
@@ -68,11 +74,18 @@ export const TAG_CONFIGS = [
   {
     xmlTag: 'gear',
     map: mapGear,
-    typeLabel: (record) => (hasWeaponBonus(record) ? 'Ammunition' : 'Gear'),
-    subcategory: (record) =>
-      hasWeaponBonus(record)
+    typeLabel: (record) =>
+      isAmmunition(record)
         ? 'Ammunition'
-        : String(record.category ?? '').trim() || 'Gear',
+        : isCommlink(record)
+          ? 'Commlinks'
+          : 'Gear',
+    subcategory: (record) =>
+      isAmmunition(record)
+        ? 'Ammunition'
+        : isCommlink(record)
+          ? 'Commlink'
+          : String(record.category ?? '').trim() || 'Gear',
   },
   {
     xmlTag: 'accessory',
@@ -128,5 +141,45 @@ export const TAG_CONFIGS = [
     map: mapSkill,
     typeLabel: () => 'Skills',
     subcategory: categoryOr('Skills'),
+  },
+  {
+    xmlTag: 'metatype',
+    map: (record) =>
+      record._parentRecord
+        ? mapMetavariant(record, record._parentRecord)
+        : mapMetatype(record),
+    typeLabel: (record) =>
+      String(
+        record._parentRecord
+          ? (record._parentRecord.category ?? '')
+          : (record.category ?? '')
+      ).trim() || 'Metahuman',
+    subcategory: (record) =>
+      String(
+        record._parentRecord
+          ? (record._parentRecord.category ?? '')
+          : (record.category ?? '')
+      ).trim() || 'Metahuman',
+    parentFolder: 'Metatypes',
+  },
+  {
+    xmlTag: 'critter',
+    map: (record) =>
+      record._parentRecord
+        ? mapCritterVariant(record, record._parentRecord)
+        : mapCritter(record),
+    typeLabel: (record) =>
+      String(
+        record._parentRecord
+          ? (record._parentRecord.category ?? '')
+          : (record.category ?? '')
+      ).trim() || 'Critters',
+    subcategory: (record) =>
+      String(
+        record._parentRecord
+          ? (record._parentRecord.category ?? '')
+          : (record.category ?? '')
+      ).trim() || 'Critters',
+    parentFolder: 'Critters',
   },
 ];

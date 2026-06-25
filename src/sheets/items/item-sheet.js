@@ -6,6 +6,8 @@ import {
   DamageTypes,
   Shootingmodes,
   WeaponMountPoints,
+  WeaponCategory,
+  AmmoCategory,
   SpellTypes,
   SpellCategories,
   SpellCombatTypes,
@@ -109,6 +111,13 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       template:
         'systems/shadowrun4e/templates/sheets/items/vehiclemod.sheet.hbs',
     },
+    metatype: {
+      template: 'systems/shadowrun4e/templates/sheets/items/metatype.sheet.hbs',
+    },
+    crittertemplate: {
+      template:
+        'systems/shadowrun4e/templates/sheets/items/crittertemplate.sheet.hbs',
+    },
   };
 
   _configureRenderOptions(options) {
@@ -141,10 +150,17 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     context.spellranges = SpellRanges;
     context.spellelements = SpellElements;
     context.spelldurations = SpellDurations;
+    context.weaponcategories = WeaponCategory;
+    context.ammocategories = AmmoCategory;
 
     if (this.item.type === 'Ranged Weapon' && this.item.parent) {
+      const cat = this.item.system.category ?? '';
       context.availableAmmo = this.item.parent.items
-        .filter((i) => i.type === 'Ammo')
+        .filter(
+          (i) =>
+            i.type === 'Ammo' &&
+            (!i.system.category || !cat || i.system.category === cat)
+        )
         .map((i) => ({ id: i.id, name: i.name }));
     } else {
       context.availableAmmo = [];
@@ -202,9 +218,57 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       context.mountpoints = WeaponMountPoints;
     }
 
+    if (this.item.type === 'Metatype') {
+      context.attributeRows = SR4ItemSheet.#buildAttributeRows(context.system);
+    }
+
+    if (this.item.type === 'CritterTemplate') {
+      context.critterAttributeRows = SR4ItemSheet.#buildCritterAttributeRows(
+        context.system
+      );
+    }
+
     this._prepareActionsEffectsContext(context);
 
     return context;
+  }
+
+  static #ATTRIBUTE_ROW_KEYS = [
+    { key: 'body', label: 'sr4.stats.BODY' },
+    { key: 'agility', label: 'sr4.stats.AGILITY' },
+    { key: 'reaction', label: 'sr4.stats.REACTION' },
+    { key: 'strength', label: 'sr4.stats.STRENGTH' },
+    { key: 'charisma', label: 'sr4.stats.CHARISMA' },
+    { key: 'intuition', label: 'sr4.stats.INTUITION' },
+    { key: 'logic', label: 'sr4.stats.LOGIC' },
+    { key: 'willpower', label: 'sr4.stats.WILLPOWER' },
+    { key: 'edge', label: 'sr4.stats.EDGE' },
+    { key: 'magic', label: 'sr4.stats.MAGIC' },
+    { key: 'resonance', label: 'sr4.stats.RESONANCE' },
+    { key: 'essence', label: 'sr4.stats.ESSENCE' },
+  ];
+
+  static #buildAttributeRows(system) {
+    return SR4ItemSheet.#ATTRIBUTE_ROW_KEYS.map(({ key, label }) => ({
+      key,
+      label,
+      min: system.attributes?.[key]?.min ?? 0,
+      max: system.attributes?.[key]?.max ?? 0,
+      aug: system.attributes?.[key]?.aug ?? 0,
+    }));
+  }
+
+  static #buildCritterAttributeRows(system) {
+    return SR4ItemSheet.#ATTRIBUTE_ROW_KEYS.map(({ key, label }) => {
+      const attr = system.attributes?.[key] ?? {};
+      return {
+        key,
+        label,
+        value: attr.value ?? 0,
+        formula: attr.formula ?? '',
+        hasFormula: Boolean(attr.formula),
+      };
+    });
   }
 
   /**
@@ -344,7 +408,7 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
         name: game.i18n.localize('sr4.effect.new'),
         changes: [{ key: 'system.sheetStats.BODY', type: 'add', value: 0 }],
         disabled: false,
-        transfer: true,
+        transfer: this.item.type !== 'Spell',
       },
     ]);
   }
@@ -374,7 +438,7 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     }
 
     await this.item.createEmbeddedDocuments('ActiveEffect', [
-      { ...effectData, transfer: true },
+      { ...effectData, transfer: this.item.type !== 'Spell' },
     ]);
   }
 

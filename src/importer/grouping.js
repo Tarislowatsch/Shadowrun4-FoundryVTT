@@ -24,6 +24,7 @@ export function slugify(str) {
  * @property {string} subcategory
  * @property {string} compendiumName
  * @property {string} compendiumLabel
+ * @property {string} [parentFolder]
  * @property {Array<Record<string, unknown>>} records
  * @property {(record: Record<string, unknown>) => { name: string, type: string, system: object }} map
  */
@@ -56,6 +57,7 @@ export function buildImportGroups(parsed) {
           subcategory,
           compendiumName: `sr4-imported-${compendiumSlug}`,
           compendiumLabel: subcategory,
+          parentFolder: config.parentFolder ?? null,
           records: [],
           map: config.map,
         });

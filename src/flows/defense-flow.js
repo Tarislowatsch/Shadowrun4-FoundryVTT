@@ -5,8 +5,12 @@ import {
   openSoakDialog,
 } from '@utils/index';
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
-import { isPhysicalDamageType } from '@models/index';
-import { SR4ActiveEffect } from '@effects/index';
+import {
+  isPhysicalDamageType,
+  getElementResistance,
+  computeElementArmorRules,
+  buildElementOnApply,
+} from '@models/index';
 import { ApplyDamageFlow } from './apply-damage-flow';
 
 /**
@@ -86,6 +90,38 @@ export function emitDefenseTrigger(
       },
     });
   }
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {import('@models/index').SR4Weapon} weapon
+ * @param {number} successes
+ * @param {string} targetId
+ * @param {number} [wideDefenseMalus]
+ * @param {number} [burstDamageBonus]
+ * @returns {void}
+ */
+export function emitDefenseTriggerForTarget(
+  actor,
+  weapon,
+  successes,
+  targetId,
+  wideDefenseMalus = 0,
+  burstDamageBonus = 0
+) {
+  if (!weapon?.type) return;
+  const weaponSnapshot = buildWeaponSnapshot(weapon);
+  getGame().socket?.emit('system.shadowrun4e', {
+    action: 'triggerDefense',
+    payload: {
+      defenderId: targetId,
+      attackerId: /** @type {any} */ (actor).id,
+      successes,
+      weapon: weaponSnapshot,
+      wideDefenseMalus,
+      burstDamageBonus,
+    },
+  });
 }
 
 /**
@@ -206,18 +242,11 @@ export class DefenseFlow {
     const dt = weapon.system.damageType;
     let isPhysical = isPhysicalDamageType(dt);
     if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
-    const electricityHint =
-      dt === 'ELECTRICITY'
-        ? getGame().i18n.localize('sr4.damage.electricityHint')
-        : undefined;
-    const electricityOnApply =
-      dt === 'ELECTRICITY'
-        ? async () => {
-            await SR4ActiveEffect.fromTemplate('disoriented', defender, {
-              duration: { turns: 2 + netSuccesses },
-            });
-          }
-        : undefined;
+
+    const elementResistance = getElementResistance(defender, dt);
+    const elementRules = computeElementArmorRules(dt, rawArmor);
+    const hint = elementRules.hint;
+    const onApply = buildElementOnApply(dt, defender, netSuccesses);
 
     if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
       await ApplyDamageFlow.sendDecisionMessage(
@@ -225,7 +254,7 @@ export class DefenseFlow {
         baseDamage,
         isPhysical,
         'combat',
-        { hint: electricityHint, onApply: electricityOnApply }
+        { hint, onApply }
       );
       return;
     }
@@ -235,7 +264,7 @@ export class DefenseFlow {
       baseDamage,
       isPhysical,
       effectiveArmor,
-      { rawArmor, ap, apHalf }
+      { rawArmor, ap, apHalf, elementResistance }
     );
     if (!soakResult) return;
 
@@ -267,7 +296,7 @@ export class DefenseFlow {
       finalDamage,
       isPhysical,
       'combat',
-      { hint: electricityHint, onApply: electricityOnApply }
+      { hint, onApply }
     );
   }
 }

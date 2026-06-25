@@ -51,6 +51,7 @@ export const armorField = () =>
  *   composure: number,
  *   augmentedMaximum: object,
  *   attributeMaximum: object,
+ *   attributeMinimum: object,
  *   finalStats: SR4SheetStats,
  * }} SR4DerivedStats
  */
@@ -68,6 +69,7 @@ export const derivedStatsField = () =>
     composure: new fields.NumberField({ initial: 6, integer: true }),
     augmentedMaximum: new fields.ObjectField({ initial: {} }),
     attributeMaximum: new fields.ObjectField({ initial: {} }),
+    attributeMinimum: new fields.ObjectField({ initial: {} }),
     finalStats: new SR4SheetStatsData(),
   });
 
@@ -193,6 +195,40 @@ export const magicField = () =>
  * @property {string} notes
  */
 
+export const RESISTANCE_ELEMENTS = [
+  'FIRE',
+  'ELECTRICITY',
+  'COLD',
+  'ACID',
+  'BLAST',
+  'LIGHT',
+  'METAL',
+  'TOXIN',
+  'RADIATION',
+  'SOUND',
+  'WATER',
+  'SAND',
+  'SMOKE',
+];
+
+/**
+ * @typedef {object} SR4ElementResistance
+ * @property {string} element
+ * @property {number} value
+ */
+
+export const elementResistancesField = () =>
+  new fields.TypedObjectField(
+    new fields.SchemaField({
+      element: new fields.StringField({
+        initial: 'FIRE',
+        choices: RESISTANCE_ELEMENTS,
+        blank: false,
+      }),
+      value: new fields.NumberField({ initial: 0, integer: true }),
+    })
+  );
+
 export const connectionsField = () =>
   new fields.TypedObjectField(
     new fields.SchemaField({
@@ -295,6 +331,62 @@ export function computeArmorStacking(equipped, bonus, body) {
 }
 
 // ---------------------------------------------------------------------------
+// Metatype attribute limits
+// ---------------------------------------------------------------------------
+
+/** @type {Array<[string, string]>} [metatypeKey, sheetStatKey] */
+const METATYPE_STAT_MAP = [
+  ['body', 'BODY'],
+  ['agility', 'AGILITY'],
+  ['reaction', 'REACTION'],
+  ['strength', 'STRENGTH'],
+  ['charisma', 'CHARISMA'],
+  ['intuition', 'INTUITION'],
+  ['logic', 'LOGIC'],
+  ['willpower', 'WILLPOWER'],
+  ['edge', 'EDGE'],
+  ['magic', 'MAGIC'],
+  ['resonance', 'RESONANCE'],
+  ['essence', 'ESSENCE'],
+];
+
+/**
+ * @param {any} self
+ * @param {Record<string, { min: number, max: number, aug: number }>} attrs
+ */
+function applyMetatypeLimits(self, attrs) {
+  /** @type {Record<string, number>} */
+  const attributeMaximum = {};
+  /** @type {Record<string, number>} */
+  const augmentedMaximum = {};
+  /** @type {Record<string, number>} */
+  const attributeMinimum = {};
+
+  const sourceStats = self._source?.sheetStats ?? {};
+
+  for (const [mtKey, ssKey] of METATYPE_STAT_MAP) {
+    const limit = attrs[mtKey];
+    if (!limit) continue;
+    attributeMinimum[ssKey] = limit.min;
+    attributeMaximum[ssKey] = limit.max;
+    augmentedMaximum[ssKey] = limit.aug;
+
+    if (self.sheetStats[ssKey] === undefined) continue;
+    const base = sourceStats[ssKey] ?? self.sheetStats[ssKey];
+    const effectBonus = self.sheetStats[ssKey] - base;
+    const clampedBase = Math.min(base, limit.max);
+    self.sheetStats[ssKey] = Math.max(
+      limit.min,
+      Math.min(clampedBase + effectBonus, limit.aug)
+    );
+  }
+
+  self.derivedStats.attributeMinimum = attributeMinimum;
+  self.derivedStats.attributeMaximum = attributeMaximum;
+  self.derivedStats.augmentedMaximum = augmentedMaximum;
+}
+
+// ---------------------------------------------------------------------------
 // BaseCharacterData
 // ---------------------------------------------------------------------------
 
@@ -307,6 +399,7 @@ export function computeArmorStacking(equipped, bonus, body) {
  * @property {SR4DescriptionAndNotes} descriptionAndNotes
  * @property {SharedSR4ConditionMonitor}    conditionMonitor
  * @property {SR4Armor}               armor
+ * @property {Record<string, SR4ElementResistance>} elementResistances
  * @property {SR4MagicData}           magic
  * @property {boolean}                simpleHp
  * @property {boolean}                technomancer
@@ -323,6 +416,7 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       descriptionAndNotes: descriptionField(),
       conditionMonitor: conditionMonitorField(),
       armor: armorField(),
+      elementResistances: elementResistancesField(),
       magic: magicField(),
       simpleHp: new fields.BooleanField({ initial: false }),
       technomancer: new fields.BooleanField({ initial: false }),
@@ -344,6 +438,12 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
     if (!self.sheetStats) return;
     const actor = this.parent;
     if (!actor) return;
+
+    const metatypeItem = actor.items.find((i) => i.type === 'Metatype');
+    if (metatypeItem) {
+      const attrs = metatypeItem.system.attributes;
+      applyMetatypeLimits(self, attrs);
+    }
 
     const equipped = actor.items.filter(
       (i) => i.type === 'Armor' && i.system?.equipped === true

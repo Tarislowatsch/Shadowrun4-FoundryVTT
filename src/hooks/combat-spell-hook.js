@@ -2,7 +2,9 @@ import {
   openDirectSpellResistDialog,
   openIndirectSpellDefenseDialog,
 } from '@utils/dialog/magic/combat-spell.js';
+import { openOpposedSpellResistDialog } from '@utils/dialog/magic/opposed-spell.js';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow';
+import { sendEffectDecisionMessage } from '@flows/apply-effects-flow';
 import { getGame, isResponsibleForActor } from '@utils/index';
 
 /**
@@ -34,9 +36,15 @@ import { getGame, isResponsibleForActor } from '@utils/index';
  */
 
 /**
- * Listens on the system socket for incoming combat spell triggers and runs the
- * appropriate damage/defense flow on the defender's client.
+ * @typedef {object} OpposedSpellResistPayload
+ * @property {string} defenderId
+ * @property {string} casterId
+ * @property {string} spellName
+ * @property {number} castingHits
+ * @property {number} force
+ * @property {string} resistAttribute
  */
+
 export class CombatSpellHook {
   constructor() {
     this._boundHandler = this._onSocketMessage.bind(this);
@@ -54,14 +62,15 @@ export class CombatSpellHook {
   }
 
   /**
-   * @param {{ action: string, payload: DirectSpellResistPayload | DirectSpellDamagePayload | IndirectSpellDefensePayload }} data
+   * @param {{ action: string, payload: DirectSpellResistPayload | DirectSpellDamagePayload | IndirectSpellDefensePayload | OpposedSpellResistPayload }} data
    * @returns {Promise<void>}
    */
   async _onSocketMessage(data) {
     if (
       data.action !== 'triggerDirectSpellResist' &&
       data.action !== 'applyDirectSpellDamage' &&
-      data.action !== 'triggerIndirectSpellDefense'
+      data.action !== 'triggerIndirectSpellDefense' &&
+      data.action !== 'triggerOpposedSpellResist'
     )
       return;
 
@@ -85,7 +94,7 @@ export class CombatSpellHook {
         casterId
       );
     } else if (data.action === 'applyDirectSpellDamage') {
-      const { damage, isPhysical, spellName, casterId } =
+      const { damage, isPhysical, spellName, casterId, effects } =
         /** @type {DirectSpellDamagePayload} */ (data.payload);
       const caster = getGame().actors?.get(casterId);
       await ApplyDamageFlow.sendCombatSummary(
@@ -100,7 +109,10 @@ export class CombatSpellHook {
         isPhysical,
         'spell'
       );
-    } else {
+      if (effects?.length > 0) {
+        await sendEffectDecisionMessage(defender, effects, spellName);
+      }
+    } else if (data.action === 'triggerIndirectSpellDefense') {
       const { casterId, spell, castingHits, force } =
         /** @type {IndirectSpellDefensePayload} */ (data.payload);
       /** @type {import('@documents/index').SR4Actor | undefined} */
@@ -112,6 +124,17 @@ export class CombatSpellHook {
         spell,
         castingHits,
         force
+      );
+    } else if (data.action === 'triggerOpposedSpellResist') {
+      const { casterId, spellName, castingHits, force, resistAttribute } =
+        /** @type {OpposedSpellResistPayload} */ (data.payload);
+      await openOpposedSpellResistDialog(
+        defender,
+        spellName,
+        castingHits,
+        force,
+        resistAttribute,
+        casterId
       );
     }
   }

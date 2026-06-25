@@ -11,8 +11,13 @@ import {
 } from '../dialogutility';
 import { openMeleeAttackDialog } from './melee';
 import { reloadWeapon } from '../../weapons.js';
-import { emitDefenseTrigger } from '@flows/defense-flow.js';
+import {
+  emitDefenseTrigger,
+  emitDefenseTriggerForTarget,
+} from '@flows/defense-flow.js';
 import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
+import { openDicePoolSplitDialog } from '../dice-pool-split.js';
+import { getValidTargetActors } from '@utils/game/game.js';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
 
@@ -132,6 +137,121 @@ export async function handleAttackRoll(actor, skillName, weapon) {
 /**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
+ * @param {number} dice
+ * @param {SR4Weapon} weapon
+ * @param {string} targetId
+ * @param {string} targetName
+ * @param {number} [wideDefenseMalus]
+ * @param {number} [burstDamageBonus]
+ * @returns {Promise<void>}
+ */
+async function rollAttackForTarget(
+  actor,
+  skillName,
+  dice,
+  weapon,
+  targetId,
+  targetName,
+  wideDefenseMalus = 0,
+  burstDamageBonus = 0
+) {
+  const params = createDialogParameters(actor, dice, weapon);
+  params.malus -= actor.system.modifiers.attackModifier ?? 0;
+  const skill = actor.getSkill(skillName);
+  const content = await renderTemplate(
+    'systems/shadowrun4e/templates/dicerolls/roll-dialog.hbs',
+    { ...params, skillName }
+  );
+  const result = await createRollDialog({
+    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} → ${targetName}`,
+    content,
+    dice,
+    onRoll: (dialog) =>
+      dialogActions(dialog, actor, skillName, dice, weapon, {
+        edgeAvailableOverride: false,
+      }),
+  });
+  if (!result || result.isGlitch) return;
+
+  let finalSuccesses = result.successes;
+  if (!result.edgeUsed) {
+    finalSuccesses = await awaitEdgeDecision({
+      messageId: result.messageId,
+      actor,
+      rollResult: {
+        successes: result.successes,
+        rolledDice: result.rolledDice,
+        isGlitch: result.isGlitch,
+      },
+    });
+  }
+  if (finalSuccesses > 0) {
+    emitDefenseTriggerForTarget(
+      actor,
+      weapon,
+      finalSuccesses,
+      targetId,
+      wideDefenseMalus,
+      burstDamageBonus
+    );
+  }
+}
+
+/**
+ * @param {SR4Weapon} weapon
+ * @returns {Promise<{ shots: number, recoil: number, wideDefenseMalus: number, burstDamageBonus: number } | null>}
+ */
+async function selectFireModeForSplit(weapon) {
+  const fireModeParams = getFireModeParams(weapon);
+  if (!fireModeParams.showFireModeUI) {
+    return { shots: 1, recoil: 0, wideDefenseMalus: 0, burstDamageBonus: 0 };
+  }
+
+  const rc = weapon.system.rc ?? 0;
+  const modes = fireModeParams.fireModes;
+  const modeLabels = modes
+    .map(
+      (m) =>
+        `<label><input type="radio" name="fireMode" value="${m}" ${m === modes[0] ? 'checked' : ''}/> ${localize('sr4.roll.' + m)}</label>`
+    )
+    .join('');
+  const content = `<form class="fire-mode-select"><div class="form-group">${modeLabels}</div></form>`;
+
+  const selectedMode = await foundry.applications.api.DialogV2.prompt({
+    window: { title: localize('sr4.roll.splitPool') },
+    content,
+    ok: {
+      label: localize('sr4.roll.rollButton'),
+      callback: (_event, button) => {
+        const dialog = button.closest('dialog');
+        return (
+          /** @type {HTMLInputElement|null} */ (
+            dialog?.querySelector('input[name="fireMode"]:checked')
+          )?.value ?? modes[0]
+        );
+      },
+    },
+    cancel: { label: localize('sr4.cancel'), callback: () => null },
+  });
+
+  if (!selectedMode) return null;
+
+  const shots = (SHOTS_BY_MODE[selectedMode] ?? [1])[0];
+  const recoil = Math.max(0, shots - 1 - rc);
+  const isBurst = MODES_WITH_BURST_OPTION.has(selectedMode);
+  const mods = BURST_MODIFIERS[shots] ?? { narrow: 0, wide: 0 };
+
+  return {
+    shots,
+    recoil,
+    wideDefenseMalus: isBurst ? mods.wide : 0,
+    burstDamageBonus: 0,
+  };
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} skillName
  * @param {SR4Weapon & { type: 'Ranged Weapon', system: import('@models/index').SR4RangedWeaponSystem }} weapon
  * @returns {Promise<void>}
  */
@@ -158,6 +278,41 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
 
   const dice = getSkillDicePool(actor, skillName);
   if (dice === undefined) return;
+
+  const targets = getValidTargetActors();
+  if (targets.length > 1) {
+    const fireMode = await selectFireModeForSplit(weapon);
+    if (!fireMode) return;
+
+    const effectiveDice = Math.max(1, dice - fireMode.recoil);
+    const splitTargets = targets.map((t) => ({
+      id: /** @type {any} */ (t).id ?? '',
+      name: t.name,
+    }));
+    const allocations = await openDicePoolSplitDialog(
+      effectiveDice,
+      splitTargets,
+      weapon.name
+    );
+    if (!allocations) return;
+
+    if (ammoTracking) await depleteAmmo(actor, weapon, fireMode.shots);
+
+    for (const { targetId, allocatedDice } of allocations) {
+      const t = targets.find((a) => /** @type {any} */ (a).id === targetId);
+      await rollAttackForTarget(
+        actor,
+        skillName,
+        allocatedDice,
+        weapon,
+        targetId,
+        t?.name ?? '',
+        fireMode.wideDefenseMalus,
+        fireMode.burstDamageBonus
+      );
+    }
+    return;
+  }
 
   const params = createDialogParameters(actor, dice, weapon);
   params.malus -= actor.system.modifiers.attackModifier ?? 0;

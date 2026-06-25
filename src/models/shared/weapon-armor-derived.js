@@ -3,6 +3,8 @@ export const AP_HALF_TYPES = new Set([
   'FIRE',
   'LASER',
   'STUN_HALF',
+  'BLAST',
+  'LIGHT',
 ]);
 
 const EXTERNAL_MOUNTS = new Set(['top', 'barrel', 'under']);

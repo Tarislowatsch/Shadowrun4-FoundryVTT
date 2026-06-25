@@ -18,6 +18,7 @@ export class SR4AmmoData extends foundry.abstract.TypeDataModel {
       damageBonus: new fields.NumberField({ initial: 0, integer: true }),
       apBonus: new fields.NumberField({ initial: 0, integer: true }),
       damageTypeOverride: new fields.StringField({ initial: '', blank: true }),
+      category: new fields.StringField({ initial: '', blank: true }),
       damageOverride: new fields.NumberField({
         initial: null,
         nullable: true,

@@ -48,16 +48,12 @@ function localizeDamageType(isPhysical) {
     : i18n.localize('sr4.damage.stun');
 }
 
-/**
- * Handles the application of physical and stun damage
- * to a Shadowrun 4 condition monitor.
- */
 export class ApplyDamageFlow {
   /**
-   * @param {number} unresisted The amount of unresisted damage.
-   * @param {boolean} isPhysical Whether the damage is physical (`true`) or stun (`false`).
-   * @param {import('@documents/index').SR4Actor} actor The actor receiving the damage.
-   * @param {string} reason Reason for the damage, used in generated messages.
+   * @param {number} unresisted
+   * @param {boolean} isPhysical
+   * @param {import('@documents/index').SR4Actor} actor
+   * @param {string} reason
    * @returns {Promise<Array<{ type: string, content: string }>>}
    */
   static async apply(unresisted, isPhysical, actor, reason) {
@@ -247,9 +243,6 @@ export class ApplyDamageFlow {
   }
 
   /**
-   * Posts a non-blocking damage decision chat card. Buttons are rendered
-   * per-client via the renderChatMessageHTML hook in DieChatHook.
-   *
    * @param {import('@documents/index').SR4Actor} actor
    * @param {number} amount
    * @param {boolean} isPhysical
@@ -335,8 +328,6 @@ export class ApplyDamageFlow {
   }
 
   /**
-   * Sends a public chat message summarising a combat or spell outcome.
-   *
    * @param {string} attackerName
    * @param {string} defenderName
    * @param {'potential'|'result'|'directSpell'} mode

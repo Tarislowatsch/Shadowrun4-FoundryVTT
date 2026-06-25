@@ -15,6 +15,7 @@
         <th>{{localize 'sr4.weapon.ap'}}</th>
         <th>{{localize 'sr4.weapon.armorType.label'}}</th>
         <th>{{localize 'sr4.weapon.reach'}}</th>
+        <th>{{localize 'sr4.weapon.category'}}</th>
         <th>{{localize 'sr4.weapon.avail'}}</th>
         <th>{{localize 'sr4.weapon.legality'}}</th>
         <th>{{localize 'sr4.weapon.source'}}</th>
@@ -48,6 +49,12 @@
         </td>
         <td>
           <input type="number" name="system.reach" value="{{ system.reach }}" />
+        </td>
+        <td>
+          <select name="system.category">
+            <option value="" {{#unless system.category}}selected{{/unless}}>—</option>
+            {{selectOptions weaponcategories selected=system.category localize=true}}
+          </select>
         </td>
         <td>
           <input type="number" name="system.avail" value="{{ system.avail }}" />

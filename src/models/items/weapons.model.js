@@ -5,6 +5,17 @@ import {
   computeMeleeWeaponDerived,
 } from '@models/shared/weapon-armor-derived';
 
+export {
+  RangedAttackskill,
+  MeleeAttackskill,
+  Attackskill,
+  Shootingmodes,
+  WeaponMountPoints,
+  WeaponCategory,
+  AmmoCategory,
+  DamageTypes,
+} from './weapon.enums.js';
+
 const fields = foundry.data.fields;
 
 /**
@@ -182,85 +193,11 @@ export function isRangedWeapon(item) {
 
 /** @param {string} dt */
 export function isPhysicalDamageType(dt) {
-  return dt === 'PHYSICAL' || dt === 'FIRE' || dt === 'LASER';
+  return (
+    dt === 'PHYSICAL' ||
+    dt === 'FIRE' ||
+    dt === 'LASER' ||
+    dt === 'BLAST' ||
+    dt === 'LIGHT'
+  );
 }
-
-/**
- * Localisation keys for ranged weapon attack skills.
- *
- * @enum {string}
- * @readonly
- */
-export const RangedAttackskill = Object.freeze({
-  /** @type {string} */ NONE: 'sr4.attack.none',
-  /** @type {string} */ PISTOLS: 'sr4.skills.pistols',
-  /** @type {string} */ AUTOMATICS: 'sr4.skills.automatics',
-  /** @type {string} */ THROWING: 'sr4.skills.throwingweapons',
-  /** @type {string} */ ARCHERY: 'sr4.skills.archery',
-  /** @type {string} */ HEAVY_WEAPONS: 'sr4.skills.heavyweapons',
-  /** @type {string} */ LONGARMS: 'sr4.skills.longarms',
-  /** @type {string} */ GUNNERY: 'sr4.skills.gunnery',
-  /** @type {string} */ EXOTIC_RANGED: 'sr4.skills.exoticrangedweapon',
-});
-
-/**
- * Localisation keys for melee weapon attack skills.
- *
- * @enum {string}
- * @readonly
- */
-export const MeleeAttackskill = Object.freeze({
-  /** @type {string} */ NONE: 'sr4.attack.none',
-  /** @type {string} */ BLADES: 'sr4.skills.blades',
-  /** @type {string} */ CLUBS: 'sr4.skills.clubs',
-  /** @type {string} */ UNARMED: 'sr4.skills.unarmedcombat',
-  /** @type {string} */ EXOTIC_MELEE: 'sr4.skills.exoticmeleeweapon',
-});
-
-/**
- * All weapon attack skills combined (ranged + melee), used for lookups.
- *
- * @enum {string}
- * @readonly
- */
-export const Attackskill = Object.freeze({
-  ...RangedAttackskill,
-  ...MeleeAttackskill,
-});
-
-/**
- * Localisation keys for the available ranged weapon firing modes.
- *
- * @enum {string}
- * @readonly
- */
-export const Shootingmodes = Object.freeze({
-  /** @type {string} */ SINGLE_SHOT: 'sr4.shooting.single',
-  /** @type {string} */ SEMI_AUTOMATIC: 'sr4.shooting.semi',
-  /** @type {string} */ BURST_FIRE: 'sr4.shooting.burst',
-  /** @type {string} */ FULL_AUTO: 'sr4.shooting.full',
-  /** @type {string} */ SEMI_BURST_FULL_AUTO: 'sr4.shooting.semi-burst-full',
-  /** @type {string} */ SEMI_BURST: 'sr4.shooting.semi-burst',
-});
-
-/**
- * Localisation keys for the damage types a weapon can inflict.
- *
- * @enum {string}
- * @readonly
- */
-export const WeaponMountPoints = Object.freeze({
-  /** @type {string} */ top: 'sr4.weaponmod.mountPoints.top',
-  /** @type {string} */ barrel: 'sr4.weaponmod.mountPoints.barrel',
-  /** @type {string} */ under: 'sr4.weaponmod.mountPoints.under',
-  /** @type {string} */ internal: 'sr4.weaponmod.mountPoints.internal',
-});
-
-export const DamageTypes = Object.freeze({
-  /** @type {string} */ PHYSICAL: 'sr4.damage.physical',
-  /** @type {string} */ STUN: 'sr4.damage.stun',
-  /** @type {string} */ ELECTRICITY: 'sr4.damage.electricity',
-  /** @type {string} */ FIRE: 'sr4.damage.fire',
-  /** @type {string} */ LASER: 'sr4.damage.laser',
-  /** @type {string} */ STUN_HALF: 'sr4.damage.stun_half',
-});

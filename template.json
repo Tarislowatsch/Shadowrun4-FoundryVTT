@@ -24,7 +24,10 @@
       "Ammo",
       "Weapon Mod",
       "Armor Mod",
-      "Vehicle Mod"
+      "Vehicle Mod",
+      "Metatype",
+      "CritterPower",
+      "CritterTemplate"
     ]
   }
 }

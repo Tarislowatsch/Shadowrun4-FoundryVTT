@@ -196,6 +196,20 @@ a.item-toggle-equip {
   margin: 0;
 }
 
+.tab-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+
+  h2 {
+    flex: 1 1 auto;
+  }
+
+  .item-create-btn {
+    flex: 0 0 auto;
+  }
+}
+
 .inventory-section {
   margin-bottom: 0.75rem;
 
@@ -235,6 +249,10 @@ a.item-toggle-equip {
     h4 {
       flex: 1 1 auto;
     }
+
+    .item-create-btn {
+      flex: 0 0 auto;
+    }
   }
 
   &[open] > .collapsible-header > .collapse-icon,
@@ -259,6 +277,16 @@ a.item-toggle-equip {
       color: var(--sr4-text-muted);
     }
   }
+}
+
+/* ---------------- METATYPE CARD ---------------- */
+
+.metatype-card .item-header img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border: none;
+  flex: 0 0 auto;
 }
 
 /* ---------------- WEAPON ---------------- */

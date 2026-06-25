@@ -3,14 +3,15 @@
   data-group="primary"
   data-tab="inventory"
 >
-  {{#if editMode}}
-  <div style="margin-bottom: 0.5rem;">
-    {{> item-create-btn btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+  <div class="tab-header">
+    <h2>{{localize 'sr4.tab.inventory'}}</h2>
+    {{#if editMode}}
+      {{> item-create-btn btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+    {{/if}}
   </div>
-  {{/if}}
 
   {{!-- Waffen --}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.weapons')}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.weapons') btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
     {{#if weapons}}
     <ul class="weapon-list">
       {{#each weapons as |weapon|}}
@@ -25,7 +26,7 @@
   <hr />
 
   {{!-- Rüstung --}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.armor')}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.armor') btnAction="createItem" btnItemType="Armor" btnTooltip="sr4.item.create"}}
     {{#if armor}}
     <ul class="armor-list">
       {{#each armor as |item|}}
@@ -40,31 +41,35 @@
   <hr />
 
   {{!-- Cyberware / Bioware --}}
-  {{#if implants}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.implants')}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.implants') btnAction="createItem" btnItemType="Implant" btnTooltip="sr4.item.create"}}
+    {{#if implants}}
     <ul class="implant-list">
       {{#each implants as |item|}}
       {{> "implant-card"}}
       {{/each}}
     </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.implant.noImplants'}}</p>
+    {{/if}}
   {{/collapsible-section}}
+
   <hr />
-  {{/if}}
 
   {{!-- Commlinks --}}
-  {{#if commlinks}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.commlinks')}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.commlinks') btnAction="createItem" btnItemType="Commlink" btnTooltip="sr4.item.create"}}
+    {{#if commlinks}}
     <ul class="item-list">
       {{#each commlinks as |item|}}
       {{> "commlink-card"}}
       {{/each}}
     </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.commlink.noCommlinks'}}</p>
+    {{/if}}
   {{/collapsible-section}}
-  <hr />
-  {{/if}}
 
   {{!-- Ausrüstung --}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.items')}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.items') btnAction="createItem" btnItemType="Gear" btnTooltip="sr4.item.create"}}
     {{#if items}}
     <ul class="item-list">
       {{#each items as |item|}}
@@ -79,15 +84,18 @@
   <hr />
 
   {{!-- Foki / Fetische --}}
-  {{#if foci}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.foci')}}
+  {{#> collapsible-section title=(localize 'sr4.inventory.foci') btnAction="createItem" btnItemType="Focus" btnTooltip="sr4.item.create"}}
+    {{#if foci}}
     <ul class="item-list">
       {{#each foci as |item|}}
       {{> "item-card"}}
       {{/each}}
     </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.focus.noFoci'}}</p>
+    {{/if}}
   {{/collapsible-section}}
-  {{/if}}
+
   <hr />
 
   {{!-- Fahrzeuge (vorbereitet) --}}

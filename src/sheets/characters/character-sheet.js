@@ -1,6 +1,7 @@
 import { handleSkillRoll, openActionDialog } from '@utils/index';
 import {
   ActionType,
+  AmmoCategory,
   Attackskill,
   DamageTypes,
   DrainAttributes,
@@ -179,6 +180,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       textFields: { lifestyle: true },
       isTechnomancer: actorData.system.technomancer,
       effectTargets: SR4EffectTargets,
+      resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
     };
   }
 
@@ -207,6 +209,14 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       negativeQualities: items.filter(
         (i) => i.type === 'Quality' && i.system.category === 'Negative'
       ),
+      ammo: items
+        .filter((i) => i.type === 'Ammo')
+        .map((a) => ({
+          ...a,
+          displayCategory: a.system.category
+            ? (AmmoCategory[a.system.category] ?? a.system.category)
+            : null,
+        })),
       actions: items.filter((i) => i.type === 'Action'),
       foci: items.filter((i) => i.type === 'Focus' || i.type === 'Fetish'),
       commlinks: items.filter((i) => i.type === 'Commlink'),
@@ -214,6 +224,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       complexForms: items.filter(
         (i) => i.type === 'Skill' && i.system.type === 'complexForm'
       ),
+      metatypeItem: items.find((i) => i.type === 'Metatype') ?? null,
     };
   }
 

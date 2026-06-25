@@ -47,6 +47,7 @@ export async function askSpellForce(spell, actor) {
  * @param {number} numDice
  * @param {import('@models/index').SR4Spell} spell
  * @param {number} force
+ * @param {number} [poolModifier]
  * @returns {Promise<{successes: number, isGlitch: boolean}>}
  */
 export async function openSpellcastingDialog(
@@ -54,19 +55,25 @@ export async function openSpellcastingDialog(
   skillName,
   numDice,
   spell,
-  force
+  force,
+  poolModifier = 0
 ) {
-  const params = createDialogParameters(actor, numDice);
-  const content = await renderTemplate(standardTemplatePath(), {
+  const effectiveDice = Math.max(1, numDice + poolModifier);
+  const params = createDialogParameters(actor, effectiveDice);
+  let content = await renderTemplate(standardTemplatePath(), {
     spell,
     force,
     ...params,
     skillName,
   });
+  if (poolModifier !== 0) {
+    const penaltyHtml = `<div class="form-group"><span>${localize('sr4.spell.essencePenalty')}: <strong>${poolModifier}</strong></span></div>`;
+    content = penaltyHtml + content;
+  }
   return createRollDialog({
     title: `${localize('sr4.roll.rolling')} ${localize('sr4.skills.' + skillName)} ${spell.name} (${localize('sr4.spell.force')}: ${force})`,
-    dice: numDice,
+    dice: effectiveDice,
     content,
-    onRoll: (dialog) => dialogActions(dialog, actor, skillName, numDice),
+    onRoll: (dialog) => dialogActions(dialog, actor, skillName, effectiveDice),
   });
 }

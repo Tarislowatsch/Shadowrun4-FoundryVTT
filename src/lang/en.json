@@ -29,10 +29,14 @@
       "Vehicle": "Vehicle",
       "Weapon Mod": "Weapon Mod",
       "Armor Mod": "Armor Mod",
-      "Vehicle Mod": "Vehicle Mod"
+      "Vehicle Mod": "Vehicle Mod",
+      "Metatype": "Metatype",
+      "CritterPower": "Critter Power",
+      "CritterTemplate": "Critter Template"
     }
   },
   "sr4": {
+    "cancel": "Cancel",
     "action": {
       "actiontype": {
         "complex": "Complex",
@@ -59,7 +63,9 @@
       "new": "New Action",
       "noActions": "This Character has no actions",
       "noRatingForAction": "Please add ratings for this action",
+      "parts": "Parts",
       "roll": "Roll",
+      "rollAction": "Roll Action",
       "source": "Source",
       "type": "Type"
     },
@@ -79,7 +85,9 @@
     },
     "bio": {
       "bio": "Biography",
+      "biography": "Biography",
       "connections": "Connections",
+      "metatype": "Metatype",
       "notes": "Notes",
       "physicalDescription": "Description",
       "qualities": "Qualities"
@@ -132,18 +140,27 @@
       "showOnToken": "Show on Token",
       "source": "Source",
       "templates": {
+        "label": "Templates",
         "blind": "Blinded",
         "blindFlareComp": "Blinded (Flare Compensation)",
         "disoriented": "Disoriented (Electricity)",
         "knockedDown": "Knocked Down",
         "sustain": "Sustained Spell"
       },
-      "value": "Value"
+      "value": "Value",
+      "applyToTarget": "Apply Effects",
+      "pendingEffects": "{name}: Effects from {spell} pending."
     },
     "effectTarget": {
       "attackModifier": "Attack Dice Pool Modifier",
       "defenseModifier": "Defense Dice Pool Modifier",
       "generalModifier": "General Dice Pool Modifier"
+    },
+    "focus": {
+      "noFoci": "No foci"
+    },
+    "implant": {
+      "noImplants": "No implants installed"
     },
     "inventory": {
       "armor": "Armor",
@@ -156,6 +173,7 @@
       "lifestyle": "Lifestyle",
       "other": "Other",
       "programs": "Programs",
+      "ammo": "Ammunition",
       "vehicles": "Vehicles",
       "weapons": "Weapons"
     },
@@ -169,6 +187,9 @@
       "cost": "Cost",
       "create": "Create Item",
       "delete": "Delete",
+      "essence": "Essence",
+      "essenceActual": "Actual Essence",
+      "grade": "Grade",
       "description": "Description",
       "edit": "Edit",
       "legality": "Legality",
@@ -179,10 +200,9 @@
       "rating": "Rating",
       "rating1": "Rating part 1",
       "rating2": "Rating part 2",
+      "source": "Source",
       "toggleEquip": "Toggle equipped",
-      "type": {
-        "Action": "Action"
-      }
+      "type": "Type"
     },
     "metadata": {
       "age": "Age",
@@ -208,6 +228,24 @@
       "category": "Category",
       "complexform": "Complex Form",
       "maxrating": "Max. Rating"
+    },
+    "metatype": {
+      "attribute": "Attribute",
+      "attributeLimits": "Attribute Limits",
+      "aug": "Augmented",
+      "armorBonus": "Natural Armor",
+      "baseMetatype": "Base Metatype",
+      "bp": "BP",
+      "category": "Category",
+      "max": "Maximum",
+      "min": "Minimum",
+      "movement": "Movement",
+      "optionalPowers": "Optional Powers",
+      "powers": "Racial Powers",
+      "create": "Create Metatype",
+      "noMetatype": "No metatype set. Drag one from a compendium.",
+      "onlyOneAllowed": "Only one metatype per character is allowed.",
+      "reach": "Reach"
     },
     "quality": {
       "bp": "BP",
@@ -245,7 +283,8 @@
       "rating": "Rating",
       "search": "Skill search",
       "source": "Source",
-      "specialization": "Specialization"
+      "specialization": "Specialization",
+      "type": "Type"
     },
     "stats": {
       "AGILITY": "Agility",
@@ -279,6 +318,7 @@
       "main": "Main",
       "matrix": "Matrix",
       "modifiers": "Modifiers",
+      "skills": "Skills",
       "weapons": "Weapons"
     }
   }

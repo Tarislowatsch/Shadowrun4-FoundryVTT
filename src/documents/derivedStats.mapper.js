@@ -132,7 +132,6 @@ export function computeDerivedStats(actorData) {
   sheetStats.MATRIXINITIATIVE = initiative.matrix;
   sheetStats.ASTRALINITIATIVE = initiative.astral;
 
-  // derivedStats.augmentedMaximum = computeAugmentedMaximum(sheetStats);
   derivedStats.judgeIntentions = sheetStats.CHARISMA + sheetStats.WILLPOWER;
   derivedStats.liftCarry = sheetStats.STRENGTH + sheetStats.BODY;
   derivedStats.memory = sheetStats.LOGIC + sheetStats.INTUITION;
@@ -141,8 +140,3 @@ export function computeDerivedStats(actorData) {
 
   return derivedStats;
 }
-
-// TODO: computeAugmentedMaximum — augmented maximums must be derived from the
-// actor's metatype racial maximums, not just base * 1.5. Re-enable once metatype
-// data is available on the actor.
-// function computeAugmentedMaximum(stats) { ... }

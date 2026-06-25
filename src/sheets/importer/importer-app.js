@@ -203,12 +203,17 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
    * @param {string} name
    * @returns {Promise<string>}
    */
-  async #getOrCreateFolder(name) {
+  async #getOrCreateFolder(name, parentId = null) {
     const existing = game.folders.find(
-      (f) => f.type === 'Compendium' && f.name === name
+      (f) =>
+        f.type === 'Compendium' &&
+        f.name === name &&
+        (parentId ? f.folder?.id === parentId : !f.folder)
     );
     if (existing) return existing.id;
-    const folder = await Folder.create({ name, type: 'Compendium' });
+    const data = { name, type: 'Compendium' };
+    if (parentId) data.folder = parentId;
+    const folder = await Folder.create(data);
     return folder?.id ?? null;
   }
 
@@ -281,19 +286,33 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
 
       /** @type {Map<string, string>} */
       const folderCache = new Map();
+      /** @type {Map<string, string>} */
+      const parentFolderCache = new Map();
 
       for (const group of selected) {
-        if (!folderCache.has(group.typeLabel)) {
+        let parentId = null;
+        if (group.parentFolder) {
+          if (!parentFolderCache.has(group.parentFolder)) {
+            parentFolderCache.set(
+              group.parentFolder,
+              await this.#getOrCreateFolder(group.parentFolder)
+            );
+          }
+          parentId = parentFolderCache.get(group.parentFolder);
+        }
+
+        const folderKey = `${group.parentFolder ?? ''}\0${group.typeLabel}`;
+        if (!folderCache.has(folderKey)) {
           folderCache.set(
-            group.typeLabel,
-            await this.#getOrCreateFolder(group.typeLabel)
+            folderKey,
+            await this.#getOrCreateFolder(group.typeLabel, parentId)
           );
         }
 
         const pack = await this.#getOrCreatePack(
           group.compendiumName,
           group.compendiumLabel,
-          folderCache.get(group.typeLabel)
+          folderCache.get(folderKey)
         );
 
         let known = new Set();

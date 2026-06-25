@@ -9,6 +9,7 @@
       "parseError": "„{file}“ konnte nicht gelesen werden: {error}",
       "preview": "Vorschau",
       "skillCount": "Fertigkeiten",
+      "ammoLinkError": "Munition für „{name}“ konnte nicht verknüpft werden. Munition kann manuell zugewiesen werden.",
       "success": "Charakter „{name}“ importiert.",
       "title": "Charakter-Importer",
       "upload": "Charakter-XML-Datei"
@@ -83,6 +84,14 @@
       "spellWorkflow": {
         "hint": "Aktiviert den mehrstufigen Zauber-Workflow (Kraftwahl, Wurf, Entzug).",
         "name": "Zauber-Workflow"
+      },
+      "defaultTokenVision": {
+        "hint": "Aktiviert automatisch die Sicht auf dem Prototyp-Token wenn ein neuer Actor erstellt wird.",
+        "name": "Standard-Token-Sicht"
+      },
+      "defaultTokenVisionRange": {
+        "hint": "Standard-Sichtweite (in Rastereinheiten) für neu erstellte Actors. 0 für unbegrenzte Sicht.",
+        "name": "Standard-Token-Sichtweite"
       },
       "useDefaultEffectSheet": {
         "hint": "Wenn aktiv, öffnen aktive Effekte mit Foundrys eingebautem Sheet statt dem SR4-eigenen.",

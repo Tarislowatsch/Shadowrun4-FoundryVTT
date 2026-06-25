@@ -24,10 +24,6 @@ import { getGame, isResponsibleForActor, isPrimaryGM } from '@utils/index';
  * @typedef {{ action: 'triggerDefense', payload: DefenseSocketPayload } | { action: 'selectDefender', payload: SelectDefenderPayload }} DefenseSocketMessage
  */
 
-/**
- * Listens on the system socket for incoming defense-trigger messages and
- * launches the defense flow for the appropriate local player.
- */
 export class DefenseHook {
   constructor() {
     this._boundHandler = this._onSocketMessage.bind(this);

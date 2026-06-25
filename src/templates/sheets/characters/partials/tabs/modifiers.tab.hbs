@@ -44,4 +44,40 @@
     </div>
 
   </div>
+
+  {{#> collapsible-section title=(localize 'sr4.resistance.title') btnAction="createElementResistance" btnTooltip="sr4.resistance.add"}}
+    <table class="resistance-table">
+      <thead>
+        <tr>
+          <th>{{localize 'sr4.resistance.element'}}</th>
+          <th class="num-col">{{localize 'sr4.resistance.value'}}</th>
+          {{#if editMode}}<th class="controls-col"></th>{{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each system.elementResistances as |res key|}}
+        <tr class="resistance-row" data-resistance-key="{{key}}">
+          <td>
+            <select name="{{concat 'system.elementResistances.' key '.element'}}" {{#unless ../editMode}}disabled{{/unless}}>
+              {{#each @root.resistanceElements as |el|}}
+              <option value="{{el.value}}" {{#if (eq el.value res.element)}}selected{{/if}}>{{el.label}}</option>
+              {{/each}}
+            </select>
+          </td>
+          <td class="num-col"><input type="number" data-dtype="Number" name="{{concat 'system.elementResistances.' key '.value'}}" value="{{res.value}}" {{#unless ../editMode}}readonly{{/unless}} /></td>
+          {{#if ../editMode}}
+          <td class="item-controls">
+            <a data-action="deleteElementResistance" data-resistance-key="{{key}}"
+              data-tooltip="{{localize 'sr4.resistance.delete'}}"><i class="fas fa-trash"></i></a>
+          </td>
+          {{/if}}
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="3" class="empty-list">{{localize 'sr4.resistance.noResistances'}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/collapsible-section}}
 </div>

@@ -96,25 +96,75 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
     if (!this.#parsed) return;
 
     const canonicalSkills = await SR4Actor.buildCompendiumSkillData(false);
-    const data = buildActorData(this.#parsed, canonicalSkills);
+    const { ammoLinks, ...data } = buildActorData(
+      this.#parsed,
+      canonicalSkills
+    );
     if (!data.img) delete data.img;
 
+    /** @type {Actor|null} */
+    let actor;
     try {
-      const actor = await Actor.create(data, { renderSheet: true });
-      if (actor) {
-        ui.notifications.info(
-          game.i18n.format('sr4.characterImporter.success', {
-            name: actor.name,
-          })
-        );
-        this.close();
-      }
+      actor = await Actor.create(data, { renderSheet: true });
     } catch (err) {
       ui.notifications.error(
         game.i18n.format('sr4.characterImporter.createError', {
           error: err.message,
         })
       );
+      return;
+    }
+    if (!actor) return;
+
+    if (ammoLinks?.length) {
+      try {
+        await CharacterImporterApp.#linkAmmo(actor, ammoLinks);
+      } catch {
+        ui.notifications.warn(
+          game.i18n.format('sr4.characterImporter.ammoLinkError', {
+            name: actor.name,
+          })
+        );
+      }
+    }
+
+    ui.notifications.info(
+      game.i18n.format('sr4.characterImporter.success', {
+        name: actor.name,
+      })
+    );
+    this.close();
+  }
+
+  /**
+   * @param {Actor} actor
+   * @param {Array<{weaponName: string, ammoName: string, currentAmmo: number}>} ammoLinks
+   * @returns {Promise<void>}
+   */
+  static async #linkAmmo(actor, ammoLinks) {
+    const matchedWeaponIds = new Set();
+    const updates = [];
+    for (const link of ammoLinks) {
+      const weapon = actor.items.find(
+        (i) =>
+          i.type === 'Ranged Weapon' &&
+          i.name === link.weaponName &&
+          !matchedWeaponIds.has(i.id)
+      );
+      const ammo = actor.items.find(
+        (i) => i.type === 'Ammo' && i.name === link.ammoName
+      );
+      if (weapon && ammo) {
+        matchedWeaponIds.add(weapon.id);
+        updates.push({
+          _id: weapon.id,
+          'system.loadedAmmoId': ammo.id,
+          'system.currentAmmo': link.currentAmmo,
+        });
+      }
+    }
+    if (updates.length) {
+      await actor.updateEmbeddedDocuments('Item', updates);
     }
   }
 }

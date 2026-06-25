@@ -12,23 +12,19 @@ import {
   getDamageDecisionEntry,
   resolveDamageDecision,
 } from '@flows/apply-damage-flow.js';
+import {
+  getEffectDecisionEntry,
+  resolveEffectDecision,
+  applySpellEffects,
+} from '@flows/apply-effects-flow.js';
 import { isResponsibleForActor } from '@utils/actor-ownership.js';
 
-/**
- * Registers the renderChatMessageHTML hook that injects Edge / extended-test
- * buttons into SR4 roll messages — only for the owning user.
- *
- * Call once during system initialisation:
- *   import { registerDiceChatHooks } from './dice-chat-hooks.js';
- *   registerDiceChatHooks();
- *
- * @returns {void}
- */
 export class DieChatHook {
   constructor() {
     Hooks.on('renderChatMessageHTML', (chatMessage, html) => {
       DieChatHook.appendEdgeButton(chatMessage, html);
       DieChatHook.renderDamageDecisionCard(chatMessage, html);
+      DieChatHook.renderEffectDecisionCard(chatMessage, html);
     });
   }
 
@@ -65,6 +61,7 @@ export class DieChatHook {
       return;
     }
 
+    let edgeBtn = null;
     const canExtend =
       extended && rolledDice > 1 && !isGlitch && !isCriticalGlitch && !reroll;
 
@@ -118,8 +115,6 @@ export class DieChatHook {
         );
       }
     }
-
-    let edgeBtn = null;
 
     if (edgeAvailable && !extended) {
       edgeBtn = document.createElement('button');
@@ -183,7 +178,6 @@ export class DieChatHook {
           onCompleteWithResult: (newSuccesses) =>
             resolveEdgeDecision(chatMessage.id, newSuccesses),
         });
-        // Modal aborted without spending Edge → continue with the original hits.
         if (getEdgeDecisionEntry(chatMessage.id)) {
           await resolveEdgeDecision(chatMessage.id);
         }
@@ -209,8 +203,6 @@ export class DieChatHook {
   }
 
   /**
-   * Renders Apply / Modify buttons on damage decision chat cards.
-   *
    * @param {ChatMessage} chatMessage
    * @param {HTMLElement} html
    */
@@ -274,6 +266,42 @@ export class DieChatHook {
       );
     });
     btnWrap.appendChild(modifyBtn);
+
+    container.appendChild(btnWrap);
+  }
+
+  /**
+   * @param {ChatMessage} chatMessage
+   * @param {HTMLElement} html
+   */
+  static renderEffectDecisionCard(chatMessage, html) {
+    const decision = chatMessage.flags?.sr4?.effectDecision;
+    if (!decision) return;
+    if (decision.resolved) return;
+    if (!isResponsibleForActor(decision.actorId)) return;
+
+    const entry = getEffectDecisionEntry(chatMessage.id);
+    if (!entry) return;
+
+    const container = html.querySelector('.effect-decision-card') ?? html;
+    const btnWrap = document.createElement('div');
+    btnWrap.className = 'effect-decision-buttons';
+
+    const cleanup = () => btnWrap.remove();
+
+    const applyBtn = document.createElement('button');
+    applyBtn.className = 'apply-effects';
+    applyBtn.textContent = game.i18n.localize('sr4.effect.applyToTarget');
+    applyBtn.addEventListener(
+      'click',
+      async () => {
+        cleanup();
+        await resolveEffectDecision(chatMessage.id);
+        await applySpellEffects(entry.effectData, entry.target);
+      },
+      { once: true }
+    );
+    btnWrap.appendChild(applyBtn);
 
     container.appendChild(btnWrap);
   }

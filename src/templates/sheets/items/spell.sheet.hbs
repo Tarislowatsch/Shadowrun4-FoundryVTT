@@ -72,6 +72,13 @@
     </tbody>
   </table>
 
+  {{#unless (eq system.category "COMBAT")}}
+  <div class="form-group">
+    <label>{{localize 'sr4.spell.opposed'}}</label>
+    <input type="checkbox" name="system.opposed" {{checked system.opposed}} />
+  </div>
+  {{/unless}}
+
   {{> "item-actions-effects"}}
 
   {{> "item-textareas"}}

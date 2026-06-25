@@ -1,0 +1,37 @@
+<div class="critter-creation-dialog">
+  <h2>{{ name }}</h2>
+  <p class="critter-category-label">{{ category }}</p>
+
+  {{#if forceBased}}
+  <div class="form-group">
+    <label>Force</label>
+    <input type="number" name="force" value="{{ force }}" min="1" {{#if isWatcher}}disabled{{/if}} />
+  </div>
+  {{/if}}
+
+  {{#if forceBased}}
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize 'sr4.metatype.attribute'}}</th>
+        <th>{{localize 'sr4.critter.value'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each preview as |row|}}
+      <tr>
+        <td>{{localize row.label}}</td>
+        <td>{{ row.value }}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{/if}}
+
+  <div class="form-footer">
+    <button type="button" data-action="create">
+      <i class="fas fa-user-plus"></i>
+      {{localize 'sr4.critter.createActor'}}
+    </button>
+  </div>
+</div>

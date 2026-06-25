@@ -175,6 +175,51 @@ export class SR4Actor extends foundry.documents.Actor {
     return self.system?.derivedStats?.woundModifier ?? 0;
   }
 
+  /** @override */
+  async _preCreateDescendantDocuments(
+    parent,
+    collection,
+    data,
+    options,
+    userId
+  ) {
+    await super._preCreateDescendantDocuments(
+      parent,
+      collection,
+      data,
+      options,
+      userId
+    );
+    if (collection !== 'items') return;
+
+    const critterTemplates = data.filter((d) => d.type === 'CritterTemplate');
+    if (critterTemplates.length > 0) {
+      for (let i = data.length - 1; i >= 0; i--) {
+        if (data[i].type === 'CritterTemplate') data.splice(i, 1);
+      }
+      const tpl = critterTemplates[0];
+      const { CritterCreationDialog } = await import(
+        '@sheets/importer/critter-creation-dialog.js'
+      );
+      CritterCreationDialog.createFromTemplate(tpl.system, tpl.name);
+    }
+
+    const hasMetatype = this.items.some((i) => i.type === 'Metatype');
+    const incomingMetatypes = data.filter((d) => d.type === 'Metatype');
+    if (hasMetatype && incomingMetatypes.length > 0) {
+      ui.notifications?.warn(game.i18n.localize('sr4.metatype.onlyOneAllowed'));
+      for (let i = data.length - 1; i >= 0; i--) {
+        if (data[i].type === 'Metatype') data.splice(i, 1);
+      }
+    } else if (incomingMetatypes.length > 1) {
+      ui.notifications?.warn(game.i18n.localize('sr4.metatype.onlyOneAllowed'));
+      const firstIdx = data.findIndex((d) => d.type === 'Metatype');
+      for (let i = data.length - 1; i > firstIdx; i--) {
+        if (data[i].type === 'Metatype') data.splice(i, 1);
+      }
+    }
+  }
+
   async _preUpdate(changed, options, userId) {
     await super._preUpdate(changed, options, userId);
     if (game.settings.get('shadowrun4e', 'liveInitiativeReduction'))
@@ -209,8 +254,19 @@ export class SR4Actor extends foundry.documents.Actor {
 
     /** @type {any} */
     const self = this;
+    const updates = {};
     if (self.type === 'character') {
-      await self.update({ 'prototypeToken.actorLink': true });
+      updates['prototypeToken.actorLink'] = true;
+    }
+    if (game.settings.get('shadowrun4e', 'defaultTokenVision')) {
+      updates['prototypeToken.sight.enabled'] = true;
+      updates['prototypeToken.sight.range'] = game.settings.get(
+        'shadowrun4e',
+        'defaultTokenVisionRange'
+      );
+    }
+    if (Object.keys(updates).length > 0) {
+      await self.update(updates);
     }
     if (self.type === 'character' || self.type === 'npc') {
       await SR4Actor.#addSkillsFromCompendium(self, self.type === 'npc');

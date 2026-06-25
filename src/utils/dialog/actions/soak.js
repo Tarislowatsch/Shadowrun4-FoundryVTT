@@ -13,7 +13,7 @@ import {
  * @param {number} incomingDamage
  * @param {boolean} isPhysical
  * @param {number} effectiveArmor
- * @param {{ rawArmor?: number, ap?: number | null, apHalf?: boolean }} [breakdown]
+ * @param {{ rawArmor?: number, ap?: number | null, apHalf?: boolean, elementResistance?: number }} [breakdown]
  * @returns {Promise<{ hits: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null } | null>}
  */
 export async function openSoakDialog(
@@ -21,12 +21,12 @@ export async function openSoakDialog(
   incomingDamage,
   isPhysical,
   effectiveArmor,
-  { rawArmor, ap, apHalf } = {}
+  { rawArmor, ap, apHalf, elementResistance = 0 } = {}
 ) {
   const body = defender.getAttribute('BODY') ?? 0;
   const soakBonus =
     /** @type {any} */ (defender).system?.modifiers?.soakBonus ?? 0;
-  const soakPool = body + effectiveArmor + soakBonus;
+  const soakPool = body + effectiveArmor + soakBonus + elementResistance;
   // Wound modifiers do not apply to Damage Resistance tests (SR4 p.163)
   const params = createDialogParameters(defender, soakPool, undefined, {
     ignoreModifiers: true,
@@ -45,6 +45,7 @@ export async function openSoakDialog(
     rawArmor,
     ap,
     apHalf,
+    elementResistance,
   });
 
   let edgeUsed = false;

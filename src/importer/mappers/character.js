@@ -12,6 +12,23 @@ import {
   upper,
 } from './helpers.js';
 
+/** @type {Array<[string, string]>} [xmlAbbr, metatypeModelKey] */
+const LIMIT_ATTR_MAP = [
+  ['BOD', 'body'],
+  ['AGI', 'agility'],
+  ['REA', 'reaction'],
+  ['STR', 'strength'],
+  ['CHA', 'charisma'],
+  ['INT', 'intuition'],
+  ['LOG', 'logic'],
+  ['WIL', 'willpower'],
+  ['INI', 'initiative'],
+  ['EDG', 'edge'],
+  ['MAG', 'magic'],
+  ['RES', 'resonance'],
+  ['ESS', 'essence'],
+];
+
 /**
  * @type {Record<string, string>}
  */
@@ -201,6 +218,51 @@ export function mapCharacterSkill(record) {
       rating: parseNumber(record.rating, 0),
       specialization: String(record.spec ?? '').trim(),
       source: sourceOf(record),
+    },
+  };
+}
+
+/**
+ * @param {Record<string, any>} character
+ * @returns {{ name: string, type: string, system: object } | null}
+ */
+export function mapCharacterMetatype(character) {
+  const metatypeName = String(character.metatype ?? '').trim();
+  if (!metatypeName) return null;
+
+  const limits = character.attributeLimits ?? {};
+  /** @type {Record<string, { min: number, max: number, aug: number }>} */
+  const attributes = {};
+  for (const [abbr, key] of LIMIT_ATTR_MAP) {
+    const limit = limits[abbr];
+    if (limit) {
+      attributes[key] = {
+        min: parseNumber(limit.min, 0),
+        max: parseNumber(limit.max, 0),
+        aug: parseNumber(limit.aug, 0),
+      };
+    }
+  }
+
+  const metavariant = String(character.metavariant ?? '').trim();
+  const movement = String(character.movement ?? '').trim();
+
+  return {
+    name: metavariant || metatypeName,
+    type: 'Metatype',
+    system: {
+      category: 'Metahuman',
+      bp: 0,
+      baseMetatype: metavariant ? metatypeName : '',
+      attributes,
+      movement,
+      qualities: { positive: [], negative: [] },
+      reach: 0,
+      armorBallistic: 0,
+      armorImpact: 0,
+      powers: [],
+      optionalPowers: [],
+      source: '',
     },
   };
 }

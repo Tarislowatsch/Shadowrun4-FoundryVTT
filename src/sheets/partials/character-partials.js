@@ -17,6 +17,8 @@ export async function registerCharacterPartials() {
     { path: `${basePath}/item-cards/action.card.hbs`, name: 'action-card' },
     { path: `${basePath}/item-cards/commlink.card.hbs`, name: 'commlink-card' },
     { path: `${basePath}/item-cards/quality.card.hbs`, name: 'quality-card' },
+    { path: `${basePath}/item-cards/metatype.card.hbs`, name: 'metatype-card' },
+    { path: `${basePath}/item-cards/ammo.card.hbs`, name: 'ammo-card' },
     {
       path: `${basePath}/item-card-actions-effects.hbs`,
       name: 'item-card-actions-effects',

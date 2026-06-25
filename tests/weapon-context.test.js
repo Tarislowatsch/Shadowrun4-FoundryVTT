@@ -41,6 +41,56 @@ function makeModItem(id, overrides = {}) {
   };
 }
 
+function makeAmmoItem(id, overrides = {}) {
+  return {
+    _id: id,
+    name: `Ammo ${id}`,
+    type: 'Ammo',
+    system: {
+      damageBonus: 0,
+      apBonus: 0,
+      damageTypeOverride: '',
+      damageOverride: null,
+      category: '',
+      quantity: 10,
+      ...overrides,
+    },
+  };
+}
+
+describe('buildWeaponContext ammo category filtering', () => {
+  it('filters availableAmmo by matching category', () => {
+    const items = [
+      makeWeaponItem('w1', 'Ranged Weapon', { category: 'Heavy Pistols' }),
+      makeAmmoItem('a1', { category: 'Heavy Pistols' }),
+      makeAmmoItem('a2', { category: 'Shotguns' }),
+    ];
+    const [w] = buildWeaponContext(items);
+    expect(w.availableAmmo).toHaveLength(1);
+    expect(w.availableAmmo[0].id).toBe('a1');
+  });
+
+  it('shows uncategorized ammo for any weapon', () => {
+    const items = [
+      makeWeaponItem('w1', 'Ranged Weapon', { category: 'Heavy Pistols' }),
+      makeAmmoItem('a1', { category: '' }),
+    ];
+    const [w] = buildWeaponContext(items);
+    expect(w.availableAmmo).toHaveLength(1);
+    expect(w.availableAmmo[0].id).toBe('a1');
+  });
+
+  it('shows all ammo for uncategorized weapon', () => {
+    const items = [
+      makeWeaponItem('w1', 'Ranged Weapon', { category: '' }),
+      makeAmmoItem('a1', { category: 'Heavy Pistols' }),
+      makeAmmoItem('a2', { category: 'Shotguns' }),
+    ];
+    const [w] = buildWeaponContext(items);
+    expect(w.availableAmmo).toHaveLength(2);
+  });
+});
+
 describe('buildWeaponContext with mods', () => {
   it('resolves installed mods and computes effective values', () => {
     const items = [

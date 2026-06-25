@@ -21,6 +21,7 @@
           <th>{{localize 'sr4.weapon.currentAmmo'}}</th>
           <th>{{localize 'sr4.weapon.maxAmmo'}}</th>
           <th>{{localize 'sr4.weapon.ammoFeed'}}</th>
+          <th>{{localize 'sr4.weapon.category'}}</th>
           <th>{{localize 'sr4.weapon.avail'}}</th>
           <th>{{localize 'sr4.weapon.legality'}}</th>
           <th>{{localize 'sr4.weapon.cost'}}</th>
@@ -55,6 +56,12 @@
           <td><input type="number" name="system.currentAmmo" value="{{ system.currentAmmo }}" /></td>
           <td><input type="number" name="system.maxAmmo" value="{{ system.maxAmmo }}" /></td>
           <td><input type="text" name="system.ammoFeed" value="{{ system.ammoFeed }}" /></td>
+          <td>
+            <select name="system.category">
+              <option value="" {{#unless system.category}}selected{{/unless}}>—</option>
+              {{selectOptions weaponcategories selected=system.category localize=true}}
+            </select>
+          </td>
           <td><input type="number" name="system.avail" value="{{ system.avail }}" /></td>
           <td><input type="text" name="system.legality" value="{{ system.legality }}" /></td>
           <td><input type="number" name="system.cost" value="{{ system.cost }}" /></td>

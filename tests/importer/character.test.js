@@ -275,4 +275,44 @@ describe('buildActorData', () => {
     buildActorData(parsed, canonicalSkills);
     expect(canonicalSkills[0].system.rating).toBe(0);
   });
+
+  it('builds ammoLinks from weapon clips and gear GUIDs', () => {
+    const withAmmo = {
+      character: baseCharacter,
+      items: {
+        weapon: [
+          {
+            name: 'Ares Predator IV',
+            type: 'Ranged',
+            category: 'Heavy Pistols',
+            damage: '5P',
+            ammo: '15(c)',
+            mode: 'SA',
+            _clips: [{ gearGuid: 'guid-123', count: 15 }],
+          },
+        ],
+        gear: [
+          {
+            name: 'Regular Ammo',
+            category: 'Ammunition',
+            guid: 'guid-123',
+          },
+        ],
+      },
+      skills: [],
+    };
+    const data = buildActorData(withAmmo, []);
+    expect(data.ammoLinks).toEqual([
+      {
+        weaponName: 'Ares Predator IV',
+        ammoName: 'Regular Ammo',
+        currentAmmo: 15,
+      },
+    ]);
+  });
+
+  it('returns empty ammoLinks when no clips are present', () => {
+    const data = buildActorData(parsed, canonicalSkills);
+    expect(data.ammoLinks).toEqual([]);
+  });
 });

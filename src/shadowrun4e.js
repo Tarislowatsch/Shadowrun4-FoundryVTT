@@ -173,6 +173,8 @@ Hooks.once('init', async function () {
     'Weapon Mod',
     'Armor Mod',
     'Vehicle Mod',
+    'Metatype',
+    'CritterTemplate',
   ];
 
   DocumentSheetConfig.registerSheet(Item, 'sr4', SR4ItemSheet, {

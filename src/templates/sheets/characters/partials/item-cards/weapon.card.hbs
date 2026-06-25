@@ -124,6 +124,12 @@
       {{ this.loadedAmmo.quantity }}
       {{/if}}
     </span>
+    <span class="item-property{{#unless this.loadedAmmo.displayCategory}} item-property--empty{{/unless}}">
+      {{#if this.loadedAmmo.displayCategory}}
+      <strong>{{localize "sr4.ammo.category"}}</strong>
+      {{localize this.loadedAmmo.displayCategory}}
+      {{/if}}
+    </span>
   </div>
   {{/if}}
   {{/if}}

@@ -9,6 +9,7 @@
       "parseError": "Could not parse \"{file}\": {error}",
       "preview": "Preview",
       "skillCount": "Skills",
+      "ammoLinkError": "Could not link ammunition for \"{name}\". Ammo can be assigned manually.",
       "success": "Imported character \"{name}\".",
       "title": "Character Importer",
       "upload": "Character XML file"
@@ -83,6 +84,14 @@
       "spellWorkflow": {
         "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain).",
         "name": "Spell Workflow"
+      },
+      "defaultTokenVision": {
+        "hint": "Automatically enable vision on the prototype token when creating a new actor.",
+        "name": "Default Token Vision"
+      },
+      "defaultTokenVisionRange": {
+        "hint": "Default vision range (in grid units) for newly created actors. Set to 0 for unlimited range.",
+        "name": "Default Token Vision Range"
       },
       "useDefaultEffectSheet": {
         "hint": "When enabled, active effects open with Foundry's built-in sheet instead of the SR4 custom sheet.",

@@ -1,0 +1,13 @@
+<form class="dice-pool-split-dialog">
+  <div class="form-group">
+    <span>{{localize "sr4.roll.totalDice"}}: <strong>{{ totalDice }}</strong>
+    — {{localize "sr4.roll.remainingDice"}}: <strong id="remainingDice">{{ remaining }}</strong></span>
+  </div>
+  <p class="hint">{{localize "sr4.roll.splitHint"}}</p>
+  {{#each targets}}
+  <div class="form-group target-allocation" data-target-id="{{ this.id }}">
+    <label>{{ this.name }}{{#if this.essencePenalty}} <small>({{localize "sr4.spell.essencePenalty"}}: -{{ this.essencePenalty }})</small>{{/if}}</label>
+    <input type="number" class="split-dice" name="dice-{{ this.id }}" value="{{ this.initial }}" min="1" max="{{ ../totalDice }}" />
+  </div>
+  {{/each}}
+</form>

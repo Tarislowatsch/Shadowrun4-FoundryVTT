@@ -31,5 +31,10 @@ export function buildComputedStats(actorData, derivedStats) {
       ASTRALINITIATIVE: derivedStats?.initiative?.astral ?? 0,
     },
     derivedKeys: ['INITIATIVE', 'MATRIXINITIATIVE', 'ASTRALINITIATIVE'],
+    hasMetatypeLimits:
+      Object.keys(derivedStats?.attributeMaximum ?? {}).length > 0,
+    attributeMaximum: derivedStats?.attributeMaximum ?? {},
+    augmentedMaximum: derivedStats?.augmentedMaximum ?? {},
+    attributeMinimum: derivedStats?.attributeMinimum ?? {},
   };
 }

@@ -2,6 +2,11 @@
   <summary class="collapsible-header">
     <i class="fas fa-chevron-right collapse-icon"></i>
     <h3>{{title}}</h3>
+    {{#if btnAction}}
+      {{#if @root.editMode}}
+        {{> item-create-btn btnAction=btnAction btnItemType=btnItemType btnItemSubtype=btnItemSubtype btnTooltip=btnTooltip}}
+      {{/if}}
+    {{/if}}
   </summary>
   {{> @partial-block}}
 </details>

@@ -6,7 +6,9 @@
  */
 
 import {
+  isAmmunition,
   mapBioware,
+  mapCharacterMetatype,
   mapCharacterSkill,
   mapCharacterSystem,
   mapCyberware,
@@ -80,9 +82,60 @@ function mergeSkillRatings(canonicalSkills, ratings) {
 }
 
 /**
+ * @typedef {object} AmmoLink
+ * @property {string} weaponName
+ * @property {string} ammoName
+ * @property {number} currentAmmo
+ */
+
+/**
+ * @param {Record<string, Array<Record<string, unknown>>>} [parsedItems]
+ * @returns {Map<string, string>}
+ */
+function buildGearGuidToName(parsedItems) {
+  /** @type {Map<string, string>} */
+  const map = new Map();
+  for (const record of parsedItems?.gear ?? []) {
+    const guid = String(record.guid ?? '');
+    const name = String(record.name ?? '');
+    if (guid && name && isAmmunition(record)) map.set(guid, name);
+  }
+  return map;
+}
+
+/**
+ * @param {Record<string, Array<Record<string, unknown>>>} [parsedItems]
+ * @param {Map<string, string>} gearGuidToName
+ * @returns {AmmoLink[]}
+ */
+function buildAmmoLinks(parsedItems, gearGuidToName) {
+  /** @type {AmmoLink[]} */
+  const links = [];
+  for (const record of parsedItems?.weapon ?? []) {
+    const clips =
+      /** @type {Array<{gearGuid: string, count: number}>|undefined} */ (
+        record._clips
+      );
+    if (!clips?.length) continue;
+    for (const clip of clips) {
+      const ammoName = gearGuidToName.get(clip.gearGuid);
+      if (ammoName) {
+        links.push({
+          weaponName: String(record.name ?? ''),
+          ammoName,
+          currentAmmo: clip.count,
+        });
+        break;
+      }
+    }
+  }
+  return links;
+}
+
+/**
  * @param {import('./parse-character.js').ParsedCharacter} parsed
  * @param {Array<{ name: string, type: string, system: object }>} canonicalSkills
- * @returns {{ name: string, type: 'character', img: string|null, system: object, items: Array<object> }}
+ * @returns {{ name: string, type: 'character', img: string|null, system: object, items: Array<object>, ammoLinks: AmmoLink[] }}
  */
 export function buildActorData(parsed, canonicalSkills) {
   const { name, img, system } = mapCharacterSystem(parsed.character);
@@ -101,11 +154,22 @@ export function buildActorData(parsed, canonicalSkills) {
     .filter((s) => String(s.knowledge ?? '').toUpperCase() === 'TRUE')
     .map(mapCharacterSkill);
 
+  const metatypeItem = mapCharacterMetatype(parsed.character);
+
+  const gearGuidToName = buildGearGuidToName(parsed.items);
+  const ammoLinks = buildAmmoLinks(parsed.items, gearGuidToName);
+
   return {
     name,
     type: 'character',
     img,
     system,
-    items: [...items, ...activeSkills, ...knowledgeSkills],
+    items: [
+      ...(metatypeItem ? [metatypeItem] : []),
+      ...items,
+      ...activeSkills,
+      ...knowledgeSkills,
+    ],
+    ammoLinks,
   };
 }
