@@ -40,21 +40,6 @@
 
   <hr />
 
-  {{!-- Cyberware / Bioware --}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.implants') btnAction="createItem" btnItemType="Implant" btnTooltip="sr4.item.create"}}
-    {{#if implants}}
-    <ul class="implant-list">
-      {{#each implants as |item|}}
-      {{> "implant-card"}}
-      {{/each}}
-    </ul>
-    {{else}}
-    <p class="empty-list">{{localize 'sr4.implant.noImplants'}}</p>
-    {{/if}}
-  {{/collapsible-section}}
-
-  <hr />
-
   {{!-- Commlinks --}}
   {{#> collapsible-section title=(localize 'sr4.inventory.commlinks') btnAction="createItem" btnItemType="Commlink" btnTooltip="sr4.item.create"}}
     {{#if commlinks}}

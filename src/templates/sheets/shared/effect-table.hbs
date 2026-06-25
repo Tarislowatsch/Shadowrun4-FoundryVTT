@@ -4,7 +4,6 @@
       <th class="effect-icon-col"></th>
       <th>{{localize 'sr4.effect.name'}}</th>
       <th>{{localize 'sr4.effect.attribute'}}</th>
-      <th>{{localize 'sr4.effect.mode.label'}}</th>
       <th>{{localize 'sr4.effect.value'}}</th>
       <th>{{localize 'sr4.effect.active'}}</th>
       <th></th>
@@ -15,16 +14,23 @@
     <tr class="effect-row {{#unless effect.active}}effect-inactive{{/unless}}" data-effect-id="{{effect.id}}">
       <td class="effect-icon-col"><img src="{{effect.img}}" class="effect-icon" /></td>
       <td class="effect-name">{{effect.name}}</td>
-      <td class="effect-attribute">{{localize (lookup @root.effectTargets effect.key)}}</td>
-      <td class="effect-mode">{{localize (concat 'sr4.effect.mode.' effect.mode)}}</td>
-      <td class="effect-value {{#if (gt effect.value 0)}}positive{{else if (lt effect.value 0)}}negative{{/if}}">
-        {{#if (eq effect.mode 'add')}}
-          {{#if (gt effect.value 0)}}+{{/if}}{{effect.value}}
-        {{else if (eq effect.mode 'multiply')}}
-          ×{{effect.value}}
-        {{else}}
-          ={{effect.value}}
-        {{/if}}
+      <td class="effect-attribute">
+        {{#each effect.changes as |change|}}
+        <div>{{change.targetLabel}}</div>
+        {{/each}}
+      </td>
+      <td class="effect-value-cell">
+        {{#each effect.changes as |change|}}
+        <div class="effect-value {{#if (gt change.value 0)}}positive{{else if (lt change.value 0)}}negative{{/if}}">
+          {{#if (eq change.mode 'add')}}
+            {{#if (gt change.value 0)}}+{{/if}}{{change.value}}
+          {{else if (eq change.mode 'multiply')}}
+            ×{{change.value}}
+          {{else}}
+            ={{change.value}}
+          {{/if}}
+        </div>
+        {{/each}}
       </td>
       <td class="effect-toggle">
         <input type="checkbox" class="sr4-checkbox" data-action="toggleEffect"

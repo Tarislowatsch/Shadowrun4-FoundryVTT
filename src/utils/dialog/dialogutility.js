@@ -1,4 +1,4 @@
-import { isRangedWeapon } from '@models/index';
+import { isRangedWeapon, SR4SkillGroupByName } from '@models/index';
 import { getGame } from '../game/game.js';
 import { DiceUtility } from '../rolls/diceutility.js';
 
@@ -299,7 +299,34 @@ export function getSkillDicePool(actor, skillName) {
   const skill = actor.getSkill(skillName);
   if (!skill) return undefined;
   const rating = skill.system.rating > 0 ? skill.system.rating : -1;
-  return Math.max(actor.getAttribute(skill.system.attribute) + rating, 1);
+  const base = actor.getAttribute(skill.system.attribute) + rating;
+  const bonus = getSkillModifier(actor, skill);
+  return Math.max(base + bonus, 1);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {import('@models/index').SR4Skill} skill
+ * @returns {number}
+ */
+function getSkillModifier(actor, skill) {
+  const modifiers = /** @type {any} */ (actor).system?.modifiers;
+  if (!modifiers) return 0;
+  let bonus = 0;
+  const label = skill.system.label ?? '';
+  const match = label.match(/^sr4\.skills\.(?:categorized\.)?(.+)$/);
+  const labelKey = match?.[1];
+  if (labelKey && modifiers.skillBonuses?.[labelKey]) {
+    bonus += Number(modifiers.skillBonuses[labelKey]) || 0;
+  }
+  const group = skill.system.group;
+  if (group) {
+    const groupKey = SR4SkillGroupByName[group];
+    if (groupKey && modifiers.skillGroupBonuses?.[groupKey]) {
+      bonus += Number(modifiers.skillGroupBonuses[groupKey]) || 0;
+    }
+  }
+  return bonus;
 }
 
 /**

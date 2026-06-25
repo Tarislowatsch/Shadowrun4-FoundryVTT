@@ -102,6 +102,26 @@
   .item-stats-table {
     @include sr4-table-inputs;
   }
+
+  .change-controls-col {
+    width: 28px;
+    text-align: center;
+
+    a {
+      @include sr4-icon-btn;
+      @include sr4-teal-hover;
+    }
+  }
+
+  .change-controls {
+    width: 28px;
+    text-align: center;
+
+    .remove-change-btn {
+      @include sr4-icon-btn;
+      @include sr4-delete-hover;
+    }
+  }
 }
 
 .effect-config-footer {

@@ -37,28 +37,38 @@
           <th>{{localize "sr4.effect.attribute"}}</th>
           <th>{{localize "sr4.effect.mode.label"}}</th>
           <th>{{localize "sr4.effect.value"}}</th>
+          <th class="change-controls-col">
+            <a data-action="addChange" data-tooltip="{{localize 'sr4.effect.addChange'}}">
+              <i class="fas fa-plus"></i>
+            </a>
+          </th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
+      <tbody class="changes-body">
+        {{#each changes as |change|}}
+        <tr class="change-row">
           <td>
             <select name="changeKey">
-              {{selectOptions effectTargets selected=changeKey localize=true}}
+              {{selectOptions @root.effectTargets selected=change.key localize=true}}
             </select>
           </td>
           <td>
             <select name="changeMode">
-              {{selectOptions changeModes selected=changeMode localize=true}}
+              {{selectOptions @root.changeModes selected=change.mode localize=true}}
             </select>
           </td>
           <td>
-            <input
-              type="number"
-              name="changeValue"
-              value="{{changeValue}}"
-            />
+            <input type="number" name="changeValue" value="{{change.value}}" />
+          </td>
+          <td class="change-controls">
+            <a class="remove-change-btn" data-action="removeChange"
+              data-tooltip="{{localize 'sr4.effect.removeChange'}}"
+              {{#unless @root.multipleChanges}}style="visibility:hidden"{{/unless}}>
+              <i class="fas fa-times"></i>
+            </a>
           </td>
         </tr>
+        {{/each}}
       </tbody>
     </table>
 

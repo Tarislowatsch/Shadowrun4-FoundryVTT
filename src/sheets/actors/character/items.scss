@@ -279,6 +279,14 @@ a.item-toggle-equip {
   }
 }
 
+/* ---------------- IMPLANT SUMMARY ---------------- */
+
+.implant-summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 /* ---------------- METATYPE CARD ---------------- */
 
 .metatype-card .item-header img {

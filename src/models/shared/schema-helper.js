@@ -172,6 +172,8 @@ export class SR4SheetStatsData extends fields.SchemaField {
  * @property {number} parryModifier
  * @property {number} meleeDamageModifier
  * @property {number} unarmedDamageModifier
+ * @property {Record<string, number>} skillGroupBonuses
+ * @property {Record<string, number>} skillBonuses
  */
 
 export const modifiersField = () =>
@@ -199,6 +201,8 @@ export const modifiersField = () =>
       integer: true,
     }),
     soakBonus: new fields.NumberField({ initial: 0, integer: true }),
+    skillGroupBonuses: new fields.ObjectField({ initial: {} }),
+    skillBonuses: new fields.ObjectField({ initial: {} }),
   });
 
 // ---------------------------------------------------------------------------

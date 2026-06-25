@@ -29,6 +29,8 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
     actions: {
       saveEffect: SR4ActiveEffectSheet.#onSave,
       pickImage: SR4ActiveEffectSheet.#onPickImage,
+      addChange: SR4ActiveEffectSheet.#onAddChange,
+      removeChange: SR4ActiveEffectSheet.#onRemoveChange,
     },
   };
 
@@ -44,17 +46,30 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
    * @returns {Promise<object>}
    */
   async _prepareContext(options) {
-    const change = this.document.changes[0] ?? {};
-    const modeKey = change.type ?? 'add';
+    const rawChanges = this.document.changes;
+    const changes =
+      rawChanges.length > 0
+        ? rawChanges.map((c) => ({
+            key: c.key ?? 'system.modifiers.generalModifier',
+            mode: c.type ?? 'add',
+            value: Number(c.value ?? 0),
+          }))
+        : [
+            {
+              key: 'system.modifiers.generalModifier',
+              mode: 'add',
+              value: 0,
+            },
+          ];
+
     return {
       name: this.document.name,
       img: this.document.img ?? 'icons/svg/aura.svg',
       active: !this.document.disabled,
       durationTurns: this.document.duration?.turns ?? 0,
       showOnToken: !!this.document.flags?.sr4?.showOnToken,
-      changeKey: change.key ?? 'system.modifiers.generalModifier',
-      changeMode: modeKey,
-      changeValue: Number(change.value ?? 0),
+      changes,
+      multipleChanges: changes.length > 1,
       description: this.document.description ?? '',
       effectTargets: SR4EffectTargets,
       changeModes: {
@@ -84,6 +99,48 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
   }
 
   /**
+   * @param {Event} _event
+   * @param {HTMLElement} _target
+   */
+  static #onAddChange(_event, _target) {
+    const tbody = this.element.querySelector('.changes-body');
+    if (!tbody) return;
+    const firstRow = tbody.querySelector('.change-row');
+    if (!firstRow) return;
+    const newRow = /** @type {HTMLElement} */ (firstRow.cloneNode(true));
+    newRow.querySelector('[name="changeKey"]').value =
+      'system.modifiers.generalModifier';
+    newRow.querySelector('[name="changeMode"]').value = 'add';
+    newRow.querySelector('[name="changeValue"]').value = '0';
+    tbody.appendChild(newRow);
+    SR4ActiveEffectSheet.#updateRemoveButtons.call(this);
+  }
+
+  /**
+   * @param {Event} _event
+   * @param {HTMLElement} target
+   */
+  static #onRemoveChange(_event, target) {
+    const row = target.closest('.change-row');
+    const tbody = this.element.querySelector('.changes-body');
+    if (!row || !tbody) return;
+    if (tbody.querySelectorAll('.change-row').length <= 1) return;
+    row.remove();
+    SR4ActiveEffectSheet.#updateRemoveButtons.call(this);
+  }
+
+  static #updateRemoveButtons() {
+    const tbody = this.element.querySelector('.changes-body');
+    if (!tbody) return;
+    const rows = tbody.querySelectorAll('.change-row');
+    const single = rows.length <= 1;
+    rows.forEach((row) => {
+      const btn = row.querySelector('.remove-change-btn');
+      if (btn) btn.style.visibility = single ? 'hidden' : '';
+    });
+  }
+
+  /**
    * @param {Event} event
    * @param {HTMLElement} target
    * @returns {Promise<void>}
@@ -100,14 +157,17 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
     );
     const showOnToken =
       form.querySelector('[name="showOnToken"]')?.checked ?? false;
-    const changeKey =
-      form.querySelector('[name="changeKey"]')?.value ??
-      'system.modifiers.generalModifier';
-    const changeModeKey =
-      form.querySelector('[name="changeMode"]')?.value ?? 'add';
-    const changeValue =
-      form.querySelector('[name="changeValue"]')?.value ?? '0';
     const description = form.querySelector('[name="description"]')?.value ?? '';
+
+    const changeRows = form.querySelectorAll('.change-row');
+    const changes = [...changeRows].map((row) => ({
+      key:
+        row.querySelector('[name="changeKey"]')?.value ??
+        'system.modifiers.generalModifier',
+      type: row.querySelector('[name="changeMode"]')?.value ?? 'add',
+      value: row.querySelector('[name="changeValue"]')?.value ?? '0',
+    }));
+
     await this.document.update({
       name,
       img,
@@ -115,13 +175,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
       'flags.sr4.showOnToken': showOnToken,
       duration: { turns: durationTurns > 0 ? durationTurns : undefined },
       description,
-      changes: [
-        {
-          key: changeKey,
-          type: changeModeKey,
-          value: changeValue,
-        },
-      ],
+      changes,
     });
     this.close();
   }

@@ -336,9 +336,18 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       name: e.name,
       img: e.img ?? 'icons/svg/aura.svg',
       active: !e.disabled,
-      key: e.changes[0]?.key ?? '',
-      mode: e.changes[0]?.type ?? 'add',
-      value: Number(e.changes[0]?.value ?? 0),
+      changes: e.changes.map((c) => {
+        const key = c.key ?? '';
+        const i18nKey = SR4EffectTargets[key];
+        return {
+          key,
+          targetLabel: i18nKey
+            ? game.i18n.localize(i18nKey)
+            : key.split('.').pop(),
+          mode: c.type ?? 'add',
+          value: Number(c.value ?? 0),
+        };
+      }),
     }));
     context.effectTargets = SR4EffectTargets;
 

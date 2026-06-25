@@ -5,6 +5,7 @@ import {
   Attackskill,
   DamageTypes,
   DrainAttributes,
+  ImplantTypes,
   Shootingmodes,
   SR4Attributes,
   Traditions,
@@ -66,6 +67,11 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         'systems/shadowrun4e/templates/sheets/characters/partials/tabs/inventory.tab.hbs',
       scrollable: [''],
     },
+    implants: {
+      template:
+        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/implants.tab.hbs',
+      scrollable: [''],
+    },
     magic: {
       template:
         'systems/shadowrun4e/templates/sheets/characters/partials/tabs/magic.tab.hbs',
@@ -103,6 +109,11 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
           id: 'inventory',
           icon: 'fas fa-briefcase',
           label: 'sr4.tab.inventory',
+        },
+        {
+          id: 'implants',
+          icon: 'fas fa-microchip',
+          label: 'sr4.tab.implants',
         },
         { id: 'magic', icon: 'fas fa-book', label: 'sr4.tab.magic' },
         { id: 'matrix', icon: 'fas fa-wifi', label: 'sr4.tab.matrix' },
@@ -148,6 +159,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       case 'weapons':
       case 'defense':
       case 'inventory':
+      case 'implants':
       case 'magic':
       case 'matrix':
       case 'actions':
@@ -187,6 +199,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   _getItemContext(items) {
     const powers = this._enrichItemContext(items, 'Power');
     const sys = this.document.system;
+    const implants = this._enrichItemContext(items, 'Implant');
     return {
       weapons: buildWeaponContext(items, {
         meleeDmgBonus: sys.derivedStats.meleeDamageBonus ?? 0,
@@ -195,7 +208,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       }),
       skills: sortSkillsByLabel(items),
       items: items.filter((i) => i.type === 'Item'),
-      implants: this._enrichItemContext(items, 'Implant'),
+      ...SR4CharacterSheet.#buildImplantContext(implants, sys),
       spells: this._enrichItemContext(items, 'Spell'),
       powers,
       totalPowerCost: powers.reduce(
@@ -235,9 +248,18 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         name: e.name,
         img: e.img ?? 'icons/svg/aura.svg',
         active: !e.disabled,
-        key: e.changes[0]?.key ?? '',
-        mode: e.changes[0]?.type ?? 'add',
-        value: Number(e.changes[0]?.value ?? 0),
+        changes: e.changes.map((c) => {
+          const key = c.key ?? '';
+          const i18nKey = SR4EffectTargets[key];
+          return {
+            key,
+            targetLabel: i18nKey
+              ? game.i18n.localize(i18nKey)
+              : key.split('.').pop(),
+            mode: c.type ?? 'add',
+            value: Number(c.value ?? 0),
+          };
+        }),
         description: e.description ?? '',
       })),
     };
@@ -271,6 +293,22 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       drainPool: (sheetStats?.WILLPOWER ?? 0) + drainStatValue,
       hasMagic:
         actorData.system.magic?.adept || actorData.system.magic?.magician,
+    };
+  }
+
+  static #buildImplantContext(implants, sys) {
+    const groups = Object.values(ImplantTypes).map((type) => ({
+      label: game.i18n.localize(`sr4.implant.${type}`),
+      items: implants.filter((i) => i.system.type === type),
+    }));
+    const essenceLoss = implants.reduce(
+      (sum, i) => sum + (i.system.essenceActual ?? 0),
+      0
+    );
+    return {
+      implantsByType: groups.filter((g) => g.items.length > 0),
+      essenceLoss: essenceLoss.toFixed(2),
+      currentEssence: ((sys.sheetStats?.ESSENCE ?? 6) - essenceLoss).toFixed(2),
     };
   }
 

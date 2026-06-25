@@ -61,6 +61,32 @@ export const ActiveSkillCategories = Object.freeze({
   VEHICLE: 'sr4.skills.categories.vehicle',
 });
 
+/**
+ * Maps camelCase key (used in system.modifiers.skillGroupBonuses) to the
+ * group string stored on skill items (system.group).
+ * @type {Readonly<Record<string, string>>}
+ */
+export const SR4SkillGroupKeys = Object.freeze({
+  athletics: 'athletics',
+  biotech: 'biotech',
+  closeCombat: 'close combat',
+  conjuring: 'conjuring',
+  cracking: 'cracking',
+  electronics: 'electronics',
+  influence: 'influence',
+  mechanic: 'mechanic',
+  outdoors: 'outdoors',
+  rangedCombat: 'ranged combat',
+  sorcery: 'sorcery',
+  stealth: 'stealth',
+  tasking: 'tasking',
+});
+
+/** @type {Readonly<Record<string, string>>} */
+export const SR4SkillGroupByName = Object.freeze(
+  Object.fromEntries(Object.entries(SR4SkillGroupKeys).map(([k, v]) => [v, k]))
+);
+
 export const KnowledgeSkillCategories = Object.freeze({
   /** @type {string} Localisation key for the Academic knowledge skill category. */
   ACADEMIC: 'sr4.skills.categories.academic',
