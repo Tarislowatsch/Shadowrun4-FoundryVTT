@@ -126,6 +126,14 @@ export function extractCharacter(xmlString) {
           }))
           .filter((c) => c.gearGuid);
       }
+
+      const modEls = [
+        ...weaponEls[i].querySelectorAll(':scope > mods > weaponmod'),
+        ...weaponEls[i].querySelectorAll(':scope > accessories > accessory'),
+      ];
+      if (modEls.length > 0) {
+        items.weapon[i]._weaponMods = modEls.map(elementToRecord);
+      }
     }
   }
 

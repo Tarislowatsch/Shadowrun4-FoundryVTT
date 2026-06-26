@@ -316,6 +316,84 @@ describe('buildActorData', () => {
     expect(data.ammoLinks).toEqual([]);
   });
 
+  it('builds weaponModLinks and creates mod items from _weaponMods', () => {
+    const withMods = {
+      character: baseCharacter,
+      items: {
+        weapon: [
+          {
+            name: 'AK-97',
+            type: 'Ranged',
+            category: 'Assault Rifles',
+            damage: '6P',
+            ammo: '38(c)',
+            mode: 'SA/BF/FA',
+            _weaponMods: [
+              {
+                name: 'Gas Vent 2',
+                slots: '1',
+                rc: '2',
+                source: 'SR4',
+                page: '322',
+              },
+              {
+                name: 'Foregrip',
+                rc: '1',
+                mount: 'Under',
+                conceal: '0',
+                source: 'AR',
+                page: '34',
+              },
+            ],
+          },
+          {
+            name: 'Ares Crusader',
+            type: 'Ranged',
+            category: 'Machine Pistols',
+            damage: '4P',
+            ammo: '40(c)',
+            mode: 'SA/BF',
+            _weaponMods: [
+              {
+                name: 'Gas Vent 2',
+                slots: '1',
+                rc: '2',
+                source: 'SR4',
+                page: '322',
+              },
+            ],
+          },
+        ],
+      },
+      skills: [],
+    };
+    const data = buildActorData(withMods, []);
+
+    const modItems = data.items.filter((i) => i.type === 'Weapon Mod');
+    expect(modItems).toHaveLength(3);
+    expect(modItems.map((m) => m.name).sort()).toEqual([
+      'Foregrip',
+      'Gas Vent 2',
+      'Gas Vent 2',
+    ]);
+
+    const gasVent = modItems.find((m) => m.name === 'Gas Vent 2');
+    expect(gasVent.system.slotCost).toBe(1);
+    const foregrip = modItems.find((m) => m.name === 'Foregrip');
+    expect(foregrip.system.slotCost).toBe(0);
+
+    expect(data.weaponModLinks).toEqual([
+      { weaponName: 'AK-97', modName: 'Gas Vent 2' },
+      { weaponName: 'AK-97', modName: 'Foregrip' },
+      { weaponName: 'Ares Crusader', modName: 'Gas Vent 2' },
+    ]);
+  });
+
+  it('returns empty weaponModLinks when no mods are present', () => {
+    const data = buildActorData(parsed, canonicalSkills);
+    expect(data.weaponModLinks).toEqual([]);
+  });
+
   it('matches hyphenated canonical names to space-separated Chummer names', () => {
     const canonical = [
       {

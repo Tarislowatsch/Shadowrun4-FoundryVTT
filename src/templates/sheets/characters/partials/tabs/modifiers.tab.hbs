@@ -7,32 +7,32 @@
 
     <div class="modifier-section">
       <h3>{{localize "sr4.modifiers.defense"}}</h3>
-      {{> "modifier-field" label="sr4.bonus.soakBonus" name="system.modifiers.soakBonus" value=system.modifiers.soakBonus}}
-      {{> "modifier-field" label="sr4.bonus.overflowBonus" name="system.modifiers.overflowBonus" value=system.modifiers.overflowBonus}}
-      {{> "modifier-field" label="sr4.bonus.woundModBonus" name="system.modifiers.woundModBonus" value=system.modifiers.woundModBonus}}
+      {{> "modifier-field" label="sr4.bonus.soakBonus" name="system.modifiers.soakBonus" value=sourceModifiers.soakBonus}}
+      {{> "modifier-field" label="sr4.bonus.overflowBonus" name="system.modifiers.overflowBonus" value=sourceModifiers.overflowBonus}}
+      {{> "modifier-field" label="sr4.bonus.woundModBonus" name="system.modifiers.woundModBonus" value=sourceModifiers.woundModBonus}}
       {{> "modifier-field" label="sr4.modifiers.woundModifier" value=system.derivedStats.woundModifier readonly=true}}
-      {{> "modifier-field" label="sr4.modifiers.meleeDefenseModifier" name="system.modifiers.meleeDefenseModifier" value=system.modifiers.meleeDefenseModifier}}
-      {{> "modifier-field" label="sr4.modifiers.rangedDefenseModifier" name="system.modifiers.rangedDefenseModifier" value=system.modifiers.rangedDefenseModifier}}
-      {{> "modifier-field" label="sr4.modifiers.dodgeModifier" name="system.modifiers.dodgeModifier" value=system.modifiers.dodgeModifier}}
-      {{> "modifier-field" label="sr4.modifiers.blockModifier" name="system.modifiers.blockModifier" value=system.modifiers.blockModifier}}
-      {{> "modifier-field" label="sr4.modifiers.parryModifier" name="system.modifiers.parryModifier" value=system.modifiers.parryModifier}}
+      {{> "modifier-field" label="sr4.modifiers.meleeDefenseModifier" name="system.modifiers.meleeDefenseModifier" value=sourceModifiers.meleeDefenseModifier}}
+      {{> "modifier-field" label="sr4.modifiers.rangedDefenseModifier" name="system.modifiers.rangedDefenseModifier" value=sourceModifiers.rangedDefenseModifier}}
+      {{> "modifier-field" label="sr4.modifiers.dodgeModifier" name="system.modifiers.dodgeModifier" value=sourceModifiers.dodgeModifier}}
+      {{> "modifier-field" label="sr4.modifiers.blockModifier" name="system.modifiers.blockModifier" value=sourceModifiers.blockModifier}}
+      {{> "modifier-field" label="sr4.modifiers.parryModifier" name="system.modifiers.parryModifier" value=sourceModifiers.parryModifier}}
     </div>
 
     <div class="modifier-section">
       <h3>{{localize "sr4.modifiers.combat"}}</h3>
       {{> "modifier-field" label="sr4.modifiers.meleeDamageBonus" value=system.derivedStats.meleeDamageBonus readonly=true}}
-      {{> "modifier-field" label="sr4.modifiers.meleeDamageModifier" name="system.modifiers.meleeDamageModifier" value=system.modifiers.meleeDamageModifier}}
-      {{> "modifier-field" label="sr4.modifiers.unarmedDamageModifier" name="system.modifiers.unarmedDamageModifier" value=system.modifiers.unarmedDamageModifier}}
+      {{> "modifier-field" label="sr4.modifiers.meleeDamageModifier" name="system.modifiers.meleeDamageModifier" value=sourceModifiers.meleeDamageModifier}}
+      {{> "modifier-field" label="sr4.modifiers.unarmedDamageModifier" name="system.modifiers.unarmedDamageModifier" value=sourceModifiers.unarmedDamageModifier}}
     </div>
 
     <div class="modifier-section">
       <h3>{{localize "sr4.modifiers.initiative.title"}}</h3>
-      {{> "modifier-field" label="sr4.modifiers.initiative.physicalBonus" name="system.modifiers.initiative.bonuses.physical" value=system.modifiers.initiative.bonuses.physical}}
-      {{> "modifier-field" label="sr4.modifiers.initiative.physicalPasses" name="system.modifiers.initiative.passes.physical" value=system.modifiers.initiative.passes.physical}}
-      {{> "modifier-field" label="sr4.modifiers.initiative.astralBonus" name="system.modifiers.initiative.bonuses.astral" value=system.modifiers.initiative.bonuses.astral}}
-      {{> "modifier-field" label="sr4.modifiers.initiative.astralPasses" name="system.modifiers.initiative.passes.astral" value=system.modifiers.initiative.passes.astral}}
-      {{> "modifier-field" label="sr4.modifiers.initiative.matrixBonus" name="system.modifiers.initiative.bonuses.matrix" value=system.modifiers.initiative.bonuses.matrix}}
-      {{> "modifier-field" label="sr4.modifiers.initiative.matrixPasses" name="system.modifiers.initiative.passes.matrix" value=system.modifiers.initiative.passes.matrix min=1}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.physicalBonus" name="system.modifiers.initiative.bonuses.physical" value=sourceModifiers.initiative.bonuses.physical}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.physicalPasses" name="system.modifiers.initiative.passes.physical" value=sourceModifiers.initiative.passes.physical}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.astralBonus" name="system.modifiers.initiative.bonuses.astral" value=sourceModifiers.initiative.bonuses.astral}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.astralPasses" name="system.modifiers.initiative.passes.astral" value=sourceModifiers.initiative.passes.astral}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.matrixBonus" name="system.modifiers.initiative.bonuses.matrix" value=sourceModifiers.initiative.bonuses.matrix}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.matrixPasses" name="system.modifiers.initiative.passes.matrix" value=sourceModifiers.initiative.passes.matrix min=1}}
     </div>
 
     <div class="modifier-section">

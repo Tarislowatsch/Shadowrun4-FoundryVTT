@@ -35,6 +35,19 @@ const MODES_BY_WEAPON_MODE = {
   SEMI_AUTOMATIC: [Shootingmodes.SEMI_AUTOMATIC],
   BURST_FIRE: [Shootingmodes.BURST_FIRE],
   FULL_AUTO: [Shootingmodes.FULL_AUTO],
+  SINGLE_SEMI: [Shootingmodes.SINGLE_SHOT, Shootingmodes.SEMI_AUTOMATIC],
+  SINGLE_SEMI_BURST: [
+    Shootingmodes.SINGLE_SHOT,
+    Shootingmodes.SEMI_AUTOMATIC,
+    Shootingmodes.BURST_FIRE,
+  ],
+  SINGLE_SEMI_BURST_FULL_AUTO: [
+    Shootingmodes.SINGLE_SHOT,
+    Shootingmodes.SEMI_AUTOMATIC,
+    Shootingmodes.BURST_FIRE,
+    Shootingmodes.FULL_AUTO,
+  ],
+  BURST_FULL_AUTO: [Shootingmodes.BURST_FIRE, Shootingmodes.FULL_AUTO],
   SEMI_BURST: [Shootingmodes.SEMI_AUTOMATIC, Shootingmodes.BURST_FIRE],
   SEMI_BURST_FULL_AUTO: [
     Shootingmodes.SEMI_AUTOMATIC,

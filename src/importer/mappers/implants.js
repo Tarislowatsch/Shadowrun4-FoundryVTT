@@ -10,11 +10,33 @@ import {
   sourceOf,
 } from './helpers.js';
 
+/** @type {Record<string, string>} */
+const CHUMMER_GRADE_MAP = {
+  standard: 'STANDARD',
+  alpha: 'ALPHA',
+  beta: 'BETA',
+  delta: 'DELTA',
+  used: 'SECOND_HAND',
+  'second-hand': 'SECOND_HAND',
+  secondhand: 'SECOND_HAND',
+};
+
+/**
+ * @param {unknown} raw
+ * @returns {string}
+ */
+function normalizeGrade(raw) {
+  const str = String(raw ?? '')
+    .trim()
+    .toLowerCase();
+  return CHUMMER_GRADE_MAP[str] ?? 'STANDARD';
+}
+
 /**
  * Maps an implant record to an "Implant" item of the given implant type.
  *
  * @param {Record<string, unknown>} record
- * @param {string} implantType - 'cyberware' or 'bioware'.
+ * @param {string} implantType - Enum key: 'CYBERWARE' or 'BIOWARE'.
  * @returns {{ name: string, type: string, system: object }}
  */
 function mapImplant(record, implantType) {
@@ -26,7 +48,7 @@ function mapImplant(record, implantType) {
       essence,
       essenceActual: essence,
       capacity: parseNumber(record.capacity, 0),
-      grade: 'standard',
+      grade: normalizeGrade(record.grade),
       type: implantType,
       rating: parseNumber(record.rating, 0),
       ...commerceFields(record),
@@ -42,7 +64,7 @@ function mapImplant(record, implantType) {
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapCyberware(record) {
-  return mapImplant(record, 'cyberware');
+  return mapImplant(record, 'CYBERWARE');
 }
 
 /**
@@ -52,5 +74,5 @@ export function mapCyberware(record) {
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapBioware(record) {
-  return mapImplant(record, 'bioware');
+  return mapImplant(record, 'BIOWARE');
 }

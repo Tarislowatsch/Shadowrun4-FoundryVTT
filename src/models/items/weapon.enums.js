@@ -44,8 +44,13 @@ export const Shootingmodes = Object.freeze({
   /** @type {string} */ SEMI_AUTOMATIC: 'sr4.shooting.semi',
   /** @type {string} */ BURST_FIRE: 'sr4.shooting.burst',
   /** @type {string} */ FULL_AUTO: 'sr4.shooting.full',
-  /** @type {string} */ SEMI_BURST_FULL_AUTO: 'sr4.shooting.semi-burst-full',
+  /** @type {string} */ SINGLE_SEMI: 'sr4.shooting.single-semi',
+  /** @type {string} */ SINGLE_SEMI_BURST: 'sr4.shooting.single-semi-burst',
+  /** @type {string} */ SINGLE_SEMI_BURST_FULL_AUTO:
+    'sr4.shooting.single-semi-burst-full',
+  /** @type {string} */ BURST_FULL_AUTO: 'sr4.shooting.burst-full',
   /** @type {string} */ SEMI_BURST: 'sr4.shooting.semi-burst',
+  /** @type {string} */ SEMI_BURST_FULL_AUTO: 'sr4.shooting.semi-burst-full',
 });
 
 /**

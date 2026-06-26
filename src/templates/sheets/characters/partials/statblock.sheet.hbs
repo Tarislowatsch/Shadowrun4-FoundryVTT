@@ -20,16 +20,23 @@
         <input
           type="number"
           name="system.sheetStats.{{key}}"
-          value="{{lookup @root.system.sheetStats key}}"
+          value="{{lookup @root.sourceStats key}}"
           data-dtype="Number"
           {{#if (includes @root.derivedKeys key)}}readonly{{/if}}
           {{#if @root.hasMetatypeLimits}}min="{{lookup @root.attributeMinimum key}}" max="{{lookup @root.attributeMaximum key}}" data-tooltip="Min {{lookup @root.attributeMinimum key}} / Max {{lookup @root.attributeMaximum key}} / Aug {{lookup @root.augmentedMaximum key}}"{{/if}}
         />
       {{else}}
         <span class="stat-display">
-          {{lookup @root.system.sheetStats key}}
-          {{#if (ne (lookup @root.system.sheetStats key) value)}}
-            <span class="stat-bonus">({{value}})</span>
+          {{#if (includes @root.derivedKeys key)}}
+            {{lookup @root.derivedBaseValues key}}
+            {{#if (ne (lookup @root.derivedBaseValues key) (lookup @root.system.sheetStats key))}}
+              <span class="stat-bonus">({{lookup @root.system.sheetStats key}})</span>
+            {{/if}}
+          {{else}}
+            {{lookup @root.sourceStats key}}
+            {{#if (ne (lookup @root.sourceStats key) (lookup @root.system.sheetStats key))}}
+              <span class="stat-bonus">({{lookup @root.system.sheetStats key}})</span>
+            {{/if}}
           {{/if}}
         </span>
       {{/if}}

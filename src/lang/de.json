@@ -254,12 +254,24 @@
     },
     "implant": {
       "noImplants": "Keine Implantate vorhanden",
-      "essenceLoss": "Essenzverlust",
+      "essenceCyber": "Cyberware-Essenz",
+      "essenceBio": "Bioware-Essenz",
+      "essenceHalved": "Halbiert (kleinere)",
+      "essenceLoss": "Essenzverlust gesamt",
       "currentEssence": "Aktuelle Essenz",
-      "cyberware": "Cyberware",
-      "bioware": "Bioware",
-      "nanoware": "Nanoware",
-      "geneware": "Geneware"
+      "type": {
+        "cyberware": "Cyberware",
+        "bioware": "Bioware",
+        "nanoware": "Nanoware",
+        "geneware": "Geneware"
+      },
+      "grade": {
+        "secondHand": "Gebraucht",
+        "standard": "Standard",
+        "alpha": "Alpha",
+        "beta": "Beta",
+        "delta": "Delta"
+      }
     },
     "inventory": {
       "armor": "Panzerung",

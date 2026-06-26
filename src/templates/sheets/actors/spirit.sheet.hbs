@@ -34,7 +34,7 @@
   <h3>{{localize 'sr4.spirit.attributes'}}</h3>
   <div class="grid">
     {{#each sheetStats as |stat|}}
-      {{> "attribute-cell" label=stat.label name=stat.name value=stat.value rollLabel=stat.rollLabel}}
+      {{> "attribute-cell" label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue rollLabel=stat.rollLabel}}
     {{/each}}
   </div>
 

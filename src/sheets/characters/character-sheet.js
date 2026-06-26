@@ -5,6 +5,7 @@ import {
   Attackskill,
   DamageTypes,
   DrainAttributes,
+  ImplantGrades,
   ImplantTypes,
   Shootingmodes,
   SR4Attributes,
@@ -139,15 +140,23 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
 
   async _prepareContext(options) {
     const actorData = this.document.toObject(false);
+    const { sourceStats, sourceModifiers } = this._getSourceContext();
     const items = actorData.items || [];
     return {
       editMode: this.editMode,
       tabs: this._prepareTabs('primary'),
+      sourceStats,
+      sourceModifiers,
       ...this._getStaticContext(actorData),
       ...this._getItemContext(items),
       ...this._getMagicContext(actorData),
       ...this._getMatrixContext(actorData),
-      ...buildComputedStats(actorData, this.document.system.derivedStats),
+      ...buildComputedStats(
+        actorData,
+        this.document.system.derivedStats,
+        sourceStats,
+        sourceModifiers
+      ),
       ...this._getEffectsContext(),
     };
   }
@@ -297,16 +306,28 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   }
 
   static #buildImplantContext(implants, sys) {
-    const groups = Object.values(ImplantTypes).map((type) => ({
-      label: game.i18n.localize(`sr4.implant.${type}`),
-      items: implants.filter((i) => i.system.type === type),
+    for (const item of implants) {
+      item.displayType =
+        ImplantTypes[item.system.type] ?? item.system.type ?? '';
+      item.displayGrade =
+        ImplantGrades[item.system.grade] ?? item.system.grade ?? '';
+    }
+    const groups = Object.entries(ImplantTypes).map(([key, label]) => ({
+      label: game.i18n.localize(label),
+      items: implants.filter((i) => i.system.type === key),
     }));
-    const essenceLoss = implants.reduce(
-      (sum, i) => sum + (i.system.essenceActual ?? 0),
-      0
-    );
+    const cyberEss = sys.derivedStats?.essenceLossCyber ?? 0;
+    const bioEss = sys.derivedStats?.essenceLossBio ?? 0;
+    const essenceLoss =
+      cyberEss >= bioEss ? cyberEss + bioEss / 2 : cyberEss / 2 + bioEss;
     return {
       implantsByType: groups.filter((g) => g.items.length > 0),
+      essenceCyber: cyberEss.toFixed(2),
+      essenceBio: bioEss.toFixed(2),
+      essenceHalved: (cyberEss >= bioEss ? bioEss / 2 : cyberEss / 2).toFixed(
+        2
+      ),
+      essenceHalvedLabel: cyberEss >= bioEss ? 'bio' : 'cyber',
       essenceLoss: essenceLoss.toFixed(2),
       currentEssence: ((sys.sheetStats?.ESSENCE ?? 6) - essenceLoss).toFixed(2),
     };

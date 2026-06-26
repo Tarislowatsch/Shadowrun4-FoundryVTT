@@ -19,6 +19,7 @@ import {
   mapQuality,
   mapSpell,
   mapWeapon,
+  mapWeaponMod,
 } from './mappers/index.js';
 
 /**
@@ -31,7 +32,10 @@ const COLLECTION_MAPPERS = {
   spell: mapSpell,
   quality: mapQuality,
   power: mapPower,
-  cyberware: mapCyberware,
+  cyberware: (record) =>
+    String(record.improvementsource ?? '').toLowerCase() === 'bioware'
+      ? mapBioware(record)
+      : mapCyberware(record),
   bioware: mapBioware,
   program: mapProgram,
 };
@@ -142,9 +146,42 @@ function buildAmmoLinks(parsedItems, gearGuidToName) {
 }
 
 /**
+ * @typedef {object} WeaponModLink
+ * @property {string} weaponName
+ * @property {string} modName
+ */
+
+/**
+ * @param {Record<string, Array<Record<string, unknown>>>} [parsedItems]
+ * @returns {{ modItems: Array<object>, modLinks: WeaponModLink[] }}
+ */
+function buildWeaponModItems(parsedItems) {
+  /** @type {Array<object>} */
+  const modItems = [];
+  /** @type {WeaponModLink[]} */
+  const modLinks = [];
+
+  for (const record of parsedItems?.weapon ?? []) {
+    const mods = /** @type {Array<Record<string, unknown>>|undefined} */ (
+      record._weaponMods
+    );
+    if (!mods?.length) continue;
+    const weaponName = String(record.name ?? '');
+    for (const mod of mods) {
+      const normalized = { ...mod };
+      if (normalized.slots === undefined) normalized.slots = '0';
+      const modItem = mapWeaponMod(normalized);
+      modItems.push(modItem);
+      modLinks.push({ weaponName, modName: modItem.name });
+    }
+  }
+  return { modItems, modLinks };
+}
+
+/**
  * @param {import('./parse-character.js').ParsedCharacter} parsed
  * @param {Array<{ name: string, type: string, system: object }>} canonicalSkills
- * @returns {{ name: string, type: 'character', img: string|null, system: object, items: Array<object>, ammoLinks: AmmoLink[] }}
+ * @returns {{ name: string, type: 'character', img: string|null, system: object, items: Array<object>, ammoLinks: AmmoLink[], weaponModLinks: WeaponModLink[] }}
  */
 export function buildActorData(parsed, canonicalSkills) {
   const { name, img, system } = mapCharacterSystem(parsed.character);
@@ -167,6 +204,9 @@ export function buildActorData(parsed, canonicalSkills) {
 
   const gearGuidToName = buildGearGuidToName(parsed.items);
   const ammoLinks = buildAmmoLinks(parsed.items, gearGuidToName);
+  const { modItems, modLinks: weaponModLinks } = buildWeaponModItems(
+    parsed.items
+  );
 
   return {
     name,
@@ -176,9 +216,11 @@ export function buildActorData(parsed, canonicalSkills) {
     items: [
       ...(metatypeItem ? [metatypeItem] : []),
       ...items,
+      ...modItems,
       ...activeSkills,
       ...knowledgeSkills,
     ],
     ammoLinks,
+    weaponModLinks,
   };
 }

@@ -37,7 +37,7 @@
   <h3>{{localize 'sr4.vehicle.stats'}}</h3>
   <div class="grid">
     {{#each vehicleStats as |stat|}}
-      {{> "attribute-cell" label=stat.label name=stat.name value=stat.value}}
+      {{> "attribute-cell" label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue}}
     {{/each}}
   </div>
 

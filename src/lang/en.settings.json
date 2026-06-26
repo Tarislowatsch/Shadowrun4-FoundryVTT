@@ -10,6 +10,7 @@
       "preview": "Preview",
       "skillCount": "Skills",
       "ammoLinkError": "Could not link ammunition for \"{name}\". Ammo can be assigned manually.",
+      "modLinkError": "Could not link weapon mods for \"{name}\". Mods can be assigned manually.",
       "success": "Imported character \"{name}\".",
       "title": "Character Importer",
       "upload": "Character XML file"

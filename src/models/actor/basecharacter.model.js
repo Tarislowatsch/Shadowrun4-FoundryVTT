@@ -473,6 +473,14 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       );
     }
 
+    const implants = actor.items.filter((i) => i.type === 'Implant');
+    self.derivedStats.essenceLossCyber = implants
+      .filter((i) => i.system.type !== 'BIOWARE')
+      .reduce((sum, i) => sum + (i.system.essenceActual ?? 0), 0);
+    self.derivedStats.essenceLossBio = implants
+      .filter((i) => i.system.type === 'BIOWARE')
+      .reduce((sum, i) => sum + (i.system.essenceActual ?? 0), 0);
+
     Object.assign(self.derivedStats, computeDerivedStats(self));
   }
 }

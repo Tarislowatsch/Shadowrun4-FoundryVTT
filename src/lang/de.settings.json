@@ -10,6 +10,7 @@
       "preview": "Vorschau",
       "skillCount": "Fertigkeiten",
       "ammoLinkError": "Munition für „{name}“ konnte nicht verknüpft werden. Munition kann manuell zugewiesen werden.",
+      "modLinkError": "Waffenmodifikationen für „{name}“ konnten nicht verknüpft werden. Mods können manuell zugewiesen werden.",
       "success": "Charakter „{name}“ importiert.",
       "title": "Charakter-Importer",
       "upload": "Charakter-XML-Datei"

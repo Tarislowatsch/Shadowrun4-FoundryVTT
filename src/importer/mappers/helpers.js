@@ -247,13 +247,28 @@ export function parseAmmo(raw) {
   return { capacity, feed: feed ? feed[1].toLowerCase() : '' };
 }
 
+/** @type {Record<string, string>} */
+const CHUMMER_MODE_MAP = {
+  SS: 'SINGLE_SHOT',
+  SA: 'SEMI_AUTOMATIC',
+  BF: 'BURST_FIRE',
+  FA: 'FULL_AUTO',
+  'SS/SA': 'SINGLE_SEMI',
+  'SS/SA/BF': 'SINGLE_SEMI_BURST',
+  'SS/SA/BF/FA': 'SINGLE_SEMI_BURST_FULL_AUTO',
+  'BF/FA': 'BURST_FULL_AUTO',
+  'SA/BF': 'SEMI_BURST',
+  'SA/BF/FA': 'SEMI_BURST_FULL_AUTO',
+};
+
 /**
  * @param {string} [raw]
  * @returns {string}
  */
 export function normalizeMode(raw) {
   const str = (raw ?? '').trim();
-  return str === '0' ? '' : str;
+  if (str === '0' || str === '') return '';
+  return CHUMMER_MODE_MAP[str] ?? str;
 }
 
 /**

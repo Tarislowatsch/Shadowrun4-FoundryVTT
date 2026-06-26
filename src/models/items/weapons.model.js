@@ -91,7 +91,28 @@ const fields = foundry.data.fields;
  */
 export { AP_HALF_TYPES };
 
+/** @type {Record<string, string>} */
+const LEGACY_MODE_MAP = {
+  SS: 'SINGLE_SHOT',
+  SA: 'SEMI_AUTOMATIC',
+  BF: 'BURST_FIRE',
+  FA: 'FULL_AUTO',
+  'SS/SA': 'SINGLE_SEMI',
+  'SS/SA/BF': 'SINGLE_SEMI_BURST',
+  'SS/SA/BF/FA': 'SINGLE_SEMI_BURST_FULL_AUTO',
+  'BF/FA': 'BURST_FULL_AUTO',
+  'SA/BF': 'SEMI_BURST',
+  'SA/BF/FA': 'SEMI_BURST_FULL_AUTO',
+};
+
 export class SR4RangedWeaponData extends foundry.abstract.TypeDataModel {
+  static migrateData(source) {
+    if (typeof source.mode === 'string' && source.mode in LEGACY_MODE_MAP) {
+      source.mode = LEGACY_MODE_MAP[source.mode];
+    }
+    return super.migrateData(source);
+  }
+
   static defineSchema() {
     return {
       ...genericItemSchema(),

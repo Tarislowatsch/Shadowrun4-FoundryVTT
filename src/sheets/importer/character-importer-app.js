@@ -96,7 +96,7 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
     if (!this.#parsed) return;
 
     const canonicalSkills = await SR4Actor.buildCompendiumSkillData(false);
-    const { ammoLinks, ...data } = buildActorData(
+    const { ammoLinks, weaponModLinks, ...data } = buildActorData(
       this.#parsed,
       canonicalSkills
     );
@@ -128,12 +128,76 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
       }
     }
 
+    if (weaponModLinks?.length) {
+      try {
+        await CharacterImporterApp.#linkWeaponMods(actor, weaponModLinks);
+      } catch {
+        ui.notifications.warn(
+          game.i18n.format('sr4.characterImporter.modLinkError', {
+            name: actor.name,
+          })
+        );
+      }
+    }
+
     ui.notifications.info(
       game.i18n.format('sr4.characterImporter.success', {
         name: actor.name,
       })
     );
     this.close();
+  }
+
+  /**
+   * @param {Actor} actor
+   * @param {Array<{weaponName: string, modName: string}>} modLinks
+   * @returns {Promise<void>}
+   */
+  static async #linkWeaponMods(actor, modLinks) {
+    const modIdsByName = new Map();
+    for (const item of actor.items) {
+      if (item.type === 'Weapon Mod') {
+        const name = item.name;
+        if (!modIdsByName.has(name)) modIdsByName.set(name, []);
+        modIdsByName.get(name).push(item.id);
+      }
+    }
+
+    const consumed = new Map();
+    const weaponMods = new Map();
+    for (const link of modLinks) {
+      const ids = modIdsByName.get(link.modName);
+      if (!ids) continue;
+      const idx = consumed.get(link.modName) ?? 0;
+      if (idx >= ids.length) continue;
+      consumed.set(link.modName, idx + 1);
+
+      if (!weaponMods.has(link.weaponName)) {
+        weaponMods.set(link.weaponName, []);
+      }
+      weaponMods.get(link.weaponName).push(ids[idx]);
+    }
+
+    const matchedWeaponIds = new Set();
+    const updates = [];
+    for (const [weaponName, ids] of weaponMods) {
+      const weapon = actor.items.find(
+        (i) =>
+          (i.type === 'Ranged Weapon' || i.type === 'Melee Weapon') &&
+          i.name === weaponName &&
+          !matchedWeaponIds.has(i.id)
+      );
+      if (weapon) {
+        matchedWeaponIds.add(weapon.id);
+        updates.push({
+          _id: weapon.id,
+          'system.installedModIds': ids,
+        });
+      }
+    }
+    if (updates.length) {
+      await actor.updateEmbeddedDocuments('Item', updates);
+    }
   }
 
   /**

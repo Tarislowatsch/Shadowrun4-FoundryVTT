@@ -1,7 +1,7 @@
 <div class="cell">
   <label>{{localize label}}</label>
   {{#if @root.editMode}}
-    <input type="number" name="{{name}}" value="{{value}}" />
+    <input type="number" name="{{name}}" value="{{sourceValue}}" />
   {{else}}
     {{#if rollLabel}}
       <span class="stat-display attr-roll" data-action="rollAttribute" data-value="{{value}}" data-label="{{rollLabel}}">{{value}}</span>

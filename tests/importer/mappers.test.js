@@ -63,8 +63,8 @@ describe('simple mappers', () => {
       system: {
         essence: 0.3,
         essenceActual: 0.3,
-        grade: 'standard',
-        type: 'cyberware',
+        grade: 'STANDARD',
+        type: 'CYBERWARE',
         rating: 3,
         cost: 3000,
         avail: 8,
@@ -81,7 +81,7 @@ describe('simple mappers', () => {
         page: '342',
       },
       type: 'Implant',
-      system: { type: 'bioware', essence: 0.2 },
+      system: { type: 'BIOWARE', essence: 0.2 },
     },
     {
       label: 'armor: ballistic and impact values',
@@ -266,7 +266,7 @@ describe('weapon mappers', () => {
       category: 'HEAVY_PISTOLS',
       damage: 5,
       ap: -1,
-      mode: 'SA',
+      mode: 'SEMI_AUTOMATIC',
       maxAmmo: 15,
       currentAmmo: 15,
       ammoFeed: 'c',

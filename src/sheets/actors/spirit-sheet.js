@@ -17,6 +17,7 @@ export default class SR4SpiritSheet extends SR4SummonedEntitySheet {
     const ctx = await this._prepareSummonedEntityContext('ownerUuid');
     ctx.sheetStats = this._buildSheetStats(
       ctx.system.sheetStats,
+      ctx.sourceStats,
       {
         label: 'sr4.stats.MAGIC',
         name: 'system.sheetStats.MAGIC',

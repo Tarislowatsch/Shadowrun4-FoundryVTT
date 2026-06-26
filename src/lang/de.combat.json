@@ -242,11 +242,15 @@
     },
     "shooting": {
       "burst": "SF",
+      "burst-full": "SF/VF",
       "full": "VF",
       "semi": "HM",
       "semi-burst": "HM/SF",
       "semi-burst-full": "HM/SF/VF",
-      "single": "EM"
+      "single": "EM",
+      "single-semi": "EM/HM",
+      "single-semi-burst": "EM/HM/SF",
+      "single-semi-burst-full": "EM/HM/SF/VF"
     },
     "soak": {
       "ap": "AP",

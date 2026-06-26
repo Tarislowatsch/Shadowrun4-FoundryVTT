@@ -28,92 +28,68 @@ export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
   }
 
   /**
-   * @param {object} ss - sheetStats
+   * @param {object} ss - prepared sheetStats (for display / rolls)
+   * @param {object} src - source sheetStats (for form inputs)
    * @param {{ label: string, name: string, key: string, rollLabel: string }} powerStat
    * @param {{ label: string, name: string, key: string }} initiativeStat
    * @returns {object[]}
    */
-  _buildSheetStats(ss, powerStat, initiativeStat) {
+  _buildSheetStats(ss, src, powerStat, initiativeStat) {
+    const stat = (label, name, key, rollLabel) => ({
+      label,
+      name,
+      value: ss[key],
+      sourceValue: src[key],
+      ...(rollLabel ? { rollLabel } : {}),
+    });
     return [
-      {
-        label: 'sr4.stats.BODY',
-        name: 'system.sheetStats.BODY',
-        value: ss.BODY,
-        rollLabel: 'BOD',
-      },
-      {
-        label: 'sr4.stats.AGILITY',
-        name: 'system.sheetStats.AGILITY',
-        value: ss.AGILITY,
-        rollLabel: 'AGI',
-      },
-      {
-        label: 'sr4.stats.REACTION',
-        name: 'system.sheetStats.REACTION',
-        value: ss.REACTION,
-        rollLabel: 'REA',
-      },
-      {
-        label: 'sr4.stats.STRENGTH',
-        name: 'system.sheetStats.STRENGTH',
-        value: ss.STRENGTH,
-        rollLabel: 'STR',
-      },
-      {
-        label: 'sr4.stats.CHARISMA',
-        name: 'system.sheetStats.CHARISMA',
-        value: ss.CHARISMA,
-        rollLabel: 'CHA',
-      },
-      {
-        label: 'sr4.stats.INTUITION',
-        name: 'system.sheetStats.INTUITION',
-        value: ss.INTUITION,
-        rollLabel: 'INT',
-      },
-      {
-        label: 'sr4.stats.LOGIC',
-        name: 'system.sheetStats.LOGIC',
-        value: ss.LOGIC,
-        rollLabel: 'LOG',
-      },
-      {
-        label: 'sr4.stats.WILLPOWER',
-        name: 'system.sheetStats.WILLPOWER',
-        value: ss.WILLPOWER,
-        rollLabel: 'WIL',
-      },
-      {
-        label: powerStat.label,
-        name: powerStat.name,
-        value: ss[powerStat.key],
-        rollLabel: powerStat.rollLabel,
-      },
-      {
-        label: 'sr4.stats.EDGE',
-        name: 'system.sheetStats.EDGE',
-        value: ss.EDGE,
-      },
-      {
-        label: 'sr4.stats.CURRENTEDGE',
-        name: 'system.sheetStats.CURRENTEDGE',
-        value: ss.CURRENTEDGE,
-      },
-      {
-        label: 'sr4.stats.ESSENCE',
-        name: 'system.sheetStats.ESSENCE',
-        value: ss.ESSENCE,
-      },
-      {
-        label: 'sr4.stats.INITIATIVE',
-        name: 'system.sheetStats.INITIATIVE',
-        value: ss.INITIATIVE,
-      },
-      {
-        label: initiativeStat.label,
-        name: initiativeStat.name,
-        value: ss[initiativeStat.key],
-      },
+      stat('sr4.stats.BODY', 'system.sheetStats.BODY', 'BODY', 'BOD'),
+      stat('sr4.stats.AGILITY', 'system.sheetStats.AGILITY', 'AGILITY', 'AGI'),
+      stat(
+        'sr4.stats.REACTION',
+        'system.sheetStats.REACTION',
+        'REACTION',
+        'REA'
+      ),
+      stat(
+        'sr4.stats.STRENGTH',
+        'system.sheetStats.STRENGTH',
+        'STRENGTH',
+        'STR'
+      ),
+      stat(
+        'sr4.stats.CHARISMA',
+        'system.sheetStats.CHARISMA',
+        'CHARISMA',
+        'CHA'
+      ),
+      stat(
+        'sr4.stats.INTUITION',
+        'system.sheetStats.INTUITION',
+        'INTUITION',
+        'INT'
+      ),
+      stat('sr4.stats.LOGIC', 'system.sheetStats.LOGIC', 'LOGIC', 'LOG'),
+      stat(
+        'sr4.stats.WILLPOWER',
+        'system.sheetStats.WILLPOWER',
+        'WILLPOWER',
+        'WIL'
+      ),
+      stat(powerStat.label, powerStat.name, powerStat.key, powerStat.rollLabel),
+      stat('sr4.stats.EDGE', 'system.sheetStats.EDGE', 'EDGE'),
+      stat(
+        'sr4.stats.CURRENTEDGE',
+        'system.sheetStats.CURRENTEDGE',
+        'CURRENTEDGE'
+      ),
+      stat('sr4.stats.ESSENCE', 'system.sheetStats.ESSENCE', 'ESSENCE'),
+      stat(
+        'sr4.stats.INITIATIVE',
+        'system.sheetStats.INITIATIVE',
+        'INITIATIVE'
+      ),
+      stat(initiativeStat.label, initiativeStat.name, initiativeStat.key),
     ];
   }
 
@@ -126,6 +102,7 @@ export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
     const items = actorData.items || [];
     return {
       editMode: this.editMode,
+      ...this._getSourceContext(),
       actor: {
         img: actorData.img,
         name: actorData.name,

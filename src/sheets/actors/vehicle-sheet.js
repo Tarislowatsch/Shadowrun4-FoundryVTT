@@ -27,52 +27,59 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
 
   async _prepareContext(options) {
     const actorData = this.document.toObject(false);
+    const sourceSystem = this.document.toObject().system;
     const items = actorData.items || [];
 
     /** @type {any} */
     const live = this.document.system;
-    const s = actorData.system;
     const vehicleStats = [
       {
         label: 'sr4.vehicle.body',
         name: 'system.body',
-        value: s.body,
+        value: live.effectiveBody,
+        sourceValue: sourceSystem.body,
         effective: live.effectiveBody,
       },
       {
         label: 'sr4.vehicle.pilot',
         name: 'system.pilot',
-        value: s.pilot,
+        value: live.effectivePilot,
+        sourceValue: sourceSystem.pilot,
         effective: live.effectivePilot,
       },
       {
         label: 'sr4.vehicle.armor',
         name: 'system.armor',
-        value: s.armor,
+        value: live.effectiveArmor,
+        sourceValue: sourceSystem.armor,
         effective: live.effectiveArmor,
       },
       {
         label: 'sr4.vehicle.sensor',
         name: 'system.sensor',
-        value: s.sensor,
+        value: live.effectiveSensor,
+        sourceValue: sourceSystem.sensor,
         effective: live.effectiveSensor,
       },
       {
         label: 'sr4.vehicle.handling',
         name: 'system.handling',
-        value: s.handling,
+        value: live.effectiveHandling,
+        sourceValue: sourceSystem.handling,
         effective: live.effectiveHandling,
       },
       {
         label: 'sr4.vehicle.speed',
         name: 'system.speed',
-        value: s.speed,
+        value: live.effectiveSpeed,
+        sourceValue: sourceSystem.speed,
         effective: live.effectiveSpeed,
       },
       {
         label: 'sr4.vehicle.accel',
         name: 'system.accel',
-        value: s.accel,
+        value: live.effectiveAccel,
+        sourceValue: sourceSystem.accel,
         effective: live.effectiveAccel,
       },
     ];

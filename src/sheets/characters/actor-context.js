@@ -21,8 +21,18 @@ export function sortSkillsByLabel(items) {
 /**
  * @param {object} actorData
  * @param {object} derivedStats
+ * @param {object} [sourceStats]
+ * @param {object} [sourceModifiers]
  */
-export function buildComputedStats(actorData, derivedStats) {
+export function buildComputedStats(
+  actorData,
+  derivedStats,
+  sourceStats,
+  sourceModifiers
+) {
+  const isMagician = actorData.system.magic?.magician === true;
+  const srcBonuses = sourceModifiers?.initiative?.bonuses;
+
   return {
     computedStats: {
       ...actorData.system.sheetStats,
@@ -31,6 +41,19 @@ export function buildComputedStats(actorData, derivedStats) {
       ASTRALINITIATIVE: derivedStats?.initiative?.astral ?? 0,
     },
     derivedKeys: ['INITIATIVE', 'MATRIXINITIATIVE', 'ASTRALINITIATIVE'],
+    derivedBaseValues: sourceStats
+      ? {
+          INITIATIVE:
+            (sourceStats.INTUITION ?? 0) +
+            (sourceStats.REACTION ?? 0) +
+            (srcBonuses?.physical ?? 0),
+          MATRIXINITIATIVE:
+            (sourceStats.INTUITION ?? 0) + (srcBonuses?.matrix ?? 0),
+          ASTRALINITIATIVE: isMagician
+            ? (sourceStats.INTUITION ?? 0) * 2 + (srcBonuses?.astral ?? 0)
+            : 0,
+        }
+      : {},
     hasMetatypeLimits:
       Object.keys(derivedStats?.attributeMaximum ?? {}).length > 0,
     attributeMaximum: derivedStats?.attributeMaximum ?? {},

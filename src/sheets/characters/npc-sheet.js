@@ -53,11 +53,14 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
 
   async _prepareContext(options) {
     const actorData = this.document.toObject(false);
+    const { sourceStats, sourceModifiers } = this._getSourceContext();
     const items = actorData.items || [];
     const derived = this.document.system.derivedStats;
     return {
       tabs: this._prepareTabs('primary'),
       editMode: this.editMode,
+      sourceStats,
+      sourceModifiers,
       actor: {
         img: actorData.img,
         name: actorData.name,
@@ -82,7 +85,7 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
       critterPowers: this._enrichItemContext(items, 'CritterPower'),
       isTechnomancer: actorData.system.technomancer,
       resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
-      ...buildComputedStats(actorData, derived),
+      ...buildComputedStats(actorData, derived, sourceStats, sourceModifiers),
     };
   }
 

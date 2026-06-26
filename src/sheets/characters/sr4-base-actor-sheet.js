@@ -158,6 +158,11 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
   // Shared context helpers
   // ---------------------------------------------------------------------------
 
+  _getSourceContext() {
+    const src = this.document.toObject().system;
+    return { sourceStats: src.sheetStats, sourceModifiers: src.modifiers };
+  }
+
   _enrichItemContext(items, type) {
     const actions = items.filter((i) => i.type === 'Action');
     return items
