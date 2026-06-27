@@ -7,7 +7,6 @@ const WEAPON_MOD_CATEGORIES = new Set(['Weapon Mod', 'Special Mod']);
  * @returns {'top'|'barrel'|'under'|'internal'}
  */
 export function parseMount(raw) {
-  // Combined mounts like "Top/Under" resolve to their first listed point.
   const first = String(raw ?? '')
     .split('/')[0]
     .trim()

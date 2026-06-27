@@ -79,6 +79,11 @@
   </div>
   {{/unless}}
 
+  <div class="form-group">
+    <label>{{localize 'sr4.spell.limited'}}</label>
+    <input type="checkbox" name="system.limited" {{checked system.limited}} />
+  </div>
+
   {{> "item-actions-effects"}}
 
   {{> "item-textareas"}}

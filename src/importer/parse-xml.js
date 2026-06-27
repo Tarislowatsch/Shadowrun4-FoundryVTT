@@ -1,25 +1,10 @@
-/**
- * @fileoverview Browser-only XML parsing layer for the statblock importer.
- * Relies on the runtime `DOMParser`; kept separate from the pure mappers so the
- * mappers stay unit-testable under Node.
- */
-
 import { TAG_CONFIGS } from './registry.js';
 import { ALL_CRITTER_CATEGORIES } from './mappers/helpers.js';
 
-/**
- * Distinct XML element names the importer knows how to read.
- * @type {string[]}
- */
+/** @type {string[]} */
 const KNOWN_TAGS = [...new Set(TAG_CONFIGS.map((c) => c.xmlTag))];
 
 /**
- * Converts a single statblock element into a record. Leaf children become
- * string values. A child with multiple children that all share one tag name
- * (e.g. `specs/spec`, `mods/mod`) becomes a string array; any other child with
- * element children (including single-child blocks like `weaponbonus/ap`)
- * becomes a nested record so individual values stay addressable.
- *
  * @param {Element} element
  * @returns {Record<string, unknown>}
  */
@@ -44,10 +29,6 @@ export function elementToRecord(element) {
 }
 
 /**
- * Extracts `<metatype>` elements and flattens nested `<metavariant>` children
- * into separate records. Each metavariant record carries a `_parentRecord`
- * reference so the mapper can inherit the parent's attribute limits.
- *
  * @param {Element} root
  * @returns {Array<Record<string, unknown>>}
  */

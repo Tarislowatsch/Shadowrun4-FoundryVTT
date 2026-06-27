@@ -19,6 +19,7 @@ export async function registerCharacterPartials() {
     { path: `${basePath}/item-cards/quality.card.hbs`, name: 'quality-card' },
     { path: `${basePath}/item-cards/metatype.card.hbs`, name: 'metatype-card' },
     { path: `${basePath}/item-cards/ammo.card.hbs`, name: 'ammo-card' },
+    { path: `${basePath}/item-cards/focus.card.hbs`, name: 'focus-card' },
     {
       path: `${basePath}/item-card-actions-effects.hbs`,
       name: 'item-card-actions-effects',
@@ -27,6 +28,7 @@ export async function registerCharacterPartials() {
     { path: `${basePath}/tabs/bio.tab.hbs`, name: 'bio-tab' },
     { path: `${basePath}/tabs/magic.tab.hbs`, name: 'magic-tab' },
     { path: `${basePath}/tabs/matrix.tab.hbs`, name: 'matrix-tab' },
+    { path: `${basePath}/skill-row-fields.hbs`, name: 'skill-row-fields' },
     { path: `${basePath}/modifier-field.hbs`, name: 'modifier-field' },
     {
       path: `${basePath}/item-cards/partials/ammo-stats.hbs`,

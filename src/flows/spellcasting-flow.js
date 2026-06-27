@@ -4,16 +4,14 @@ import {
   getSkillDicePool,
   getValidTargetActors,
   openSpellcastingDialog,
-  openDrainDialog,
+  resolveDrain,
 } from '@utils/index.js';
-import { ApplyDamageFlow } from './apply-damage-flow';
 import { CombatSpellFlow } from './combat-spell-flow';
 import { OpposedSpellFlow } from './opposed-spell-flow';
 import {
   getSpellEffectData,
   sendEffectDecisionMessage,
 } from './apply-effects-flow';
-import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
 import { openDicePoolSplitDialog } from '@utils/dialog/dice-pool-split.js';
 
 /**
@@ -260,7 +258,7 @@ export class SpellcastingFlow {
    * @returns {Promise<void>}
    */
   static async handleDrain(actor, spell, force, hits, drainModifier = 0) {
-    const baseDrainValue = calculateDrainValue(
+    const drainValue = calculateDrainValue(
       force,
       spell.system?.dv ?? 0,
       drainModifier
@@ -268,40 +266,12 @@ export class SpellcastingFlow {
     const drainPool = calculateDrainPool(actor);
     const isPhysical = force > actor.getAttribute('MAGIC');
 
-    const drainResult = await openDrainDialog(
-      actor,
-      spell,
+    await resolveDrain(actor, {
+      label: spell.name,
       force,
       drainPool,
-      baseDrainValue
-    );
-    if (drainResult == null) return;
-    const {
-      successes: drainHits,
-      isGlitch,
-      edgeUsed: drainEdgeUsed,
-      messageId: drainMessageId,
-    } = drainResult;
-
-    const finalDrainHits = await resolveEdgeForRoll(
-      actor,
-      {
-        successes: drainHits,
-        rolledDice: drainPool,
-        isGlitch,
-        edgeUsed: drainEdgeUsed,
-        messageId: drainMessageId,
-      },
-      baseDrainValue
-    );
-
-    const unresisted = Math.max(baseDrainValue - finalDrainHits, 0);
-    if (unresisted === 0) return;
-    await ApplyDamageFlow.sendDecisionMessage(
-      actor,
-      unresisted,
+      drainValue,
       isPhysical,
-      'drain'
-    );
+    });
   }
 }

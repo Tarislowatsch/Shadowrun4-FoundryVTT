@@ -1,8 +1,3 @@
-/**
- * @fileoverview Import registry: ties each XML element name to its mapper,
- * type-label and subcategory resolvers.
- */
-
 import {
   mapArmor,
   mapBioware,
@@ -148,19 +143,13 @@ export const TAG_CONFIGS = [
       record._parentRecord
         ? mapMetavariant(record, record._parentRecord)
         : mapMetatype(record),
-    typeLabel: (record) =>
-      String(
-        record._parentRecord
-          ? (record._parentRecord.category ?? '')
-          : (record.category ?? '')
-      ).trim() || 'Metahuman',
+    typeLabel: () => 'Metatypes',
     subcategory: (record) =>
       String(
         record._parentRecord
           ? (record._parentRecord.category ?? '')
           : (record.category ?? '')
       ).trim() || 'Metahuman',
-    parentFolder: 'Metatypes',
   },
   {
     xmlTag: 'critter',
@@ -168,18 +157,12 @@ export const TAG_CONFIGS = [
       record._parentRecord
         ? mapCritterVariant(record, record._parentRecord)
         : mapCritter(record),
-    typeLabel: (record) =>
-      String(
-        record._parentRecord
-          ? (record._parentRecord.category ?? '')
-          : (record.category ?? '')
-      ).trim() || 'Critters',
+    typeLabel: () => 'Critters',
     subcategory: (record) =>
       String(
         record._parentRecord
           ? (record._parentRecord.category ?? '')
           : (record.category ?? '')
       ).trim() || 'Critters',
-    parentFolder: 'Critters',
   },
 ];

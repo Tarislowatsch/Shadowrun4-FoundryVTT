@@ -1,6 +1,5 @@
 <div class="sheet-container">
 
-  {{!-- Header --}}
   <div class="npc-header">
     {{> "actor-image"}}
     <div class="npc-header-info">
@@ -23,7 +22,6 @@
     </div>
   </div>
 
-  {{!-- Rigger Link --}}
   {{> "actor-link-row"
       linkLabel="sr4.vehicle.rigger"
       dropType="riggerUuid"
@@ -33,7 +31,6 @@
 
   <hr />
 
-  {{!-- Vehicle Stats --}}
   <h3>{{localize 'sr4.vehicle.stats'}}</h3>
   <div class="grid">
     {{#each vehicleStats as |stat|}}
@@ -43,7 +40,6 @@
 
   <hr />
 
-  {{!-- Physical Condition Monitor --}}
   <div class="monitor-tracks">
     {{> "status-track-card"
         title="sr4.conditionMonitor.physical"
@@ -58,7 +54,6 @@
 
   <hr />
 
-  {{!-- Autosofts --}}
   <div class="npc-section">
     <h3>{{localize 'sr4.vehicle.autosofts'}}</h3>
     {{#if autosofts}}
@@ -85,7 +80,6 @@
     {{/if}}
   </div>
 
-  {{!-- Vehicle Mods --}}
   <div class="npc-section">
     <h3>{{localize 'sr4.vehiclemod.mods'}}</h3>
     <small>{{localize 'sr4.vehiclemod.slotsUsed'}}: {{ usedSlots }} / {{ system.body }}
@@ -112,7 +106,6 @@
     </button>
   </div>
 
-  {{!-- Weapons --}}
   <div class="npc-section">
     <h3>{{localize 'sr4.tab.weapons'}}</h3>
     {{#if weapons}}

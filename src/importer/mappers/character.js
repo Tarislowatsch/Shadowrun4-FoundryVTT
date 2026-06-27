@@ -1,12 +1,5 @@
-/**
- * @fileoverview Pure mappers turning a parsed Chummer `<character>` record into
- * SR4 actor system data and knowledge/language skill items. No DOM or Foundry
- * dependencies — safe to unit test under Node.
- */
-
 import {
   ATTRIBUTE_ABBR_TO_KEY,
-  parseDecimal,
   parseNumber,
   sourceOf,
   upper,
@@ -98,7 +91,8 @@ function mapSheetStats(attributes) {
   for (const [abbr, key] of Object.entries(ATTRIBUTE_ABBR_TO_KEY)) {
     const raw = attributes?.[abbr];
     if (raw === undefined) continue;
-    stats[key] = key === 'ESSENCE' ? parseDecimal(raw, 6) : parseNumber(raw, 0);
+    if (key === 'ESSENCE') continue;
+    stats[key] = parseNumber(raw, 0);
   }
   if (stats.EDGE !== undefined) stats.CURRENTEDGE = stats.EDGE;
   return stats;

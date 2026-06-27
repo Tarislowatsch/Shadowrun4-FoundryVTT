@@ -29,6 +29,7 @@ import {
   getGame,
 } from '@utils/index.js';
 import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
+import { SummoningFlow } from '@flows/summoning-flow.js';
 
 /**
  * @typedef {object} SR4Global
@@ -40,6 +41,7 @@ import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
  *   openActionDialog: Function,
  * }} dialogUtility
  * @property {typeof SpellcastingFlow} SpellcastingFlow
+ * @property {typeof SummoningFlow} SummoningFlow
  * @property {typeof reloadWeapon} reloadWeapon
  */
 globalThis.sr4 = {
@@ -51,6 +53,7 @@ globalThis.sr4 = {
     openActionDialog,
   },
   SpellcastingFlow,
+  SummoningFlow,
   reloadWeapon,
 };
 
@@ -175,6 +178,8 @@ Hooks.once('init', async function () {
     'Vehicle Mod',
     'Metatype',
     'CritterTemplate',
+    'Focus',
+    'Fetish',
   ];
 
   DocumentSheetConfig.registerSheet(Item, 'sr4', SR4ItemSheet, {

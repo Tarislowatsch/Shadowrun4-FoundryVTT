@@ -1,19 +1,9 @@
-/**
- * @fileoverview Pure mapper turning spell statblock records into SR4 item data.
- */
-
 import { sourceOf, upper } from './helpers.js';
 
-/**
- * Maps a single-letter spell type code to the system key.
- * @type {Record<string, string>}
- */
+/** @type {Record<string, string>} */
 const TYPE_MAP = { P: 'PHYSICAL', M: 'MANA' };
 
-/**
- * Maps a single-letter duration code to the system key.
- * @type {Record<string, string>}
- */
+/** @type {Record<string, string>} */
 const DURATION_MAP = { I: 'INSTANT', S: 'SUSTAINED', P: 'PERMANENT' };
 
 /**
@@ -97,7 +87,11 @@ function inferOpposed(category, descriptor) {
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapSpell(record) {
-  const name = /** @type {string} */ (record.name) ?? 'Unnamed Spell';
+  const rawName = /** @type {string} */ (record.name) ?? 'Unnamed Spell';
+  const limited = /\(Limited\)\s*$/i.test(rawName);
+  const name = limited
+    ? rawName.replace(/\s*\(Limited\)\s*$/i, '').trim()
+    : rawName;
   const descriptor = String(record.descriptor ?? record.descriptors ?? '');
   const category = upper(record.category ?? 'COMBAT');
   const combatType = /indirect/i.test(descriptor) ? 'INDIRECT' : 'DIRECT';
@@ -120,6 +114,7 @@ export function mapSpell(record) {
       dv: parseDrain(/** @type {string} */ (record.dv)),
       damageType: upper(record.damage) === 'S' ? 'STUN' : 'PHYSICAL',
       opposed: inferOpposed(category, descriptor),
+      limited,
       source: sourceOf(record),
     },
   };

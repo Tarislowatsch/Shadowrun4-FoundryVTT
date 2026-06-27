@@ -93,8 +93,8 @@ describe('buildImportGroups', () => {
     const groups = buildImportGroups(parsed);
     const names = groups.map((g) => g.compendiumName);
 
-    expect(names).toContain('sr4-imported-weapon-heavy-pistols');
-    expect(names).toContain('sr4-imported-armor-armor');
+    expect(names).toContain('sr4-weapon-heavy-pistols');
+    expect(names).toContain('sr4-armor-armor');
   });
 
   it('groups gear with weaponbonus into Ammunition typeLabel', () => {
@@ -185,6 +185,42 @@ describe('buildImportGroups', () => {
 
     expect(melee.map(melee.records[0]).type).toBe('Melee Weapon');
     expect(ranged.map(ranged.records[0]).type).toBe('Ranged Weapon');
+  });
+
+  it('places critter subcategories under a single Critters type without parentFolder', () => {
+    const parsed = {
+      critter: [
+        { name: 'Fire Spirit', category: 'Spirits', source: 'SR4' },
+        { name: 'Western Dragon', category: 'Dracoforms', source: 'SR4' },
+        { name: 'Barghest', category: 'Paranormal Critters', source: 'SR4' },
+      ],
+    };
+    const groups = buildImportGroups(parsed);
+
+    expect(groups.every((g) => g.typeLabel === 'Critters')).toBe(true);
+    expect(groups.every((g) => g.parentFolder == null)).toBe(true);
+    expect(groups.map((g) => g.subcategory).sort()).toEqual([
+      'Dracoforms',
+      'Paranormal Critters',
+      'Spirits',
+    ]);
+  });
+
+  it('places metatype subcategories under a single Metatypes type without parentFolder', () => {
+    const parsed = {
+      metatype: [
+        { name: 'Human', category: 'Metahuman', source: 'SR4' },
+        { name: 'Nartaki', category: 'Metasapients', source: 'RC' },
+      ],
+    };
+    const groups = buildImportGroups(parsed);
+
+    expect(groups.every((g) => g.typeLabel === 'Metatypes')).toBe(true);
+    expect(groups.every((g) => g.parentFolder == null)).toBe(true);
+    expect(groups.map((g) => g.subcategory).sort()).toEqual([
+      'Metahuman',
+      'Metasapients',
+    ]);
   });
 });
 

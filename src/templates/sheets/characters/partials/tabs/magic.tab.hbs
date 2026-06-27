@@ -122,6 +122,16 @@
   </div>
 
   {{#if system.magic.magician}}
+  {{> entity-bindings
+    sectionLabel="sr4.magic.spiritBindings.label"
+    categories=spiritBindingCategories
+    idPrefix="spiritBinding"
+    namePrefix="system.magic.spiritBindings"
+    btnAction="summonSpirit"
+    btnIcon="fas fa-ghost"
+    btnLabel="sr4.magic.summon"
+  }}
+
   {{#> collapsible-section title=(localize "sr4.magic.spells") btnAction="createItem" btnItemType="Spell" btnTooltip="sr4.magic.spells"}}
     {{#if spells}}
     <ul class="spell-list">
@@ -131,6 +141,18 @@
     </ul>
     {{else}}
     <p>{{localize "sr4.spell.noSpells"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
+
+  {{#> collapsible-section title=(localize "sr4.inventory.foci") btnAction="createItem" btnItemType="Focus" btnTooltip="sr4.item.create"}}
+    {{#if foci}}
+    <ul class="item-list">
+      {{#each foci as |item|}}
+      {{> "focus-card"}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize "sr4.focus.noFoci"}}</p>
     {{/if}}
   {{/collapsible-section}}
   {{/if}}

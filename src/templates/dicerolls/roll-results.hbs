@@ -4,17 +4,13 @@
   {{ skillName }}
   {{/if}}
   {{#if isCriticalGlitch}}
-  {{!-- Critical Glitch --}}
   <br />🔴 <strong>{{localize "sr4.roll.criticalGlitch"}}</strong>
 
   {{else if isGlitch}}
-  {{!-- Glitch --}}
   <br />🔴 <strong>{{localize "sr4.roll.glitch"}}</strong>
   {{else if showCombined}}
-  {{!-- After reroll --}}
   <br />🟢 {{localize "sr4.roll.combined_successes"}}: {{ successes }},
   {{else}}
-  {{!-- Default --}}
   <br />🟢 {{localize "sr4.roll.successes"}}: {{ successes }}, 🔴
   {{localize "sr4.roll.failures"}}: {{ failures }}
   {{/if}}

@@ -1,4 +1,5 @@
 import { handleSkillRoll, openActionDialog } from '@utils/index';
+import { SummoningFlow } from '@flows/summoning-flow.js';
 import {
   ActionType,
   AmmoCategory,
@@ -15,7 +16,11 @@ import { SR4EffectTargets } from '@effects/index';
 import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
 import { buildWeaponContext } from './weapon-context.js';
 import { buildArmorContext } from './armor-context.js';
-import { buildComputedStats, sortSkillsByLabel } from './actor-context.js';
+import {
+  buildComputedStats,
+  computeEssenceLoss,
+  sortSkillsByLabel,
+} from './actor-context.js';
 import SR4BaseActorSheet from './sr4-base-actor-sheet.js';
 
 export default class SR4CharacterSheet extends SR4BaseActorSheet {
@@ -36,6 +41,8 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       deleteEffect: SR4CharacterSheet.#onDeleteEffect,
       createConnection: SR4CharacterSheet.#onCreateConnection,
       deleteConnection: SR4CharacterSheet.#onDeleteConnection,
+      summonSpirit: SR4CharacterSheet.#onSummonSpirit,
+      compileSprite: SR4CharacterSheet.#onCompileSprite,
     },
   };
 
@@ -149,8 +156,8 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       sourceModifiers,
       ...this._getStaticContext(actorData),
       ...this._getItemContext(items),
-      ...this._getMagicContext(actorData),
-      ...this._getMatrixContext(actorData),
+      ...(await this._getMagicContext(actorData)),
+      ...(await this._getMatrixContext(actorData)),
       ...buildComputedStats(
         actorData,
         this.document.system.derivedStats,
@@ -274,11 +281,16 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     };
   }
 
-  _getMatrixContext(actorData) {
+  async _getMatrixContext(actorData) {
     if (!actorData.system.technomancer) return {};
     const stats = actorData.system.sheetStats;
     const bonuses = actorData.system.livingPersona;
     return {
+      spriteBindingCategories: await SR4CharacterSheet.#buildBindingCategories(
+        actorData.system.magic?.spriteBindings,
+        'sr4.magic.spriteBindings',
+        'sprite'
+      ),
       livingPersona: {
         response: (stats.INTUITION ?? 0) + (bonuses.responseBonus ?? 0),
         signal:
@@ -293,7 +305,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     };
   }
 
-  _getMagicContext(actorData) {
+  async _getMagicContext(actorData) {
     const sheetStats = actorData.system.sheetStats;
     const drainAttr = actorData.system.magic?.drainAttribute ?? 'LOGIC';
     const drainStatValue = sheetStats?.[drainAttr] ?? 0;
@@ -302,6 +314,11 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       drainPool: (sheetStats?.WILLPOWER ?? 0) + drainStatValue,
       hasMagic:
         actorData.system.magic?.adept || actorData.system.magic?.magician,
+      spiritBindingCategories: await SR4CharacterSheet.#buildBindingCategories(
+        actorData.system.magic?.spiritBindings,
+        'sr4.magic.spiritBindings',
+        'spirit'
+      ),
     };
   }
 
@@ -318,8 +335,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     }));
     const cyberEss = sys.derivedStats?.essenceLossCyber ?? 0;
     const bioEss = sys.derivedStats?.essenceLossBio ?? 0;
-    const essenceLoss =
-      cyberEss >= bioEss ? cyberEss + bioEss / 2 : cyberEss / 2 + bioEss;
+    const essenceLoss = computeEssenceLoss(cyberEss, bioEss);
     return {
       implantsByType: groups.filter((g) => g.items.length > 0),
       essenceCyber: cyberEss.toFixed(2),
@@ -456,5 +472,51 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       target.closest('[data-connection-key]')?.dataset.connectionKey;
     if (!key) return;
     await this.actor.update({ [`system.connections.-=${key}`]: null });
+  }
+
+  // ── Summoning / Compiling actions ─────────────────────────────────────────
+
+  static async #onSummonSpirit() {
+    await SummoningFlow.start(this.actor, 'spirit');
+  }
+
+  static async #onCompileSprite() {
+    await SummoningFlow.start(this.actor, 'sprite');
+  }
+
+  /**
+   * @param {Record<string, string>} bindings
+   * @param {string} i18nPrefix
+   * @param {'spirit' | 'sprite'} entityType
+   */
+  static async #buildBindingCategories(bindings, i18nPrefix, entityType) {
+    const categories = [
+      'COMBAT',
+      'DETECTION',
+      'HEALTH',
+      'ILLUSION',
+      'MANIPULATION',
+    ];
+
+    const settingKey =
+      entityType === 'sprite' ? 'spriteCompendium' : 'spiritCompendium';
+    const packId = game.settings.get('shadowrun4e', settingKey) ?? '';
+    let templateNames = null;
+
+    if (packId) {
+      const pack = game.packs.get(packId);
+      if (pack) {
+        const index = await pack.getIndex();
+        const names = [...new Set(index.map((e) => e.name).filter(Boolean))];
+        if (names.length > 0) templateNames = names;
+      }
+    }
+
+    return categories.map((key) => ({
+      key,
+      label: game.i18n.localize(`${i18nPrefix}.${key}`),
+      value: bindings?.[key] ?? '',
+      options: templateNames,
+    }));
   }
 }

@@ -142,6 +142,24 @@ export class SettingsHook {
         range: { min: 0, max: 200, step: 5 },
       });
 
+      game.settings.register('shadowrun4e', 'spiritCompendium', {
+        name: 'sr4.settings.spiritCompendium.name',
+        hint: 'sr4.settings.spiritCompendium.hint',
+        scope: 'world',
+        config: true,
+        type: String,
+        default: 'world.sr4-critter-spirits',
+      });
+
+      game.settings.register('shadowrun4e', 'spriteCompendium', {
+        name: 'sr4.settings.spriteCompendium.name',
+        hint: 'sr4.settings.spriteCompendium.hint',
+        scope: 'world',
+        config: true,
+        type: String,
+        default: 'world.sr4-critter-sprites',
+      });
+
       game.settings.register('shadowrun4e', 'importerEnabledSources', {
         scope: 'world',
         config: false,

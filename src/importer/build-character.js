@@ -1,10 +1,3 @@
-/**
- * @fileoverview Pure orchestration that assembles `Actor.create` data from a
- * parsed Chummer character. The canonical active-skill list is read from the
- * compendium by the caller and passed in, keeping this module Foundry-free and
- * unit-testable.
- */
-
 import {
   isAmmunition,
   mapBioware,
@@ -70,9 +63,6 @@ function buildSkillRatingMap(skills) {
 }
 
 /**
- * Merges by name so canonical items keep their `label`/attack-skill data, which
- * the combat system relies on.
- *
  * @param {Array<{ name: string, type: string, system: object }>} canonicalSkills
  * @param {Map<string, { rating: number, specialization: string }>} ratings
  * @returns {Array<object>}

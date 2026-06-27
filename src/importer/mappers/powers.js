@@ -1,14 +1,6 @@
-/**
- * @fileoverview Pure mapper turning adept power statblock records into SR4 item
- * data.
- */
-
 import { parseDecimal, sourceOf, upper } from './helpers.js';
 
 /**
- * Maps an adept power record to a "Power" item. Powers flagged as having levels
- * use a per-level Power Point cost (`ratingMode: 'rated'`).
- *
  * @param {Record<string, unknown>} record
  * @returns {{ name: string, type: string, system: object }}
  */

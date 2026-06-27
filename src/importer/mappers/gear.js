@@ -1,7 +1,3 @@
-/**
- * @fileoverview Pure mapper turning gear statblock records into SR4 item data.
- */
-
 import { DamageTypes } from '@models/items/weapon.enums.js';
 
 import {
@@ -11,6 +7,7 @@ import {
   upper,
   XML_CATEGORY_TO_ENUM,
 } from './helpers.js';
+import { mapProgram } from './programs.js';
 
 const dt = Object.fromEntries(Object.keys(DamageTypes).map((k) => [k, k]));
 
@@ -100,8 +97,32 @@ export function isAmmunition(record) {
  * @param {Record<string, unknown>} record
  * @returns {boolean}
  */
+export function isFocus(record) {
+  return String(record.category ?? '').trim() === 'Foci';
+}
+
+/**
+ * @param {Record<string, unknown>} record
+ * @returns {boolean}
+ */
+export function isFetish(record) {
+  return String(record.category ?? '').trim() === 'Fetishes';
+}
+
+/**
+ * @param {Record<string, unknown>} record
+ * @returns {boolean}
+ */
 export function isCommlink(record) {
   return upper(record.iscommlink) === 'TRUE';
+}
+
+/**
+ * @param {Record<string, unknown>} record
+ * @returns {boolean}
+ */
+export function isProgram(record) {
+  return upper(record.isprogram) === 'TRUE' || upper(record.isos) === 'TRUE';
 }
 
 /**
@@ -145,6 +166,29 @@ export function mapGear(record) {
         firewall: parseNumber(record.firewall, 1),
         os: parseNumber(record.system, 1),
       },
+    };
+  }
+
+  if (isProgram(record)) {
+    return mapProgram(record);
+  }
+
+  if (isFocus(record)) {
+    return {
+      name: /** @type {string} */ (record.name) ?? 'Unnamed Focus',
+      type: 'Focus',
+      system: {
+        ...base,
+        equipped: upper(record.equipped) === 'TRUE',
+      },
+    };
+  }
+
+  if (isFetish(record)) {
+    return {
+      name: /** @type {string} */ (record.name) ?? 'Unnamed Fetish',
+      type: 'Fetish',
+      system: base,
     };
   }
 

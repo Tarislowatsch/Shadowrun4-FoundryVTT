@@ -4,7 +4,7 @@
     <h3>{{title}}</h3>
     {{#if btnAction}}
       {{#if @root.editMode}}
-        {{> item-create-btn btnAction=btnAction btnItemType=btnItemType btnItemSubtype=btnItemSubtype btnTooltip=btnTooltip}}
+        {{> item-create-btn btnAction=btnAction btnItemType=btnItemType btnItemSubtype=btnItemSubtype btnTooltip=btnTooltip btnDisabled=btnDisabled}}
       {{/if}}
     {{/if}}
   </summary>

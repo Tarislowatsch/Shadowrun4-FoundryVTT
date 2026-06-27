@@ -60,6 +60,11 @@
       {{ this.system.source }}
     </span>
     {{/if}}
+    {{#if this.system.limited}}
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.limited"}}</strong>
+    </span>
+    {{/if}}
   </div>
   {{> item-card-actions-effects}}
 </div>

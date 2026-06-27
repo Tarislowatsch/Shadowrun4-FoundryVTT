@@ -1,8 +1,3 @@
-/**
- * @fileoverview Pure mapper turning Chummer metatypes.xml records into SR4
- * Metatype item data. Handles both base metatypes and metavariants.
- */
-
 import {
   parseNumber,
   formatSource,

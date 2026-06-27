@@ -58,8 +58,8 @@ describe('mapCharacterSystem', () => {
       MAGIC: 5,
       EDGE: 3,
       CURRENTEDGE: 3,
-      ESSENCE: 6,
     });
+    expect(system.sheetStats.ESSENCE).toBeUndefined();
   });
 
   it('resolves shamanic tradition and charisma drain', () => {

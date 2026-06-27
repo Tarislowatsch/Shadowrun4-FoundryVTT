@@ -1,7 +1,3 @@
-/**
- * @fileoverview Pure mapper turning armor statblock records into SR4 item data.
- */
-
 import { commerceFields, parseNumber, sourceOf } from './helpers.js';
 
 const ACCESSORY_CATEGORIES = new Set(['Helmets', 'Shields']);
@@ -19,8 +15,6 @@ function resolveStackingType(record) {
 }
 
 /**
- * Maps an armor record to an "Armor" item.
- *
  * @param {Record<string, string | string[]>} record
  * @returns {{ name: string, type: string, system: object }}
  */

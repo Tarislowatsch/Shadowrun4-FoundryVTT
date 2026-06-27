@@ -22,7 +22,42 @@
       "spells": "Spells",
       "totem": "Totem",
       "tradition": "Tradition",
-      "traditionBonus": "Tradition Bonus"
+      "traditionBonus": "Tradition Bonus",
+      "spiritBindings": {
+        "label": "Spirit Bindings",
+        "COMBAT": "Combat Spirit",
+        "DETECTION": "Detection Spirit",
+        "HEALTH": "Health Spirit",
+        "ILLUSION": "Illusion Spirit",
+        "MANIPULATION": "Manipulation Spirit"
+      },
+      "spriteBindings": {
+        "label": "Sprite Bindings",
+        "COMBAT": "Combat Sprite",
+        "DETECTION": "Detection Sprite",
+        "HEALTH": "Health Sprite",
+        "ILLUSION": "Illusion Sprite",
+        "MANIPULATION": "Manipulation Sprite"
+      },
+      "summon": "Summon",
+      "compile": "Compile",
+      "summonDialogTitle": "Summon Spirit",
+      "compileDialogTitle": "Compile Sprite",
+      "selectSpiritType": "Select spirit type",
+      "selectSpriteType": "Select sprite type",
+      "noBindings": "No spirit types configured — assign types in the Magic tab first",
+      "noSpriteBindings": "No sprite types configured — assign types in the Matrix tab first",
+      "spiritResist": "Spirit Resistance",
+      "spriteResist": "Sprite Resistance",
+      "spiritResistLabel": "Spirit (Force {force}) resists summoning",
+      "spriteResistLabel": "Sprite (Rating {rating}) resists compiling",
+      "summoningDrain": "Summoning Drain",
+      "compilingFading": "Compiling Fading",
+      "spiritSummoned": "Spirit summoned with {services} service(s)",
+      "spriteCompiled": "Sprite compiled with {tasks} task(s)",
+      "summoningFailed": "Summoning failed — spirit resisted",
+      "compilingFailed": "Compiling failed — sprite resisted",
+      "magicStatZero": "MAGIC attribute is 0 — cannot summon"
     },
     "power": {
       "actions": {
@@ -139,6 +174,7 @@
         "touch": "T"
       },
       "source": "Source",
+      "limited": "Limited",
       "type": "Type",
       "types": {
         "MANA": "M",

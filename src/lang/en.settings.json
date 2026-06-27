@@ -98,6 +98,14 @@
         "hint": "When enabled, active effects open with Foundry's built-in sheet instead of the SR4 custom sheet.",
         "name": "Use Default Effect Sheet"
       },
+      "spiritCompendium": {
+        "hint": "Compendium pack used to populate spirit type dropdowns on the Magic tab. Leave blank to use free-text input.",
+        "name": "Spirit Compendium"
+      },
+      "spriteCompendium": {
+        "hint": "Compendium pack used to populate sprite type dropdowns on the Matrix tab. Leave blank to use free-text input.",
+        "name": "Sprite Compendium"
+      },
       "xmlImporter": {
         "hint": "Import items from external XML statblock files into world compendia.",
         "label": "Open Importer",

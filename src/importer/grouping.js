@@ -1,8 +1,3 @@
-/**
- * @fileoverview Pure grouping layer: turns parsed records into per-compendium
- * import groups and into the type → subcategory → group view-model the UI renders.
- */
-
 import { TAG_CONFIGS } from './registry.js';
 
 /**
@@ -30,9 +25,6 @@ export function slugify(str) {
  */
 
 /**
- * Groups parsed records by type label, subcategory and source book. Each
- * group maps to one target world compendium.
- *
  * @param {Record<string, Array<Record<string, unknown>>>} parsed
  * @returns {ImportGroup[]}
  */
@@ -55,7 +47,7 @@ export function buildImportGroups(parsed) {
           typeLabel,
           source,
           subcategory,
-          compendiumName: `sr4-imported-${compendiumSlug}`,
+          compendiumName: `sr4-${compendiumSlug}`,
           compendiumLabel: subcategory,
           parentFolder: config.parentFolder ?? null,
           records: [],
@@ -101,10 +93,6 @@ export function buildImportGroups(parsed) {
  */
 
 /**
- * Builds the nested type → subcategory → group view-model the importer UI
- * renders. Subcategories whose name equals their parent type are flattened
- * (no header row); their groups indent one level instead of two.
- *
  * @param {ImportGroup[]} groups
  * @returns {TreeType[]}
  */

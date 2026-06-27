@@ -1,0 +1,24 @@
+<div class="item-card item focus-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
+  <div class="item-header item-row">
+    <span class="item-name">{{ this.name }}</span>
+    <div class="item-actions">
+      {{> item-toggle-equip equippedIcon="fas fa-link" unequippedIcon="fas fa-link-slash" tooltip="sr4.item.toggleEquip"}}
+      {{> item-edit-btn}}
+      {{> item-delete-btn}}
+    </div>
+  </div>
+  <div class="item-body">
+    {{#if this.system.rating}}
+    <span class="item-property">
+      <strong>{{localize "sr4.item.rating"}}</strong>
+      {{ this.system.rating }}
+    </span>
+    {{/if}}
+    {{#if this.system.source}}
+    <span class="item-property">
+      <strong>{{localize "sr4.spell.source"}}</strong>
+      {{ this.system.source }}
+    </span>
+    {{/if}}
+  </div>
+</div>

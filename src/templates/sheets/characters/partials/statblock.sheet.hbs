@@ -1,12 +1,10 @@
 <div class="grid">
-  <!-- Header Row -->
   <div class="character-row character-header">
     <span>{{localize 'sr4.stats.physical'}}</span>
     <span>{{localize 'sr4.stats.mental'}}</span>
     <span>{{localize 'sr4.stats.special'}}</span>
     <span>{{localize 'sr4.stats.special'}}</span>
   </div>
-  <!-- Dynamic Stats -->
   {{#each computedStats as |value key|}}
     {{#unless
       (or
@@ -20,8 +18,9 @@
         <input
           type="number"
           name="system.sheetStats.{{key}}"
-          value="{{lookup @root.sourceStats key}}"
+          value="{{#if (includes @root.derivedKeys key)}}{{lookup @root.derivedBaseValues key}}{{else}}{{lookup @root.sourceStats key}}{{/if}}"
           data-dtype="Number"
+          {{#if (eq key "ESSENCE")}}step="0.01"{{/if}}
           {{#if (includes @root.derivedKeys key)}}readonly{{/if}}
           {{#if @root.hasMetatypeLimits}}min="{{lookup @root.attributeMinimum key}}" max="{{lookup @root.attributeMaximum key}}" data-tooltip="Min {{lookup @root.attributeMinimum key}} / Max {{lookup @root.attributeMaximum key}} / Aug {{lookup @root.augmentedMaximum key}}"{{/if}}
         />
@@ -29,7 +28,7 @@
         <span class="stat-display">
           {{#if (includes @root.derivedKeys key)}}
             {{lookup @root.derivedBaseValues key}}
-            {{#if (ne (lookup @root.derivedBaseValues key) (lookup @root.system.sheetStats key))}}
+            {{#if (and (ne key "ESSENCE") (ne (lookup @root.derivedBaseValues key) (lookup @root.system.sheetStats key)))}}
               <span class="stat-bonus">({{lookup @root.system.sheetStats key}})</span>
             {{/if}}
           {{else}}

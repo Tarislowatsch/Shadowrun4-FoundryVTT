@@ -8,6 +8,8 @@ import {
   renderTemplate,
   standardTemplatePath,
 } from '../dialogutility';
+import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import { ApplyDamageFlow } from '@flows/apply-damage-flow.js';
 
 /**
  * @param {HTMLElement} dialog
@@ -37,35 +39,66 @@ async function drainDialogActions(dialog, actor, drainPool) {
 }
 
 /**
- *
  * @param {import('@documents/index').SR4Actor} actor
- * @param {import('@models/index').SR4Spell} spell
- * @param {number} force
- * @param {number} drainPool
- * @param {number} drainValue
+ * @param {{ label: string, force: number, drainPool: number, drainValue: number }} opts
  * @returns {Promise<{successes: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null} | null>}
  */
-export async function openDrainDialog(
+export async function openGenericDrainDialog(
   actor,
-  spell,
-  force,
-  drainPool,
-  drainValue
+  { label, force, drainPool, drainValue }
 ) {
   const params = createDialogParameters(actor, drainPool, undefined, {
     ignoreModifiers: true,
   });
   const content = await renderTemplate(standardTemplatePath(), {
-    spell,
     force,
     drainValue,
     ...params,
     skillName: localize('sr4.roll.drainResistanceTest'),
   });
   return createRollDialog({
-    title: `${localize('sr4.spell.draindialogtitle')} ${spell.name} (${localize('sr4.spell.force')}: ${force})`,
+    title: `${localize('sr4.spell.draindialogtitle')} ${label} (${localize('sr4.spell.force')}: ${force})`,
     content,
     dice: drainPool,
     onRoll: (dialog) => drainDialogActions(dialog, actor, drainPool),
   });
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {{ label: string, force: number, drainPool: number, drainValue: number, isPhysical: boolean }} opts
+ * @returns {Promise<void>}
+ */
+export async function resolveDrain(
+  actor,
+  { label, force, drainPool, drainValue, isPhysical }
+) {
+  const drainResult = await openGenericDrainDialog(actor, {
+    label,
+    force,
+    drainPool,
+    drainValue,
+  });
+  if (drainResult == null) return;
+
+  const finalDrainHits = await resolveEdgeForRoll(
+    actor,
+    {
+      successes: drainResult.successes,
+      rolledDice: drainPool,
+      isGlitch: drainResult.isGlitch,
+      edgeUsed: drainResult.edgeUsed,
+      messageId: drainResult.messageId,
+    },
+    drainValue
+  );
+
+  const unresisted = Math.max(drainValue - finalDrainHits, 0);
+  if (unresisted === 0) return;
+  await ApplyDamageFlow.sendDecisionMessage(
+    actor,
+    unresisted,
+    isPhysical,
+    'drain'
+  );
 }

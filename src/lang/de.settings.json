@@ -98,6 +98,14 @@
         "hint": "Wenn aktiv, öffnen aktive Effekte mit Foundrys eingebautem Sheet statt dem SR4-eigenen.",
         "name": "Standard-Effekt-Sheet verwenden"
       },
+      "spiritCompendium": {
+        "hint": "Kompendium-Pack für die Geist-Typ-Dropdowns im Magie-Tab. Leer lassen für Freitext-Eingabe.",
+        "name": "Geister-Kompendium"
+      },
+      "spriteCompendium": {
+        "hint": "Kompendium-Pack für die Sprite-Typ-Dropdowns im Matrix-Tab. Leer lassen für Freitext-Eingabe.",
+        "name": "Sprite-Kompendium"
+      },
       "xmlImporter": {
         "hint": "Importiert Items aus externen XML-Statblock-Dateien in Welt-Kompendien.",
         "label": "Importer öffnen",

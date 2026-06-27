@@ -84,6 +84,20 @@ describe('simple mappers', () => {
       system: { type: 'BIOWARE', essence: 0.2 },
     },
     {
+      label: 'bioware: essence formula resolved with rating',
+      map: mapBioware,
+      input: {
+        name: 'Muscle Augmentation',
+        category: 'Basic',
+        rating: '3',
+        ess: 'Rating * 0.2',
+        source: 'SR4',
+        page: '342',
+      },
+      type: 'Implant',
+      system: { type: 'BIOWARE', essence: 0.6, rating: 3 },
+    },
+    {
       label: 'armor: ballistic and impact values',
       map: mapArmor,
       input: {
@@ -419,6 +433,44 @@ describe('gear mapper', () => {
     });
     expect(item.system.quantity).toBe(50);
   });
+
+  it('maps Foci category as Focus item with equipped', () => {
+    const item = mapGear({
+      name: 'Counterspelling Focus (Combat)',
+      category: 'Foci',
+      rating: '2',
+      equipped: 'True',
+      cost: '10000',
+      avail: '8R',
+    });
+    expect(item.type).toBe('Focus');
+    expect(item.name).toBe('Counterspelling Focus (Combat)');
+    expect(item.system.rating).toBe(2);
+    expect(item.system.equipped).toBe(true);
+  });
+
+  it('maps unequipped Focus', () => {
+    const item = mapGear({
+      name: 'Sustaining Focus (Illusion)',
+      category: 'Foci',
+      rating: '3',
+      equipped: 'False',
+    });
+    expect(item.type).toBe('Focus');
+    expect(item.system.equipped).toBe(false);
+  });
+
+  it('maps Fetishes category as Fetish item', () => {
+    const item = mapGear({
+      name: 'Combat Fetish',
+      category: 'Fetishes',
+      rating: '0',
+      cost: '200',
+    });
+    expect(item.type).toBe('Fetish');
+    expect(item.name).toBe('Combat Fetish');
+    expect(item.system.rating).toBe(0);
+  });
 });
 
 describe('isAmmunition', () => {
@@ -595,6 +647,36 @@ describe('spell mapper', () => {
       duration: 'PERMANENT',
       dv: -2,
     });
+  });
+
+  it('detects (Limited) suffix and strips it from the name', () => {
+    const item = mapSpell({
+      name: 'Analyze Truth (Limited)',
+      descriptors: 'Active, Directional',
+      category: 'Detection',
+      type: 'M',
+      range: 'T',
+      damage: '',
+      duration: 'S',
+      dv: '(F/2)',
+    });
+    expect(item.name).toBe('Analyze Truth');
+    expect(item.system.limited).toBe(true);
+  });
+
+  it('sets limited to false for regular spells', () => {
+    const item = mapSpell({
+      name: 'Manabolt',
+      descriptor: 'Direct',
+      category: 'Combat',
+      type: 'M',
+      range: 'LOS',
+      damage: 'P',
+      duration: 'I',
+      dv: '(F/2)',
+    });
+    expect(item.name).toBe('Manabolt');
+    expect(item.system.limited).toBe(false);
   });
 });
 

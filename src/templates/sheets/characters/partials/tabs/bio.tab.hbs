@@ -1,14 +1,5 @@
 <div class="tab bio {{ tab.cssClass }}" data-group="primary" data-tab="bio">
-  <details class="inventory-section collapsible-section" open>
-    <summary class="collapsible-header">
-      <i class="fas fa-chevron-right collapse-icon"></i>
-      <h3>{{localize 'sr4.bio.metatype'}}</h3>
-      {{#unless metatypeItem}}
-        {{#if editMode}}
-          {{> item-create-btn btnAction="createItem" btnItemType="Metatype" btnTooltip="sr4.metatype.create"}}
-        {{/if}}
-      {{/unless}}
-    </summary>
+  {{#> collapsible-section title=(localize 'sr4.bio.metatype') btnAction="createItem" btnItemType="Metatype" btnTooltip="sr4.metatype.create" btnDisabled=metatypeItem}}
     {{#if metatypeItem}}
       {{#with metatypeItem}}
       {{> "metatype-card"}}
@@ -16,7 +7,7 @@
     {{else}}
       <p class="empty-list">{{localize 'sr4.metatype.noMetatype'}}</p>
     {{/if}}
-  </details>
+  {{/collapsible-section}}
 
   {{#> collapsible-section title=(localize 'sr4.bio.physicalDescription')}}
     <div class="info-columns">

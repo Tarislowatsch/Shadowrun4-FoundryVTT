@@ -1,0 +1,25 @@
+<input
+  type="number"
+  name="system.rating"
+  value="{{system.rating}}"
+  data-dtype="Number"
+  {{#unless editMode}}readonly{{/unless}}
+/>
+<input
+  type="text"
+  name="system.specialization"
+  value="{{system.specialization}}"
+  data-dtype="String"
+  {{#unless editMode}}readonly{{/unless}}
+/>
+<select
+  name="system.attribute"
+  data-dtype="String"
+  {{#unless editMode}}disabled{{/unless}}
+>
+  {{selectOptions attributes selected=system.attribute localize=true}}
+</select>
+{{#if editMode}}
+  {{> item-edit-btn}}
+  {{> item-delete-btn}}
+{{/if}}

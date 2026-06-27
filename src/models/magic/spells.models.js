@@ -183,6 +183,7 @@ export class SR4SpellData extends foundry.abstract.TypeDataModel {
       dv: new fields.NumberField({ initial: 2, integer: true }),
       damageType: new fields.StringField({ initial: 'PHYSICAL' }),
       opposed: new fields.BooleanField({ initial: false }),
+      limited: new fields.BooleanField({ initial: false }),
     };
   }
 }

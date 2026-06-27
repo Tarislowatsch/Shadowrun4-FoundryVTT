@@ -6,11 +6,13 @@ import { InitiativeHook } from './initiative-hook';
 import { SettingsHook } from './settings-hook';
 import { ActorDirectoryHook } from './actor-directory-hook';
 import { CompendiumDirectoryHook } from './compendium-directory-hook';
+import { SummoningHook } from './summoning-hook';
 
 export function registerHooks() {
   new SettingsHook();
   new DefenseHook();
   new CombatSpellHook();
+  new SummoningHook();
   new DataModelRegistrationHook();
   new InitiativeHook();
   new DieChatHook();

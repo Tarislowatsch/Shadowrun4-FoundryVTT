@@ -1,7 +1,3 @@
-/**
- * @fileoverview Pure mappers turning weapon statblock records into SR4 item data.
- */
-
 import {
   CATEGORY_TO_ATTACKSKILL,
   XML_CATEGORY_TO_ENUM,
@@ -24,8 +20,6 @@ import {
  */
 
 /**
- * Resolves the attack-skill key for a weapon category.
- *
  * @param {string} [category]
  * @returns {string}
  */
@@ -34,8 +28,6 @@ function attackSkillFor(category) {
 }
 
 /**
- * Maps a melee weapon record to a "Melee Weapon" item.
- *
  * @param {StatblockRecord} record
  * @returns {MappedItem}
  */
@@ -61,8 +53,6 @@ export function mapMeleeWeapon(record) {
 }
 
 /**
- * Maps a ranged weapon record to a "Ranged Weapon" item.
- *
  * @param {StatblockRecord} record
  * @returns {MappedItem}
  */
@@ -93,8 +83,6 @@ export function mapRangedWeapon(record) {
 }
 
 /**
- * Maps any weapon record, dispatching on its `type` field.
- *
  * @param {StatblockRecord} record
  * @returns {MappedItem}
  */

@@ -19,6 +19,15 @@ export function sortSkillsByLabel(items) {
 }
 
 /**
+ * @param {number} cyberEss
+ * @param {number} bioEss
+ * @returns {number}
+ */
+export function computeEssenceLoss(cyberEss, bioEss) {
+  return cyberEss >= bioEss ? cyberEss + bioEss / 2 : cyberEss / 2 + bioEss;
+}
+
+/**
  * @param {object} actorData
  * @param {object} derivedStats
  * @param {object} [sourceStats]
@@ -32,17 +41,30 @@ export function buildComputedStats(
 ) {
   const isMagician = actorData.system.magic?.magician === true;
   const srcBonuses = sourceModifiers?.initiative?.bonuses;
+  const essenceLoss = computeEssenceLoss(
+    derivedStats?.essenceLossCyber ?? 0,
+    derivedStats?.essenceLossBio ?? 0
+  );
+  const baseEssence = actorData.system.sheetStats?.ESSENCE ?? 6;
+  const currentEssence = Math.round((baseEssence - essenceLoss) * 100) / 100;
 
   return {
     computedStats: {
       ...actorData.system.sheetStats,
+      ESSENCE: currentEssence,
       INITIATIVE: derivedStats?.initiative?.physical ?? 0,
       MATRIXINITIATIVE: derivedStats?.initiative?.matrix ?? 0,
       ASTRALINITIATIVE: derivedStats?.initiative?.astral ?? 0,
     },
-    derivedKeys: ['INITIATIVE', 'MATRIXINITIATIVE', 'ASTRALINITIATIVE'],
+    derivedKeys: [
+      'ESSENCE',
+      'INITIATIVE',
+      'MATRIXINITIATIVE',
+      'ASTRALINITIATIVE',
+    ],
     derivedBaseValues: sourceStats
       ? {
+          ESSENCE: currentEssence,
           INITIATIVE:
             (sourceStats.INTUITION ?? 0) +
             (sourceStats.REACTION ?? 0) +

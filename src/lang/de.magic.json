@@ -22,7 +22,42 @@
       "spells": "Zauber",
       "totem": "Totem",
       "tradition": "Tradition",
-      "traditionBonus": "Traditionsbonus"
+      "traditionBonus": "Traditionsbonus",
+      "spiritBindings": {
+        "label": "Geist-Zuordnung",
+        "COMBAT": "Kampfgeist",
+        "DETECTION": "Detektionsgeist",
+        "HEALTH": "Heilgeist",
+        "ILLUSION": "Illusionsgeist",
+        "MANIPULATION": "Manipulationsgeist"
+      },
+      "spriteBindings": {
+        "label": "Sprite-Zuordnung",
+        "COMBAT": "Kampf-Sprite",
+        "DETECTION": "Detektions-Sprite",
+        "HEALTH": "Heil-Sprite",
+        "ILLUSION": "Illusions-Sprite",
+        "MANIPULATION": "Manipulations-Sprite"
+      },
+      "summon": "Beschwören",
+      "compile": "Kompilieren",
+      "summonDialogTitle": "Geist beschwören",
+      "compileDialogTitle": "Sprite kompilieren",
+      "selectSpiritType": "Geist-Typ auswählen",
+      "selectSpriteType": "Sprite-Typ auswählen",
+      "noBindings": "Keine Geist-Typen konfiguriert — zuerst im Magie-Tab zuordnen",
+      "noSpriteBindings": "Keine Sprite-Typen konfiguriert — zuerst im Matrix-Tab zuordnen",
+      "spiritResist": "Geist-Widerstand",
+      "spriteResist": "Sprite-Widerstand",
+      "spiritResistLabel": "Geist (Kraft {force}) widersteht Beschwörung",
+      "spriteResistLabel": "Sprite (Stufe {rating}) widersteht Kompilierung",
+      "summoningDrain": "Beschwörungs-Entzug",
+      "compilingFading": "Kompilierungs-Schwund",
+      "spiritSummoned": "Geist mit {services} Dienst(en) beschworen",
+      "spriteCompiled": "Sprite mit {tasks} Aufgabe(n) kompiliert",
+      "summoningFailed": "Beschwörung fehlgeschlagen — Geist hat widerstanden",
+      "compilingFailed": "Kompilierung fehlgeschlagen — Sprite hat widerstanden",
+      "magicStatZero": "MAGIE-Attribut ist 0 — Beschwörung nicht möglich"
     },
     "power": {
       "actions": {
@@ -138,6 +173,7 @@
         "touch": "B"
       },
       "source": "Quelle",
+      "limited": "Begrenzt",
       "type": "Typ",
       "types": {
         "MANA": "M",

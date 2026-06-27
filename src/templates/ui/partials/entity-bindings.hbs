@@ -1,0 +1,45 @@
+<details class="inventory-section collapsible-section" open>
+  <summary class="collapsible-header">
+    <i class="fas fa-chevron-right collapse-icon"></i>
+    <h3>{{localize sectionLabel}}</h3>
+    <button
+      type="button"
+      class="thread-button"
+      data-action="{{btnAction}}"
+      data-tooltip="{{localize btnLabel}}"
+    >
+      <i class="fas fa-dice-d20"></i>
+      {{localize btnLabel}}
+    </button>
+  </summary>
+  <table class="item-stats-table">
+    <tbody>
+      {{#each categories as |cat|}}
+      <tr>
+        <td>{{cat.label}}</td>
+        <td>
+          {{#if cat.options}}
+          <select
+            id="{{../idPrefix}}-{{cat.key}}"
+            name="{{../namePrefix}}.{{cat.key}}"
+            data-dtype="String"
+          >
+            <option value="">—</option>
+            {{#each cat.options as |opt|}}
+            <option value="{{opt}}" {{#if (eq opt cat.value)}}selected{{/if}}>{{opt}}</option>
+            {{/each}}
+          </select>
+          {{else}}
+          <input
+            type="text"
+            id="{{../idPrefix}}-{{cat.key}}"
+            name="{{../namePrefix}}.{{cat.key}}"
+            value="{{cat.value}}"
+          />
+          {{/if}}
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</details>

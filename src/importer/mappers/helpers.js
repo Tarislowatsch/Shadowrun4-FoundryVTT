@@ -1,11 +1,3 @@
-/**
- * @fileoverview Shared pure helpers for the XML statblock mappers.
- * No DOM or Foundry dependencies — safe to unit test under Node.
- *
- * Mapping tables derive their target keys from the model-layer enums
- * (weapon.enums.js, attribute.enum.js) to maintain a single source of truth.
- */
-
 import {
   WeaponCategory,
   Attackskill,
@@ -14,9 +6,6 @@ import {
 import { SR4Attributes } from '@models/attribute.enum.js';
 
 /**
- * Converts an enum object into a `{ KEY: 'KEY' }` identity map so mapping
- * tables can reference enum keys without hardcoded strings.
- *
  * @param {Record<string, string>} enumObj
  * @returns {Record<string, string>}
  */
@@ -142,7 +131,8 @@ export function parseNumber(value, fallback = 0) {
 export function parseDecimal(value, fallback = 0) {
   if (typeof value === 'number') return value;
   if (typeof value !== 'string') return fallback;
-  const match = value.match(/\d*\.\d+|\d+/);
+  const normalized = value.replace(/,/g, '.');
+  const match = normalized.match(/\d*\.\d+|\d+/);
   return match ? parseFloat(match[0]) : fallback;
 }
 

@@ -20,7 +20,6 @@
 
   {{#if isTechnomancer}}
 
-  {{!-- Living Persona --}}
   <h3>{{localize "sr4.matrix.livingPersona"}}</h3>
   <table class="item-stats-table">
     <thead>
@@ -99,7 +98,16 @@
     </tbody>
   </table>
 
-  {{!-- Complex Forms --}}
+  {{> entity-bindings
+    sectionLabel="sr4.magic.spriteBindings.label"
+    categories=spriteBindingCategories
+    idPrefix="spriteBinding"
+    namePrefix="system.magic.spriteBindings"
+    btnAction="compileSprite"
+    btnIcon="fas fa-microchip"
+    btnLabel="sr4.magic.compile"
+  }}
+
   <div class="magic-section-subtitle">
     <h3>{{localize "sr4.matrix.complexForms"}}</h3>
     <button
@@ -124,7 +132,6 @@
 
   {{/if}}
 
-  {{!-- Commlinks --}}
   <h3>{{localize "sr4.matrix.commlinks"}}</h3>
   {{#if commlinks}}
   <ul class="item-list">
@@ -136,7 +143,6 @@
   <p>{{localize "sr4.commlink.noCommlinks"}}</p>
   {{/if}}
 
-  {{!-- Software --}}
   <h3>{{localize "sr4.matrix.software"}}</h3>
   {{#if programs}}
   <ul class="item-list">

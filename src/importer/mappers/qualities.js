@@ -1,7 +1,3 @@
-/**
- * @fileoverview Pure mapper turning quality statblock records into SR4 item data.
- */
-
 import { parseNumber, sourceOf } from './helpers.js';
 
 /**

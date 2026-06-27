@@ -10,7 +10,6 @@
     {{/if}}
   </div>
 
-  {{!-- Waffen --}}
   {{#> collapsible-section title=(localize 'sr4.inventory.weapons') btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
     {{#if weapons}}
     <ul class="weapon-list">
@@ -25,7 +24,6 @@
 
   <hr />
 
-  {{!-- Rüstung --}}
   {{#> collapsible-section title=(localize 'sr4.inventory.armor') btnAction="createItem" btnItemType="Armor" btnTooltip="sr4.item.create"}}
     {{#if armor}}
     <ul class="armor-list">
@@ -40,7 +38,6 @@
 
   <hr />
 
-  {{!-- Commlinks --}}
   {{#> collapsible-section title=(localize 'sr4.inventory.commlinks') btnAction="createItem" btnItemType="Commlink" btnTooltip="sr4.item.create"}}
     {{#if commlinks}}
     <ul class="item-list">
@@ -53,7 +50,8 @@
     {{/if}}
   {{/collapsible-section}}
 
-  {{!-- Ausrüstung --}}
+  <hr />
+
   {{#> collapsible-section title=(localize 'sr4.inventory.items') btnAction="createItem" btnItemType="Gear" btnTooltip="sr4.item.create"}}
     {{#if items}}
     <ul class="item-list">
@@ -68,22 +66,6 @@
 
   <hr />
 
-  {{!-- Foki / Fetische --}}
-  {{#> collapsible-section title=(localize 'sr4.inventory.foci') btnAction="createItem" btnItemType="Focus" btnTooltip="sr4.item.create"}}
-    {{#if foci}}
-    <ul class="item-list">
-      {{#each foci as |item|}}
-      {{> "item-card"}}
-      {{/each}}
-    </ul>
-    {{else}}
-    <p class="empty-list">{{localize 'sr4.focus.noFoci'}}</p>
-    {{/if}}
-  {{/collapsible-section}}
-
-  <hr />
-
-  {{!-- Fahrzeuge (vorbereitet) --}}
   {{#> collapsible-section title=(localize 'sr4.inventory.vehicles')}}
     <p class="empty-list">{{localize 'sr4.vehicle.notImplemented'}}</p>
   {{/collapsible-section}}

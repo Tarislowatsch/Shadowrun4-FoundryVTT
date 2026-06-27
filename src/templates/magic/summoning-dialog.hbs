@@ -1,0 +1,20 @@
+<div class="form-group">
+  <label for="spiritType">{{selectLabel}}</label>
+  <select id="spiritType" name="spiritType">
+    {{#each availableTypes as |type|}}
+    <option value="{{type}}">{{type}}</option>
+    {{/each}}
+  </select>
+</div>
+<div class="form-group">
+  <label for="force">{{localize "sr4.spell.force"}}</label>
+  <input
+    type="number"
+    id="force"
+    name="force"
+    min="1"
+    max="{{ maxForce }}"
+    value="{{ defaultForce }}"
+  />
+  <span class="hint">Max: {{ maxForce }}</span>
+</div>

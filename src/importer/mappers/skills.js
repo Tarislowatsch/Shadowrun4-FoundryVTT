@@ -1,12 +1,6 @@
-/**
- * @fileoverview Pure mapper turning skill statblock records into SR4 item data.
- */
-
 import { ATTRIBUTE_ABBR_TO_KEY, sourceOf, upper } from './helpers.js';
 
 /**
- * Maps a skill record to a "Skill" item.
- *
  * @param {Record<string, string | string[]>} record
  * @returns {{ name: string, type: string, system: object }}
  */

@@ -29,6 +29,7 @@ export async function registerUIPartials() {
     { path: `${basePath}/item-edit-btn.hbs`, name: 'item-edit-btn' },
     { path: `${basePath}/item-delete-btn.hbs`, name: 'item-delete-btn' },
     { path: `${basePath}/meta-field.hbs`, name: 'meta-field' },
+    { path: `${basePath}/entity-bindings.hbs`, name: 'entity-bindings' },
     { path: `${basePath}/textarea-field.hbs`, name: 'textarea-field' },
   ];
   await Promise.all(

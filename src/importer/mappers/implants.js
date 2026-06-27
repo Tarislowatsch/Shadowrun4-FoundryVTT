@@ -1,8 +1,3 @@
-/**
- * @fileoverview Pure mappers turning cyberware/bioware statblock records into
- * SR4 "Implant" item data.
- */
-
 import {
   commerceFields,
   parseDecimal,
@@ -33,14 +28,32 @@ function normalizeGrade(raw) {
 }
 
 /**
- * Maps an implant record to an "Implant" item of the given implant type.
- *
+ * @param {unknown} raw
+ * @param {number} rating
+ * @returns {number}
+ */
+function resolveEssence(raw, rating) {
+  const str = String(raw ?? '')
+    .replace(/,/g, '.')
+    .trim();
+  if (!str) return 0;
+  if (/^\d*\.?\d+$/.test(str)) return parseDecimal(str, 0);
+  const match =
+    str.match(/^Rating\s*\*\s*(\d*\.?\d+)$/i) ??
+    str.match(/^(\d*\.?\d+)\s*\*\s*Rating$/i);
+  if (match)
+    return Math.round((rating || 1) * parseFloat(match[1]) * 100) / 100;
+  return 0;
+}
+
+/**
  * @param {Record<string, unknown>} record
- * @param {string} implantType - Enum key: 'CYBERWARE' or 'BIOWARE'.
+ * @param {string} implantType
  * @returns {{ name: string, type: string, system: object }}
  */
 function mapImplant(record, implantType) {
-  const essence = parseDecimal(record.ess, 0);
+  const rating = parseNumber(record.rating, 0);
+  const essence = resolveEssence(record.ess, rating);
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Implant',
     type: 'Implant',
@@ -50,7 +63,7 @@ function mapImplant(record, implantType) {
       capacity: parseNumber(record.capacity, 0),
       grade: normalizeGrade(record.grade),
       type: implantType,
-      rating: parseNumber(record.rating, 0),
+      rating,
       ...commerceFields(record),
       source: sourceOf(record),
     },
@@ -58,8 +71,6 @@ function mapImplant(record, implantType) {
 }
 
 /**
- * Maps a cyberware record to an "Implant" item.
- *
  * @param {Record<string, unknown>} record
  * @returns {{ name: string, type: string, system: object }}
  */
@@ -68,8 +79,6 @@ export function mapCyberware(record) {
 }
 
 /**
- * Maps a bioware record to an "Implant" item.
- *
  * @param {Record<string, unknown>} record
  * @returns {{ name: string, type: string, system: object }}
  */

@@ -179,6 +179,22 @@ export const magicField = () =>
     totem: new fields.StringField({ initial: '', blank: true }),
 
     traditionBonus: new fields.NumberField({ initial: 0, integer: true }),
+
+    spiritBindings: new fields.SchemaField({
+      COMBAT: new fields.StringField({ initial: '', blank: true }),
+      DETECTION: new fields.StringField({ initial: '', blank: true }),
+      HEALTH: new fields.StringField({ initial: '', blank: true }),
+      ILLUSION: new fields.StringField({ initial: '', blank: true }),
+      MANIPULATION: new fields.StringField({ initial: '', blank: true }),
+    }),
+
+    spriteBindings: new fields.SchemaField({
+      COMBAT: new fields.StringField({ initial: '', blank: true }),
+      DETECTION: new fields.StringField({ initial: '', blank: true }),
+      HEALTH: new fields.StringField({ initial: '', blank: true }),
+      ILLUSION: new fields.StringField({ initial: '', blank: true }),
+      MANIPULATION: new fields.StringField({ initial: '', blank: true }),
+    }),
   });
 // ---------------------------------------------------------------------------
 // Connections

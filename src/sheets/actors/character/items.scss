@@ -155,6 +155,11 @@
     color: var(--sr4-text-muted);
     border-color: var(--sr4-text-muted);
   }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
 }
 
 .section-header {

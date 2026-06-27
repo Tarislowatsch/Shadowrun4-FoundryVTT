@@ -1,18 +1,6 @@
-/**
- * @fileoverview Browser-only XML parsing layer for the single-character
- * importer. Reads one Chummer `<character>` element into a flat field record,
- * an attribute map and per-collection item/skill record arrays. Kept separate
- * from the pure mappers so those stay unit-testable under Node.
- */
-
 import { elementToRecord } from './parse-xml.js';
 
-/**
- * Item collections to extract, as `[childTag, containerTag]` pairs. Scoping to
- * `container > child` keeps vehicle-mounted weapons (nested under
- * `vehicles/vehicle/weapons`) out of the character's own item lists.
- * @type {Array<[string, string]>}
- */
+/** @type {Array<[string, string]>} */
 const COLLECTIONS = [
   ['weapon', 'weapons'],
   ['armor', 'armors'],
@@ -97,12 +85,15 @@ export function extractCharacter(xmlString) {
   }
 
   if (gearEls) {
-    for (const gearEl of gearEls) {
+    const queue = [...gearEls];
+    while (queue.length > 0) {
+      const parentEl = /** @type {Element} */ (queue.shift());
       const childGearEls = [
-        ...gearEl.querySelectorAll(':scope > children > gear'),
+        ...parentEl.querySelectorAll(':scope > children > gear'),
       ];
       for (const childEl of childGearEls) {
         items.gear.push(elementToRecord(childEl));
+        queue.push(childEl);
       }
     }
   }
