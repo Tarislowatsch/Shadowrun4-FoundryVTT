@@ -2,6 +2,17 @@
   <summary class="collapsible-header">
     <i class="fas fa-chevron-right collapse-icon"></i>
     <h3>{{localize sectionLabel}}</h3>
+    {{#if btn2Action}}
+    <button
+      type="button"
+      class="thread-button"
+      data-action="{{btn2Action}}"
+      data-tooltip="{{localize btn2Label}}"
+    >
+      <i class="{{btn2Icon}}"></i>
+      {{localize btn2Label}}
+    </button>
+    {{/if}}
     <button
       type="button"
       class="thread-button"

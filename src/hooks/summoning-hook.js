@@ -1,5 +1,6 @@
 import { openSpiritResistDialog } from '@utils/dialog/magic/spirit-resist.js';
 import { getGame, isPrimaryGM } from '@utils/index';
+import { SummoningFlow } from '@flows/summoning-flow.js';
 
 /**
  * @typedef {object} SummoningResistPayload
@@ -25,20 +26,23 @@ export class SummoningHook {
   }
 
   /**
-   * @param {{ action: string, payload: SummoningResistPayload }} data
+   * @param {{ action: string, payload: SummoningResistPayload | object }} data
    * @returns {Promise<void>}
    */
   async _onSocketMessage(data) {
-    if (
-      data.action !== 'triggerSpiritResist' &&
-      data.action !== 'triggerSpriteResist'
-    )
-      return;
-
     if (!isPrimaryGM()) return;
 
-    const { summonerId, force, spiritType, entityType } = data.payload ?? {};
+    if (
+      data.action === 'triggerSpiritResist' ||
+      data.action === 'triggerSpriteResist'
+    ) {
+      const { summonerId, force, spiritType, entityType } = data.payload ?? {};
+      await openSpiritResistDialog(force, spiritType, entityType, summonerId);
+      return;
+    }
 
-    await openSpiritResistDialog(force, spiritType, entityType, summonerId);
+    if (data.action === 'createSummonedEntity') {
+      await SummoningFlow.createEntity(data.payload);
+    }
   }
 }

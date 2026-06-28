@@ -12,7 +12,7 @@ export {
  * @param {'spirit' | 'sprite'} entityType
  * @returns {Promise<Map<string, object> | null>}
  */
-async function loadCompendiumTemplates(entityType) {
+export async function loadCompendiumTemplates(entityType) {
   const settingKey =
     entityType === 'sprite' ? 'spriteCompendium' : 'spiritCompendium';
   const packId = game.settings.get('shadowrun4e', settingKey) ?? '';
@@ -30,7 +30,7 @@ async function loadCompendiumTemplates(entityType) {
 /**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {'spirit' | 'sprite'} entityType
- * @returns {Promise<{ spiritType: string, force: number, templateActor: import('@documents/index').SR4Actor | null } | null>}
+ * @returns {Promise<{ spiritType: string, force: number, templateItem: object | null } | null>}
  */
 export async function openSummoningDialog(actor, entityType) {
   const isSprite = entityType === 'sprite';
@@ -81,9 +81,9 @@ export async function openSummoningDialog(actor, entityType) {
           parseInt(dialog.querySelector('#force')?.value ?? '0') || 1;
         const force = clampForce(rawForce, maxForce);
 
-        const templateActor = templateMap?.get(spiritType) ?? null;
+        const templateItem = templateMap?.get(spiritType) ?? null;
 
-        return { spiritType, force, templateActor };
+        return { spiritType, force, templateItem };
       },
     },
     cancel: {

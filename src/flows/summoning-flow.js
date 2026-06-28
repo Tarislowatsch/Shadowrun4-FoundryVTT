@@ -10,9 +10,11 @@ import {
 import {
   openSummoningDialog,
   calculateSummoningDrain,
+  loadCompendiumTemplates,
 } from '@utils/dialog/magic/summoning.js';
 import { resolveDrain } from '@utils/dialog/magic/drain.js';
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import { buildCritterActorData } from '@importer/build-critter.js';
 
 export class SummoningFlow {
   /**
@@ -34,7 +36,7 @@ export class SummoningFlow {
     const selection = await openSummoningDialog(actor, entityType);
     if (!selection) return;
 
-    const { spiritType, force, templateActor } = selection;
+    const { spiritType, force, templateItem } = selection;
 
     const skillName = isSprite ? 'compiling' : 'summoning';
     const rollResult = await SummoningFlow._rollSummoning(
@@ -71,13 +73,13 @@ export class SummoningFlow {
       : Math.max(0, summonerHits - spiritHits);
 
     if (netHits > 0) {
-      await SummoningFlow._createEntity(
+      await SummoningFlow._requestEntityCreation(
         actor,
         entityType,
         spiritType,
         force,
         netHits,
-        templateActor
+        templateItem
       );
       const msgKey = isSprite
         ? 'sr4.magic.spriteCompiled'
@@ -94,6 +96,78 @@ export class SummoningFlow {
     }
 
     await SummoningFlow._handleDrain(actor, force, spiritHits, entityType);
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} actor
+   * @returns {Promise<void>}
+   */
+  static async startWatcher(actor) {
+    if (!actor.getAttribute('MAGIC')) {
+      ui?.notifications?.error(
+        getGame().i18n?.localize('sr4.magic.magicStatZero')
+      );
+      return;
+    }
+
+    const rollResult = await SummoningFlow._rollSummoning(
+      actor,
+      'summoning',
+      0
+    );
+    if (!rollResult) return;
+
+    let hits = rollResult.successes;
+    if (!rollResult.edgeUsed && !rollResult.isGlitch) {
+      hits = await resolveEdgeForRoll(
+        actor,
+        {
+          successes: rollResult.successes,
+          rolledDice: rollResult.rolledDice,
+          isGlitch: rollResult.isGlitch,
+          edgeUsed: rollResult.edgeUsed,
+          messageId: rollResult.messageId,
+        },
+        0
+      );
+    }
+
+    if (rollResult.isGlitch || hits < 1) {
+      ui?.notifications?.info(game.i18n.localize('sr4.magic.summoningFailed'));
+      return;
+    }
+
+    const templateMap = await loadCompendiumTemplates('spirit');
+    const templateItem = templateMap?.get('Watcher') ?? null;
+
+    await SummoningFlow._requestEntityCreation(
+      actor,
+      'spirit',
+      'Watcher',
+      1,
+      hits,
+      templateItem
+    );
+
+    ui?.notifications?.info(
+      game.i18n
+        .localize('sr4.magic.watcherSummoned')
+        .replace('{hours}', String(hits))
+    );
+
+    const willpower = actor.getAttribute('WILLPOWER') ?? 0;
+    const drainAttribute =
+      actor.getAttribute(actor.system.magic.drainAttribute) ?? 0;
+    const drainBonus = actor.system.magic?.summoningDrainBonus ?? 0;
+    const drainPool = willpower + drainAttribute + drainBonus;
+
+    await resolveDrain(actor, {
+      label: localize('sr4.magic.watcherDrain'),
+      force: 1,
+      drainPool,
+      drainValue: hits,
+      isPhysical: false,
+    });
   }
 
   /**
@@ -172,32 +246,77 @@ export class SummoningFlow {
    * @param {string} spiritType
    * @param {number} force
    * @param {number} services
-   * @param {import('@documents/index').SR4Actor | null} templateActor
+   * @param {object | null} templateItem
    * @returns {Promise<void>}
    */
-  static async _createEntity(
+  static async _requestEntityCreation(
     actor,
     entityType,
     spiritType,
     force,
     services,
-    templateActor
+    templateItem
   ) {
+    const socket = getGame().socket;
+    if (!socket) return;
+
+    socket.emit('system.shadowrun4e', {
+      action: 'createSummonedEntity',
+      payload: {
+        ownerUuid: actor.uuid,
+        entityType,
+        spiritType,
+        force,
+        services,
+        templateSystem: templateItem?.system ?? null,
+        templateImg: templateItem?.img ?? null,
+      },
+    });
+  }
+
+  /**
+   * @param {{ ownerUuid: string, entityType: 'spirit' | 'sprite', spiritType: string, force: number, services: number, templateSystem: object | null }} payload
+   * @returns {Promise<void>}
+   */
+  static async createEntity({
+    ownerUuid,
+    entityType,
+    spiritType,
+    force,
+    services,
+    templateSystem,
+    templateImg,
+  }) {
     const isSprite = entityType === 'sprite';
 
     let actorData;
-    if (templateActor) {
-      actorData = templateActor.toObject();
-      actorData._id = undefined;
-      if (isSprite) {
-        actorData.system.rating = force;
-        actorData.system.tasks = services;
-      } else {
-        actorData.system.force = force;
-        actorData.system.services = services;
-      }
-      actorData.system.ownerUuid = actor.uuid;
+    if (templateSystem) {
+      actorData = buildCritterActorData(templateSystem, spiritType, force);
+      if (templateImg) actorData.img = templateImg;
     } else {
+      const defaultStats = {};
+      const statKeys = [
+        'BODY',
+        'AGILITY',
+        'REACTION',
+        'STRENGTH',
+        'CHARISMA',
+        'INTUITION',
+        'LOGIC',
+        'WILLPOWER',
+        'MAGIC',
+        'EDGE',
+        'CURRENTEDGE',
+        'ESSENCE',
+        'INITIATIVE',
+        'ASTRALINITIATIVE',
+      ];
+      for (const k of statKeys) defaultStats[k] = force || 1;
+      defaultStats.ESSENCE = 6;
+      defaultStats.INITIATIVE = (force || 1) * 2;
+      defaultStats.ASTRALINITIATIVE = (force || 1) * 2;
+      defaultStats.CURRENTEDGE = defaultStats.EDGE;
+
       actorData = {
         name: spiritType,
         type: entityType,
@@ -205,26 +324,44 @@ export class SummoningFlow {
           ? {
               rating: force,
               spriteType: spiritType,
-              tasks: services,
-              ownerUuid: actor.uuid,
+              tasks: 0,
+              sheetStats: defaultStats,
             }
-          : {
-              force,
-              spiritType,
-              services,
-              ownerUuid: actor.uuid,
-            },
+          : { force, spiritType, services: 0, sheetStats: defaultStats },
       };
+    }
+
+    actorData.system.ownerUuid = ownerUuid;
+    if (isSprite) {
+      actorData.system.tasks = services;
+    } else {
+      actorData.system.services = services;
     }
 
     const [created] = await Actor.create([actorData], { renderSheet: false });
     if (!created) return;
 
-    const scene = game.scenes?.active;
-    if (scene) {
-      const tokenData = await created.getTokenDocument();
-      await scene.createEmbeddedDocuments('Token', [tokenData.toObject()]);
+    const owner = await fromUuid(ownerUuid);
+    const ownerUser = game.users?.find((u) => u.character?.id === owner?.id);
+    if (ownerUser) {
+      await created.update({
+        ownership: { [ownerUser.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER },
+      });
     }
+
+    const scene = game.scenes?.active;
+    if (!scene) return;
+
+    const tokenData = (await created.getTokenDocument()).toObject();
+    const ownerToken = scene.tokens.find(
+      (t) => t.actor?.uuid === ownerUuid || t.actorId === owner?.id
+    );
+    if (ownerToken) {
+      const grid = scene.grid?.size ?? canvas.grid?.size ?? 100;
+      tokenData.x = ownerToken.x + grid;
+      tokenData.y = ownerToken.y;
+    }
+    await scene.createEmbeddedDocuments('Token', [tokenData]);
   }
 
   /**

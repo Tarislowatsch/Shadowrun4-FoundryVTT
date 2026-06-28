@@ -42,6 +42,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       createConnection: SR4CharacterSheet.#onCreateConnection,
       deleteConnection: SR4CharacterSheet.#onDeleteConnection,
       summonSpirit: SR4CharacterSheet.#onSummonSpirit,
+      summonWatcher: SR4CharacterSheet.#onSummonWatcher,
       compileSprite: SR4CharacterSheet.#onCompileSprite,
     },
   };
@@ -478,6 +479,10 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
 
   static async #onSummonSpirit() {
     await SummoningFlow.start(this.actor, 'spirit');
+  }
+
+  static async #onSummonWatcher() {
+    await SummoningFlow.startWatcher(this.actor);
   }
 
   static async #onCompileSprite() {

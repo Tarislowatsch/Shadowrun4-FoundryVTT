@@ -57,7 +57,10 @@
       "spriteCompiled": "Sprite compiled with {tasks} task(s)",
       "summoningFailed": "Summoning failed — spirit resisted",
       "compilingFailed": "Compiling failed — sprite resisted",
-      "magicStatZero": "MAGIC attribute is 0 — cannot summon"
+      "magicStatZero": "MAGIC attribute is 0 — cannot summon",
+      "summonWatcher": "Summon Watcher",
+      "watcherSummoned": "Watcher summoned with {hours} hour(s) life span",
+      "watcherDrain": "Watcher Drain"
     },
     "power": {
       "actions": {
