@@ -1,4 +1,8 @@
-import { getGame, getValidTargetActors } from '@utils/index.js';
+import {
+  awaitOpposedSocketResponse,
+  getGame,
+  getValidTargetActorsOrWarn,
+} from '@utils/index.js';
 import { openDirectSpellAllocationDialog } from '@utils/dialog/magic/combat-spell.js';
 import { getSpellEffectData } from './apply-effects-flow';
 
@@ -11,7 +15,7 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async start(caster, spell, castingHits, force) {
-    if (!game.settings.get('shadowrun4e', 'spellWorkflow')) return 0;
+    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) return 0;
 
     const combatType = spell.system?.combatType ?? 'DIRECT';
 
@@ -29,7 +33,7 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async _handleDirect(caster, spell, castingHits, force) {
-    const targets = CombatSpellFlow._getTargetsOrWarn(spell);
+    const targets = getValidTargetActorsOrWarn(spell.name);
     if (targets.length === 0) return 0;
 
     let maxAppliedHits = 0;
@@ -56,43 +60,27 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async _directSpellVsTarget(caster, spell, castingHits, force, target) {
-    const socket = getGame().socket;
-    if (!socket) return 0;
-
     const defenderId = target.id;
     const isMana = spell.system?.type === 'MANA';
 
-    const netHits = await new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        socket.off('system.shadowrun4e', handler);
-        resolve(0);
-      }, 300_000);
-      const handler = (data) => {
-        if (
-          data.action !== 'directSpellResisted' ||
-          data.payload?.casterId !== caster.id ||
-          data.payload?.defenderId !== defenderId
-        )
-          return;
-        clearTimeout(timeout);
-        socket.off('system.shadowrun4e', handler);
-        const resistHits = data.payload.resistHits;
-        resolve(
-          resistHits === null ? 0 : Math.max(0, castingHits - resistHits)
-        );
-      };
-      socket.on('system.shadowrun4e', handler);
-      socket.emit('system.shadowrun4e', {
-        action: 'triggerDirectSpellResist',
-        payload: {
-          defenderId,
-          casterId: caster.id,
-          spellName: spell.name,
-          castingHits,
-          force,
-          isMana,
-        },
-      });
+    const netHits = await awaitOpposedSocketResponse({
+      triggerAction: 'triggerDirectSpellResist',
+      triggerPayload: {
+        defenderId,
+        casterId: caster.id,
+        spellName: spell.name,
+        castingHits,
+        force,
+        isMana,
+      },
+      matchAction: 'directSpellResisted',
+      matches: (payload) =>
+        payload?.casterId === caster.id && payload?.defenderId === defenderId,
+      onMatch: (payload) =>
+        payload.resistHits === null
+          ? 0
+          : Math.max(0, castingHits - payload.resistHits),
+      fallback: 0,
     });
 
     if (netHits < 1) {
@@ -111,7 +99,7 @@ export class CombatSpellFlow {
 
     const isPhysical = spell.system?.damageType !== 'STUN';
     const effects = getSpellEffectData(spell);
-    socket.emit('system.shadowrun4e', {
+    getGame().socket?.emit('system.shadowrun4e', {
       action: 'applyDirectSpellDamage',
       payload: {
         defenderId,
@@ -134,7 +122,7 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async _handleIndirect(caster, spell, castingHits, force) {
-    const targets = CombatSpellFlow._getTargetsOrWarn(spell);
+    const targets = getValidTargetActorsOrWarn(spell.name);
     if (targets.length === 0) return 0;
 
     const spellSnapshot = spell.toObject();
@@ -164,7 +152,7 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async startPerTarget(caster, spell, perTargetHits, force) {
-    if (!game.settings.get('shadowrun4e', 'spellWorkflow')) return 0;
+    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) return 0;
     const combatType = spell.system?.combatType ?? 'DIRECT';
 
     if (combatType === 'DIRECT') {
@@ -199,19 +187,5 @@ export class CombatSpellFlow {
       });
     }
     return 0;
-  }
-
-  /**
-   * @param {import('@models/index').SR4Spell} spell
-   * @returns {import('@documents/index').SR4Actor[]}
-   */
-  static _getTargetsOrWarn(spell) {
-    const targets = getValidTargetActors();
-    if (targets.length === 0) {
-      ui?.notifications?.warn(
-        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`
-      );
-    }
-    return targets;
   }
 }

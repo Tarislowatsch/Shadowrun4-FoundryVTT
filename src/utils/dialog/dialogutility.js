@@ -68,6 +68,7 @@ export async function renderTemplate(path, data) {
  * @property {number} [dice]
  * @property {(dialog: HTMLElement) => Promise<Record<string, unknown> & {successes: number, isGlitch: boolean}>} onRoll
  * @property {(html: HTMLElement, updateLabel: () => void) => void} [onRender]
+ * @property {boolean} [autoRoll] Automatically trigger the roll with default options once the `flowOpposedRollTimeout` setting elapses.
  */
 
 /**
@@ -75,6 +76,9 @@ export async function renderTemplate(path, data) {
  * @returns {Promise<Record<string, unknown> & {successes: number, isGlitch: boolean}>}
  */
 export async function createRollDialog(config) {
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
+  let autoRollTimer;
+
   return foundry.applications.api.DialogV2.prompt({
     window: { title: config.title },
     content: config.content,
@@ -82,6 +86,7 @@ export async function createRollDialog(config) {
     ok: {
       label: `${localize('sr4.roll.rollButton')}${config.dice ? ` (${config.dice})` : ''}`,
       callback: async (_event, button) => {
+        clearTimeout(autoRollTimer);
         const html = /** @type {HTMLElement} */ (button.closest('dialog'));
         return config.onRoll(html);
       },
@@ -89,6 +94,17 @@ export async function createRollDialog(config) {
 
     render: (event) => {
       const html = event.target.element;
+
+      if (config.autoRoll) {
+        const timeoutSeconds = getGame().settings.get(
+          'shadowrun4e',
+          'flowOpposedRollTimeout'
+        );
+        autoRollTimer = setTimeout(() => {
+          html.querySelector('button[data-action="ok"]')?.click();
+        }, timeoutSeconds * 1000);
+      }
+
       if (config.dice === undefined) return;
 
       const updateLabel = () => {
@@ -118,6 +134,8 @@ export async function createRollDialog(config) {
       if (config.onRender) config.onRender(html, updateLabel);
       updateLabel();
     },
+
+    close: () => clearTimeout(autoRollTimer),
   });
 }
 
@@ -291,6 +309,50 @@ export function createDialogParameters(
 }
 
 /**
+ * @param {import('@documents/index').SR4Item} skill
+ * @param {string} suffix
+ * @returns {string}
+ */
+function buildSkillRollTitle(skill, suffix = '') {
+  return `${localize('sr4.roll.rolling')} ${localize(skill.system.label)}${suffix}`;
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} skillName
+ * @param {number | undefined} dice
+ * @param {{ weapon?: SR4Weapon, titleSuffix?: string, force?: number, edgeAvailableOverride?: boolean }} [options]
+ * @returns {Promise<(Record<string, unknown> & {successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}) | undefined>}
+ */
+export async function rollSkillDialog(
+  actor,
+  skillName,
+  dice,
+  { weapon, titleSuffix, force, edgeAvailableOverride } = {}
+) {
+  const skill = actor.getSkill(skillName);
+  const params = createDialogParameters(actor, dice, weapon);
+  const content = await renderTemplate(standardTemplatePath(), {
+    ...params,
+    skillName,
+    weapon,
+    force,
+  });
+  return createRollDialog({
+    title: buildSkillRollTitle(
+      skill,
+      titleSuffix ?? ` ${skill.system.specialization ?? ''}`
+    ),
+    content,
+    dice,
+    onRoll: (dialog) =>
+      dialogActions(dialog, actor, skillName, dice ?? 0, weapon, {
+        edgeAvailableOverride,
+      }),
+  });
+}
+
+/**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
  * @returns {number | undefined}
@@ -330,24 +392,49 @@ function getSkillModifier(actor, skill) {
 }
 
 /**
+async function _openStandardRollDialog(actor, numDice, title, rollLabel) {
+  const params = createDialogParameters(actor, numDice);
+  const content = await renderTemplate(standardTemplatePath(), {
+    ...params,
+    skillName: rollLabel,
+  });
+  await createRollDialog({
+    title,
+    content,
+    dice: numDice,
+    onRoll: (dialog) => dialogActions(dialog, actor, rollLabel, numDice),
+  });
+}
+
+/**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} action
  * @param {number} numDice
  * @returns {Promise<void>}
  */
 export async function openActionDialog(actor, action, numDice) {
-  const params = createDialogParameters(actor);
-  const content = await renderTemplate(standardTemplatePath(), {
-    ...params,
-    action,
+  await _openStandardRollDialog(
+    actor,
     numDice,
-  });
-  await createRollDialog({
-    title: `${localize('sr4.roll.rolling')} ${localize('sr4.action.' + action)}`,
-    content,
-    dice: numDice,
-    onRoll: (dialog) => dialogActions(dialog, actor, action, numDice),
-  });
+    `${localize('sr4.roll.rolling')} ${localize('sr4.action.' + action)}`,
+    action
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {import('@documents/index').SR4Item} complexForm
+ * @returns {Promise<void>}
+ */
+export async function rollComplexFormDialog(actor, complexForm) {
+  const numDice =
+    (complexForm.system.rating ?? 0) + (actor.getAttribute('RESONANCE') ?? 0);
+  await _openStandardRollDialog(
+    actor,
+    numDice,
+    `${localize('sr4.roll.rolling')} ${complexForm.name}`,
+    complexForm.name
+  );
 }
 
 /**

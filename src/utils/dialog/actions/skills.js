@@ -1,12 +1,4 @@
-import {
-  createDialogParameters,
-  createRollDialog,
-  dialogActions,
-  getSkillDicePool,
-  localize,
-  renderTemplate,
-  standardTemplatePath,
-} from '../dialogutility';
+import { getSkillDicePool, rollSkillDialog } from '../dialogutility';
 import {
   emitDefenseTrigger,
   emitDefenseTriggerForTarget,
@@ -64,21 +56,9 @@ export async function handleSkillRoll(actor, skillName, weapon) {
  * @returns {Promise<void>}
  */
 export async function openSkillDialog(actor, skillName, dice, weapon) {
-  const params = createDialogParameters(actor, dice, weapon);
-  const skill = actor.getSkill(skillName);
-  const content = await renderTemplate(standardTemplatePath(), {
-    ...params,
-    skillName,
+  const result = await rollSkillDialog(actor, skillName, dice, {
     weapon,
-  });
-  const result = await createRollDialog({
-    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} ${skill.system.specialization ?? ''}`,
-    content,
-    dice: dice,
-    onRoll: (dialog) =>
-      dialogActions(dialog, actor, skillName, dice ?? 0, weapon, {
-        edgeAvailableOverride: weapon ? false : undefined,
-      }),
+    edgeAvailableOverride: weapon ? false : undefined,
   });
 
   if (!weapon || !result || result.isGlitch) return;
@@ -117,21 +97,10 @@ async function _rollSkillForTarget(
   targetId,
   targetName
 ) {
-  const params = createDialogParameters(actor, dice, weapon);
-  const skill = actor.getSkill(skillName);
-  const content = await renderTemplate(standardTemplatePath(), {
-    ...params,
-    skillName,
+  const result = await rollSkillDialog(actor, skillName, dice, {
     weapon,
-  });
-  const result = await createRollDialog({
-    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} → ${targetName}`,
-    content,
-    dice,
-    onRoll: (dialog) =>
-      dialogActions(dialog, actor, skillName, dice, weapon, {
-        edgeAvailableOverride: false,
-      }),
+    titleSuffix: ` → ${targetName}`,
+    edgeAvailableOverride: false,
   });
   if (!result || result.isGlitch) return;
 

@@ -88,6 +88,7 @@ export async function openDirectSpellResistDialog(
     content,
     dice: resistPool,
     onRoll: (dialog) => dialogActions(dialog, defender, attr, resistPool),
+    autoRoll: true,
   });
 
   let resistHits = result?.successes ?? null;

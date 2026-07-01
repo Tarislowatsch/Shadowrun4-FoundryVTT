@@ -50,6 +50,10 @@
         "hint": "How long (in seconds) the Edge buttons stay active on a roll card during a combat or magic flow before they are automatically removed and the flow continues with the original result.",
         "name": "Flow Edge Timeout"
       },
+      "flowOpposedRollTimeout": {
+        "hint": "How long (in seconds) a combat or magic flow waits for the defender's opposed roll (resist, summoning) before it is rolled automatically with default options.",
+        "name": "Flow Opposed Roll Timeout"
+      },
       "combatDefenseWorkflow": {
         "hint": "When enabled, targeted tokens are automatically prompted to roll defense after an attack. Disabling this also disables the Soak Workflow.",
         "name": "Combat: Defense Workflow"

@@ -16,7 +16,7 @@ export default class SR4SpriteSheet extends SR4SummonedEntitySheet {
     },
   };
 
-  async _prepareContext(options) {
+  async _prepareContext(_options) {
     const ctx = await this._prepareSummonedEntityContext('ownerUuid');
     const ss = ctx.system.sheetStats;
     const src = ctx.sourceStats;

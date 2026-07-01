@@ -58,6 +58,16 @@ export class SettingsHook {
         range: { min: 5, max: 120, step: 5 },
       });
 
+      game.settings.register('shadowrun4e', 'flowOpposedRollTimeout', {
+        name: 'sr4.settings.flowOpposedRollTimeout.name',
+        hint: 'sr4.settings.flowOpposedRollTimeout.hint',
+        scope: 'world',
+        config: true,
+        type: Number,
+        default: 30,
+        range: { min: 10, max: 120, step: 10 },
+      });
+
       game.settings.register('shadowrun4e', 'ammoTracking', {
         name: 'sr4.settings.ammoTracking.name',
         hint: 'sr4.settings.ammoTracking.hint',

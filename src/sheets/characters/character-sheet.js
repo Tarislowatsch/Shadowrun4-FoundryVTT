@@ -1,16 +1,20 @@
-import { handleSkillRoll, openActionDialog } from '@utils/index';
+import { handleSkillRoll, rollComplexFormDialog } from '@utils/index';
 import { SummoningFlow } from '@flows/summoning-flow.js';
+import { ThreadingFlow } from '@flows/threading-flow.js';
 import {
   ActionType,
   AmmoCategory,
   Attackskill,
   DamageTypes,
   DrainAttributes,
+  FadingAttributes,
   ImplantGrades,
   ImplantTypes,
   Shootingmodes,
   SR4Attributes,
-  Traditions,
+  StreamLabels,
+  StreamSpriteTypes,
+  TraditionLabels,
 } from '@models/index';
 import { SR4EffectTargets } from '@effects/index';
 import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
@@ -35,6 +39,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       castSpell: SR4CharacterSheet.#onCastSpell,
       rollSkill: SR4CharacterSheet.#onRollSkill,
       threadComplexForm: SR4CharacterSheet.#onThreadComplexForm,
+      useComplexForm: SR4CharacterSheet.#onUseComplexForm,
       createEffect: SR4CharacterSheet.#onCreateEffect,
       toggleEffect: SR4CharacterSheet.#onToggleEffect,
       editEffect: SR4CharacterSheet.#onEditEffect,
@@ -44,6 +49,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       summonSpirit: SR4CharacterSheet.#onSummonSpirit,
       summonWatcher: SR4CharacterSheet.#onSummonWatcher,
       compileSprite: SR4CharacterSheet.#onCompileSprite,
+      createSpriteTemplate: SR4CharacterSheet.#onCreateSpriteTemplate,
     },
   };
 
@@ -146,7 +152,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   // Context
   // ---------------------------------------------------------------------------
 
-  async _prepareContext(options) {
+  async _prepareContext(_options) {
     const actorData = this.document.toObject(false);
     const { sourceStats, sourceModifiers } = this._getSourceContext();
     const items = actorData.items || [];
@@ -199,7 +205,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       system: actorData.system,
       flags: actorData.flags,
       config: CONFIG.SR4,
-      traditions: Traditions,
+      traditions: TraditionLabels,
       drainAttributes: DrainAttributes,
       attributes: SR4Attributes,
       shootingmodes: Shootingmodes,
@@ -207,7 +213,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       attackskills: Attackskill,
       damageTypes: DamageTypes,
       textFields: { lifestyle: true },
-      isTechnomancer: actorData.system.technomancer,
+      isTechnomancer: actorData.system.technomancy?.technomancer ?? false,
       effectTargets: SR4EffectTargets,
       resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
     };
@@ -250,9 +256,13 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       actions: items.filter((i) => i.type === 'Action'),
       foci: items.filter((i) => i.type === 'Focus' || i.type === 'Fetish'),
       commlinks: items.filter((i) => i.type === 'Commlink'),
-      programs: items.filter((i) => i.type === 'Program'),
-      complexForms: items.filter(
-        (i) => i.type === 'Skill' && i.system.type === 'complexForm'
+      complexForms: items
+        .filter((i) => i.type === 'Program' && i.system.complexform)
+        .sort((a, b) => a.name.localeCompare(b.name)),
+      programs: items.filter(
+        (i) =>
+          i.type === 'Program' &&
+          !(this.actor.system.technomancy?.technomancer && i.system.complexform)
       ),
       metatypeItem: items.find((i) => i.type === 'Metatype') ?? null,
     };
@@ -283,14 +293,24 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   }
 
   async _getMatrixContext(actorData) {
-    if (!actorData.system.technomancer) return {};
+    const tn = actorData.system.technomancy;
+    if (!tn?.technomancer) return {};
     const stats = actorData.system.sheetStats;
     const bonuses = actorData.system.livingPersona;
+    const fadingAttr = tn.fadingAttribute ?? 'WILLPOWER';
+    const spriteKeys = StreamSpriteTypes[tn.stream] ?? [];
     return {
+      streams: StreamLabels,
+      fadingAttributes: FadingAttributes,
+      fadingPool:
+        (stats.RESONANCE ?? 0) +
+        (stats[fadingAttr] ?? 0) +
+        (tn.compilingFadingBonus ?? 0),
       spriteBindingCategories: await SR4CharacterSheet.#buildBindingCategories(
-        actorData.system.magic?.spriteBindings,
-        'sr4.magic.spriteBindings',
-        'sprite'
+        tn.spriteBindings,
+        'sr4.matrix.spriteTypes',
+        'sprite',
+        spriteKeys
       ),
       livingPersona: {
         response: (stats.INTUITION ?? 0) + (bonuses.responseBonus ?? 0),
@@ -394,7 +414,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   // Actions
   // ---------------------------------------------------------------------------
 
-  static #onEditToggle(event, target) {
+  static #onEditToggle(_event, _target) {
     this.editMode = !this.editMode;
     this.render();
   }
@@ -405,17 +425,16 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     this.actor.castSpell(itemId);
   }
 
-  static async #onThreadComplexForm(event, target) {
-    const softwareSkill = this.actor.items.find(
-      (i) => i.type === 'Skill' && i.name === 'Software'
-    );
-    const softwareRating = softwareSkill?.system.rating ?? 0;
-    const resonance = this.actor.system.sheetStats.RESONANCE ?? 0;
-    openActionDialog(
-      this.actor,
-      game.i18n.localize('sr4.matrix.threading'),
-      softwareRating + resonance
-    );
+  static async #onThreadComplexForm(_event, _target) {
+    await ThreadingFlow.start(this.actor);
+  }
+
+  static async #onUseComplexForm(_event, target) {
+    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
+    if (!itemId) return;
+    const complexForm = this.actor.items.get(itemId);
+    if (!complexForm) return;
+    await rollComplexFormDialog(this.actor, complexForm);
   }
 
   static async #onRollSkill(event, target) {
@@ -425,7 +444,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
 
   // ── Effect actions ──────────────────────────────────────────────────────────
 
-  static async #onCreateEffect(event, target) {
+  static async #onCreateEffect(_event, _target) {
     await this.actor.createEmbeddedDocuments('ActiveEffect', [
       {
         name: game.i18n.localize('sr4.effect.new'),
@@ -461,7 +480,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
 
   // ── Connection actions ──────────────────────────────────────────────────────
 
-  static async #onCreateConnection(event, target) {
+  static async #onCreateConnection(_event, _target) {
     await this.actor.update({
       [`system.connections.${foundry.utils.randomID()}`]: {},
     });
@@ -489,20 +508,27 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     await SummoningFlow.start(this.actor, 'sprite');
   }
 
+  static async #onCreateSpriteTemplate(event) {
+    const spriteType = event.currentTarget.dataset.spriteType;
+    const name = game.i18n.localize(`sr4.matrix.spriteTypes.${spriteType}`);
+    await Actor.create(
+      { name, type: 'sprite', system: { spriteType, rating: 1 } },
+      { renderSheet: true }
+    );
+  }
+
   /**
    * @param {Record<string, string>} bindings
    * @param {string} i18nPrefix
    * @param {'spirit' | 'sprite'} entityType
+   * @param {string[]} [categories]
    */
-  static async #buildBindingCategories(bindings, i18nPrefix, entityType) {
-    const categories = [
-      'COMBAT',
-      'DETECTION',
-      'HEALTH',
-      'ILLUSION',
-      'MANIPULATION',
-    ];
-
+  static async #buildBindingCategories(
+    bindings,
+    i18nPrefix,
+    entityType,
+    categories = ['COMBAT', 'DETECTION', 'HEALTH', 'ILLUSION', 'MANIPULATION']
+  ) {
     const settingKey =
       entityType === 'sprite' ? 'spriteCompendium' : 'spiritCompendium';
     const packId = game.settings.get('shadowrun4e', settingKey) ?? '';

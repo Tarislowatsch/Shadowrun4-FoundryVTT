@@ -1,4 +1,8 @@
-import { getGame, getValidTargetActors } from '@utils/index.js';
+import {
+  awaitOpposedSocketResponse,
+  getGame,
+  getValidTargetActorsOrWarn,
+} from '@utils/index.js';
 import {
   getSpellEffectData,
   sendEffectDecisionMessage,
@@ -24,7 +28,7 @@ export class OpposedSpellFlow {
    * @returns {Promise<void>}
    */
   static async start(caster, spell, castingHits, force) {
-    const targets = OpposedSpellFlow.getTargetsOrWarn(spell);
+    const targets = getValidTargetActorsOrWarn(spell.name);
     if (targets.length === 0) return;
 
     const effectData = getSpellEffectData(spell);
@@ -65,42 +69,26 @@ export class OpposedSpellFlow {
     resistAttribute,
     effectData
   ) {
-    const socket = getGame().socket;
-    if (!socket) return;
-
     const defenderId = target.id;
 
-    const netHits = await new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        socket.off('system.shadowrun4e', handler);
-        resolve(0);
-      }, 300_000);
-      const handler = (data) => {
-        if (
-          data.action !== 'opposedSpellResisted' ||
-          data.payload?.casterId !== caster.id ||
-          data.payload?.defenderId !== defenderId
-        )
-          return;
-        clearTimeout(timeout);
-        socket.off('system.shadowrun4e', handler);
-        const resistHits = data.payload.resistHits;
-        resolve(
-          resistHits === null ? 0 : Math.max(0, castingHits - resistHits)
-        );
-      };
-      socket.on('system.shadowrun4e', handler);
-      socket.emit('system.shadowrun4e', {
-        action: 'triggerOpposedSpellResist',
-        payload: {
-          defenderId,
-          casterId: caster.id,
-          spellName: spell.name,
-          castingHits,
-          force,
-          resistAttribute,
-        },
-      });
+    const netHits = await awaitOpposedSocketResponse({
+      triggerAction: 'triggerOpposedSpellResist',
+      triggerPayload: {
+        defenderId,
+        casterId: caster.id,
+        spellName: spell.name,
+        castingHits,
+        force,
+        resistAttribute,
+      },
+      matchAction: 'opposedSpellResisted',
+      matches: (payload) =>
+        payload?.casterId === caster.id && payload?.defenderId === defenderId,
+      onMatch: (payload) =>
+        payload.resistHits === null
+          ? 0
+          : Math.max(0, castingHits - payload.resistHits),
+      fallback: 0,
     });
 
     if (netHits < 1) {
@@ -124,19 +112,5 @@ export class OpposedSpellFlow {
       spell.system?.category ?? '',
       spell.system?.type ?? 'PHYSICAL'
     );
-  }
-
-  /**
-   * @param {import('@models/index').SR4Spell} spell
-   * @returns {import('@documents/index').SR4Actor[]}
-   */
-  static getTargetsOrWarn(spell) {
-    const targets = getValidTargetActors();
-    if (targets.length === 0) {
-      ui?.notifications?.warn(
-        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`
-      );
-    }
-    return targets;
   }
 }

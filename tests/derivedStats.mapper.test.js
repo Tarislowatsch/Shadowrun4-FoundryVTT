@@ -6,10 +6,6 @@ import {
   computeVehicleDerivedStats,
 } from '../src/documents/derivedStats.mapper.js';
 
-// SR4 rule constants (matches src/config.js)
-const BASE = 8; // conditionMonitorBase
-const DIV = 3; // woundModifierDivisor
-
 function makeActorData({
   BODY = 4,
   WILLPOWER = 4,

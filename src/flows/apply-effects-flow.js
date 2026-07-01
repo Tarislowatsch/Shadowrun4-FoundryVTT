@@ -1,4 +1,5 @@
 import { getGame } from '@utils/index';
+import { createDecisionRegistry } from './decision-registry.js';
 
 /**
  * @typedef {object} EffectDecisionEntry
@@ -7,8 +8,8 @@ import { getGame } from '@utils/index';
  * @property {string} spellName
  */
 
-/** @type {Map<string, EffectDecisionEntry>} */
-const effectDecisionRegistry = new Map();
+/** @type {ReturnType<typeof createDecisionRegistry<EffectDecisionEntry>>} */
+const effectDecisionRegistry = createDecisionRegistry('effectDecision');
 
 /**
  * @param {string} messageId
@@ -23,15 +24,7 @@ export function getEffectDecisionEntry(messageId) {
  * @returns {Promise<void>}
  */
 export async function resolveEffectDecision(messageId) {
-  effectDecisionRegistry.delete(messageId);
-  const message = game.messages?.get(messageId);
-  if (
-    message &&
-    !message.flags?.sr4?.effectDecision?.resolved &&
-    message.isAuthor
-  ) {
-    await message.update({ 'flags.sr4.effectDecision.resolved': true });
-  }
+  await effectDecisionRegistry.resolve(messageId);
 }
 
 /**

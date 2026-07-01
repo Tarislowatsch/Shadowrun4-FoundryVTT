@@ -345,7 +345,7 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
 
   // ── Element Resistance actions ────────────────────────────────────────────
 
-  static async _onCreateElementResistance(event, target) {
+  static async _onCreateElementResistance(_event, _target) {
     await this.actor.update({
       [`system.elementResistances.${foundry.utils.randomID()}`]: {},
     });

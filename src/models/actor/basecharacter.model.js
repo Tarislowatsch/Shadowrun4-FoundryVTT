@@ -150,7 +150,7 @@ export const characterMetaDataField = () =>
  * @property {'LOGIC' | 'CHARISMA' | 'INTUITION'} drainAttribute
  * @property {number} drainBonus
  * @property {number} summoningDrainBonus
- * @property {'hermetic' | 'shaman' | 'wicca' | 'chaos' | ''} tradition
+ * @property {string} tradition
  * @property {string} totem
  * @property {number} traditionBonus
  * @property {boolean} adept
@@ -170,7 +170,35 @@ export const magicField = () =>
 
     tradition: new fields.StringField({
       initial: '',
-      choices: ['HERMETIC', 'SHAMAN', 'WICCA', 'CHAOS', 'NONE'], // erweiterbar
+      choices: [
+        '',
+        'ABORIGINAL',
+        'AZTEC',
+        'BLACK_MAGIC',
+        'BUDDHIST',
+        'CHAOS_MAGIC',
+        'CHRISTIAN_THEURGY',
+        'DRUIDIC',
+        'EGYPTIAN',
+        'GARDNERIAN_WICCA',
+        'GODDESS_WICCA',
+        'HERMETIC',
+        'HINDU',
+        'INSECT',
+        'ISLAMIC',
+        'NORSE',
+        'PATH_OF_THE_WHEEL',
+        'POISONER',
+        'PSIONIC',
+        'QABBALISTIC',
+        'RASTAFARIAN',
+        'SHAMANIC',
+        'SHINTO',
+        'VOODOO',
+        'WITCHCRAFT',
+        'WUXING',
+        'ZOROASTRIAN',
+      ],
       blank: true,
     }),
     adept: new fields.BooleanField({ initial: false }),
@@ -187,13 +215,37 @@ export const magicField = () =>
       ILLUSION: new fields.StringField({ initial: '', blank: true }),
       MANIPULATION: new fields.StringField({ initial: '', blank: true }),
     }),
+  });
 
+/**
+ * @typedef {object} SR4TechnomancyData
+ * @property {boolean} technomancer
+ * @property {string} stream
+ * @property {'WILLPOWER'|'INTUITION'|'CHARISMA'|'LOGIC'} fadingAttribute
+ * @property {number} compilingFadingBonus
+ * @property {Record<string,string>} spriteBindings
+ */
+export const technomancyField = () =>
+  new fields.SchemaField({
+    technomancer: new fields.BooleanField({ initial: false }),
+    stream: new fields.StringField({ initial: '', blank: true }),
+    fadingAttribute: new fields.StringField({
+      initial: 'WILLPOWER',
+      choices: ['WILLPOWER', 'INTUITION', 'CHARISMA', 'LOGIC'],
+      blank: false,
+    }),
+    compilingFadingBonus: new fields.NumberField({ initial: 0, integer: true }),
     spriteBindings: new fields.SchemaField({
-      COMBAT: new fields.StringField({ initial: '', blank: true }),
-      DETECTION: new fields.StringField({ initial: '', blank: true }),
-      HEALTH: new fields.StringField({ initial: '', blank: true }),
-      ILLUSION: new fields.StringField({ initial: '', blank: true }),
-      MANIPULATION: new fields.StringField({ initial: '', blank: true }),
+      CODE: new fields.StringField({ initial: '', blank: true }),
+      COURIER: new fields.StringField({ initial: '', blank: true }),
+      CRACK: new fields.StringField({ initial: '', blank: true }),
+      DATA: new fields.StringField({ initial: '', blank: true }),
+      FAULT: new fields.StringField({ initial: '', blank: true }),
+      MACHINE: new fields.StringField({ initial: '', blank: true }),
+      PALADIN: new fields.StringField({ initial: '', blank: true }),
+      SLEUTH: new fields.StringField({ initial: '', blank: true }),
+      TANK: new fields.StringField({ initial: '', blank: true }),
+      TUTOR: new fields.StringField({ initial: '', blank: true }),
     }),
   });
 // ---------------------------------------------------------------------------
@@ -417,12 +469,33 @@ function applyMetatypeLimits(self, attrs) {
  * @property {SR4Armor}               armor
  * @property {Record<string, SR4ElementResistance>} elementResistances
  * @property {SR4MagicData}           magic
+ * @property {SR4TechnomancyData}     technomancy
  * @property {boolean}                simpleHp
- * @property {boolean}                technomancer
  * @property {{ firewallBonus: number, responseBonus: number, signalBonus: number, systemBonus: number, biofeedbackFilterBonus: number }} livingPersona
  */
 
 export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
+  static migrateData(source) {
+    if (source.technomancer !== undefined) {
+      source.technomancy ??= {};
+      source.technomancy.technomancer = source.technomancer;
+      delete source.technomancer;
+    }
+    if (source.magic?.spriteBindings !== undefined) {
+      delete source.magic.spriteBindings;
+    }
+    const traditionMap = {
+      NONE: '',
+      SHAMAN: 'SHAMANIC',
+      WICCA: 'GARDNERIAN_WICCA',
+      CHAOS: 'CHAOS_MAGIC',
+    };
+    if (source.magic?.tradition in traditionMap) {
+      source.magic.tradition = traditionMap[source.magic.tradition];
+    }
+    return super.migrateData(source);
+  }
+
   static defineSchema() {
     return {
       sheetStats: new SR4SheetStatsData(),
@@ -434,8 +507,8 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       armor: armorField(),
       elementResistances: elementResistancesField(),
       magic: magicField(),
+      technomancy: technomancyField(),
       simpleHp: new fields.BooleanField({ initial: false }),
-      technomancer: new fields.BooleanField({ initial: false }),
       livingPersona: new fields.SchemaField({
         firewallBonus: new fields.NumberField({ initial: 0, integer: true }),
         responseBonus: new fields.NumberField({ initial: 0, integer: true }),

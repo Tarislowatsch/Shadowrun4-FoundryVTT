@@ -5,3 +5,4 @@ export * from './actor';
 export * from './shared';
 export * from './actions';
 export * from './magic';
+export * from './matrix';

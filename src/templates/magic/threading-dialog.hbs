@@ -1,0 +1,8 @@
+<div class="form-group">
+  <label for="complexFormKey">{{localize "sr4.matrix.selectComplexForm"}}</label>
+  <select id="complexFormKey" name="complexFormKey">
+    {{#each options as |option|}}
+    <option value="{{option.key}}">{{option.name}}{{#if option.sourceLabel}} ({{option.sourceLabel}}){{/if}}</option>
+    {{/each}}
+  </select>
+</div>

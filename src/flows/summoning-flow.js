@@ -1,19 +1,20 @@
-import { getGame, getSkillDicePool } from '@utils/index.js';
 import {
-  createDialogParameters,
-  createRollDialog,
-  dialogActions,
-  localize,
-  renderTemplate,
-  standardTemplatePath,
-} from '@utils/dialog/dialogutility.js';
+  awaitOpposedSocketResponse,
+  getGame,
+  getSkillDicePool,
+} from '@utils/index.js';
+import { localize, rollSkillDialog } from '@utils/dialog/dialogutility.js';
 import {
   openSummoningDialog,
   calculateSummoningDrain,
   loadCompendiumTemplates,
 } from '@utils/dialog/magic/summoning.js';
-import { resolveDrain } from '@utils/dialog/magic/drain.js';
-import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import {
+  resolveDrain,
+  calculateWillpowerResistancePool,
+  calculateResonanceFadingPool,
+} from '@utils/dialog/magic/drain.js';
+import { offerEdgeRetry } from '@utils/rolls/roll-edge-decision.js';
 import { buildCritterActorData } from '@importer/build-critter.js';
 
 export class SummoningFlow {
@@ -46,20 +47,10 @@ export class SummoningFlow {
     );
     if (!rollResult) return;
 
-    let summonerHits = rollResult.successes;
-    if (!rollResult.edgeUsed && !rollResult.isGlitch) {
-      summonerHits = await resolveEdgeForRoll(
-        actor,
-        {
-          successes: rollResult.successes,
-          rolledDice: rollResult.rolledDice,
-          isGlitch: rollResult.isGlitch,
-          edgeUsed: rollResult.edgeUsed,
-          messageId: rollResult.messageId,
-        },
-        0
-      );
-    }
+    const summonerHits = await SummoningFlow._resolveSummonerHits(
+      actor,
+      rollResult
+    );
 
     const spiritHits = await SummoningFlow._awaitSpiritResist(
       actor,
@@ -86,13 +77,13 @@ export class SummoningFlow {
         : 'sr4.magic.spiritSummoned';
       const msgParam = isSprite ? '{tasks}' : '{services}';
       ui?.notifications?.info(
-        game.i18n.localize(msgKey).replace(msgParam, String(netHits))
+        getGame().i18n.localize(msgKey).replace(msgParam, String(netHits))
       );
     } else {
       const failKey = isSprite
         ? 'sr4.magic.compilingFailed'
         : 'sr4.magic.summoningFailed';
-      ui?.notifications?.info(game.i18n.localize(failKey));
+      ui?.notifications?.info(getGame().i18n.localize(failKey));
     }
 
     await SummoningFlow._handleDrain(actor, force, spiritHits, entityType);
@@ -117,23 +108,12 @@ export class SummoningFlow {
     );
     if (!rollResult) return;
 
-    let hits = rollResult.successes;
-    if (!rollResult.edgeUsed && !rollResult.isGlitch) {
-      hits = await resolveEdgeForRoll(
-        actor,
-        {
-          successes: rollResult.successes,
-          rolledDice: rollResult.rolledDice,
-          isGlitch: rollResult.isGlitch,
-          edgeUsed: rollResult.edgeUsed,
-          messageId: rollResult.messageId,
-        },
-        0
-      );
-    }
+    const hits = await SummoningFlow._resolveSummonerHits(actor, rollResult);
 
     if (rollResult.isGlitch || hits < 1) {
-      ui?.notifications?.info(game.i18n.localize('sr4.magic.summoningFailed'));
+      ui?.notifications?.info(
+        getGame().i18n.localize('sr4.magic.summoningFailed')
+      );
       return;
     }
 
@@ -150,21 +130,15 @@ export class SummoningFlow {
     );
 
     ui?.notifications?.info(
-      game.i18n
-        .localize('sr4.magic.watcherSummoned')
+      getGame()
+        .i18n.localize('sr4.magic.watcherSummoned')
         .replace('{hours}', String(hits))
     );
-
-    const willpower = actor.getAttribute('WILLPOWER') ?? 0;
-    const drainAttribute =
-      actor.getAttribute(actor.system.magic.drainAttribute) ?? 0;
-    const drainBonus = actor.system.magic?.summoningDrainBonus ?? 0;
-    const drainPool = willpower + drainAttribute + drainBonus;
 
     await resolveDrain(actor, {
       label: localize('sr4.magic.watcherDrain'),
       force: 1,
-      drainPool,
+      drainPool: SummoningFlow._calculateDrainPool(actor, 'spirit'),
       drainValue: hits,
       isPhysical: false,
     });
@@ -180,20 +154,21 @@ export class SummoningFlow {
     const numDice = getSkillDicePool(actor, skillName);
     if (numDice === undefined) return null;
 
-    const params = createDialogParameters(actor, numDice);
-    const skill = actor.getSkill(skillName);
-    const content = await renderTemplate(standardTemplatePath(), {
-      ...params,
-      skillName,
+    return rollSkillDialog(actor, skillName, numDice, {
+      titleSuffix: ` (${localize('sr4.spell.force')}: ${force})`,
       force,
     });
+  }
 
-    return createRollDialog({
-      title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} (${localize('sr4.spell.force')}: ${force})`,
-      content,
-      dice: numDice,
-      onRoll: (dialog) => dialogActions(dialog, actor, skillName, numDice),
-    });
+  /**
+   * Applies edge to a not-yet-edged summoning/compiling roll, otherwise
+   * returns the roll's plain successes unchanged.
+   * @param {import('@documents/index').SR4Actor} actor
+   * @param {{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}} rollResult
+   * @returns {Promise<number>}
+   */
+  static async _resolveSummonerHits(actor, rollResult) {
+    return offerEdgeRetry(actor, rollResult);
   }
 
   /**
@@ -204,39 +179,19 @@ export class SummoningFlow {
    * @returns {Promise<number>}
    */
   static async _awaitSpiritResist(actor, force, spiritType, entityType) {
-    const socket = getGame().socket;
-    if (!socket) return 0;
-
     const isSprite = entityType === 'sprite';
     const resistAction = isSprite ? 'spriteResisted' : 'spiritResisted';
     const triggerAction = isSprite
       ? 'triggerSpriteResist'
       : 'triggerSpiritResist';
 
-    return new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        socket.off('system.shadowrun4e', handler);
-        resolve(0);
-      }, 300_000);
-
-      const handler = (data) => {
-        if (data.action !== resistAction) return;
-        if (data.payload?.summonerId !== actor.id) return;
-        clearTimeout(timeout);
-        socket.off('system.shadowrun4e', handler);
-        resolve(data.payload.resistHits ?? 0);
-      };
-
-      socket.on('system.shadowrun4e', handler);
-      socket.emit('system.shadowrun4e', {
-        action: triggerAction,
-        payload: {
-          summonerId: actor.id,
-          force,
-          spiritType,
-          entityType,
-        },
-      });
+    return awaitOpposedSocketResponse({
+      triggerAction,
+      triggerPayload: { summonerId: actor.id, force, spiritType, entityType },
+      matchAction: resistAction,
+      matches: (payload) => payload?.summonerId === actor.id,
+      onMatch: (payload) => payload.resistHits ?? 0,
+      fallback: 0,
     });
   }
 
@@ -342,14 +297,16 @@ export class SummoningFlow {
     if (!created) return;
 
     const owner = await fromUuid(ownerUuid);
-    const ownerUser = game.users?.find((u) => u.character?.id === owner?.id);
+    const ownerUser = getGame().users?.find(
+      (u) => u.character?.id === owner?.id
+    );
     if (ownerUser) {
       await created.update({
         ownership: { [ownerUser.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER },
       });
     }
 
-    const scene = game.scenes?.active;
+    const scene = getGame().scenes?.active;
     if (!scene) return;
 
     const tokenData = (await created.getTokenDocument()).toObject();
@@ -375,12 +332,6 @@ export class SummoningFlow {
     const isSprite = entityType === 'sprite';
     const drainValue = calculateSummoningDrain(spiritHits);
 
-    const willpower = actor.getAttribute('WILLPOWER') ?? 0;
-    const drainAttribute =
-      actor.getAttribute(actor.system.magic.drainAttribute) ?? 0;
-    const drainBonus = actor.system.magic?.summoningDrainBonus ?? 0;
-    const drainPool = willpower + drainAttribute + drainBonus;
-
     const statKey = isSprite ? 'RESONANCE' : 'MAGIC';
     const isPhysical = force > actor.getAttribute(statKey);
 
@@ -391,9 +342,30 @@ export class SummoningFlow {
     await resolveDrain(actor, {
       label,
       force,
-      drainPool,
+      drainPool: SummoningFlow._calculateDrainPool(actor, entityType),
       drainValue,
       isPhysical,
     });
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} actor
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {number}
+   */
+  static _calculateDrainPool(actor, entityType) {
+    if (entityType === 'sprite') {
+      const tn = actor.system.technomancy;
+      return calculateResonanceFadingPool(
+        actor,
+        tn?.fadingAttribute ?? 'WILLPOWER',
+        tn?.compilingFadingBonus ?? 0
+      );
+    }
+    return calculateWillpowerResistancePool(
+      actor,
+      actor.system.magic.drainAttribute,
+      actor.system.magic?.summoningDrainBonus ?? 0
+    );
   }
 }

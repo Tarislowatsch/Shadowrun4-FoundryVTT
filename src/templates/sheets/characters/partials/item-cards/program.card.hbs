@@ -1,7 +1,20 @@
 <div class="item-card item program-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
   <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
+    {{#if this.system.threaded}}
+    <span class="badge threaded-badge" data-tooltip="{{localize 'sr4.matrix.threadedHint'}}">{{localize "sr4.matrix.threaded"}}</span>
+    {{/if}}
     <div class="item-actions">
+      {{#if this.system.complexform}}
+      <button
+        type="button"
+        class="roll-action"
+        data-action="useComplexForm"
+        data-tooltip="{{localize 'sr4.matrix.useComplexFormHint'}}"
+      >
+        <i class="fas fa-dice-d20"></i>
+      </button>
+      {{/if}}
       {{> item-toggle-equip equippedIcon="fas fa-toggle-on" unequippedIcon="fas fa-toggle-off" tooltip="sr4.item.toggleEquip"}}
       {{> item-edit-btn}}
       {{> item-delete-btn}}

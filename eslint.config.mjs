@@ -7,6 +7,7 @@ export default [
       'node_modules',
       'dist',
       'packs',
+      'shadowrun4e',
 
       // nur Typdefinitionen ignorieren
       'foundry/**/*.d.mts',
@@ -27,6 +28,7 @@ export default [
         ...globals.node,
 
         CONFIG: 'readonly',
+        CONST: 'readonly',
         game: 'readonly',
         Hooks: 'readonly',
         Roll: 'readonly',
@@ -36,6 +38,11 @@ export default [
         Folder: 'readonly',
         Token: 'readonly',
         ChatMessage: 'readonly',
+        Combat: 'readonly',
+        Combatant: 'readonly',
+        ActiveEffect: 'readonly',
+        TextEditor: 'readonly',
+        FilePicker: 'readonly',
 
         Dialog: 'readonly',
 
@@ -49,6 +56,7 @@ export default [
         loadTemplates: 'readonly',
 
         shadowrun4e: 'readonly',
+        sr4: 'readonly',
       },
       sourceType: 'module',
     },
@@ -58,7 +66,7 @@ export default [
 
       'no-console': 'off',
       'no-unused-expressions': 'off',
-      'no-unused-vars': 'warn',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
 ];

@@ -8,6 +8,7 @@ const fields = foundry.data.fields;
  * @property {boolean} complexform  - True when the entry is a technomancer complex form.
  * @property {number|null} maxrating - Maximum rating, or null when unbounded.
  * @property {object[]} programtypes - Optional sub-type tags.
+ * @property {boolean} threaded     - True while a complex form is currently threaded/sustained.
  */
 
 /** DataModel for programs (type: "Program"). */
@@ -23,6 +24,7 @@ export class SR4ProgramData extends foundry.abstract.TypeDataModel {
         integer: true,
       }),
       programtypes: new fields.ArrayField(new fields.ObjectField()),
+      threaded: new fields.BooleanField({ initial: false }),
     };
   }
 }

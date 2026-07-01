@@ -9,6 +9,18 @@ export {
 } from './summoning-helpers.js';
 
 /**
+ * @param {object[]} docs
+ * @returns {Map<string, object> | null}
+ */
+export function mapDocumentsByName(docs) {
+  const map = new Map();
+  for (const doc of docs) {
+    if (doc.name) map.set(doc.name, doc);
+  }
+  return map.size > 0 ? map : null;
+}
+
+/**
  * @param {'spirit' | 'sprite'} entityType
  * @returns {Promise<Map<string, object> | null>}
  */
@@ -19,12 +31,7 @@ export async function loadCompendiumTemplates(entityType) {
   if (!packId) return null;
   const pack = game.packs.get(packId);
   if (!pack) return null;
-  const docs = await pack.getDocuments();
-  const map = new Map();
-  for (const doc of docs) {
-    if (doc.name) map.set(doc.name, doc);
-  }
-  return map.size > 0 ? map : null;
+  return mapDocumentsByName(await pack.getDocuments());
 }
 
 /**
@@ -34,8 +41,9 @@ export async function loadCompendiumTemplates(entityType) {
  */
 export async function openSummoningDialog(actor, entityType) {
   const isSprite = entityType === 'sprite';
-  const bindingsKey = isSprite ? 'spriteBindings' : 'spiritBindings';
-  const bindings = actor.system.magic?.[bindingsKey] ?? {};
+  const bindings = isSprite
+    ? (actor.system.technomancy?.spriteBindings ?? {})
+    : (actor.system.magic?.spiritBindings ?? {});
 
   const availableTypes = getAvailableBindings(bindings);
 

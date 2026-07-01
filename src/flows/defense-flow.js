@@ -58,8 +58,8 @@ export function emitDefenseTrigger(
 
   if (validTargets.length === 0) {
     if (
-      game.settings.get('shadowrun4e', 'gmDefenderPicker') &&
-      game.settings.get('shadowrun4e', 'combatDefenseWorkflow')
+      getGame().settings.get('shadowrun4e', 'gmDefenderPicker') &&
+      getGame().settings.get('shadowrun4e', 'combatDefenseWorkflow')
     ) {
       getGame().socket?.emit('system.shadowrun4e', {
         action: 'selectDefender',
@@ -193,7 +193,7 @@ export class DefenseFlow {
     const attacker = getGame().actors?.get(attackerId);
     if (!defender || !attacker) return;
 
-    if (!game.settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
+    if (!getGame().settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
       await DefenseFlow._sendPotentialSummary(
         defender,
         attacker,
@@ -248,7 +248,7 @@ export class DefenseFlow {
     const hint = elementRules.hint;
     const onApply = buildElementOnApply(dt, defender, netSuccesses);
 
-    if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
+    if (!getGame().settings.get('shadowrun4e', 'combatSoakWorkflow')) {
       await ApplyDamageFlow.sendDecisionMessage(
         defender,
         baseDamage,

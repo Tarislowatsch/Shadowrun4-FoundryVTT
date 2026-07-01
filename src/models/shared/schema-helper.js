@@ -5,6 +5,17 @@
  */
 const fields = foundry.data.fields;
 
+/**
+ * @readonly
+ * @enum {string}
+ */
+export const SecondaryAttributes = Object.freeze({
+  WILLPOWER: 'sr4.attributeAbr.willpower',
+  LOGIC: 'sr4.attributeAbr.logic',
+  INTUITION: 'sr4.attributeAbr.intuition',
+  CHARISMA: 'sr4.attributeAbr.charisma',
+});
+
 export function genericItemSchema() {
   return {
     description: new fields.HTMLField({ initial: '' }),

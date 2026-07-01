@@ -1,3 +1,5 @@
+import { clamp, resistanceValueFromHits } from '@utils/math.js';
+
 export const BINDING_CATEGORIES = [
   'COMBAT',
   'DETECTION',
@@ -26,7 +28,7 @@ export function getAvailableBindings(bindings) {
  * @returns {number}
  */
 export function clampForce(rawForce, maxForce) {
-  return Math.min(Math.max(rawForce, 1), maxForce);
+  return clamp(rawForce, 1, maxForce);
 }
 
 /**
@@ -34,5 +36,5 @@ export function clampForce(rawForce, maxForce) {
  * @returns {number}
  */
 export function calculateSummoningDrain(spiritHits) {
-  return Math.max(2, spiritHits * 2);
+  return resistanceValueFromHits(spiritHits, 2);
 }

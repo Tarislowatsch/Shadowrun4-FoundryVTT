@@ -198,7 +198,11 @@ describe('buildImportGroups', () => {
     const groups = buildImportGroups(parsed);
 
     expect(groups.every((g) => g.typeLabel === 'Critters')).toBe(true);
-    expect(groups.every((g) => g.parentFolder == null)).toBe(true);
+    expect(
+      groups.every(
+        (g) => g.parentFolder === null || g.parentFolder === undefined
+      )
+    ).toBe(true);
     expect(groups.map((g) => g.subcategory).sort()).toEqual([
       'Dracoforms',
       'Paranormal Critters',
@@ -216,7 +220,11 @@ describe('buildImportGroups', () => {
     const groups = buildImportGroups(parsed);
 
     expect(groups.every((g) => g.typeLabel === 'Metatypes')).toBe(true);
-    expect(groups.every((g) => g.parentFolder == null)).toBe(true);
+    expect(
+      groups.every(
+        (g) => g.parentFolder === null || g.parentFolder === undefined
+      )
+    ).toBe(true);
     expect(groups.map((g) => g.subcategory).sort()).toEqual([
       'Metahuman',
       'Metasapients',

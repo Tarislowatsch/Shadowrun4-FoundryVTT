@@ -48,6 +48,15 @@
             value="{{cat.value}}"
           />
           {{/if}}
+          {{#if ../createAction}}{{#if @root.editMode}}
+          <button
+            type="button"
+            class="thread-button"
+            data-action="{{../createAction}}"
+            data-sprite-type="{{cat.key}}"
+            data-tooltip="{{cat.label}} template erstellen"
+          ><i class="fas fa-plus"></i></button>
+          {{/if}}{{/if}}
         </td>
       </tr>
       {{/each}}

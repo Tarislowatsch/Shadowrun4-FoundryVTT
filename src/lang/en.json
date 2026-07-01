@@ -147,7 +147,7 @@
         "blindFlareComp": "Blinded (Flare Compensation)",
         "disoriented": "Disoriented (Electricity)",
         "knockedDown": "Knocked Down",
-        "sustain": "Sustained Spell"
+        "sustain": "Sustaining"
       },
       "value": "Value",
       "applyToTarget": "Apply Effects",
@@ -388,7 +388,7 @@
       "complexForm": "Complex Form",
       "group": "Skillgroup",
       "knowledge": "Knowledge",
-      "knowledgeAndComplexForms": "Knowledge / Complex Forms",
+      "knowledgeAndComplexForms": "Knowledge",
       "name": "Name",
       "rating": "Rating",
       "search": "Skill search",

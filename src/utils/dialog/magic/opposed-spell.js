@@ -51,6 +51,7 @@ export async function openOpposedSpellResistDialog(
     dice: resistPool,
     onRoll: (dialog) =>
       dialogActions(dialog, defender, resistAttribute, resistPool),
+    autoRoll: true,
   });
 
   let resistHits = result?.successes ?? null;

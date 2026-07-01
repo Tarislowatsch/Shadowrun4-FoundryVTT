@@ -51,7 +51,7 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
   // Context
   // ---------------------------------------------------------------------------
 
-  async _prepareContext(options) {
+  async _prepareContext(_options) {
     const actorData = this.document.toObject(false);
     const { sourceStats, sourceModifiers } = this._getSourceContext();
     const items = actorData.items || [];

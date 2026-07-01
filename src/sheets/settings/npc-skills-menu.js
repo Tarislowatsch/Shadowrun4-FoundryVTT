@@ -109,7 +109,7 @@ export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicatio
     checkboxes.forEach((cb) => (cb.checked = !allChecked));
   }
 
-  static async #onSave(event, target) {
+  static async #onSave(_event, _target) {
     const inputs = this.element.querySelectorAll(
       'input[type="checkbox"][name]'
     );

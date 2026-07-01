@@ -1,4 +1,5 @@
 import { getGame } from '@utils/index';
+import { createDecisionRegistry } from './decision-registry.js';
 
 /**
  * @typedef {object} DamageDecisionEntry
@@ -10,8 +11,8 @@ import { getGame } from '@utils/index';
  * @property {(() => Promise<void>) | undefined} onApply
  */
 
-/** @type {Map<string, DamageDecisionEntry>} */
-const damageDecisionRegistry = new Map();
+/** @type {ReturnType<typeof createDecisionRegistry<DamageDecisionEntry>>} */
+const damageDecisionRegistry = createDecisionRegistry('damageDecision');
 
 /**
  * @param {string} messageId
@@ -26,15 +27,7 @@ export function getDamageDecisionEntry(messageId) {
  * @returns {Promise<void>}
  */
 export async function resolveDamageDecision(messageId) {
-  damageDecisionRegistry.delete(messageId);
-  const message = game.messages?.get(messageId);
-  if (
-    message &&
-    !message.flags?.sr4?.damageDecision?.resolved &&
-    message.isAuthor
-  ) {
-    await message.update({ 'flags.sr4.damageDecision.resolved': true });
-  }
+  await damageDecisionRegistry.resolve(messageId);
 }
 
 /**
@@ -257,7 +250,7 @@ export class ApplyDamageFlow {
     context,
     { hint, onApply } = {}
   ) {
-    if (!game.settings.get('shadowrun4e', 'applyDamageWorkflow')) {
+    if (!getGame().settings.get('shadowrun4e', 'applyDamageWorkflow')) {
       await ApplyDamageFlow.applyAndSend(
         amount,
         isPhysical,

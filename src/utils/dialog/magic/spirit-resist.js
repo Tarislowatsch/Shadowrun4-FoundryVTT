@@ -61,5 +61,6 @@ export async function openSpiritResistDialog(
 
       return result;
     },
+    autoRoll: true,
   });
 }

@@ -1,5 +1,6 @@
 import {
   askSpellForce,
+  calculateWillpowerResistancePool,
   getGame,
   getSkillDicePool,
   getValidTargetActors,
@@ -33,17 +34,6 @@ function calculateDrainValue(force, dv, drainModifier = 0) {
   return Math.floor(force / 2) + dv + drainModifier;
 }
 
-/**
- * @param {import('@documents/index').SR4Actor} actor
- * @returns {number}
- */
-function calculateDrainPool(actor) {
-  const willpower = actor.getAttribute(sr4.config.attributes.WILLPOWER) ?? 0;
-  const drainAttribute =
-    actor.getAttribute(actor.system.magic.drainAttribute) ?? 0;
-  return willpower + drainAttribute;
-}
-
 export class SpellcastingFlow {
   /**
    * @param {import('@documents/index').SR4Actor} actor
@@ -51,7 +41,7 @@ export class SpellcastingFlow {
    * @returns {Promise<void>}
    */
   static async start(actor, spell) {
-    if (!game.settings.get('shadowrun4e', 'spellWorkflow')) return;
+    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) return;
     if (!actor.getAttribute('MAGIC')) {
       ui?.notifications?.error(
         getGame().i18n?.localize('sr4.magic.magicStatZero')
@@ -92,12 +82,12 @@ export class SpellcastingFlow {
       force,
       poolModifier
     );
-    if (rollResult == null) return;
+    if (rollResult === null || rollResult === undefined) return;
     const { successes: hits, isGlitch } = rollResult;
     if (
       spell.system?.duration === 'SUSTAINED' &&
       !isGlitch &&
-      game.settings.get('shadowrun4e', 'autoSustainEffect')
+      getGame().settings.get('shadowrun4e', 'autoSustainEffect')
     ) {
       await actor.applyEffectTemplate('sustain');
     }
@@ -172,7 +162,7 @@ export class SpellcastingFlow {
         force,
         penalty
       );
-      if (rollResult == null) continue;
+      if (rollResult === null || rollResult === undefined) continue;
       anyCast = true;
       const { successes: hits, isGlitch } = rollResult;
 
@@ -180,7 +170,7 @@ export class SpellcastingFlow {
         !sustainApplied &&
         spell.system?.duration === 'SUSTAINED' &&
         !isGlitch &&
-        game.settings.get('shadowrun4e', 'autoSustainEffect')
+        getGame().settings.get('shadowrun4e', 'autoSustainEffect')
       ) {
         await actor.applyEffectTemplate('sustain');
         sustainApplied = true;
@@ -263,7 +253,10 @@ export class SpellcastingFlow {
       spell.system?.dv ?? 0,
       drainModifier
     );
-    const drainPool = calculateDrainPool(actor);
+    const drainPool = calculateWillpowerResistancePool(
+      actor,
+      actor.system.magic.drainAttribute
+    );
     const isPhysical = force > actor.getAttribute('MAGIC');
 
     await resolveDrain(actor, {

@@ -11,14 +11,47 @@
           type="checkbox"
           class="sr4-checkbox"
           id="technomancer"
-          name="system.technomancer"
-          {{checked system.technomancer}}
+          name="system.technomancy.technomancer"
+          {{checked system.technomancy.technomancer}}
         />
       </div>
     </div>
   </div>
 
   {{#if isTechnomancer}}
+
+  <div class="magic-grid">
+    <div class="magic-column">
+      <div class="magic-input">
+        <label for="stream">{{localize "sr4.matrix.stream"}}</label>
+        <select id="stream" name="system.technomancy.stream" data-dtype="String">
+          {{selectOptions streams selected=system.technomancy.stream localize=true}}
+        </select>
+      </div>
+      <div class="magic-input">
+        <label for="fadingAttribute">{{localize "sr4.matrix.fadingAttribute"}}</label>
+        <select id="fadingAttribute" name="system.technomancy.fadingAttribute" data-dtype="String">
+          {{selectOptions fadingAttributes selected=system.technomancy.fadingAttribute localize=true}}
+        </select>
+      </div>
+    </div>
+    <div class="magic-column">
+      <div class="magic-stat">
+        <label>{{localize "sr4.matrix.fadingPool"}}:</label>
+        <span>{{ fadingPool }}</span>
+      </div>
+      <div class="magic-input">
+        <label for="compilingFadingBonus">{{localize "sr4.matrix.fadingboni.compiling"}}</label>
+        <input
+          type="number"
+          id="compilingFadingBonus"
+          name="system.technomancy.compilingFadingBonus"
+          data-dtype="Number"
+          value="{{ system.technomancy.compilingFadingBonus }}"
+        />
+      </div>
+    </div>
+  </div>
 
   <h3>{{localize "sr4.matrix.livingPersona"}}</h3>
   <table class="item-stats-table">
@@ -102,10 +135,11 @@
     sectionLabel="sr4.magic.spriteBindings.label"
     categories=spriteBindingCategories
     idPrefix="spriteBinding"
-    namePrefix="system.magic.spriteBindings"
+    namePrefix="system.technomancy.spriteBindings"
     btnAction="compileSprite"
     btnIcon="fas fa-microchip"
     btnLabel="sr4.magic.compile"
+    createAction="createSpriteTemplate"
   }}
 
   <div class="magic-section-subtitle">

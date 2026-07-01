@@ -7,9 +7,16 @@
  */
 
 /**
+ * @typedef {object} SR4Workflow
+ * @property {number} opposedRollFallbackBufferSeconds
+ */
+
+/**
  * @typedef {object} SR4Config
  *
  * @property {SR4Rules} rules
+ *
+ * @property {SR4Workflow} workflow
  *
  * @property {{
  *   blades: string,
@@ -51,6 +58,9 @@ export const SR4 = {
     conditionMonitorBase: 8,
     woundModifierDivisor: 3,
     edgeInitiativeSentinel: 99,
+  },
+  workflow: {
+    opposedRollFallbackBufferSeconds: 10,
   },
   attackTypes: {
     blades: 'sr4.AttackTypeBlades',

@@ -50,6 +50,10 @@
         "hint": "Wie lange (in Sekunden) die Edge-Buttons auf einer Wurfkarte während eines Kampf- oder Magie-Flows aktiv bleiben, bevor sie automatisch entfernt werden und der Flow mit dem ursprünglichen Ergebnis weiterläuft.",
         "name": "Flow-Edge-Timeout"
       },
+      "flowOpposedRollTimeout": {
+        "hint": "Wie lange (in Sekunden) ein Kampf- oder Magie-Flow auf den gegnerischen Wurf (Widerstand, Beschwörung) wartet, bevor dieser automatisch mit Standardoptionen gewürfelt wird.",
+        "name": "Flow-Gegenwurf-Timeout"
+      },
       "combatDefenseWorkflow": {
         "hint": "Wenn aktiv, werden gezielte Tokens nach einem Angriff automatisch zum Ausweichen aufgefordert. Deaktivieren schaltet auch den Schadenswiderstand-Workflow aus.",
         "name": "Kampf: Ausweichen-Workflow"

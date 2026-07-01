@@ -25,7 +25,7 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
   // Context
   // ---------------------------------------------------------------------------
 
-  async _prepareContext(options) {
+  async _prepareContext(_options) {
     const actorData = this.document.toObject(false);
     const sourceSystem = this.document.toObject().system;
     const items = actorData.items || [];

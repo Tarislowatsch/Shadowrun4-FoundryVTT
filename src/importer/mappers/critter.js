@@ -120,7 +120,6 @@ export function mapCritter(record) {
  */
 export function mapCritterVariant(variant, parent) {
   const base = mapCritter(parent);
-  const category = String(parent.category ?? '').trim();
   const forceBased = base.system.forceBased;
   const variantQualities = parseQualities(variant);
   const variantBonus = parseBonus(variant);

@@ -13,7 +13,7 @@ export default class SR4SpiritSheet extends SR4SummonedEntitySheet {
     },
   };
 
-  async _prepareContext(options) {
+  async _prepareContext(_options) {
     const ctx = await this._prepareSummonedEntityContext('ownerUuid');
     ctx.sheetStats = this._buildSheetStats(
       ctx.system.sheetStats,

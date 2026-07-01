@@ -12,6 +12,49 @@ import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow.js';
 
 /**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} primaryKey
+ * @param {string} secondaryKey
+ * @param {number} [bonus]
+ * @returns {number}
+ */
+function calculateDrainPool(actor, primaryKey, secondaryKey, bonus = 0) {
+  return (
+    (actor.getAttribute(primaryKey) ?? 0) +
+    (actor.getAttribute(secondaryKey) ?? 0) +
+    bonus
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} secondaryAttributeKey
+ * @param {number} [bonus]
+ * @returns {number}
+ */
+export function calculateWillpowerResistancePool(
+  actor,
+  secondaryAttributeKey,
+  bonus = 0
+) {
+  return calculateDrainPool(actor, 'WILLPOWER', secondaryAttributeKey, bonus);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} fadingAttributeKey
+ * @param {number} [bonus]
+ * @returns {number}
+ */
+export function calculateResonanceFadingPool(
+  actor,
+  fadingAttributeKey,
+  bonus = 0
+) {
+  return calculateDrainPool(actor, 'RESONANCE', fadingAttributeKey, bonus);
+}
+
+/**
  * @param {HTMLElement} dialog
  * @param {import('@documents/index').SR4Actor} actor
  * @param {number} drainPool - Base drain resistance pool.
@@ -79,7 +122,7 @@ export async function resolveDrain(
     drainPool,
     drainValue,
   });
-  if (drainResult == null) return;
+  if (drainResult === null || drainResult === undefined) return;
 
   const finalDrainHits = await resolveEdgeForRoll(
     actor,

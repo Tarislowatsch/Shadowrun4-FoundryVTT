@@ -42,10 +42,10 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
   };
 
   /**
-   * @param {object} options
+   * @param {object} _options
    * @returns {Promise<object>}
    */
-  async _prepareContext(options) {
+  async _prepareContext(_options) {
     const rawChanges = this.document.changes;
     const changes =
       rawChanges.length > 0
@@ -141,11 +141,11 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
   }
 
   /**
-   * @param {Event} event
-   * @param {HTMLElement} target
+   * @param {Event} _event
+   * @param {HTMLElement} _target
    * @returns {Promise<void>}
    */
-  static async #onSave(event, target) {
+  static async #onSave(_event, _target) {
     const form = this.element.querySelector('form');
     if (!form) return;
     const name = form.querySelector('[name="name"]')?.value ?? '';

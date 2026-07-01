@@ -3,7 +3,7 @@
  * Converted from TypeScript enums to frozen const objects — runtime-available.
  */
 
-import { genericItemSchema } from '@models/shared';
+import { genericItemSchema, SecondaryAttributes } from '@models/shared';
 
 /**
  * Localisation keys for combat spell types (Direct vs Indirect).
@@ -85,46 +85,81 @@ export const SpellDurations = Object.freeze({
 });
 
 /**
- * Available magical traditions.
- *
  * @readonly
  * @enum {string}
  */
 export const Traditions = Object.freeze({
   NONE: '',
-  HERMETIC: 'hermetic',
-  SHAMAN: 'shaman',
-  WICCA: 'wicca',
-  CHAOS: 'chaos',
+  ABORIGINAL: 'ABORIGINAL',
+  AZTEC: 'AZTEC',
+  BLACK_MAGIC: 'BLACK_MAGIC',
+  BUDDHIST: 'BUDDHIST',
+  CHAOS_MAGIC: 'CHAOS_MAGIC',
+  CHRISTIAN_THEURGY: 'CHRISTIAN_THEURGY',
+  DRUIDIC: 'DRUIDIC',
+  EGYPTIAN: 'EGYPTIAN',
+  GARDNERIAN_WICCA: 'GARDNERIAN_WICCA',
+  GODDESS_WICCA: 'GODDESS_WICCA',
+  HERMETIC: 'HERMETIC',
+  HINDU: 'HINDU',
+  INSECT: 'INSECT',
+  ISLAMIC: 'ISLAMIC',
+  NORSE: 'NORSE',
+  PATH_OF_THE_WHEEL: 'PATH_OF_THE_WHEEL',
+  POISONER: 'POISONER',
+  PSIONIC: 'PSIONIC',
+  QABBALISTIC: 'QABBALISTIC',
+  RASTAFARIAN: 'RASTAFARIAN',
+  SHAMANIC: 'SHAMANIC',
+  SHINTO: 'SHINTO',
+  VOODOO: 'VOODOO',
+  WITCHCRAFT: 'WITCHCRAFT',
+  WUXING: 'WUXING',
+  ZOROASTRIAN: 'ZOROASTRIAN',
 });
 
 /**
- * Localization keys for magical traditions.
- *
  * @readonly
  * @enum {string}
  */
 export const TraditionLabels = Object.freeze({
   [Traditions.NONE]: 'sr4.magic.traditions.none',
-  [Traditions.HERMETIC]: 'sr4.magic.traditions.hermetic',
-  [Traditions.SHAMAN]: 'sr4.magic.traditions.shaman',
-  [Traditions.WICCA]: 'sr4.magic.traditions.wicca',
-  [Traditions.CHAOS]: 'sr4.magic.traditions.chaos',
+  [Traditions.ABORIGINAL]: 'sr4.magic.traditions.ABORIGINAL',
+  [Traditions.AZTEC]: 'sr4.magic.traditions.AZTEC',
+  [Traditions.BLACK_MAGIC]: 'sr4.magic.traditions.BLACK_MAGIC',
+  [Traditions.BUDDHIST]: 'sr4.magic.traditions.BUDDHIST',
+  [Traditions.CHAOS_MAGIC]: 'sr4.magic.traditions.CHAOS_MAGIC',
+  [Traditions.CHRISTIAN_THEURGY]: 'sr4.magic.traditions.CHRISTIAN_THEURGY',
+  [Traditions.DRUIDIC]: 'sr4.magic.traditions.DRUIDIC',
+  [Traditions.EGYPTIAN]: 'sr4.magic.traditions.EGYPTIAN',
+  [Traditions.GARDNERIAN_WICCA]: 'sr4.magic.traditions.GARDNERIAN_WICCA',
+  [Traditions.GODDESS_WICCA]: 'sr4.magic.traditions.GODDESS_WICCA',
+  [Traditions.HERMETIC]: 'sr4.magic.traditions.HERMETIC',
+  [Traditions.HINDU]: 'sr4.magic.traditions.HINDU',
+  [Traditions.INSECT]: 'sr4.magic.traditions.INSECT',
+  [Traditions.ISLAMIC]: 'sr4.magic.traditions.ISLAMIC',
+  [Traditions.NORSE]: 'sr4.magic.traditions.NORSE',
+  [Traditions.PATH_OF_THE_WHEEL]: 'sr4.magic.traditions.PATH_OF_THE_WHEEL',
+  [Traditions.POISONER]: 'sr4.magic.traditions.POISONER',
+  [Traditions.PSIONIC]: 'sr4.magic.traditions.PSIONIC',
+  [Traditions.QABBALISTIC]: 'sr4.magic.traditions.QABBALISTIC',
+  [Traditions.RASTAFARIAN]: 'sr4.magic.traditions.RASTAFARIAN',
+  [Traditions.SHAMANIC]: 'sr4.magic.traditions.SHAMANIC',
+  [Traditions.SHINTO]: 'sr4.magic.traditions.SHINTO',
+  [Traditions.VOODOO]: 'sr4.magic.traditions.VOODOO',
+  [Traditions.WITCHCRAFT]: 'sr4.magic.traditions.WITCHCRAFT',
+  [Traditions.WUXING]: 'sr4.magic.traditions.WUXING',
+  [Traditions.ZOROASTRIAN]: 'sr4.magic.traditions.ZOROASTRIAN',
 });
 
 /**
- * Localization keys for drain attributes.
- *
  * @readonly
  * @enum {string}
  */
 export const DrainAttributes = Object.freeze({
-  /** @type {string} Localisation key for the Logic attribute. */
-  LOGIC: 'sr4.attributeAbr.logic',
-  /** @type {string} Localisation key for the Intuition attribute. */
-  INTUITION: 'sr4.attributeAbr.intuition',
-  /** @type {string} Localisation key for the Charisma attribute. */
-  CHARISMA: 'sr4.attributeAbr.charisma',
+  LOGIC: SecondaryAttributes.LOGIC,
+  INTUITION: SecondaryAttributes.INTUITION,
+  CHARISMA: SecondaryAttributes.CHARISMA,
 });
 
 const fields = foundry.data.fields;

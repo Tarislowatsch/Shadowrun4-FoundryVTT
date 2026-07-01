@@ -66,6 +66,27 @@ export async function resolveEdgeForRoll(actor, roll, threshold) {
 }
 
 /**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}} rollResult
+ * @param {number} [threshold]
+ * @returns {Promise<number>}
+ */
+export async function offerEdgeRetry(actor, rollResult, threshold = 0) {
+  if (rollResult.edgeUsed || rollResult.isGlitch) return rollResult.successes;
+  return resolveEdgeForRoll(
+    actor,
+    {
+      successes: rollResult.successes,
+      rolledDice: rollResult.rolledDice,
+      isGlitch: rollResult.isGlitch,
+      edgeUsed: rollResult.edgeUsed,
+      messageId: rollResult.messageId,
+    },
+    threshold
+  );
+}
+
+/**
  * @param {string} messageId
  * @param {number} [finalSuccesses]
  * @returns {Promise<void>}

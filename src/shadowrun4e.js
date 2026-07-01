@@ -30,6 +30,7 @@ import {
 } from '@utils/index.js';
 import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
+import { ThreadingFlow } from '@flows/threading-flow.js';
 
 /**
  * @typedef {object} SR4Global
@@ -42,6 +43,7 @@ import { SummoningFlow } from '@flows/summoning-flow.js';
  * }} dialogUtility
  * @property {typeof SpellcastingFlow} SpellcastingFlow
  * @property {typeof SummoningFlow} SummoningFlow
+ * @property {typeof ThreadingFlow} ThreadingFlow
  * @property {typeof reloadWeapon} reloadWeapon
  */
 globalThis.sr4 = {
@@ -54,6 +56,7 @@ globalThis.sr4 = {
   },
   SpellcastingFlow,
   SummoningFlow,
+  ThreadingFlow,
   reloadWeapon,
 };
 
