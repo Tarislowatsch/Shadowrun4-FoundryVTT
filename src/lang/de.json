@@ -420,6 +420,9 @@
       "physical": "Körperlich",
       "special": "Spezial"
     },
+    "ui": {
+      "createTemplate": "Template erstellen"
+    },
     "tab": {
       "actions": "Aktionen",
       "bio": "Bio & Kontakte",

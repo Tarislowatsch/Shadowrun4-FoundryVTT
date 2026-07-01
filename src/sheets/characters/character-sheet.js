@@ -50,6 +50,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       summonWatcher: SR4CharacterSheet.#onSummonWatcher,
       compileSprite: SR4CharacterSheet.#onCompileSprite,
       createSpriteTemplate: SR4CharacterSheet.#onCreateSpriteTemplate,
+      createSpiritTemplate: SR4CharacterSheet.#onCreateSpiritTemplate,
     },
   };
 
@@ -509,10 +510,19 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   }
 
   static async #onCreateSpriteTemplate(event) {
-    const spriteType = event.currentTarget.dataset.spriteType;
+    const spriteType = event.currentTarget.dataset.typeKey;
     const name = game.i18n.localize(`sr4.matrix.spriteTypes.${spriteType}`);
     await Actor.create(
       { name, type: 'sprite', system: { spriteType, rating: 1 } },
+      { renderSheet: true }
+    );
+  }
+
+  static async #onCreateSpiritTemplate(event) {
+    const spiritType = event.currentTarget.dataset.typeKey;
+    const name = game.i18n.localize(`sr4.magic.spiritBindings.${spiritType}`);
+    await Actor.create(
+      { name, type: 'spirit', system: { spiritType, force: 1 } },
       { renderSheet: true }
     );
   }

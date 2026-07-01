@@ -418,6 +418,9 @@
       "physical": "Physical",
       "special": "Special"
     },
+    "ui": {
+      "createTemplate": "Create Template"
+    },
     "tab": {
       "actions": "Actions",
       "bio": "Bio & Contacts",
