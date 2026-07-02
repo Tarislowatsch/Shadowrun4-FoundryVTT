@@ -1,4 +1,5 @@
 import { getGame } from '@utils/index';
+import { AmmoCategory } from '@models/index';
 
 /**
  * @param {object[]} items
@@ -16,6 +17,61 @@ export function sortSkillsByLabel(items) {
         : b.name;
       return labelA.localeCompare(labelB);
     });
+}
+
+/**
+ * @param {object[]} items
+ * @returns {object[]}
+ */
+export function buildAmmoContext(items) {
+  return items
+    .filter((i) => i.type === 'Ammo')
+    .map((a) => ({
+      ...a,
+      displayCategory: a.system.category
+        ? (AmmoCategory[a.system.category] ?? a.system.category)
+        : null,
+    }));
+}
+
+/**
+ * @param {Array<[string, string|number]>} pairs - [i18nKey, value] tuples
+ * @returns {{label: string, value: string|number}[]}
+ */
+export function buildStatRows(pairs) {
+  return pairs.map(([labelKey, value]) => ({
+    label: game.i18n.localize(labelKey),
+    value,
+  }));
+}
+
+/**
+ * @param {string} ownerUuid
+ * @param {"spirit"|"sprite"|"vehicle"} type
+ * @param {string} fieldName - "ownerUuid" or "riggerUuid"
+ * @param {(actor: Actor) => {label: string, value: string|number}[]} buildStats
+ * @returns {{uuid: string, img: string, name: string, stats: object[]}[]}
+ */
+export function getLinkedActors(ownerUuid, type, fieldName, buildStats) {
+  if (!ownerUuid) return [];
+  return game.actors
+    .filter(
+      (a) =>
+        a.type === type &&
+        a.system?.[fieldName] === ownerUuid &&
+        a.testUserPermission(
+          game.user,
+          CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
+        )
+    )
+    .map((a) => ({
+      uuid: a.uuid,
+      img: a.img,
+      name: a.name,
+      entityType: a.type,
+      bound: a.system?.bound === true,
+      stats: buildStats(a),
+    }));
 }
 
 /**

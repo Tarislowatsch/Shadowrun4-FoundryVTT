@@ -45,18 +45,23 @@ function prepareVehicle(vehicleFields = {}, mods = []) {
 }
 
 describe('SR4VehicleData with mods', () => {
-  it('computes effective stats from base + mods', () => {
-    const mods = [makeMod({ handlingBonus: 1, speedBonus: 2, armorBonus: 3 })];
+  it.each([
+    [
+      'computes effective stats from base + mods',
+      [{ handlingBonus: 1, speedBonus: 2, armorBonus: 3 }],
+      { effectiveHandling: 4, effectiveSpeed: 6, effectiveArmor: 9 },
+    ],
+    [
+      'sums bonuses from multiple mods',
+      [{ sensorBonus: 1 }, { sensorBonus: 2 }],
+      { effectiveSensor: 5 },
+    ],
+  ])('%s', (_label, modFields, expectedFields) => {
+    const mods = modFields.map((fields) => makeMod(fields));
     const v = prepareVehicle({}, mods);
-    expect(v.effectiveHandling).toBe(4);
-    expect(v.effectiveSpeed).toBe(6);
-    expect(v.effectiveArmor).toBe(9);
-  });
-
-  it('sums bonuses from multiple mods', () => {
-    const mods = [makeMod({ sensorBonus: 1 }), makeMod({ sensorBonus: 2 })];
-    const v = prepareVehicle({}, mods);
-    expect(v.effectiveSensor).toBe(5);
+    for (const [key, val] of Object.entries(expectedFields)) {
+      expect(v[key]).toBe(val);
+    }
   });
 
   it('computes usedSlots from mod slotCosts', () => {

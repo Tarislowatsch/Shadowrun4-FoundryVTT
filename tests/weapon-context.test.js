@@ -59,35 +59,38 @@ function makeAmmoItem(id, overrides = {}) {
 }
 
 describe('buildWeaponContext ammo category filtering', () => {
-  it('filters availableAmmo by matching category', () => {
+  it.each([
+    [
+      'filters availableAmmo by matching category',
+      'Heavy Pistols',
+      [
+        ['a1', 'Heavy Pistols'],
+        ['a2', 'Shotguns'],
+      ],
+      ['a1'],
+    ],
+    [
+      'shows uncategorized ammo for any weapon',
+      'Heavy Pistols',
+      [['a1', '']],
+      ['a1'],
+    ],
+    [
+      'shows all ammo for uncategorized weapon',
+      '',
+      [
+        ['a1', 'Heavy Pistols'],
+        ['a2', 'Shotguns'],
+      ],
+      ['a1', 'a2'],
+    ],
+  ])('%s', (_label, weaponCategory, ammoDefs, expectedIds) => {
     const items = [
-      makeWeaponItem('w1', 'Ranged Weapon', { category: 'Heavy Pistols' }),
-      makeAmmoItem('a1', { category: 'Heavy Pistols' }),
-      makeAmmoItem('a2', { category: 'Shotguns' }),
+      makeWeaponItem('w1', 'Ranged Weapon', { category: weaponCategory }),
+      ...ammoDefs.map(([id, category]) => makeAmmoItem(id, { category })),
     ];
     const [w] = buildWeaponContext(items);
-    expect(w.availableAmmo).toHaveLength(1);
-    expect(w.availableAmmo[0].id).toBe('a1');
-  });
-
-  it('shows uncategorized ammo for any weapon', () => {
-    const items = [
-      makeWeaponItem('w1', 'Ranged Weapon', { category: 'Heavy Pistols' }),
-      makeAmmoItem('a1', { category: '' }),
-    ];
-    const [w] = buildWeaponContext(items);
-    expect(w.availableAmmo).toHaveLength(1);
-    expect(w.availableAmmo[0].id).toBe('a1');
-  });
-
-  it('shows all ammo for uncategorized weapon', () => {
-    const items = [
-      makeWeaponItem('w1', 'Ranged Weapon', { category: '' }),
-      makeAmmoItem('a1', { category: 'Heavy Pistols' }),
-      makeAmmoItem('a2', { category: 'Shotguns' }),
-    ];
-    const [w] = buildWeaponContext(items);
-    expect(w.availableAmmo).toHaveLength(2);
+    expect(w.availableAmmo.map((a) => a.id)).toEqual(expectedIds);
   });
 });
 

@@ -1,4 +1,8 @@
-import { genericItemSchema, genericWeaponSchema } from '@models/shared';
+import {
+  genericItemSchema,
+  genericWeaponSchema,
+  migrateLegacyValue,
+} from '@models/shared';
 import {
   AP_HALF_TYPES,
   computeRangedWeaponDerived,
@@ -19,11 +23,10 @@ export {
 const fields = foundry.data.fields;
 
 /**
- * Properties shared by all weapon system data models (from genericWeaponSchema).
  * @typedef {object} SR4WeaponSystemBase
  * @property {number} damage
  * @property {string} damageType
- * @property {number} ap  - Armor Penetration value (negative = reduces effective armor)
+ * @property {number} ap
  * @property {string} attackSkill
  * @property {'ballistic' | 'impact'} armorType
  */
@@ -54,7 +57,7 @@ const fields = foundry.data.fields;
 /**
  * @typedef {object} SR4MeleeWeaponFields
  * @property {number} reach
- * @property {boolean} noStrengthBonus - When true, the Strength damage bonus is not applied.
+ * @property {boolean} noStrengthBonus
  * @property {string[]} installedModIds
  * @property {number} effectiveDamage
  * @property {number} effectiveAP
@@ -80,13 +83,12 @@ const fields = foundry.data.fields;
  */
 
 /**
- * DataModel for ranged weapons (type: "Ranged Weapon").
  * @property {boolean} smartlink
  * @property {string} mode
  * @property {number} rc
  * @property {number} maxAmmo
  * @property {number} currentAmmo
- * @property {string} ammoFeed - Feed type abbreviation (e.g. "c", "m", "belt", "cy", "d")
+ * @property {string} ammoFeed
  * @property {string} range
  */
 export { AP_HALF_TYPES };
@@ -107,9 +109,7 @@ const LEGACY_MODE_MAP = {
 
 export class SR4RangedWeaponData extends foundry.abstract.TypeDataModel {
   static migrateData(source) {
-    if (typeof source.mode === 'string' && source.mode in LEGACY_MODE_MAP) {
-      source.mode = LEGACY_MODE_MAP[source.mode];
-    }
+    migrateLegacyValue(source, 'mode', LEGACY_MODE_MAP);
     return super.migrateData(source);
   }
 
@@ -149,7 +149,6 @@ export class SR4RangedWeaponData extends foundry.abstract.TypeDataModel {
 }
 
 /**
- * DataModel for melee weapons (type: "Melee Weapon").
  * @property {number} reach
  * @property {boolean} noStrengthBonus
  */

@@ -45,16 +45,13 @@ describe('buildArmorContext', () => {
     expect(a.system.effectiveImpact).toBe(7);
   });
 
-  it('computes capacity from max(ballistic, impact)', () => {
-    const items = [makeArmorItem('a1')];
+  it.each([
+    ['capacity from max(ballistic, impact) when unset', null, 8],
+    ['explicit capacity when set', 12, 12],
+  ])('uses %s', (_label, capacity, expected) => {
+    const items = [makeArmorItem('a1', { capacity })];
     const [a] = buildArmorContext(items);
-    expect(a.system.maxCapacity).toBe(8);
-  });
-
-  it('uses explicit capacity when set', () => {
-    const items = [makeArmorItem('a1', { capacity: 12 })];
-    const [a] = buildArmorContext(items);
-    expect(a.system.maxCapacity).toBe(12);
+    expect(a.system.maxCapacity).toBe(expected);
   });
 
   it('sets capacityWarning when exceeded', () => {

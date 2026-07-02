@@ -3,28 +3,41 @@ import { SummoningFlow } from '@flows/summoning-flow.js';
 import { ThreadingFlow } from '@flows/threading-flow.js';
 import {
   ActionType,
-  AmmoCategory,
   Attackskill,
   DamageTypes,
   DrainAttributes,
-  FadingAttributes,
-  ImplantGrades,
-  ImplantTypes,
   Shootingmodes,
   SR4Attributes,
-  StreamLabels,
-  StreamSpriteTypes,
   TraditionLabels,
 } from '@models/index';
 import { SR4EffectTargets } from '@effects/index';
-import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
 import { buildWeaponContext } from './weapon-context.js';
 import { buildArmorContext } from './armor-context.js';
 import {
+  buildAmmoContext,
   buildComputedStats,
-  computeEssenceLoss,
   sortSkillsByLabel,
 } from './actor-context.js';
+import { buildImplantContext } from './implant-context.js';
+import { buildMagicContext } from './magic-context.js';
+import { buildMatrixContext } from './matrix-context.js';
+import { buildEffectsContext } from './effects-context.js';
+import { buildVehicleContext } from './vehicle-context.js';
+import {
+  onCreateEffect,
+  onToggleEffect,
+  onEditEffect,
+  onDeleteEffect,
+} from './effect-actions.js';
+import {
+  onCreateConnection,
+  onDeleteConnection,
+} from './connection-actions.js';
+import {
+  onOpenLinkedActor,
+  onBindLinkedActor,
+} from './linked-actor-actions.js';
+import { CharacterImporterApp } from '@sheets/importer/character-importer-app.js';
 import SR4BaseActorSheet from './sr4-base-actor-sheet.js';
 
 export default class SR4CharacterSheet extends SR4BaseActorSheet {
@@ -40,12 +53,14 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       rollSkill: SR4CharacterSheet.#onRollSkill,
       threadComplexForm: SR4CharacterSheet.#onThreadComplexForm,
       useComplexForm: SR4CharacterSheet.#onUseComplexForm,
-      createEffect: SR4CharacterSheet.#onCreateEffect,
-      toggleEffect: SR4CharacterSheet.#onToggleEffect,
-      editEffect: SR4CharacterSheet.#onEditEffect,
-      deleteEffect: SR4CharacterSheet.#onDeleteEffect,
-      createConnection: SR4CharacterSheet.#onCreateConnection,
-      deleteConnection: SR4CharacterSheet.#onDeleteConnection,
+      createEffect: onCreateEffect,
+      toggleEffect: onToggleEffect,
+      editEffect: onEditEffect,
+      deleteEffect: onDeleteEffect,
+      createConnection: onCreateConnection,
+      deleteConnection: onDeleteConnection,
+      openLinkedActor: onOpenLinkedActor,
+      bindLinkedActor: onBindLinkedActor,
       summonSpirit: SR4CharacterSheet.#onSummonSpirit,
       summonWatcher: SR4CharacterSheet.#onSummonWatcher,
       compileSprite: SR4CharacterSheet.#onCompileSprite,
@@ -198,14 +213,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   _getStaticContext(actorData) {
     return {
       headerArray: [0, 1, 2],
-      actor: {
-        img: actorData.img,
-        name: actorData.name,
-        uuid: actorData._id,
-      },
-      system: actorData.system,
-      flags: actorData.flags,
-      config: CONFIG.SR4,
+      ...this._getBaseActorContext(actorData),
       traditions: TraditionLabels,
       drainAttributes: DrainAttributes,
       attributes: SR4Attributes,
@@ -232,7 +240,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       }),
       skills: sortSkillsByLabel(items),
       items: items.filter((i) => i.type === 'Item'),
-      ...SR4CharacterSheet.#buildImplantContext(implants, sys),
+      ...buildImplantContext(implants, sys),
       spells: this._enrichItemContext(items, 'Spell'),
       powers,
       totalPowerCost: powers.reduce(
@@ -246,14 +254,8 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       negativeQualities: items.filter(
         (i) => i.type === 'Quality' && i.system.category === 'Negative'
       ),
-      ammo: items
-        .filter((i) => i.type === 'Ammo')
-        .map((a) => ({
-          ...a,
-          displayCategory: a.system.category
-            ? (AmmoCategory[a.system.category] ?? a.system.category)
-            : null,
-        })),
+      ammo: buildAmmoContext(items),
+      riggedVehicles: buildVehicleContext(this.document.uuid),
       actions: items.filter((i) => i.type === 'Action'),
       foci: items.filter((i) => i.type === 'Focus' || i.type === 'Fetish'),
       commlinks: items.filter((i) => i.type === 'Commlink'),
@@ -270,105 +272,45 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   }
 
   _getEffectsContext() {
-    return {
-      effects: this.document.effects.contents.map((e) => ({
-        id: e.id,
-        name: e.name,
-        img: e.img ?? 'icons/svg/aura.svg',
-        active: !e.disabled,
-        changes: e.changes.map((c) => {
-          const key = c.key ?? '';
-          const i18nKey = SR4EffectTargets[key];
-          return {
-            key,
-            targetLabel: i18nKey
-              ? game.i18n.localize(i18nKey)
-              : key.split('.').pop(),
-            mode: c.type ?? 'add',
-            value: Number(c.value ?? 0),
-          };
-        }),
-        description: e.description ?? '',
-      })),
-    };
+    return buildEffectsContext(this.document.effects);
   }
 
   async _getMatrixContext(actorData) {
-    const tn = actorData.system.technomancy;
-    if (!tn?.technomancer) return {};
-    const stats = actorData.system.sheetStats;
-    const bonuses = actorData.system.livingPersona;
-    const fadingAttr = tn.fadingAttribute ?? 'WILLPOWER';
-    const spriteKeys = StreamSpriteTypes[tn.stream] ?? [];
-    return {
-      streams: StreamLabels,
-      fadingAttributes: FadingAttributes,
-      fadingPool:
-        (stats.RESONANCE ?? 0) +
-        (stats[fadingAttr] ?? 0) +
-        (tn.compilingFadingBonus ?? 0),
-      spriteBindingCategories: await SR4CharacterSheet.#buildBindingCategories(
-        tn.spriteBindings,
-        'sr4.matrix.spriteTypes',
-        'sprite',
-        spriteKeys
-      ),
-      livingPersona: {
-        response: (stats.INTUITION ?? 0) + (bonuses.responseBonus ?? 0),
-        signal:
-          Math.ceil((stats.RESONANCE ?? 0) / 2) + (bonuses.signalBonus ?? 0),
-        firewall: (stats.WILLPOWER ?? 0) + (bonuses.firewallBonus ?? 0),
-        system: (stats.LOGIC ?? 0) + (bonuses.systemBonus ?? 0),
-        biofeedbackFilter:
-          (stats.CHARISMA ?? 0) + (bonuses.biofeedbackFilterBonus ?? 0),
-        vrMatrixInitiative: (stats.INTUITION ?? 0) * 2 + 1,
-        vrMatrixInitiativePasses: 3,
-      },
-    };
+    return buildMatrixContext(actorData, this.document.uuid);
   }
 
   async _getMagicContext(actorData) {
-    const sheetStats = actorData.system.sheetStats;
-    const drainAttr = actorData.system.magic?.drainAttribute ?? 'LOGIC';
-    const drainStatValue = sheetStats?.[drainAttr] ?? 0;
-    return {
-      drainStatValue,
-      drainPool: (sheetStats?.WILLPOWER ?? 0) + drainStatValue,
-      hasMagic:
-        actorData.system.magic?.adept || actorData.system.magic?.magician,
-      spiritBindingCategories: await SR4CharacterSheet.#buildBindingCategories(
-        actorData.system.magic?.spiritBindings,
-        'sr4.magic.spiritBindings',
-        'spirit'
-      ),
-    };
+    return buildMagicContext(actorData, this.document.uuid);
   }
 
-  static #buildImplantContext(implants, sys) {
-    for (const item of implants) {
-      item.displayType =
-        ImplantTypes[item.system.type] ?? item.system.type ?? '';
-      item.displayGrade =
-        ImplantGrades[item.system.grade] ?? item.system.grade ?? '';
+  // ---------------------------------------------------------------------------
+  // Rendering
+  // ---------------------------------------------------------------------------
+
+  async _renderFrame(options) {
+    const frame = await super._renderFrame(options);
+
+    const headerControls = frame.querySelector(
+      '.window-header .header-control'
+    );
+
+    const html = await foundry.applications.handlebars.renderTemplate(
+      'systems/shadowrun4e/templates/ui/import-update-button.hbs',
+      {}
+    );
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+    const button = /** @type {HTMLElement} */ (wrapper.firstElementChild);
+
+    button.addEventListener('click', () => {
+      new CharacterImporterApp({ actor: this.actor }).render(true);
+    });
+
+    if (headerControls?.parentElement) {
+      headerControls.parentElement.prepend(button);
     }
-    const groups = Object.entries(ImplantTypes).map(([key, label]) => ({
-      label: game.i18n.localize(label),
-      items: implants.filter((i) => i.system.type === key),
-    }));
-    const cyberEss = sys.derivedStats?.essenceLossCyber ?? 0;
-    const bioEss = sys.derivedStats?.essenceLossBio ?? 0;
-    const essenceLoss = computeEssenceLoss(cyberEss, bioEss);
-    return {
-      implantsByType: groups.filter((g) => g.items.length > 0),
-      essenceCyber: cyberEss.toFixed(2),
-      essenceBio: bioEss.toFixed(2),
-      essenceHalved: (cyberEss >= bioEss ? bioEss / 2 : cyberEss / 2).toFixed(
-        2
-      ),
-      essenceHalvedLabel: cyberEss >= bioEss ? 'bio' : 'cyber',
-      essenceLoss: essenceLoss.toFixed(2),
-      currentEssence: ((sys.sheetStats?.ESSENCE ?? 6) - essenceLoss).toFixed(2),
-    };
+
+    return frame;
   }
 
   // ---------------------------------------------------------------------------
@@ -443,58 +385,6 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     if (skill) await handleSkillRoll(this.actor, skill);
   }
 
-  // ── Effect actions ──────────────────────────────────────────────────────────
-
-  static async #onCreateEffect(_event, _target) {
-    await this.actor.createEmbeddedDocuments('ActiveEffect', [
-      {
-        name: game.i18n.localize('sr4.effect.new'),
-        changes: [{ key: 'system.sheetStats.BODY', type: 'add', value: 0 }],
-        disabled: false,
-      },
-    ]);
-  }
-
-  static async #onToggleEffect(event, target) {
-    const effectId =
-      target.dataset.effectId ??
-      target.closest('[data-effect-id]')?.dataset.effectId;
-    if (!effectId) return;
-    const effect = this.actor.effects.get(effectId);
-    if (!effect) return;
-    await effect.update({ disabled: !effect.disabled });
-  }
-
-  static async #onEditEffect(event, target) {
-    const effectId = target.closest('[data-effect-id]')?.dataset.effectId;
-    if (!effectId) return;
-    const effect = this.actor.effects.get(effectId);
-    if (!effect) return;
-    new SR4ActiveEffectSheet({ document: effect }).render(true);
-  }
-
-  static async #onDeleteEffect(event, target) {
-    const effectId = target.closest('[data-effect-id]')?.dataset.effectId;
-    if (!effectId) return;
-    await this.actor.deleteEmbeddedDocuments('ActiveEffect', [effectId]);
-  }
-
-  // ── Connection actions ──────────────────────────────────────────────────────
-
-  static async #onCreateConnection(_event, _target) {
-    await this.actor.update({
-      [`system.connections.${foundry.utils.randomID()}`]: {},
-    });
-  }
-
-  static async #onDeleteConnection(event, target) {
-    const key =
-      target.dataset.connectionKey ??
-      target.closest('[data-connection-key]')?.dataset.connectionKey;
-    if (!key) return;
-    await this.actor.update({ [`system.connections.-=${key}`]: null });
-  }
-
   // ── Summoning / Compiling actions ─────────────────────────────────────────
 
   static async #onSummonSpirit() {
@@ -520,44 +410,10 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
 
   static async #onCreateSpiritTemplate(event) {
     const spiritType = event.currentTarget.dataset.typeKey;
-    const name = game.i18n.localize(`sr4.magic.spiritBindings.${spiritType}`);
+    const name = game.i18n.localize(`sr4.magic.spiritAffinities.${spiritType}`);
     await Actor.create(
       { name, type: 'spirit', system: { spiritType, force: 1 } },
       { renderSheet: true }
     );
-  }
-
-  /**
-   * @param {Record<string, string>} bindings
-   * @param {string} i18nPrefix
-   * @param {'spirit' | 'sprite'} entityType
-   * @param {string[]} [categories]
-   */
-  static async #buildBindingCategories(
-    bindings,
-    i18nPrefix,
-    entityType,
-    categories = ['COMBAT', 'DETECTION', 'HEALTH', 'ILLUSION', 'MANIPULATION']
-  ) {
-    const settingKey =
-      entityType === 'sprite' ? 'spriteCompendium' : 'spiritCompendium';
-    const packId = game.settings.get('shadowrun4e', settingKey) ?? '';
-    let templateNames = null;
-
-    if (packId) {
-      const pack = game.packs.get(packId);
-      if (pack) {
-        const index = await pack.getIndex();
-        const names = [...new Set(index.map((e) => e.name).filter(Boolean))];
-        if (names.length > 0) templateNames = names;
-      }
-    }
-
-    return categories.map((key) => ({
-      key,
-      label: game.i18n.localize(`${i18nPrefix}.${key}`),
-      value: bindings?.[key] ?? '',
-      options: templateNames,
-    }));
   }
 }

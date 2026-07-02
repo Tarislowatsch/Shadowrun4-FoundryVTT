@@ -11,11 +11,11 @@ import {
 } from '@utils/dialog/magic/summoning.js';
 import {
   resolveDrain,
-  calculateWillpowerResistancePool,
-  calculateResonanceFadingPool,
+  calculateSummonedEntityDrainPool,
 } from '@utils/dialog/magic/drain.js';
 import { offerEdgeRetry } from '@utils/rolls/roll-edge-decision.js';
 import { buildCritterActorData } from '@importer/build-critter.js';
+import { getResistConfig } from '@utils/dialog/magic/resist-actions.js';
 
 export class SummoningFlow {
   /**
@@ -138,7 +138,7 @@ export class SummoningFlow {
     await resolveDrain(actor, {
       label: localize('sr4.magic.watcherDrain'),
       force: 1,
-      drainPool: SummoningFlow._calculateDrainPool(actor, 'spirit'),
+      drainPool: calculateSummonedEntityDrainPool(actor, 'spirit'),
       drainValue: hits,
       isPhysical: false,
     });
@@ -179,16 +179,15 @@ export class SummoningFlow {
    * @returns {Promise<number>}
    */
   static async _awaitSpiritResist(actor, force, spiritType, entityType) {
-    const isSprite = entityType === 'sprite';
-    const resistAction = isSprite ? 'spriteResisted' : 'spiritResisted';
-    const triggerAction = isSprite
-      ? 'triggerSpriteResist'
-      : 'triggerSpiritResist';
+    const { triggerAction, resistedAction } = getResistConfig(
+      'summon',
+      entityType
+    );
 
     return awaitOpposedSocketResponse({
       triggerAction,
       triggerPayload: { summonerId: actor.id, force, spiritType, entityType },
-      matchAction: resistAction,
+      matchAction: resistedAction,
       matches: (payload) => payload?.summonerId === actor.id,
       onMatch: (payload) => payload.resistHits ?? 0,
       fallback: 0,
@@ -342,30 +341,9 @@ export class SummoningFlow {
     await resolveDrain(actor, {
       label,
       force,
-      drainPool: SummoningFlow._calculateDrainPool(actor, entityType),
+      drainPool: calculateSummonedEntityDrainPool(actor, entityType),
       drainValue,
       isPhysical,
     });
-  }
-
-  /**
-   * @param {import('@documents/index').SR4Actor} actor
-   * @param {'spirit' | 'sprite'} entityType
-   * @returns {number}
-   */
-  static _calculateDrainPool(actor, entityType) {
-    if (entityType === 'sprite') {
-      const tn = actor.system.technomancy;
-      return calculateResonanceFadingPool(
-        actor,
-        tn?.fadingAttribute ?? 'WILLPOWER',
-        tn?.compilingFadingBonus ?? 0
-      );
-    }
-    return calculateWillpowerResistancePool(
-      actor,
-      actor.system.magic.drainAttribute,
-      actor.system.magic?.summoningDrainBonus ?? 0
-    );
   }
 }

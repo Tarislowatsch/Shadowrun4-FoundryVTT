@@ -67,6 +67,14 @@
   <hr />
 
   {{#> collapsible-section title=(localize 'sr4.inventory.vehicles')}}
-    <p class="empty-list">{{localize 'sr4.vehicle.notImplemented'}}</p>
+    {{#if riggedVehicles.length}}
+    <ul class="item-list linked-actor-list">
+      {{#each riggedVehicles as |linked|}}
+      {{> "linked-actor-card" linked}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize 'sr4.vehicle.noVehicles'}}</p>
+    {{/if}}
   {{/collapsible-section}}
 </div>

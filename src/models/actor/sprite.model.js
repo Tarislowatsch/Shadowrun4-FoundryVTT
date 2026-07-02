@@ -8,6 +8,7 @@ export class SR4SpriteData extends foundry.abstract.TypeDataModel {
       rating: new fields.NumberField({ initial: 3, integer: true }),
       spriteType: new fields.StringField({ initial: '', blank: true }),
       tasks: new fields.NumberField({ initial: 0, integer: true }),
+      bound: new fields.BooleanField({ initial: false }),
       ...summonedEntityFields(),
     };
   }

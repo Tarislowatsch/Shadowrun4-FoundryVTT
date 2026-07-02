@@ -103,7 +103,7 @@ describe('buildCritterActorData', () => {
     expect(data.items).toHaveLength(2);
   });
 
-  it('Watcher Spirit uses Force 1', () => {
+  it('force-based critter templates use the provided force value', () => {
     const template = {
       category: 'Spirits',
       forceBased: true,

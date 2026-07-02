@@ -42,3 +42,12 @@ globalThis.game = Object.assign(Object.create(FoundryGame.prototype), {
     localize: (key) => key,
   },
 });
+
+globalThis.CONST = {
+  DOCUMENT_OWNERSHIP_LEVELS: {
+    NONE: 0,
+    LIMITED: 1,
+    OBSERVER: 2,
+    OWNER: 3,
+  },
+};

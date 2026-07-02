@@ -177,19 +177,7 @@ describe('ApplyDamageFlow.applyDamage – monitor routing', () => {
 // ---------------------------------------------------------------------------
 
 describe('ApplyDamageFlow.applyDamage – return value', () => {
-  it('messages is always an array', () => {
-    const { messages } = ApplyDamageFlow.applyDamage(
-      makeMonitor(),
-      0,
-      true,
-      'X',
-      4,
-      'combat'
-    );
-    expect(Array.isArray(messages)).toBe(true);
-  });
-
-  it('returns a messages array even for 0 damage', () => {
+  it('returns a non-empty messages array even for 0 damage', () => {
     const { messages } = ApplyDamageFlow.applyDamage(
       makeMonitor(),
       0,
@@ -199,6 +187,7 @@ describe('ApplyDamageFlow.applyDamage – return value', () => {
       'combat'
     );
     // 0 physical damage: afterPhys=0, 0 < max=10 → no overflow/dead; still emits damage msg
+    expect(Array.isArray(messages)).toBe(true);
     expect(messages.length).toBeGreaterThanOrEqual(1);
   });
 });

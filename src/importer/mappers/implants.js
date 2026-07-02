@@ -1,5 +1,6 @@
 import {
   commerceFields,
+  englishOr,
   parseDecimal,
   parseNumber,
   sourceOf,
@@ -61,7 +62,7 @@ function mapImplant(record, implantType) {
       essence,
       essenceActual: essence,
       capacity: parseNumber(record.capacity, 0),
-      grade: normalizeGrade(record.grade),
+      grade: normalizeGrade(englishOr(record, 'grade')),
       type: implantType,
       rating,
       ...commerceFields(record),

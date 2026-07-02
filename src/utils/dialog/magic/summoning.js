@@ -1,9 +1,9 @@
 import { localize } from '../dialogutility';
-import { getAvailableBindings, clampForce } from './summoning-helpers.js';
+import { getAvailableAffinities, clampForce } from './summoning-helpers.js';
 
 export {
-  BINDING_CATEGORIES,
-  getAvailableBindings,
+  SPIRIT_AFFINITY_CATEGORIES,
+  getAvailableAffinities,
   clampForce,
   calculateSummoningDrain,
 } from './summoning-helpers.js';
@@ -35,22 +35,42 @@ export async function loadCompendiumTemplates(entityType) {
 }
 
 /**
+ * @param {string} name
+ * @param {'spirit' | 'sprite'} entityType
+ * @returns {Promise<object | null>}
+ */
+export async function resolveCritterTemplate(name, entityType) {
+  if (!name) return null;
+
+  const worldMatch = game.items?.find(
+    (i) =>
+      i.type === 'CritterTemplate' &&
+      i.name === name &&
+      i.system?.actorType === entityType
+  );
+  if (worldMatch) return worldMatch;
+
+  const templateMap = await loadCompendiumTemplates(entityType);
+  return templateMap?.get(name) ?? null;
+}
+
+/**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {'spirit' | 'sprite'} entityType
  * @returns {Promise<{ spiritType: string, force: number, templateItem: object | null } | null>}
  */
 export async function openSummoningDialog(actor, entityType) {
   const isSprite = entityType === 'sprite';
-  const bindings = isSprite
-    ? (actor.system.technomancy?.spriteBindings ?? {})
-    : (actor.system.magic?.spiritBindings ?? {});
+  const affinities = isSprite
+    ? (actor.system.technomancy?.spriteAffinities ?? {})
+    : (actor.system.magic?.spiritAffinities ?? {});
 
-  const availableTypes = getAvailableBindings(bindings);
+  const availableTypes = getAvailableAffinities(affinities);
 
   if (availableTypes.length === 0) {
     const msgKey = isSprite
-      ? 'sr4.magic.noSpriteBindings'
-      : 'sr4.magic.noBindings';
+      ? 'sr4.magic.noSpriteAffinities'
+      : 'sr4.magic.noSpiritAffinities';
     ui?.notifications?.warn(game.i18n.localize(msgKey));
     return null;
   }

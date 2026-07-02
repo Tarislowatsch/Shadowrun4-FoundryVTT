@@ -23,7 +23,7 @@
       "totem": "Totem",
       "tradition": "Tradition",
       "traditionBonus": "Traditionsbonus",
-      "spiritBindings": {
+      "spiritAffinities": {
         "label": "Geist-Zuordnung",
         "COMBAT": "Kampfgeist",
         "DETECTION": "Detektionsgeist",
@@ -31,7 +31,8 @@
         "ILLUSION": "Illusionsgeist",
         "MANIPULATION": "Manipulationsgeist"
       },
-      "spriteBindings": {
+      "summonedSpirits": "Beschworene Geister",
+      "spriteAffinities": {
         "label": "Sprite-Zuordnung"
       },
       "traditions": {
@@ -69,14 +70,26 @@
       "compileDialogTitle": "Sprite kompilieren",
       "selectSpiritType": "Geist-Typ auswählen",
       "selectSpriteType": "Sprite-Typ auswählen",
-      "noBindings": "Keine Geist-Typen konfiguriert — zuerst im Magie-Tab zuordnen",
-      "noSpriteBindings": "Keine Sprite-Typen konfiguriert — zuerst im Matrix-Tab zuordnen",
+      "noSpiritAffinities": "Keine Geist-Typen konfiguriert — zuerst im Magie-Tab zuordnen",
+      "noSpriteAffinities": "Keine Sprite-Typen konfiguriert — zuerst im Matrix-Tab zuordnen",
       "spiritResist": "Geist-Widerstand",
       "spriteResist": "Sprite-Widerstand",
       "spiritResistLabel": "Geist (Kraft {force}) widersteht Beschwörung",
       "spriteResistLabel": "Sprite (Stufe {rating}) widersteht Kompilierung",
+      "spiritBindResist": "Geist-Widerstand",
+      "spriteBindResist": "Sprite-Widerstand",
+      "spiritBindResistLabel": "Geist (Kraft {force}) widersteht Bindung",
+      "spriteBindResistLabel": "Sprite (Stufe {rating}) widersteht Registrierung",
       "summoningDrain": "Beschwörungs-Entzug",
       "compilingFading": "Kompilierungs-Schwund",
+      "bindingDrain": "Bindungs-Entzug",
+      "registeringFading": "Registrierungs-Schwund",
+      "bindLimitReached": "Maximale Anzahl gebundener Geister/Sprites erreicht (Charisma)",
+      "spiritBound": "Geist erfolgreich gebunden",
+      "spriteRegistered": "Sprite erfolgreich registriert",
+      "bindingFailed": "Bindung fehlgeschlagen",
+      "registeringFailed": "Registrierung fehlgeschlagen",
+      "bound": "Gebunden",
       "spiritSummoned": "Geist mit {services} Dienst(en) beschworen",
       "spriteCompiled": "Sprite mit {tasks} Aufgabe(n) kompiliert",
       "summoningFailed": "Beschwörung fehlgeschlagen — Geist hat widerstanden",

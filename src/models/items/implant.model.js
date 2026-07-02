@@ -1,4 +1,4 @@
-import { genericItemSchema } from '@models/shared';
+import { genericItemSchema, migrateLegacyValue } from '@models/shared';
 
 const fields = foundry.data.fields;
 /** @type {Record<string, string>} */
@@ -18,15 +18,10 @@ const LEGACY_GRADE_MAP = {
   'second-hand': 'SECOND_HAND',
 };
 
-/** DataModel for cyberware/bioware implants (type: "Implant"). */
 export class SR4ImplantData extends foundry.abstract.TypeDataModel {
   static migrateData(source) {
-    if (typeof source.type === 'string' && source.type in LEGACY_TYPE_MAP) {
-      source.type = LEGACY_TYPE_MAP[source.type];
-    }
-    if (typeof source.grade === 'string' && source.grade in LEGACY_GRADE_MAP) {
-      source.grade = LEGACY_GRADE_MAP[source.grade];
-    }
+    migrateLegacyValue(source, 'type', LEGACY_TYPE_MAP);
+    migrateLegacyValue(source, 'grade', LEGACY_GRADE_MAP);
     return super.migrateData(source);
   }
 
@@ -41,17 +36,6 @@ export class SR4ImplantData extends foundry.abstract.TypeDataModel {
     };
   }
 }
-
-/**
- * @fileoverview Type definitions and constants for Shadowrun 4e item data models.
- * Interfaces and declare-only classes are converted to JSDoc @typedef (documentation-only).
- * Enums are converted to frozen const objects (runtime-available).
- * The commented-out SR4BaseItemModel interface is omitted intentionally.
- */
-
-// ---------------------------------------------------------------------------
-// Enums
-// ---------------------------------------------------------------------------
 
 /**
  * @enum {string}

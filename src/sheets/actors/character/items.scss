@@ -127,7 +127,8 @@
 .item-delete,
 .item-reload,
 .spell-cast,
-.attack {
+.attack,
+.linked-actor-open {
   @include sr4-icon-btn;
   font-size: 0.75rem;
   line-height: 1;
@@ -137,7 +138,8 @@
 .spell-cast,
 .attack,
 .item-edit,
-.item-reload {
+.item-reload,
+.linked-actor-open {
   @include sr4-teal-hover;
 }
 
@@ -300,6 +302,48 @@ a.item-toggle-equip {
   object-fit: contain;
   border: none;
   flex: 0 0 auto;
+}
+
+/* ---------------- LINKED ACTOR CARD ---------------- */
+
+.linked-actor-card .item-header .linked-actor-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.linked-actor-card.bound {
+  border-left-color: var(--sr4-green);
+
+  &:hover {
+    box-shadow: 0 0 8px rgba(29, 185, 84, 0.25);
+  }
+}
+
+.bound-badge {
+  padding: 1px 6px;
+  border: 1px solid var(--sr4-green);
+  border-radius: 3px;
+  color: var(--sr4-green);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.linked-actor-bind {
+  @include sr4-icon-btn;
+  font-size: 0.75rem;
+  line-height: 1;
+
+  &:hover {
+    color: var(--sr4-green);
+    border-color: var(--sr4-green);
+    background: rgba(29, 185, 84, 0.15);
+  }
 }
 
 /* ---------------- WEAPON ---------------- */

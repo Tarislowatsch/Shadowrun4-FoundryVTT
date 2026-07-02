@@ -4,8 +4,8 @@ import {
   parseQualities,
   parseBonus,
   parsePowerList,
-  ATTRIBUTE_MAP,
 } from './helpers.js';
+import { ATTRIBUTE_MAP } from './constants.js';
 
 /**
  * @typedef {object} AttributeLimit

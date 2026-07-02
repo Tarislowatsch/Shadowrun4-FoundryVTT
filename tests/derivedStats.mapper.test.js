@@ -301,6 +301,7 @@ describe('computeDerivedStats', () => {
       data.conditionMonitor = null;
       const result = computeDerivedStats(data);
       expect(result).toEqual(data.derivedStats);
+      expect(spy).toHaveBeenCalled();
       spy.mockRestore();
     });
   });

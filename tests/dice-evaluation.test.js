@@ -22,59 +22,28 @@ describe('evaluateDie', () => {
 });
 
 describe('isGlitch', () => {
-  it('returns true when failures >= half the dice', () => {
-    expect(isGlitch({ failures: 3, rolls: [1, 1, 1, 5, 6, 4] })).toBe(true);
-  });
-
-  it('returns true when failures are exactly half', () => {
-    expect(isGlitch({ failures: 2, rolls: [1, 1, 5, 6] })).toBe(true);
-  });
-
-  it('returns false when failures < half', () => {
-    expect(isGlitch({ failures: 1, rolls: [1, 5, 6, 4] })).toBe(false);
-  });
-
-  it('returns false on reroll regardless of failures', () => {
-    expect(isGlitch({ failures: 3, rolls: [1, 1, 1, 5, 6, 4] }, true)).toBe(
-      false
-    );
-  });
-
-  it('handles single die — 1 failure on 1 die is a glitch', () => {
-    expect(isGlitch({ failures: 1, rolls: [1] })).toBe(true);
-  });
-
-  it('handles single die — 0 failures on 1 die is not a glitch', () => {
-    expect(isGlitch({ failures: 0, rolls: [5] })).toBe(false);
+  it.each([
+    ['failures >= half the dice', 3, [1, 1, 1, 5, 6, 4], false, true],
+    ['failures exactly half', 2, [1, 1, 5, 6], false, true],
+    ['failures < half', 1, [1, 5, 6, 4], false, false],
+    ['reroll ignores failures', 3, [1, 1, 1, 5, 6, 4], true, false],
+    ['single die, 1 failure', 1, [1], false, true],
+    ['single die, 0 failures', 0, [5], false, false],
+  ])('%s', (_label, failures, rolls, reroll, expected) => {
+    expect(isGlitch({ failures, rolls }, reroll)).toBe(expected);
   });
 });
 
 describe('isCriticalGlitch', () => {
-  it('returns true when glitch and 0 successes', () => {
-    expect(
-      isCriticalGlitch({ successes: 0, failures: 3, rolls: [1, 1, 1, 2, 3, 4] })
-    ).toBe(true);
-  });
-
-  it('returns false when glitch but has successes', () => {
-    expect(
-      isCriticalGlitch({ successes: 1, failures: 3, rolls: [1, 1, 1, 5, 3, 4] })
-    ).toBe(false);
-  });
-
-  it('returns false when no glitch and 0 successes', () => {
-    expect(
-      isCriticalGlitch({ successes: 0, failures: 0, rolls: [2, 3, 4] })
-    ).toBe(false);
-  });
-
-  it('returns false on reroll', () => {
-    expect(
-      isCriticalGlitch(
-        { successes: 0, failures: 3, rolls: [1, 1, 1, 2, 3, 4] },
-        true
-      )
-    ).toBe(false);
+  it.each([
+    ['glitch and 0 successes', 0, 3, [1, 1, 1, 2, 3, 4], false, true],
+    ['glitch but has successes', 1, 3, [1, 1, 1, 5, 3, 4], false, false],
+    ['no glitch and 0 successes', 0, 0, [2, 3, 4], false, false],
+    ['reroll', 0, 3, [1, 1, 1, 2, 3, 4], true, false],
+  ])('%s', (_label, successes, failures, rolls, reroll, expected) => {
+    expect(isCriticalGlitch({ successes, failures, rolls }, reroll)).toBe(
+      expected
+    );
   });
 });
 

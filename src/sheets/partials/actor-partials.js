@@ -7,6 +7,10 @@ export async function registerActorPartials() {
     { path: `${basePath}/attribute-cell.hbs`, name: 'attribute-cell' },
     { path: `${basePath}/status-track-card.hbs`, name: 'status-track-card' },
     { path: `${basePath}/actor-link-row.hbs`, name: 'actor-link-row' },
+    {
+      path: `${basePath}/linked-actor-card.hbs`,
+      name: 'linked-actor-card',
+    },
     { path: `${basePath}/npc-skills-section.hbs`, name: 'npc-skills-section' },
   ];
 

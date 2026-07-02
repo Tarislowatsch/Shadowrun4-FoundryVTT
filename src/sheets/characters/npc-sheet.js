@@ -61,15 +61,7 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
       editMode: this.editMode,
       sourceStats,
       sourceModifiers,
-      actor: {
-        img: actorData.img,
-        name: actorData.name,
-        uuid: actorData._id,
-      },
-      system: actorData.system,
-      flags: actorData.flags,
-      // @ts-ignore — CONFIG.SR4 is registered at runtime by the system
-      config: CONFIG.SR4,
+      ...this._getBaseActorContext(actorData),
       attributes: SR4Attributes,
       shootingmodes: Shootingmodes,
       actiontypes: ActionType,

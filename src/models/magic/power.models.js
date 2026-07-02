@@ -1,4 +1,4 @@
-import { genericItemSchema } from '@models/shared';
+import { genericItemSchema, descriptionFields } from '@models/shared';
 
 const fields = foundry.data.fields;
 
@@ -6,19 +6,16 @@ const fields = foundry.data.fields;
  * @typedef {'none'|'rated'|'ratedNoCost'} SR4PowerRatingMode
  *
  * @typedef {object} SR4Power
- * @property {SR4PowerRatingMode} ratingMode  - How rating affects PP cost
- * @property {number}   rating       - Power level (integer, minimum 1)
- * @property {number}   cost         - PP cost (flat, or per level when ratingMode='rated')
- * @property {boolean}  geas         - Whether the power requires a geas
- * @property {string}   description  - Full description of the power
- * @property {string}   notes        - GM/player notes
- * @property {string}   source       - Rulebook source (e.g. "SR4 Core p. 172")
- * @property {string[]} affects      - List of affected attributes/stats for future effect processing
+ * @property {SR4PowerRatingMode} ratingMode
+ * @property {number}   rating
+ * @property {number}   cost
+ * @property {boolean}  geas
+ * @property {string}   description
+ * @property {string}   notes
+ * @property {string}   source
+ * @property {string[]} affects
  */
 
-/**
- * DataModel for Adept Powers (type: "Power").
- */
 export class SR4PowerData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
@@ -53,20 +50,13 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
 
 /**
  * @typedef {object} SR4CritterPower
- * @property {string} description - HTML content
+ * @property {string} description
  * @property {string} notes
  * @property {string} source
  */
 
-/**
- * DataModel for Critter / Spirit Powers (type: "CritterPower").
- */
 export class SR4CritterPowerData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return {
-      description: new fields.HTMLField({ initial: '' }),
-      notes: new fields.StringField({ initial: '', blank: true }),
-      source: new fields.StringField({ initial: '', blank: true }),
-    };
+    return descriptionFields();
   }
 }

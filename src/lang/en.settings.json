@@ -6,6 +6,7 @@
       "hint": "Upload a single Chummer character XML export to create a new character actor.",
       "import": "Import Character",
       "itemCount": "Items",
+      "linkedActorError": "Could not import spirits/sprites/vehicles for \"{name}\": {error}",
       "parseError": "Could not parse \"{file}\": {error}",
       "preview": "Preview",
       "skillCount": "Skills",
@@ -13,6 +14,11 @@
       "modLinkError": "Could not link weapon mods for \"{name}\". Mods can be assigned manually.",
       "success": "Imported character \"{name}\".",
       "title": "Character Importer",
+      "updateButton": "Update from Chummer XML",
+      "updateHint": "Upload a Chummer character XML export to update \"{name}\". Existing items are kept, missing items are added, items no longer present are removed.",
+      "updateSuccess": "Updated character \"{name}\".",
+      "updateTitle": "Update Character",
+      "updateTooltip": "Update from Chummer XML",
       "upload": "Character XML file"
     },
     "importer": {

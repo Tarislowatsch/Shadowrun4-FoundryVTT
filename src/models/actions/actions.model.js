@@ -1,6 +1,5 @@
 const fields = foundry.data.fields;
 
-/** DataModel for actions (type: "Action"). */
 export class SR4ActionData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
@@ -18,8 +17,6 @@ export class SR4ActionData extends foundry.abstract.TypeDataModel {
 }
 
 /**
- * Localisation keys for the action types available in Shadowrun 4e combat and skill tests.
- *
  * @enum {string}
  * @readonly
  */

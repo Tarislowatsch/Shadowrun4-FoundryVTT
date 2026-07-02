@@ -6,8 +6,6 @@
 import { genericItemSchema, SecondaryAttributes } from '@models/shared';
 
 /**
- * Localisation keys for combat spell types (Direct vs Indirect).
- *
  * @enum {string}
  * @readonly
  */
@@ -30,8 +28,6 @@ export const SpellCategories = Object.freeze({
 });
 
 /**
- * Localisation keys for spell types (Physical vs Mana).
- *
  * @enum {string}
  * @readonly
  */
@@ -60,8 +56,6 @@ export const SpellElements = Object.freeze({
 });
 
 /**
- * Localisation keys for spell range types.
- *
  * @enum {string}
  * @readonly
  */
@@ -73,8 +67,6 @@ export const SpellRanges = Object.freeze({
 });
 
 /**
- * Localisation keys for spell duration types.
- *
  * @enum {string}
  * @readonly
  */
@@ -166,16 +158,16 @@ const fields = foundry.data.fields;
 
 /**
  * @typedef {object} SR4SpellSystemData
- * @property {string} category    - Spell category (e.g. 'COMBAT', 'DETECTION')
- * @property {string} type        - Spell type (e.g. 'PHYSICAL', 'MANA')
- * @property {string} combatType  - Combat sub-type: 'DIRECT' or 'INDIRECT' (COMBAT spells only)
- * @property {string} range       - Spell range (e.g. 'TOUCH', 'LOS')
- * @property {string} element     - Elemental type, empty string if none (required for INDIRECT)
- * @property {boolean} area       - Whether the spell has an area of effect
- * @property {string} duration    - Spell duration (e.g. 'PERMANENT', 'SUSTAINED')
- * @property {number} dv          - Drain value (integer)
- * @property {string} damageType  - 'PHYSICAL' or 'STUN' (COMBAT spells; base DV = cast Force)
- * @property {boolean} opposed    - Whether non-combat spells require an Opposed Test
+ * @property {string} category
+ * @property {string} type
+ * @property {string} combatType
+ * @property {string} range
+ * @property {string} element
+ * @property {boolean} area
+ * @property {string} duration
+ * @property {number} dv
+ * @property {string} damageType
+ * @property {boolean} opposed
  */
 
 /**
@@ -185,7 +177,6 @@ const fields = foundry.data.fields;
  * @property {SR4SpellSystemData} system
  * @property {() => object} toObject
  */
-/** DataModel for spells (type: "Spell"). */
 export class SR4SpellData extends foundry.abstract.TypeDataModel {
   static migrateData(source) {
     if (source.damageType === undefined && source.damage !== undefined) {

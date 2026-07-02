@@ -1,5 +1,5 @@
 import { TAG_CONFIGS } from './registry.js';
-import { ALL_CRITTER_CATEGORIES } from './mappers/helpers.js';
+import { ALL_CRITTER_CATEGORIES } from './mappers/constants.js';
 
 /** @type {string[]} */
 const KNOWN_TAGS = [...new Set(TAG_CONFIGS.map((c) => c.xmlTag))];

@@ -7,7 +7,7 @@ const fields = foundry.data.fields;
  * @property {number} damageBonus
  * @property {number} apBonus
  * @property {string} damageTypeOverride
- * @property {number|null} damageOverride — `null` = no override, damageBonus applies additively
+ * @property {number|null} damageOverride
  * @property {number} quantity
  */
 

@@ -163,6 +163,17 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     return { sourceStats: src.sheetStats, sourceModifiers: src.modifiers };
   }
 
+  /** @param {object} actorData */
+  _getBaseActorContext(actorData) {
+    return {
+      actor: { img: actorData.img, name: actorData.name, uuid: actorData._id },
+      system: actorData.system,
+      flags: actorData.flags,
+      // @ts-ignore — CONFIG.SR4 is registered at runtime by the system
+      config: CONFIG.SR4,
+    };
+  }
+
   _enrichItemContext(items, type) {
     const actions = items.filter((i) => i.type === 'Action');
     return items

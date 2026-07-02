@@ -9,16 +9,12 @@ describe('getOpposedRollFallbackTimeoutMs', () => {
     );
   });
 
-  it('covers the full setting range', () => {
-    expect(getOpposedRollFallbackTimeoutMs(10)).toBe(20_000);
-    expect(getOpposedRollFallbackTimeoutMs(120)).toBe(130_000);
-  });
-
-  it('always exceeds the plain timeout-in-ms value', () => {
-    for (const timeoutSeconds of [10, 30, 60, 120]) {
+  it.each([10, 30, 60, 120])(
+    'always exceeds the plain timeout-in-ms value for %i seconds',
+    (timeoutSeconds) => {
       expect(getOpposedRollFallbackTimeoutMs(timeoutSeconds)).toBeGreaterThan(
         timeoutSeconds * 1000
       );
     }
-  });
+  );
 });

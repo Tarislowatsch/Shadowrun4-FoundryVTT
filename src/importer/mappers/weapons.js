@@ -1,12 +1,12 @@
 import {
-  CATEGORY_TO_ATTACKSKILL,
-  XML_CATEGORY_TO_ENUM,
+  englishOr,
   normalizeMode,
   parseAmmo,
   parseDamage,
   parseNumber,
   sourceOf,
 } from './helpers.js';
+import { CATEGORY_TO_ATTACKSKILL, XML_CATEGORY_TO_ENUM } from './constants.js';
 
 /**
  * @typedef {Record<string, string | string[]>} StatblockRecord
@@ -35,6 +35,7 @@ export function mapMeleeWeapon(record) {
   const { damage, damageType, strengthBased } = parseDamage(
     /** @type {string} */ (record.damage)
   );
+  const category = englishOr(record, 'category');
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Weapon',
     type: 'Melee Weapon',
@@ -42,9 +43,8 @@ export function mapMeleeWeapon(record) {
       damage,
       damageType,
       ap: parseNumber(record.ap, 0),
-      attackSkill: attackSkillFor(/** @type {string} */ (record.category)),
-      category:
-        XML_CATEGORY_TO_ENUM[String(record.category ?? '').trim()] ?? '',
+      attackSkill: attackSkillFor(category),
+      category: XML_CATEGORY_TO_ENUM[category] ?? '',
       reach: parseNumber(record.reach, 0),
       noStrengthBonus: !strengthBased,
       source: sourceOf(record),
@@ -61,6 +61,7 @@ export function mapRangedWeapon(record) {
     /** @type {string} */ (record.damage)
   );
   const { capacity, feed } = parseAmmo(/** @type {string} */ (record.ammo));
+  const category = englishOr(record, 'category');
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Weapon',
     type: 'Ranged Weapon',
@@ -68,9 +69,8 @@ export function mapRangedWeapon(record) {
       damage,
       damageType,
       ap: parseNumber(record.ap, 0),
-      attackSkill: attackSkillFor(/** @type {string} */ (record.category)),
-      category:
-        XML_CATEGORY_TO_ENUM[String(record.category ?? '').trim()] ?? '',
+      attackSkill: attackSkillFor(category),
+      category: XML_CATEGORY_TO_ENUM[category] ?? '',
       mode: normalizeMode(/** @type {string} */ (record.mode)),
       rc: parseNumber(record.rc, 0),
       maxAmmo: capacity,

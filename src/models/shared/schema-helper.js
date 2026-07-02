@@ -1,8 +1,3 @@
-/**
- * Returns the shared genericItem schema fields.
- *
- * @returns {object}
- */
 const fields = foundry.data.fields;
 
 /**
@@ -36,7 +31,6 @@ export function genericItemSchema() {
 }
 
 /**
- * Creates a SchemaField with physical/astral/matrix number sub-fields.
  * @typedef {object} SR4RealmValues
  * @property {number} physical
  * @property {number} matrix
@@ -53,18 +47,14 @@ function realmField(initial = 0) {
 }
 
 /**
- * Minimal derived stats shared by all actor types.
  * @typedef {object} SR4BaseDerivedStats
- * @property {number}        physical        - Physical monitor max
- * @property {number}        woundModifier   - Wound penalty (negative; 0 = no penalty)
- * @property {number}        dicePoolModifier - Combined modifier (wounds + effects)
- * @property {number}        meleeDamageBonus - Strength melee damage bonus (ceil(STR/2))
+ * @property {number} physical
+ * @property {number} woundModifier
+ * @property {number} dicePoolModifier
+ * @property {number} meleeDamageBonus
  * @property {SR4RealmValues} initiative
- * @property {string}        passesString    - Initiative passes e.g. "1/1/1"
- */
-
-/**
- * @returns {object} SchemaField contents for SR4BaseDerivedStats
+ * @property {string} passesString
+ * @returns {object}
  */
 export function baseDerivedStatsFields() {
   return {
@@ -91,10 +81,12 @@ export function monitorField() {
     woundMod: new fields.NumberField({ initial: 0, integer: true }),
   });
 }
+
 /**
  * @typedef {object} SR4ConditionMonitor
  * @property {SR4Monitor} physical
  * @property {SR4Monitor} stun
+ * @returns {foundry.data.fields.SchemaField}
  */
 export function conditionMonitorField() {
   return new fields.SchemaField({
@@ -103,19 +95,11 @@ export function conditionMonitorField() {
   });
 }
 
-/**
- * Generic fallback DataModel for simple item types.
- * Used for: Program, Focus, Fetish, Item.
- */
 export class SR4GenericItemData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return genericItemSchema();
   }
 }
-
-// ---------------------------------------------------------------------------
-// SheetStats
-// ---------------------------------------------------------------------------
 
 /**
  * @typedef {object} SR4SheetStats
@@ -136,7 +120,6 @@ export class SR4GenericItemData extends foundry.abstract.TypeDataModel {
  * @property {number} MAGIC
  * @property {number} RESONANCE
  */
-
 export class SR4SheetStatsData extends fields.SchemaField {
   constructor() {
     super({
@@ -160,10 +143,6 @@ export class SR4SheetStatsData extends fields.SchemaField {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Modifiers
-// ---------------------------------------------------------------------------
-
 /**
  * @typedef {object} SR4Modifiers
  * @property {{
@@ -186,7 +165,6 @@ export class SR4SheetStatsData extends fields.SchemaField {
  * @property {Record<string, number>} skillGroupBonuses
  * @property {Record<string, number>} skillBonuses
  */
-
 export const modifiersField = () =>
   new fields.SchemaField({
     initiative: new fields.SchemaField({
@@ -216,17 +194,8 @@ export const modifiersField = () =>
     skillBonuses: new fields.ObjectField({ initial: {} }),
   });
 
-// ---------------------------------------------------------------------------
-// Weapons (generic)
-// ---------------------------------------------------------------------------
-
 /**
- * Returns the shared genericWeapon schema fields.
- *
  * @returns {object}
- */
-/**
- * @returns {object} Shared schema fields for summoned entities (spirits, sprites).
  */
 export function summonedEntityFields() {
   return {
@@ -252,4 +221,68 @@ export function genericWeaponSchema() {
     installedModIds: new fields.ArrayField(new fields.StringField()),
     modSlots: new fields.NumberField({ initial: 6, integer: true }),
   };
+}
+
+/**
+ * @param {{ notes?: boolean, source?: boolean }} [options]
+ * @returns {object}
+ */
+export function descriptionFields({ notes = true, source = true } = {}) {
+  const result = { description: new fields.HTMLField({ initial: '' }) };
+  if (notes)
+    result.notes = new fields.StringField({ initial: '', blank: true });
+  if (source)
+    result.source = new fields.StringField({ initial: '', blank: true });
+  return result;
+}
+
+/**
+ * @returns {foundry.data.fields.SchemaField}
+ */
+export function qualitiesField() {
+  return new fields.SchemaField({
+    positive: new fields.ArrayField(new fields.StringField()),
+    negative: new fields.ArrayField(new fields.StringField()),
+  });
+}
+
+/** @type {string[]} */
+export const SR4_ATTRIBUTE_KEYS = Object.freeze([
+  'body',
+  'agility',
+  'reaction',
+  'strength',
+  'charisma',
+  'intuition',
+  'logic',
+  'willpower',
+  'initiative',
+  'edge',
+  'magic',
+  'resonance',
+  'essence',
+]);
+
+/**
+ * @param {(key: string) => foundry.data.fields.DataField} fieldFactory
+ * @returns {foundry.data.fields.SchemaField}
+ */
+export function attributeBlockField(fieldFactory) {
+  return new fields.SchemaField(
+    Object.fromEntries(
+      SR4_ATTRIBUTE_KEYS.map((key) => [key, fieldFactory(key)])
+    )
+  );
+}
+
+/**
+ * @param {object|null|undefined} source
+ * @param {string} key
+ * @param {Record<string, string>} map
+ */
+export function migrateLegacyValue(source, key, map) {
+  if (!source) return;
+  if (typeof source[key] === 'string' && source[key] in map) {
+    source[key] = map[source[key]];
+  }
 }

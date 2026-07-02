@@ -1,4 +1,4 @@
-import { commerceFields, parseNumber, sourceOf } from './helpers.js';
+import { commerceFields, englishOr, parseNumber, sourceOf } from './helpers.js';
 
 const ACCESSORY_CATEGORIES = new Set(['Helmets', 'Shields']);
 
@@ -7,7 +7,7 @@ const ACCESSORY_CATEGORIES = new Set(['Helmets', 'Shields']);
  * @returns {'standard'|'accessory'|'formFitting'}
  */
 function resolveStackingType(record) {
-  const category = String(record.category ?? '').trim();
+  const category = englishOr(record, 'category');
   if (ACCESSORY_CATEGORIES.has(category)) return 'accessory';
   const name = String(record.name ?? '');
   if (/form-fitting/i.test(name)) return 'formFitting';

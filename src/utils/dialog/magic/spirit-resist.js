@@ -6,6 +6,7 @@ import {
   renderTemplate,
 } from '../dialogutility';
 import { getGame } from '@utils/game/game.js';
+import { getResistConfig } from './resist-actions.js';
 
 const SPIRIT_RESIST_TEMPLATE =
   'systems/shadowrun4e/templates/magic/spirit-resist.hbs';
@@ -15,36 +16,38 @@ const SPIRIT_RESIST_TEMPLATE =
  * @param {string} spiritType
  * @param {'spirit' | 'sprite'} entityType
  * @param {string} summonerId
+ * @param {'summon' | 'bind'} [mode]
  * @returns {Promise<void>}
  */
 export async function openSpiritResistDialog(
   force,
   spiritType,
   entityType,
-  summonerId
+  summonerId,
+  mode = 'summon'
 ) {
   const isSprite = entityType === 'sprite';
-  const resistLabelKey = isSprite
-    ? 'sr4.magic.spriteResistLabel'
-    : 'sr4.magic.spiritResistLabel';
+  const isBind = mode === 'bind';
+  const { titleKey, labelKey, resistedAction } = getResistConfig(
+    mode,
+    entityType
+  );
   const resistLabel = game.i18n
-    .localize(resistLabelKey)
+    .localize(labelKey)
     .replace(isSprite ? '{rating}' : '{force}', String(force));
 
-  const titleKey = isSprite
-    ? 'sr4.magic.spriteResist'
-    : 'sr4.magic.spiritResist';
+  const dicePool = isBind ? force * 2 : force;
 
   const content = await renderTemplate(SPIRIT_RESIST_TEMPLATE, { resistLabel });
 
   await createRollDialog({
     title: `${localize(titleKey)} — ${spiritType}`,
     content,
-    dice: force,
+    dice: dicePool,
     onRoll: async (dialog) => {
       const bonus = getInt(dialog, 'bonus');
       const malus = getInt(dialog, 'malus');
-      const finalPool = Math.max(force + bonus - malus, 1);
+      const finalPool = Math.max(dicePool + bonus - malus, 1);
 
       const result = await DiceUtility.rollAndShow({
         numDice: finalPool,
@@ -55,7 +58,7 @@ export async function openSpiritResistDialog(
       });
 
       getGame().socket?.emit('system.shadowrun4e', {
-        action: isSprite ? 'spriteResisted' : 'spiritResisted',
+        action: resistedAction,
         payload: { summonerId, resistHits: result.successes },
       });
 

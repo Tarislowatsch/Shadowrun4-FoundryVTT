@@ -34,6 +34,21 @@ const COLLECTION_MAPPERS = {
 };
 
 /**
+ * @param {Record<string, Array<Record<string, unknown>>>} [parsedItems]
+ * @returns {Map<string, string>}
+ */
+function buildWeaponCategoryTranslations(parsedItems) {
+  /** @type {Map<string, string>} */
+  const map = new Map();
+  for (const record of parsedItems?.weapon ?? []) {
+    const de = String(record.category ?? '').trim();
+    const en = String(record.category_english ?? '').trim();
+    if (de && en && de !== en) map.set(de, en);
+  }
+  return map;
+}
+
+/**
  * @param {string} name
  * @returns {string}
  */
@@ -176,11 +191,15 @@ function buildWeaponModItems(parsedItems) {
 export function buildActorData(parsed, canonicalSkills) {
   const { name, img, system } = mapCharacterSystem(parsed.character);
 
+  const weaponCategoryTranslations = buildWeaponCategoryTranslations(
+    parsed.items
+  );
+
   /** @type {Array<object>} */
   const items = [];
   for (const [tag, mapper] of Object.entries(COLLECTION_MAPPERS)) {
     for (const record of parsed.items?.[tag] ?? []) {
-      items.push(mapper(record));
+      items.push(mapper(record, weaponCategoryTranslations));
     }
   }
 

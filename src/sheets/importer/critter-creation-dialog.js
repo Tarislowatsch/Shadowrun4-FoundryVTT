@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { buildCritterActorData } from '@importer/build-critter.js';
 import { resolveAttribute } from '@utils/force-formula.js';
-import { ATTRIBUTE_MAP } from '@importer/mappers/helpers.js';
+import { ATTRIBUTE_MAP } from '@importer/mappers/constants.js';
 
 const PREVIEW_ATTRIBUTES = ATTRIBUTE_MAP.filter(
   ([, key]) => key !== 'initiative' && key !== 'essence'

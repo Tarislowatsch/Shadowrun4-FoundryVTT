@@ -5,6 +5,7 @@ import {
   baseDerivedStatsFields,
   SR4SheetStatsData,
   modifiersField,
+  migrateLegacyValue,
 } from '@models/shared';
 import { computeDerivedStats } from '@documents/derivedStats.mapper';
 
@@ -16,10 +17,6 @@ import { computeDerivedStats } from '@documents/derivedStats.mapper';
  */
 
 export { SR4SheetStatsData, modifiersField };
-
-// ---------------------------------------------------------------------------
-// Armor
-// ---------------------------------------------------------------------------
 
 /**
  * @typedef {object} SR4Armor
@@ -34,10 +31,6 @@ export const armorField = () =>
     impact: new fields.NumberField({ initial: 0, integer: true }),
     encumbrance: new fields.NumberField({ initial: 0, integer: true }),
   });
-
-// ---------------------------------------------------------------------------
-// DerivedStats
-// ---------------------------------------------------------------------------
 
 /**
  * @typedef {import('@models/shared').SR4BaseDerivedStats & {
@@ -73,10 +66,6 @@ export const derivedStatsField = () =>
     finalStats: new SR4SheetStatsData(),
   });
 
-// ---------------------------------------------------------------------------
-// Description
-// ---------------------------------------------------------------------------
-
 /**
  * @typedef {object} SR4DescriptionAndNotes
  * @property {string} bio
@@ -104,10 +93,6 @@ export const descriptionField = () =>
     hair: new fields.StringField({ initial: 'Black' }),
     skin: new fields.StringField({ initial: 'Fair' }),
   });
-
-// ---------------------------------------------------------------------------
-// MetaData
-// ---------------------------------------------------------------------------
 
 /**
  * @typedef {object} SR4BaseMetaData
@@ -208,7 +193,7 @@ export const magicField = () =>
 
     traditionBonus: new fields.NumberField({ initial: 0, integer: true }),
 
-    spiritBindings: new fields.SchemaField({
+    spiritAffinities: new fields.SchemaField({
       COMBAT: new fields.StringField({ initial: '', blank: true }),
       DETECTION: new fields.StringField({ initial: '', blank: true }),
       HEALTH: new fields.StringField({ initial: '', blank: true }),
@@ -223,7 +208,7 @@ export const magicField = () =>
  * @property {string} stream
  * @property {'WILLPOWER'|'INTUITION'|'CHARISMA'|'LOGIC'} fadingAttribute
  * @property {number} compilingFadingBonus
- * @property {Record<string,string>} spriteBindings
+ * @property {Record<string,string>} spriteAffinities
  */
 export const technomancyField = () =>
   new fields.SchemaField({
@@ -235,7 +220,7 @@ export const technomancyField = () =>
       blank: false,
     }),
     compilingFadingBonus: new fields.NumberField({ initial: 0, integer: true }),
-    spriteBindings: new fields.SchemaField({
+    spriteAffinities: new fields.SchemaField({
       CODE: new fields.StringField({ initial: '', blank: true }),
       COURIER: new fields.StringField({ initial: '', blank: true }),
       CRACK: new fields.StringField({ initial: '', blank: true }),
@@ -248,9 +233,6 @@ export const technomancyField = () =>
       TUTOR: new fields.StringField({ initial: '', blank: true }),
     }),
   });
-// ---------------------------------------------------------------------------
-// Connections
-// ---------------------------------------------------------------------------
 
 /**
  * @typedef {object} SR4Connection
@@ -314,9 +296,7 @@ export const connectionsField = () =>
     })
   );
 
-// ---------------------------------------------------------------------------
 // Armor Stacking & Encumbrance (SR4 p.161, Form-Fitting: Arsenal p.48)
-// ---------------------------------------------------------------------------
 
 /**
  * @param {any} item
@@ -398,11 +378,7 @@ export function computeArmorStacking(equipped, bonus, body) {
   return { ballistic, impact, encumbrance };
 }
 
-// ---------------------------------------------------------------------------
-// Metatype attribute limits
-// ---------------------------------------------------------------------------
-
-/** @type {Array<[string, string]>} [metatypeKey, sheetStatKey] */
+/** @type {Array<[string, string]>} */
 const METATYPE_STAT_MAP = [
   ['body', 'BODY'],
   ['agility', 'AGILITY'],
@@ -454,10 +430,6 @@ function applyMetatypeLimits(self, attrs) {
   self.derivedStats.augmentedMaximum = augmentedMaximum;
 }
 
-// ---------------------------------------------------------------------------
-// BaseCharacterData
-// ---------------------------------------------------------------------------
-
 /**
  * @typedef {object} SR4BaseCharacterSystem
  * @property {SR4SheetStats}          sheetStats
@@ -481,8 +453,13 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       source.technomancy.technomancer = source.technomancer;
       delete source.technomancer;
     }
-    if (source.magic?.spriteBindings !== undefined) {
-      delete source.magic.spriteBindings;
+    if (source.magic?.spiritBindings !== undefined) {
+      source.magic.spiritAffinities ??= source.magic.spiritBindings;
+      delete source.magic.spiritBindings;
+    }
+    if (source.technomancy?.spriteBindings !== undefined) {
+      source.technomancy.spriteAffinities ??= source.technomancy.spriteBindings;
+      delete source.technomancy.spriteBindings;
     }
     const traditionMap = {
       NONE: '',
@@ -490,9 +467,7 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       WICCA: 'GARDNERIAN_WICCA',
       CHAOS: 'CHAOS_MAGIC',
     };
-    if (source.magic?.tradition in traditionMap) {
-      source.magic.tradition = traditionMap[source.magic.tradition];
-    }
+    migrateLegacyValue(source.magic, 'tradition', traditionMap);
     return super.migrateData(source);
   }
 
@@ -574,10 +549,6 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
   }
 }
 
-// ---------------------------------------------------------------------------
-// CharacterData
-// ---------------------------------------------------------------------------
-
 /**
  * @typedef {SR4BaseCharacterSystem & { metaData: SR4CharacterMetaData, connections: Record<string, SR4Connection> }} SR4CharacterSystem
  * @typedef {SR4BaseCharacterData & { system: SR4CharacterSystem }} SR4Character
@@ -594,9 +565,4 @@ export class SR4CharacterData extends SR4BaseCharacterData {
   }
 }
 
-// ---------------------------------------------------------------------------
-// NpcData
-// ---------------------------------------------------------------------------
-
-/** DataModel for NPCs (type: "npc"). */
 export class SR4NpcData extends SR4BaseCharacterData {}

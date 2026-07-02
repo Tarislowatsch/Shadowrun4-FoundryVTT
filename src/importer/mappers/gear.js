@@ -1,15 +1,12 @@
-import { DamageTypes } from '@models/items/weapon.enums.js';
-
 import {
   commerceFields,
+  englishOr,
   parseNumber,
   sourceOf,
   upper,
-  XML_CATEGORY_TO_ENUM,
 } from './helpers.js';
+import { XML_CATEGORY_TO_ENUM, dt } from './constants.js';
 import { mapProgram } from './programs.js';
-
-const dt = Object.fromEntries(Object.keys(DamageTypes).map((k) => [k, k]));
 
 /**
  * @param {string} [raw]
@@ -20,7 +17,7 @@ function parseAmmoDamageType(raw) {
   if (!str) return '';
   if (/\(e\)/i.test(str)) return dt.ELECTRICITY;
   const code = str.replace(/\([^)]*\)/g, '');
-  return /^s/i.test(code) ? dt.STUN : dt.PHYSICAL;
+  return /^[sg]/i.test(code) ? dt.STUN : dt.PHYSICAL;
 }
 
 /** @type {{ damageBonus: number, apBonus: number, damageTypeOverride: string, damageOverride: number|null }} */
@@ -80,12 +77,9 @@ const AMMO_ACCESSORY_NAMES = new Set(['spare clip', 'speed loader']);
  */
 export function isAmmunition(record) {
   if (hasWeaponBonus(record) || parseFlatWeaponBonus(record)) return true;
-  if (
-    String(record.category ?? '')
-      .trim()
-      .toLowerCase() !== 'ammunition'
-  )
+  if (englishOr(record, 'category').toLowerCase() !== 'ammunition') {
     return false;
+  }
   return !AMMO_ACCESSORY_NAMES.has(
     String(record.name ?? '')
       .trim()
@@ -98,7 +92,7 @@ export function isAmmunition(record) {
  * @returns {boolean}
  */
 export function isFocus(record) {
-  return String(record.category ?? '').trim() === 'Foci';
+  return englishOr(record, 'category') === 'Foci';
 }
 
 /**
@@ -106,7 +100,7 @@ export function isFocus(record) {
  * @returns {boolean}
  */
 export function isFetish(record) {
-  return String(record.category ?? '').trim() === 'Fetishes';
+  return englishOr(record, 'category') === 'Fetishes';
 }
 
 /**
@@ -126,10 +120,23 @@ export function isProgram(record) {
 }
 
 /**
+ * Ammo's `extra` field has no `_english` sibling in Chummer exports.
  * @param {Record<string, unknown>} record
+ * @param {Map<string, string>} [weaponCategoryTranslations]
+ * @returns {string}
+ */
+function resolveAmmoWeaponCategory(record, weaponCategoryTranslations) {
+  const raw = englishOr(record, 'extra');
+  if (XML_CATEGORY_TO_ENUM[raw]) return raw;
+  return weaponCategoryTranslations?.get(raw) ?? raw;
+}
+
+/**
+ * @param {Record<string, unknown>} record
+ * @param {Map<string, string>} [weaponCategoryTranslations]
  * @returns {{ name: string, type: string, system: object }}
  */
-export function mapGear(record) {
+export function mapGear(record, weaponCategoryTranslations) {
   const base = {
     ...commerceFields(record),
     rating: parseNumber(record.rating, 0),
@@ -150,7 +157,10 @@ export function mapGear(record) {
       system: {
         ...base,
         ...bonus,
-        category: XML_CATEGORY_TO_ENUM[String(record.extra ?? '').trim()] ?? '',
+        category:
+          XML_CATEGORY_TO_ENUM[
+            resolveAmmoWeaponCategory(record, weaponCategoryTranslations)
+          ] ?? '',
       },
     };
   }

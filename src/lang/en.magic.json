@@ -23,16 +23,17 @@
       "totem": "Totem",
       "tradition": "Tradition",
       "traditionBonus": "Tradition Bonus",
-      "spiritBindings": {
-        "label": "Spirit Bindings",
+      "spiritAffinities": {
+        "label": "Spirit Affinities",
         "COMBAT": "Combat Spirit",
         "DETECTION": "Detection Spirit",
         "HEALTH": "Health Spirit",
         "ILLUSION": "Illusion Spirit",
         "MANIPULATION": "Manipulation Spirit"
       },
-      "spriteBindings": {
-        "label": "Sprite Bindings"
+      "summonedSpirits": "Summoned Spirits",
+      "spriteAffinities": {
+        "label": "Sprite Affinities"
       },
       "traditions": {
         "none": "None",
@@ -69,14 +70,26 @@
       "compileDialogTitle": "Compile Sprite",
       "selectSpiritType": "Select spirit type",
       "selectSpriteType": "Select sprite type",
-      "noBindings": "No spirit types configured — assign types in the Magic tab first",
-      "noSpriteBindings": "No sprite types configured — assign types in the Matrix tab first",
+      "noSpiritAffinities": "No spirit types configured — assign types in the Magic tab first",
+      "noSpriteAffinities": "No sprite types configured — assign types in the Matrix tab first",
       "spiritResist": "Spirit Resistance",
       "spriteResist": "Sprite Resistance",
       "spiritResistLabel": "Spirit (Force {force}) resists summoning",
       "spriteResistLabel": "Sprite (Rating {rating}) resists compiling",
+      "spiritBindResist": "Spirit Resistance",
+      "spriteBindResist": "Sprite Resistance",
+      "spiritBindResistLabel": "Spirit (Force {force}) resists binding",
+      "spriteBindResistLabel": "Sprite (Rating {rating}) resists registering",
       "summoningDrain": "Summoning Drain",
       "compilingFading": "Compiling Fading",
+      "bindingDrain": "Binding Drain",
+      "registeringFading": "Registering Fading",
+      "bindLimitReached": "Maximum number of bound spirits/sprites reached (Charisma)",
+      "spiritBound": "Spirit bound successfully",
+      "spriteRegistered": "Sprite registered successfully",
+      "bindingFailed": "Binding failed",
+      "registeringFailed": "Registering failed",
+      "bound": "Bound",
       "spiritSummoned": "Spirit summoned with {services} service(s)",
       "spriteCompiled": "Sprite compiled with {tasks} task(s)",
       "summoningFailed": "Summoning failed — spirit resisted",

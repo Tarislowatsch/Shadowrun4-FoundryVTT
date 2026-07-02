@@ -7,6 +7,7 @@ import { SettingsHook } from './settings-hook';
 import { ActorDirectoryHook } from './actor-directory-hook';
 import { CompendiumDirectoryHook } from './compendium-directory-hook';
 import { SummoningHook } from './summoning-hook';
+import { LinkedActorCleanupHook } from './linked-actor-cleanup-hook';
 
 export function registerHooks() {
   new SettingsHook();
@@ -18,4 +19,5 @@ export function registerHooks() {
   new DieChatHook();
   new ActorDirectoryHook();
   new CompendiumDirectoryHook();
+  new LinkedActorCleanupHook();
 }

@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import {
-  getAvailableBindings,
+  getAvailableAffinities,
   clampForce,
   calculateSummoningDrain,
-  BINDING_CATEGORIES,
+  SPIRIT_AFFINITY_CATEGORIES,
 } from '../src/utils/dialog/magic/summoning-helpers.js';
 
-describe('BINDING_CATEGORIES', () => {
+describe('SPIRIT_AFFINITY_CATEGORIES', () => {
   it('contains exactly the 5 spell categories', () => {
-    expect(BINDING_CATEGORIES).toEqual([
+    expect(SPIRIT_AFFINITY_CATEGORIES).toEqual([
       'COMBAT',
       'DETECTION',
       'HEALTH',
@@ -18,74 +18,74 @@ describe('BINDING_CATEGORIES', () => {
   });
 });
 
-describe('getAvailableBindings', () => {
-  it('returns empty array when all bindings are empty', () => {
-    const bindings = {
+describe('getAvailableAffinities', () => {
+  it('returns empty array when all affinities are empty', () => {
+    const affinities = {
       COMBAT: '',
       DETECTION: '',
       HEALTH: '',
       ILLUSION: '',
       MANIPULATION: '',
     };
-    expect(getAvailableBindings(bindings)).toEqual([]);
+    expect(getAvailableAffinities(affinities)).toEqual([]);
   });
 
-  it('returns filled bindings only', () => {
-    const bindings = {
+  it('returns filled affinities only', () => {
+    const affinities = {
       COMBAT: 'Fire Spirit',
       DETECTION: '',
       HEALTH: 'Water Spirit',
       ILLUSION: '',
       MANIPULATION: '',
     };
-    expect(getAvailableBindings(bindings)).toEqual([
+    expect(getAvailableAffinities(affinities)).toEqual([
       'Fire Spirit',
       'Water Spirit',
     ]);
   });
 
   it('deduplicates identical spirit types', () => {
-    const bindings = {
+    const affinities = {
       COMBAT: 'Fire Spirit',
       DETECTION: 'Fire Spirit',
       HEALTH: 'Water Spirit',
       ILLUSION: 'Fire Spirit',
       MANIPULATION: 'Water Spirit',
     };
-    expect(getAvailableBindings(bindings)).toEqual([
+    expect(getAvailableAffinities(affinities)).toEqual([
       'Fire Spirit',
       'Water Spirit',
     ]);
   });
 
   it('trims whitespace-only entries', () => {
-    const bindings = {
+    const affinities = {
       COMBAT: '  ',
       DETECTION: 'Air Spirit',
       HEALTH: '',
       ILLUSION: '  ',
       MANIPULATION: 'Earth Spirit',
     };
-    expect(getAvailableBindings(bindings)).toEqual([
+    expect(getAvailableAffinities(affinities)).toEqual([
       'Air Spirit',
       'Earth Spirit',
     ]);
   });
 
-  it('handles null/undefined bindings gracefully', () => {
-    expect(getAvailableBindings(null)).toEqual([]);
-    expect(getAvailableBindings(undefined)).toEqual([]);
+  it('handles null/undefined affinities gracefully', () => {
+    expect(getAvailableAffinities(null)).toEqual([]);
+    expect(getAvailableAffinities(undefined)).toEqual([]);
   });
 
   it('returns all 5 when fully configured', () => {
-    const bindings = {
+    const affinities = {
       COMBAT: 'Fire',
       DETECTION: 'Air',
       HEALTH: 'Water',
       ILLUSION: 'Man',
       MANIPULATION: 'Earth',
     };
-    expect(getAvailableBindings(bindings)).toEqual([
+    expect(getAvailableAffinities(affinities)).toEqual([
       'Fire',
       'Air',
       'Water',
@@ -114,18 +114,16 @@ describe('clampForce', () => {
 });
 
 describe('calculateSummoningDrain', () => {
-  it('returns 2 × spirit hits', () => {
-    expect(calculateSummoningDrain(3)).toBe(6);
-    expect(calculateSummoningDrain(5)).toBe(10);
-    expect(calculateSummoningDrain(10)).toBe(20);
+  it.each([
+    [3, 6],
+    [5, 10],
+    [10, 20],
+    [2, 4],
+  ])('returns 2 × %i hits = %i', (hits, expected) => {
+    expect(calculateSummoningDrain(hits)).toBe(expected);
   });
 
-  it('has a minimum drain of 2', () => {
-    expect(calculateSummoningDrain(0)).toBe(2);
-    expect(calculateSummoningDrain(1)).toBe(2);
-  });
-
-  it('returns 4 for 2 hits', () => {
-    expect(calculateSummoningDrain(2)).toBe(4);
+  it.each([0, 1])('has a minimum drain of 2 (hits=%i)', (hits) => {
+    expect(calculateSummoningDrain(hits)).toBe(2);
   });
 });

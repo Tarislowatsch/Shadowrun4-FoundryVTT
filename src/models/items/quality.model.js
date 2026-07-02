@@ -1,21 +1,21 @@
+import { descriptionFields } from '@models/shared';
+
 const fields = foundry.data.fields;
 
 /**
  * @typedef {object} SR4QualitySystem
- * @property {string} description    - Rich-text description.
- * @property {string} notes          - Free-form notes.
- * @property {'Positive'|'Negative'} category - Quality polarity.
- * @property {number} bp             - Build point / karma cost.
- * @property {number|null} limit     - Maximum number of times the quality may be taken.
- * @property {string} source         - Rulebook reference.
+ * @property {string} description
+ * @property {string} notes
+ * @property {'Positive'|'Negative'} category
+ * @property {number} bp
+ * @property {number|null} limit
+ * @property {string} source
  */
 
-/** DataModel for qualities (type: "Quality"). */
 export class SR4QualityData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      description: new fields.HTMLField({ initial: '' }),
-      notes: new fields.StringField({ initial: '' }),
+      ...descriptionFields(),
       category: new fields.StringField({
         initial: 'Positive',
         choices: ['Positive', 'Negative'],
@@ -27,7 +27,6 @@ export class SR4QualityData extends foundry.abstract.TypeDataModel {
         nullable: true,
         integer: true,
       }),
-      source: new fields.StringField({ initial: '' }),
     };
   }
 }

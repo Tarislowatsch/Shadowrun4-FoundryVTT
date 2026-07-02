@@ -1,9 +1,5 @@
-import {
-  ATTRIBUTE_ABBR_TO_KEY,
-  parseNumber,
-  sourceOf,
-  upper,
-} from './helpers.js';
+import { englishOr, parseNumber, sourceOf, upper } from './helpers.js';
+import { ATTRIBUTE_ABBR_TO_KEY } from './constants.js';
 
 /** @type {Array<[string, string]>} [xmlAbbr, metatypeModelKey] */
 const LIMIT_ATTR_MAP = [
@@ -198,9 +194,7 @@ export function mapCharacterSystem(character) {
  */
 export function mapCharacterSkill(record) {
   const knowledge = parseBool(record.knowledge);
-  const rawCategory = String(record.skillcategory ?? '')
-    .trim()
-    .toLowerCase();
+  const rawCategory = englishOr(record, 'skillcategory').toLowerCase();
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Skill',
     type: 'Skill',

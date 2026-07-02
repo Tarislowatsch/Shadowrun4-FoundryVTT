@@ -1,11 +1,12 @@
-import { parseNumber, sourceOf } from './helpers.js';
+import { englishOr, parseNumber, sourceOf } from './helpers.js';
 
 /**
  * @param {Record<string, string | string[]>} record
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapQuality(record) {
-  const category = String(record.qualitytype ?? record.category ?? '').trim();
+  const category =
+    englishOr(record, 'qualitytype') || englishOr(record, 'category');
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Quality',
     type: 'Quality',

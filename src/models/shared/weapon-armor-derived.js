@@ -10,7 +10,7 @@ export const AP_HALF_TYPES = new Set([
 const EXTERNAL_MOUNTS = new Set(['top', 'barrel', 'under']);
 
 /**
- * @param {any[]} mods - resolved mod system-data-bearing objects (each must have `.system`)
+ * @param {any[]} mods
  */
 export function hasExternalMountConflict(mods) {
   const seen = new Set();
@@ -46,7 +46,7 @@ export function sumModField(mods, key) {
 }
 
 /**
- * @param {any[]} mods - resolved mods (each `{ system: {...}, cost?, ... }`)
+ * @param {any[]} mods
  * @param {number} [baseCost]
  */
 function computeTotalCost(mods, baseCost) {
@@ -146,10 +146,8 @@ export function computeMeleeWeaponDerived(
 }
 
 /**
- * Computes effective stats for a piece of armor.
- *
- * @param {object} system - armor system data (ballisticarmor, impactarmor, capacity, cost, ...)
- * @param {any[]} mods - resolved installed Armor Mod items (each with `.system`)
+ * @param {object} system
+ * @param {any[]} mods
  * @returns {{
  *   effectiveBallistic: number, effectiveImpact: number, maxCapacity: number,
  *   usedCapacity: number, capacityWarning: boolean, totalCost: number,

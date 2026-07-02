@@ -421,7 +421,11 @@
       "special": "Spezial"
     },
     "ui": {
-      "createTemplate": "Template erstellen"
+      "createTemplate": "Template erstellen",
+      "linkedActorNotFound": "Verknüpfter Akteur wurde nicht gefunden; er wurde möglicherweise gelöscht.",
+      "openSheet": "Charakterbogen öffnen",
+      "bindActor": "Binden",
+      "rebindActor": "Erneut binden"
     },
     "tab": {
       "actions": "Aktionen",

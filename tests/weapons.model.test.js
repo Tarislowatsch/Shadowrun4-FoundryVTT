@@ -268,43 +268,58 @@ function prepareMeleeWeapon(weaponFields = {}, actorStats = null) {
 }
 
 describe('SR4MeleeWeaponData.prepareDerivedData', () => {
-  it('adds ceil(STR/2) to weapon damage', () => {
-    const w = prepareMeleeWeapon({ damage: 4 }, { strength: 5 });
-    expect(w.effectiveDamage).toBe(7); // 4 + ceil(5/2)=3
-  });
-
-  it('handles even Strength (no rounding)', () => {
-    const w = prepareMeleeWeapon({ damage: 6 }, { strength: 4 });
-    expect(w.effectiveDamage).toBe(8); // 6 + 2
-  });
-
-  it('adds the melee damage modifier on top of the STR bonus', () => {
-    const w = prepareMeleeWeapon(
+  it.each([
+    [
+      'adds ceil(STR/2) to weapon damage',
       { damage: 4 },
-      { strength: 5, meleeDamageModifier: 2 }
-    );
-    expect(w.effectiveDamage).toBe(9); // 4 + 3 + 2
-  });
-
-  it('skips the STR bonus when noStrengthBonus is set', () => {
-    const w = prepareMeleeWeapon(
+      { strength: 5 },
+      7, // 4 + ceil(5/2)=3
+    ],
+    [
+      'handles even Strength (no rounding)',
+      { damage: 6 },
+      { strength: 4 },
+      8, // 6 + 2
+    ],
+    [
+      'adds the melee damage modifier on top of the STR bonus',
+      { damage: 4 },
+      { strength: 5, meleeDamageModifier: 2 },
+      9, // 4 + 3 + 2
+    ],
+    [
+      'skips the STR bonus when noStrengthBonus is set',
       { damage: 4, noStrengthBonus: true },
-      { strength: 5 }
-    );
-    expect(w.effectiveDamage).toBe(4); // STR bonus skipped
-  });
-
-  it('still applies the modifier when noStrengthBonus is set', () => {
-    const w = prepareMeleeWeapon(
+      { strength: 5 },
+      4, // STR bonus skipped
+    ],
+    [
+      'still applies the modifier when noStrengthBonus is set',
       { damage: 4, noStrengthBonus: true },
-      { strength: 5, meleeDamageModifier: 2 }
-    );
-    expect(w.effectiveDamage).toBe(6); // only the +2 modifier
-  });
-
-  it('falls back to plain weapon damage for an unowned item', () => {
-    const w = prepareMeleeWeapon({ damage: 4 }, null);
-    expect(w.effectiveDamage).toBe(4);
+      { strength: 5, meleeDamageModifier: 2 },
+      6, // only the +2 modifier
+    ],
+    [
+      'falls back to plain weapon damage for an unowned item',
+      { damage: 4 },
+      null,
+      4,
+    ],
+    [
+      'adds unarmedDamageModifier for unarmed weapons',
+      { damage: 4, attackSkill: 'unarmedcombat' },
+      { strength: 5, unarmedDamageModifier: 3 },
+      10, // 4 + 3(STR) + 3(unarmed)
+    ],
+    [
+      'ignores unarmedDamageModifier for non-unarmed weapons',
+      { damage: 4, attackSkill: 'blades' },
+      { strength: 5, unarmedDamageModifier: 3 },
+      7, // 4 + 3(STR), no unarmed mod
+    ],
+  ])('%s', (_label, weaponFields, actorStats, expectedDamage) => {
+    const w = prepareMeleeWeapon(weaponFields, actorStats);
+    expect(w.effectiveDamage).toBe(expectedDamage);
   });
 
   it('derives apHalf / armorType from the damage type', () => {
@@ -315,21 +330,5 @@ describe('SR4MeleeWeaponData.prepareDerivedData', () => {
     expect(w.effectiveDamageType).toBe('ELECTRICITY');
     expect(w.effectiveApHalf).toBe(true);
     expect(w.effectiveArmorType).toBe('impact');
-  });
-
-  it('adds unarmedDamageModifier for unarmed weapons', () => {
-    const w = prepareMeleeWeapon(
-      { damage: 4, attackSkill: 'unarmedcombat' },
-      { strength: 5, unarmedDamageModifier: 3 }
-    );
-    expect(w.effectiveDamage).toBe(10); // 4 + 3(STR) + 3(unarmed)
-  });
-
-  it('ignores unarmedDamageModifier for non-unarmed weapons', () => {
-    const w = prepareMeleeWeapon(
-      { damage: 4, attackSkill: 'blades' },
-      { strength: 5, unarmedDamageModifier: 3 }
-    );
-    expect(w.effectiveDamage).toBe(7); // 4 + 3(STR), no unarmed mod
   });
 });

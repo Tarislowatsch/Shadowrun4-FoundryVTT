@@ -36,34 +36,32 @@ export class SR4SkillData extends foundry.abstract.TypeDataModel {
 }
 
 export const ActiveSkillCategories = Object.freeze({
-  /** @type {string} Localisation key for the Magic skill category. */
+  /** @type {string} */
   MAGIC: 'sr4.skills.categories.magic',
 
-  /** @type {string} Localisation key for the Matrix skill category. */
+  /** @type {string} */
   MATRIX: 'sr4.skills.categories.matrix',
 
-  /** @type {string} Localisation key for the Miscellaneous skill category. */
+  /** @type {string} */
   MISC: 'sr4.skills.categories.misc',
 
-  /** @type {string} Localisation key for the Physical skill category. */
+  /** @type {string} */
   PHYSICAL: 'sr4.skills.categories.physical',
 
-  /** @type {string} Localisation key for the Resonance skill category. */
+  /** @type {string} */
   RESONANCE: 'sr4.skills.categories.resonance',
 
-  /** @type {string} Localisation key for the Social skill category. */
+  /** @type {string} */
   SOCIAL: 'sr4.skills.categories.social',
 
-  /** @type {string} Localisation key for the Technical skill category. */
+  /** @type {string} */
   TECHNICAL: 'sr4.skills.categories.technical',
 
-  /** @type {string} Localisation key for the Vehicle skill category. */
+  /** @type {string} */
   VEHICLE: 'sr4.skills.categories.vehicle',
 });
 
 /**
- * Maps camelCase key (used in system.modifiers.skillGroupBonuses) to the
- * group string stored on skill items (system.group).
  * @type {Readonly<Record<string, string>>}
  */
 export const SR4SkillGroupKeys = Object.freeze({
@@ -88,18 +86,18 @@ export const SR4SkillGroupByName = Object.freeze(
 );
 
 export const KnowledgeSkillCategories = Object.freeze({
-  /** @type {string} Localisation key for the Academic knowledge skill category. */
+  /** @type {string} */
   ACADEMIC: 'sr4.skills.categories.academic',
 
-  /** @type {string} Localisation key for the Hobby knowledge skill category. */
+  /** @type {string} */
   HOBBY: 'sr4.skills.categories.hobby',
 
-  /** @type {string} Localisation key for the Language skill category. */
+  /** @type {string} */
   LANGUAGE: 'sr4.skills.categories.language',
 
-  /** @type {string} Localisation key for the Miscellaneous knowledge skill category. */
+  /** @type {string} */
   MISC: 'sr4.skills.categories.misc',
 
-  /** @type {string} Localisation key for the Street knowledge skill category. */
+  /** @type {string} */
   STREET: 'sr4.skills.categories.street',
 });

@@ -1,5 +1,5 @@
 <div class="sr4-character-importer" style="display:flex; flex-direction:column; padding:8px; box-sizing:border-box; gap:8px;">
-  <p style="margin:0; opacity:0.8;">{{localize "sr4.characterImporter.hint"}}</p>
+  <p style="margin:0; opacity:0.8;">{{hint}}</p>
 
   <label style="display:flex; flex-direction:column; gap:4px;">
     <strong>{{localize "sr4.characterImporter.upload"}}</strong>
@@ -32,7 +32,7 @@
 
   <footer class="sheet-footer flexrow" style="flex-shrink:0;">
     <button type="button" data-action="import" {{#unless hasData}}disabled{{/unless}}>
-      <i class="fas fa-user-plus"></i> {{localize "sr4.characterImporter.import"}}
+      <i class="fas fa-user-plus"></i> {{importLabel}}
     </button>
   </footer>
 </div>

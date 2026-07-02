@@ -419,7 +419,11 @@
       "special": "Special"
     },
     "ui": {
-      "createTemplate": "Create Template"
+      "createTemplate": "Create Template",
+      "linkedActorNotFound": "Linked actor could not be found; it may have been deleted.",
+      "openSheet": "Open Sheet",
+      "bindActor": "Bind",
+      "rebindActor": "Rebind"
     },
     "tab": {
       "actions": "Actions",

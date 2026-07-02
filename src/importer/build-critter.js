@@ -1,19 +1,20 @@
 import { resolveAttribute } from '@utils/force-formula.js';
-import { ATTRIBUTE_MAP } from '@importer/mappers/helpers.js';
+import { ATTRIBUTE_MAP } from '@importer/mappers/constants.js';
 
 /**
  * @param {Record<string, { value: number, formula: string }>} attributes
  * @param {number} force
+ * @param {number} [fallback=0] value used for attributes missing from `attributes`
  * @returns {Record<string, number>}
  */
-function resolveSheetStats(attributes, force) {
+function resolveSheetStats(attributes, force, fallback = 0) {
   /** @type {Record<string, number>} */
   const stats = {};
   for (const [, attrKey] of ATTRIBUTE_MAP) {
     if (attrKey === 'initiative' || attrKey === 'essence') continue;
     const statKey = attrKey.toUpperCase();
     const attr = attributes[attrKey];
-    stats[statKey] = attr ? resolveAttribute(attr, force) : 0;
+    stats[statKey] = attr ? resolveAttribute(attr, force) : fallback;
   }
   const ini = attributes.initiative;
   stats.INITIATIVE = ini
@@ -25,6 +26,16 @@ function resolveSheetStats(attributes, force) {
   stats.ASTRALINITIATIVE = stats.INTUITION * 2;
   stats.MATRIXINITIATIVE = stats.INTUITION + stats.REACTION;
   return stats;
+}
+
+/**
+ * Flat force-scaled sheetStats for a summoned spirit/sprite with no matching
+ * CritterTemplate to derive attributes from.
+ * @param {number} force
+ * @returns {Record<string, number>}
+ */
+export function buildDefaultSheetStats(force) {
+  return resolveSheetStats({}, force, force);
 }
 
 /**

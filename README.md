@@ -79,7 +79,9 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 > **Unstable.** Results are not perfect yet — review the imported actor before play.
 
-A GM tool, reachable from the button in the **Actor Directory**. Point it at a single character XML export — the kind any decent *chummer* keeps on hand — and it creates a full `character` actor: attributes, skills (with ratings), magic, qualities, gear, weapons, armor, spells, powers, implants, and portrait.
+A GM tool, reachable from the button in the **Actor Directory**. Point it at a single character XML export — the kind any decent *chummer* keeps on hand — and it creates a full `character` actor: attributes, skills (with ratings), magic, qualities, gear, weapons, armor, spells, powers, implants, and portrait. Also imports the character's summoned spirits/sprites and rigged vehicles as their own linked actors.
+
+**Supported export languages:** English and German are verified. Category/type fields (weapon, gear, armor, quality, knowledge-skill category, implant grade, ammo sub-type) are resolved via Chummer's English (`_english`) sibling field when the export provides one, so non-English exports work correctly for those regardless of language. Spells are a special case — Chummer's data files don't emit an English sibling for spell category/duration/range at all — so spell import has a dedicated German fallback and will only resolve correctly for English or German exports; other languages may import spells with an incorrect category or duration. Display-only text (character name, metatype, vehicle type) always keeps the exported language as-is.
 
 ## XML Importer
 

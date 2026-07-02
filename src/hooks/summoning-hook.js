@@ -41,6 +41,21 @@ export class SummoningHook {
       return;
     }
 
+    if (
+      data.action === 'triggerSpiritBindResist' ||
+      data.action === 'triggerSpriteBindResist'
+    ) {
+      const { summonerId, force, spiritType, entityType } = data.payload ?? {};
+      await openSpiritResistDialog(
+        force,
+        spiritType,
+        entityType,
+        summonerId,
+        'bind'
+      );
+      return;
+    }
+
     if (data.action === 'createSummonedEntity') {
       await SummoningFlow.createEntity(data.payload);
     }

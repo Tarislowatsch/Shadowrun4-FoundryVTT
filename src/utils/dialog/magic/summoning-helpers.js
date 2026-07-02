@@ -1,6 +1,6 @@
 import { clamp, resistanceValueFromHits } from '@utils/math.js';
 
-export const BINDING_CATEGORIES = [
+export const SPIRIT_AFFINITY_CATEGORIES = [
   'COMBAT',
   'DETECTION',
   'HEALTH',
@@ -9,13 +9,13 @@ export const BINDING_CATEGORIES = [
 ];
 
 /**
- * @param {Record<string, string>} bindings
+ * @param {Record<string, string>} affinities
  * @returns {string[]}
  */
-export function getAvailableBindings(bindings) {
+export function getAvailableAffinities(affinities) {
   return [
     ...new Set(
-      BINDING_CATEGORIES.map((key) => bindings?.[key]).filter(
+      SPIRIT_AFFINITY_CATEGORIES.map((key) => affinities?.[key]).filter(
         (v) => v && v.trim().length > 0
       )
     ),

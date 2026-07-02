@@ -104,32 +104,22 @@ describe('Ranged weapon with mods', () => {
     expect(w.effectiveSmartlink).toBe(true);
   });
 
-  it('no modSlotWarning for internal mods', () => {
-    const mods = [
-      makeMod('m1', { mount: 'internal' }),
-      makeMod('m2', { mount: 'internal' }),
-    ];
+  it.each([
+    ['no modSlotWarning for internal mods', ['internal', 'internal'], false],
+    [
+      'modSlotWarning when same external mount used twice',
+      ['top', 'top'],
+      true,
+    ],
+    [
+      'no warning for different external mounts',
+      ['top', 'barrel', 'under'],
+      false,
+    ],
+  ])('%s', (_label, mounts, expected) => {
+    const mods = mounts.map((mount, i) => makeMod(`m${i}`, { mount }));
     const w = prepareRanged({}, mods);
-    expect(w.modSlotWarning).toBe(false);
-  });
-
-  it('sets modSlotWarning when same external mount used twice', () => {
-    const mods = [
-      makeMod('m1', { mount: 'top' }),
-      makeMod('m2', { mount: 'top' }),
-    ];
-    const w = prepareRanged({}, mods);
-    expect(w.modSlotWarning).toBe(true);
-  });
-
-  it('no warning for different external mounts', () => {
-    const mods = [
-      makeMod('m1', { mount: 'top' }),
-      makeMod('m2', { mount: 'barrel' }),
-      makeMod('m3', { mount: 'under' }),
-    ];
-    const w = prepareRanged({}, mods);
-    expect(w.modSlotWarning).toBe(false);
+    expect(w.modSlotWarning).toBe(expected);
   });
 
   it('computes totalCost from weapon + mods', () => {
@@ -147,22 +137,19 @@ describe('Ranged weapon with mods', () => {
     expect(w.usedModSlots).toBe(5);
   });
 
-  it('sets modSlotWarning when internal slots exceed modSlots capacity', () => {
-    const mods = [
-      makeMod('m1', { mount: 'internal', slotCost: 4 }),
-      makeMod('m2', { mount: 'internal', slotCost: 4 }),
-    ];
+  it.each([
+    [
+      'modSlotWarning when internal slots exceed modSlots capacity',
+      [4, 4],
+      true,
+    ],
+    ['no warning when internal slots within modSlots capacity', [2, 3], false],
+  ])('sets %s', (_label, slotCosts, expected) => {
+    const mods = slotCosts.map((slotCost, i) =>
+      makeMod(`m${i}`, { mount: 'internal', slotCost })
+    );
     const w = prepareRanged({ modSlots: 6 }, mods);
-    expect(w.modSlotWarning).toBe(true);
-  });
-
-  it('no warning when internal slots within modSlots capacity', () => {
-    const mods = [
-      makeMod('m1', { mount: 'internal', slotCost: 2 }),
-      makeMod('m2', { mount: 'internal', slotCost: 3 }),
-    ];
-    const w = prepareRanged({ modSlots: 6 }, mods);
-    expect(w.modSlotWarning).toBe(false);
+    expect(w.modSlotWarning).toBe(expected);
   });
 
   it('does not count external mods towards usedModSlots', () => {

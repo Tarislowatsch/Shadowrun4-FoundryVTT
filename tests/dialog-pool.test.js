@@ -17,20 +17,13 @@ function makeParams(overrides = {}) {
 }
 
 describe('determineBoni', () => {
-  it('returns 0 with no bonuses active', () => {
-    expect(determineBoni(makeParams())).toBe(0);
-  });
-
-  it('adds +2 for specialization', () => {
-    expect(determineBoni(makeParams({ specialization: true }))).toBe(2);
-  });
-
-  it('adds +2 for smartlink', () => {
-    expect(determineBoni(makeParams({ smartlink: true }))).toBe(2);
-  });
-
-  it('adds edge dice when explode is true', () => {
-    expect(determineBoni(makeParams({ explode: true, maxEdge: 4 }))).toBe(4);
+  it.each([
+    ['no bonuses active', {}, 0],
+    ['specialization', { specialization: true }, 2],
+    ['smartlink', { smartlink: true }, 2],
+    ['explode', { explode: true, maxEdge: 4 }, 4],
+  ])('returns %s', (_label, overrides, expected) => {
+    expect(determineBoni(makeParams(overrides))).toBe(expected);
   });
 
   it('stacks all bonuses', () => {

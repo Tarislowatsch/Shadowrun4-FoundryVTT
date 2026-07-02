@@ -4,11 +4,13 @@ import {
   parseQualities,
   parseBonus,
   parsePowerList,
+} from './helpers.js';
+import {
   critterActorType,
   ATTRIBUTE_MAP,
   FORCE_SPIRIT_CATEGORIES,
   FORCE_SPRITE_CATEGORIES,
-} from './helpers.js';
+} from './constants.js';
 import { isForceFormula } from '@utils/force-formula.js';
 
 /**

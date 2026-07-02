@@ -122,11 +122,11 @@
   </div>
 
   {{#if system.magic.magician}}
-  {{> entity-bindings
-    sectionLabel="sr4.magic.spiritBindings.label"
-    categories=spiritBindingCategories
-    idPrefix="spiritBinding"
-    namePrefix="system.magic.spiritBindings"
+  {{> entity-affinities
+    sectionLabel="sr4.magic.spiritAffinities.label"
+    categories=spiritAffinityCategories
+    idPrefix="spiritAffinity"
+    namePrefix="system.magic.spiritAffinities"
     btnAction="summonSpirit"
     btnIcon="fas fa-ghost"
     btnLabel="sr4.magic.summon"
@@ -135,6 +135,18 @@
     btn2Label="sr4.magic.summonWatcher"
     createAction="createSpiritTemplate"
   }}
+
+  {{#> collapsible-section title=(localize "sr4.magic.summonedSpirits")}}
+    {{#if summonedSpirits.length}}
+    <ul class="item-list linked-actor-list">
+      {{#each summonedSpirits as |linked|}}
+      {{> "linked-actor-card" linked}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize "sr4.spirit.noSpirits"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
 
   {{#> collapsible-section title=(localize "sr4.magic.spells") btnAction="createItem" btnItemType="Spell" btnTooltip="sr4.magic.spells"}}
     {{#if spells}}

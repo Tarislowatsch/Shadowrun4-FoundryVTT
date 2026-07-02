@@ -1,4 +1,5 @@
-import { ATTRIBUTE_ABBR_TO_KEY, sourceOf, upper } from './helpers.js';
+import { sourceOf, upper } from './helpers.js';
+import { ATTRIBUTE_ABBR_TO_KEY } from './constants.js';
 
 /**
  * @param {Record<string, string | string[]>} record

@@ -31,6 +31,7 @@ import {
 import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
 import { ThreadingFlow } from '@flows/threading-flow.js';
+import { BindingFlow } from '@flows/binding-flow.js';
 
 /**
  * @typedef {object} SR4Global
@@ -44,6 +45,7 @@ import { ThreadingFlow } from '@flows/threading-flow.js';
  * @property {typeof SpellcastingFlow} SpellcastingFlow
  * @property {typeof SummoningFlow} SummoningFlow
  * @property {typeof ThreadingFlow} ThreadingFlow
+ * @property {typeof BindingFlow} BindingFlow
  * @property {typeof reloadWeapon} reloadWeapon
  */
 globalThis.sr4 = {
@@ -57,6 +59,7 @@ globalThis.sr4 = {
   SpellcastingFlow,
   SummoningFlow,
   ThreadingFlow,
+  BindingFlow,
   reloadWeapon,
 };
 

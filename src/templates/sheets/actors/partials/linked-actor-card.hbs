@@ -1,0 +1,37 @@
+<div class="item-card linked-actor-card{{#if bound}} bound{{/if}}" data-actor-uuid="{{uuid}}">
+  <div class="item-header item-row">
+    <img class="linked-actor-img" src="{{img}}" alt="{{name}}" />
+    <span class="item-name">{{name}}</span>
+    {{#if bound}}
+    <span class="badge bound-badge" data-tooltip="{{localize 'sr4.magic.bound'}}">{{localize "sr4.magic.bound"}}</span>
+    {{/if}}
+    <div class="item-actions">
+      {{#if (or (eq entityType "spirit") (eq entityType "sprite"))}}
+      <button type="button" class="linked-actor-bind"
+        data-action="bindLinkedActor"
+        data-uuid="{{uuid}}"
+        {{#if bound}}
+        data-tooltip="{{localize 'sr4.ui.rebindActor'}}"
+        {{else}}
+        data-tooltip="{{localize 'sr4.ui.bindActor'}}"
+        {{/if}}>
+        <i class="fas fa-link"></i>
+      </button>
+      {{/if}}
+      <button type="button" class="linked-actor-open"
+        data-action="openLinkedActor"
+        data-uuid="{{uuid}}"
+        data-tooltip="{{localize 'sr4.ui.openSheet'}}">
+        <i class="fas fa-external-link-alt"></i>
+      </button>
+    </div>
+  </div>
+  <div class="item-body">
+    {{#each stats as |stat|}}
+    <span class="item-property">
+      <strong>{{stat.label}}</strong>
+      {{stat.value}}
+    </span>
+    {{/each}}
+  </div>
+</div>

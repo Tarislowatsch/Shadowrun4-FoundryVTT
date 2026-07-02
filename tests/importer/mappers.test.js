@@ -295,6 +295,14 @@ describe('weapon mappers', () => {
   });
 });
 
+describe('ranged weapon mapper fallback', () => {
+  it('falls back to NONE for unknown categories', () => {
+    expect(
+      mapRangedWeapon({ name: 'X', category: 'Mystery' }).system.attackSkill
+    ).toBe('NONE');
+  });
+});
+
 describe('gear mapper', () => {
   it('maps plain gear as Item', () => {
     const item = mapGear({ name: 'Medkit', category: 'Medical', rating: '3' });
@@ -496,35 +504,29 @@ describe('isAmmunition', () => {
 });
 
 describe('commlink mapper', () => {
-  it('maps commlink with matrix stats', () => {
-    const item = mapGear({
-      name: 'Meta Link',
-      iscommlink: 'True',
-      response: '1',
-      signal: '2',
-      firewall: '0',
-      system: '0',
-      cost: '100',
-    });
+  it.each([
+    {
+      label: 'maps commlink with matrix stats',
+      input: {
+        name: 'Meta Link',
+        iscommlink: 'True',
+        response: '1',
+        signal: '2',
+        firewall: '0',
+        system: '0',
+        cost: '100',
+      },
+      system: { response: 1, signal: 2, firewall: 0, os: 0, cost: 100 },
+    },
+    {
+      label: 'defaults matrix stats to 1 when fields are missing',
+      input: { name: 'Unknown Link', iscommlink: 'True' },
+      system: { response: 1, signal: 1, firewall: 1, os: 1 },
+    },
+  ])('$label', ({ input, system }) => {
+    const item = mapGear(input);
     expect(item.type).toBe('Commlink');
-    expect(item.system).toMatchObject({
-      response: 1,
-      signal: 2,
-      firewall: 0,
-      os: 0,
-      cost: 100,
-    });
-  });
-
-  it('defaults matrix stats to 1 when fields are missing', () => {
-    const item = mapGear({ name: 'Unknown Link', iscommlink: 'True' });
-    expect(item.type).toBe('Commlink');
-    expect(item.system).toMatchObject({
-      response: 1,
-      signal: 1,
-      firewall: 1,
-      os: 1,
-    });
+    expect(item.system).toMatchObject(system);
   });
 
   it('keeps non-commlink gear as Item', () => {
@@ -694,42 +696,42 @@ describe('parseMount', () => {
 });
 
 describe('weapon mod mapper', () => {
-  it('maps an accessory with mount and recoil compensation', () => {
-    const item = mapWeaponMod({
-      name: 'Bipod',
-      mount: 'Under',
-      rc: '(2)',
-      avail: '2',
-      cost: '100',
-      source: 'SR4',
-      page: '322',
-    });
+  it.each([
+    {
+      label: 'accessory with mount and recoil compensation',
+      input: {
+        name: 'Bipod',
+        mount: 'Under',
+        rc: '(2)',
+        avail: '2',
+        cost: '100',
+        source: 'SR4',
+        page: '322',
+      },
+      system: { mount: 'under', rcBonus: 2, slotCost: 1, cost: 100, avail: 2 },
+    },
+    {
+      label: 'weapon mod with slots and category',
+      input: {
+        name: 'Electronic Firing',
+        category: 'Weapon Mod',
+        rating: '0',
+        slots: '2',
+        rc: '1',
+        avail: '10R',
+        cost: '1000',
+      },
+      system: {
+        mount: 'internal',
+        rcBonus: 1,
+        slotCost: 2,
+        availability: '10R',
+      },
+    },
+  ])('maps $label', ({ input, system }) => {
+    const item = mapWeaponMod(input);
     expect(item.type).toBe('Weapon Mod');
-    expect(item.system).toMatchObject({
-      mount: 'under',
-      rcBonus: 2,
-      slotCost: 1,
-      cost: 100,
-      avail: 2,
-    });
-  });
-
-  it('maps a weapon mod with slots and category', () => {
-    const item = mapWeaponMod({
-      name: 'Electronic Firing',
-      category: 'Weapon Mod',
-      rating: '0',
-      slots: '2',
-      rc: '1',
-      avail: '10R',
-      cost: '1000',
-    });
-    expect(item.system).toMatchObject({
-      mount: 'internal',
-      rcBonus: 1,
-      slotCost: 2,
-      availability: '10R',
-    });
+    expect(item.system).toMatchObject(system);
   });
 
   it('flags smartgun accessories as granting smartlink', () => {
@@ -741,66 +743,65 @@ describe('weapon mod mapper', () => {
 });
 
 describe('mod dispatch', () => {
-  it('routes armor mods by armorcapacity', () => {
-    const item = mapMod({
-      name: 'Auto-Injector',
-      category: 'General',
-      b: '0',
-      i: '0',
-      maxrating: '1',
-      armorcapacity: '[2]',
-      avail: '4',
-      cost: '1500',
-    });
-    expect(item.type).toBe('Armor Mod');
-    expect(item.system).toMatchObject({
-      capacityCost: 2,
-      ballisticBonus: 0,
-      impactBonus: 0,
-      rating: 1,
-    });
-  });
-
-  it('routes "Weapon Mod" category to weapon mods', () => {
-    const item = mapMod({
-      name: 'Gas-Vent 3 System',
-      category: 'Weapon Mod',
-      slots: '3',
-      rc: '3',
-      avail: '9F',
-      cost: '600',
-    });
-    expect(item.type).toBe('Weapon Mod');
-    expect(item.system.rcBonus).toBe(3);
-  });
-
-  it('routes remaining mods to vehicle mods and resolves rating bonuses', () => {
-    const item = mapMod({
-      name: 'Armor, Normal',
-      category: 'All',
-      rating: '20',
-      slots: '1',
-      avail: '6R',
-      cost: 'Rating * 200',
-      bonus: { armor: 'Rating' },
-    });
-    expect(item.type).toBe('Vehicle Mod');
-    expect(item.system).toMatchObject({
-      armorBonus: 20,
-      slotCost: 1,
-      rating: 20,
-    });
-  });
-
-  it('reads a flat vehicle handling bonus from the bonus block', () => {
-    const item = mapMod({
-      name: 'Off-Road Suspension',
-      category: 'Standard',
-      rating: '0',
-      slots: '1',
-      bonus: { handling: '1' },
-    });
-    expect(item.type).toBe('Vehicle Mod');
-    expect(item.system.handlingBonus).toBe(1);
+  it.each([
+    {
+      label: 'routes armor mods by armorcapacity',
+      input: {
+        name: 'Auto-Injector',
+        category: 'General',
+        b: '0',
+        i: '0',
+        maxrating: '1',
+        armorcapacity: '[2]',
+        avail: '4',
+        cost: '1500',
+      },
+      type: 'Armor Mod',
+      system: { capacityCost: 2, ballisticBonus: 0, impactBonus: 0, rating: 1 },
+    },
+    {
+      label: 'routes "Weapon Mod" category to weapon mods',
+      input: {
+        name: 'Gas-Vent 3 System',
+        category: 'Weapon Mod',
+        slots: '3',
+        rc: '3',
+        avail: '9F',
+        cost: '600',
+      },
+      type: 'Weapon Mod',
+      system: { rcBonus: 3 },
+    },
+    {
+      label:
+        'routes remaining mods to vehicle mods and resolves rating bonuses',
+      input: {
+        name: 'Armor, Normal',
+        category: 'All',
+        rating: '20',
+        slots: '1',
+        avail: '6R',
+        cost: 'Rating * 200',
+        bonus: { armor: 'Rating' },
+      },
+      type: 'Vehicle Mod',
+      system: { armorBonus: 20, slotCost: 1, rating: 20 },
+    },
+    {
+      label: 'reads a flat vehicle handling bonus from the bonus block',
+      input: {
+        name: 'Off-Road Suspension',
+        category: 'Standard',
+        rating: '0',
+        slots: '1',
+        bonus: { handling: '1' },
+      },
+      type: 'Vehicle Mod',
+      system: { handlingBonus: 1 },
+    },
+  ])('$label', ({ input, type, system }) => {
+    const item = mapMod(input);
+    expect(item.type).toBe(type);
+    expect(item.system).toMatchObject(system);
   });
 });

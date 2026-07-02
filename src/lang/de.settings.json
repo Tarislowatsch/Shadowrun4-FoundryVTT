@@ -6,6 +6,7 @@
       "hint": "Lade eine einzelne Chummer-Charakter-XML hoch, um einen neuen Charakter-Actor zu erstellen.",
       "import": "Charakter importieren",
       "itemCount": "Gegenstände",
+      "linkedActorError": "Geister/Sprites/Fahrzeuge für „{name}“ konnten nicht importiert werden: {error}",
       "parseError": "„{file}“ konnte nicht gelesen werden: {error}",
       "preview": "Vorschau",
       "skillCount": "Fertigkeiten",
@@ -13,6 +14,11 @@
       "modLinkError": "Waffenmodifikationen für „{name}“ konnten nicht verknüpft werden. Mods können manuell zugewiesen werden.",
       "success": "Charakter „{name}“ importiert.",
       "title": "Charakter-Importer",
+      "updateButton": "Aus Chummer-XML aktualisieren",
+      "updateHint": "Lade eine Chummer-Charakter-XML hoch, um „{name}“ zu aktualisieren. Vorhandene Gegenstände bleiben erhalten, fehlende werden ergänzt, nicht mehr vorhandene werden entfernt.",
+      "updateSuccess": "Charakter „{name}“ aktualisiert.",
+      "updateTitle": "Charakter aktualisieren",
+      "updateTooltip": "Aus Chummer-XML aktualisieren",
       "upload": "Charakter-XML-Datei"
     },
     "importer": {

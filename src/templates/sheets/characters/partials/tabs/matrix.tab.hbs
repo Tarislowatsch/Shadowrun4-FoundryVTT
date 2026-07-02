@@ -131,16 +131,28 @@
     </tbody>
   </table>
 
-  {{> entity-bindings
-    sectionLabel="sr4.magic.spriteBindings.label"
-    categories=spriteBindingCategories
-    idPrefix="spriteBinding"
-    namePrefix="system.technomancy.spriteBindings"
+  {{> entity-affinities
+    sectionLabel="sr4.magic.spriteAffinities.label"
+    categories=spriteAffinityCategories
+    idPrefix="spriteAffinity"
+    namePrefix="system.technomancy.spriteAffinities"
     btnAction="compileSprite"
     btnIcon="fas fa-microchip"
     btnLabel="sr4.magic.compile"
     createAction="createSpriteTemplate"
   }}
+
+  {{#> collapsible-section title=(localize "sr4.matrix.compiledSprites")}}
+    {{#if summonedSprites.length}}
+    <ul class="item-list linked-actor-list">
+      {{#each summonedSprites as |linked|}}
+      {{> "linked-actor-card" linked}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="empty-list">{{localize "sr4.sprite.noSprites"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
 
   <div class="magic-section-subtitle">
     <h3>{{localize "sr4.matrix.complexForms"}}</h3>

@@ -55,6 +55,27 @@ export function calculateResonanceFadingPool(
 }
 
 /**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {'spirit' | 'sprite'} entityType
+ * @returns {number}
+ */
+export function calculateSummonedEntityDrainPool(actor, entityType) {
+  if (entityType === 'sprite') {
+    const tn = actor.system.technomancy;
+    return calculateResonanceFadingPool(
+      actor,
+      tn?.fadingAttribute ?? 'WILLPOWER',
+      tn?.compilingFadingBonus ?? 0
+    );
+  }
+  return calculateWillpowerResistancePool(
+    actor,
+    actor.system.magic.drainAttribute,
+    actor.system.magic?.summoningDrainBonus ?? 0
+  );
+}
+
+/**
  * @param {HTMLElement} dialog
  * @param {import('@documents/index').SR4Actor} actor
  * @param {number} drainPool - Base drain resistance pool.

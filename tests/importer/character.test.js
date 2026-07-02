@@ -91,8 +91,11 @@ describe('mapCharacterSystem', () => {
     expect(system.conditionMonitor.physical.value).toBe(0);
   });
 
-  it('builds a data-url portrait from mugshot and omits it otherwise', () => {
+  it('omits img when no mugshot is present', () => {
     expect(mapCharacterSystem(baseCharacter).img).toBeNull();
+  });
+
+  it('builds a data-url portrait from mugshot', () => {
     const withMug = mapCharacterSystem({
       ...baseCharacter,
       mugshotbase64: 'QUJD',

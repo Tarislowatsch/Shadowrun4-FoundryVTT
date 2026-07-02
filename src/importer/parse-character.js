@@ -18,6 +18,8 @@ const COLLECTIONS = [
  * @property {Record<string, unknown>} character - Leaf fields plus `attributes`.
  * @property {Record<string, Array<Record<string, unknown>>>} items
  * @property {Array<Record<string, unknown>>} skills
+ * @property {Array<Record<string, unknown>>} spirits - Both spirits and sprites (`type` field distinguishes them).
+ * @property {Array<Record<string, unknown>>} vehicles - Each record has a `_mods` array of `<mods><mod>` children.
  */
 
 /**
@@ -53,7 +55,7 @@ export function extractCharacter(xmlString) {
     const name = attr.querySelector(':scope > name')?.textContent?.trim();
     const total = attr.querySelector(':scope > total')?.textContent?.trim();
     const base = attr.querySelector(':scope > base')?.textContent?.trim();
-    if (name) attributes[name] = total ?? base ?? '0';
+    if (name) attributes[name] = base ?? total ?? '0';
     const min = attr.querySelector(':scope > min')?.textContent?.trim();
     const max = attr.querySelector(':scope > max')?.textContent?.trim();
     const aug = attr.querySelector(':scope > aug')?.textContent?.trim();
@@ -136,5 +138,19 @@ export function extractCharacter(xmlString) {
     ...characterEl.querySelectorAll(':scope > contacts > contact'),
   ].map(elementToRecord);
 
-  return { character, items, skills };
+  const spirits = [
+    ...characterEl.querySelectorAll(':scope > spirits > spirit'),
+  ].map(elementToRecord);
+
+  const vehicles = [
+    ...characterEl.querySelectorAll(':scope > vehicles > vehicle'),
+  ].map((el) => {
+    const record = elementToRecord(el);
+    record._mods = [...el.querySelectorAll(':scope > mods > mod')].map(
+      elementToRecord
+    );
+    return record;
+  });
+
+  return { character, items, skills, spirits, vehicles };
 }

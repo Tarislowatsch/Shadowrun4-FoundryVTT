@@ -44,17 +44,12 @@ describe('SR4ArmorData with mods', () => {
     expect(a.effectiveImpact).toBe(9);
   });
 
-  it('maxCapacity defaults to max(ballistic, impact) when capacity is null', () => {
-    const a = prepareArmor(
-      { ballisticarmor: 8, impactarmor: 6, capacity: null },
-      []
-    );
-    expect(a.maxCapacity).toBe(8);
-  });
-
-  it('maxCapacity uses explicit capacity when set', () => {
-    const a = prepareArmor({ capacity: 12 }, []);
-    expect(a.maxCapacity).toBe(12);
+  it.each([
+    ['defaults to max(ballistic, impact) when capacity is null', null, 8],
+    ['uses explicit capacity when set', 12, 12],
+  ])('maxCapacity %s', (_label, capacity, expected) => {
+    const a = prepareArmor({ ballisticarmor: 8, impactarmor: 6, capacity }, []);
+    expect(a.maxCapacity).toBe(expected);
   });
 
   it('sums usedCapacity from mods', () => {
@@ -66,19 +61,15 @@ describe('SR4ArmorData with mods', () => {
     expect(a.usedCapacity).toBe(5);
   });
 
-  it('sets capacityWarning when usedCapacity > maxCapacity', () => {
-    const mods = [
-      makeMod('m1', { capacityCost: 5 }),
-      makeMod('m2', { capacityCost: 5 }),
-    ];
+  it.each([
+    ['sets capacityWarning when usedCapacity > maxCapacity', [5, 5], true],
+    ['no capacityWarning when within capacity', [2], false],
+  ])('%s', (_label, capacityCosts, expected) => {
+    const mods = capacityCosts.map((capacityCost, i) =>
+      makeMod(`m${i}`, { capacityCost })
+    );
     const a = prepareArmor({ ballisticarmor: 8, impactarmor: 6 }, mods);
-    expect(a.capacityWarning).toBe(true);
-  });
-
-  it('no capacityWarning when within capacity', () => {
-    const mods = [makeMod('m1', { capacityCost: 2 })];
-    const a = prepareArmor({ ballisticarmor: 8, impactarmor: 6 }, mods);
-    expect(a.capacityWarning).toBe(false);
+    expect(a.capacityWarning).toBe(expected);
   });
 
   it('computes totalCost from armor + mods', () => {
