@@ -10,6 +10,14 @@ const calculateSummonedEntityDrainPoolMock = vi.fn();
 vi.mock('@utils/dialog/dialogutility.js', () => ({
   localize: (key) => key,
   rollSkillDialog: (...args) => rollSkillDialogMock(...args),
+  rollForcedSkill: async (actor, skillName, force) => {
+    const numDice = getSkillDicePoolMock(actor, skillName);
+    if (numDice === undefined) return null;
+    return rollSkillDialogMock(actor, skillName, numDice, {
+      titleSuffix: ` (sr4.spell.force: ${force})`,
+      force,
+    });
+  },
 }));
 
 vi.mock('@utils/rolls/roll-edge-decision.js', () => ({

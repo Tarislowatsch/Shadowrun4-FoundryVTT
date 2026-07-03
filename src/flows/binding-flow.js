@@ -1,9 +1,5 @@
-import {
-  awaitOpposedSocketResponse,
-  getGame,
-  getSkillDicePool,
-} from '@utils/index.js';
-import { localize, rollSkillDialog } from '@utils/dialog/dialogutility.js';
+import { awaitOpposedSocketResponse, getGame } from '@utils/index.js';
+import { localize, rollForcedSkill } from '@utils/dialog/dialogutility.js';
 import { offerEdgeRetry } from '@utils/rolls/roll-edge-decision.js';
 import { calculateSummoningDrain } from '@utils/dialog/magic/summoning-helpers.js';
 import {
@@ -39,7 +35,7 @@ export class BindingFlow {
       : targetActor.system.force;
     const skillName = isSprite ? 'registering' : 'binding';
 
-    const rollResult = await BindingFlow._rollBinding(
+    const rollResult = await rollForcedSkill(
       summonerActor,
       skillName,
       forceOrRating
@@ -86,22 +82,6 @@ export class BindingFlow {
       resistHits,
       entityType
     );
-  }
-
-  /**
-   * @param {import('@documents/index').SR4Actor} actor
-   * @param {string} skillName
-   * @param {number} forceOrRating
-   * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null} | null>}
-   */
-  static async _rollBinding(actor, skillName, forceOrRating) {
-    const numDice = getSkillDicePool(actor, skillName);
-    if (numDice === undefined) return null;
-
-    return rollSkillDialog(actor, skillName, numDice, {
-      titleSuffix: ` (${localize('sr4.spell.force')}: ${forceOrRating})`,
-      force: forceOrRating,
-    });
   }
 
   /**

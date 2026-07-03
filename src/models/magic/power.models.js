@@ -33,9 +33,7 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
       }),
       cost: new fields.NumberField({ initial: 0.5, min: 0, nullable: false }),
       geas: new fields.BooleanField({ initial: false }),
-      description: new fields.StringField({ initial: '', blank: true }),
-      notes: new fields.StringField({ initial: '', blank: true }),
-      source: new fields.StringField({ initial: '', blank: true }),
+      ...descriptionFields({ description: 'string' }),
       affects: new fields.ArrayField(new fields.StringField({ blank: false }), {
         initial: [],
       }),

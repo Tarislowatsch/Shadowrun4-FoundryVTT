@@ -51,6 +51,34 @@ export async function awaitEdgeDecision({ messageId, actor, rollResult }) {
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
+ * @param {Record<string, unknown> & { successes: number, isGlitch: boolean, rolledDice: number, edgeUsed?: boolean, messageId: string | null } | null | undefined} result
+ * @returns {Promise<number | null>}
+ */
+export async function resolveFinalSuccesses(actor, result) {
+  if (!result || result.isGlitch) return null;
+  return resolveEdgeForRoll(
+    actor,
+    /** @type {{ successes: number, rolledDice: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null }} */ (
+      result
+    ),
+    Infinity
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {Record<string, unknown> & { successes: number, isGlitch: boolean, rolledDice: number, edgeUsed?: boolean, messageId: string | null } | null | undefined} result
+ * @param {(finalSuccesses: number) => void} onSuccess
+ * @returns {Promise<void>}
+ */
+export async function resolveFinalSuccessesAndEmit(actor, result, onSuccess) {
+  const finalSuccesses = await resolveFinalSuccesses(actor, result);
+  if (finalSuccesses === null) return;
+  if (finalSuccesses > 0) onSuccess(finalSuccesses);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
  * @param {{ successes: number, rolledDice: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null }} roll
  * @param {number} threshold
  * @returns {Promise<number>}

@@ -15,7 +15,7 @@ import {
   emitDefenseTrigger,
   emitDefenseTriggerForTarget,
 } from '@flows/defense-flow.js';
-import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
+import { resolveFinalSuccessesAndEmit } from '@utils/rolls/roll-edge-decision.js';
 import { openDicePoolSplitDialog } from '../dice-pool-split.js';
 import { getValidTargetActors } from '@utils/game/game.js';
 
@@ -184,21 +184,7 @@ async function rollAttackForTarget(
         edgeAvailableOverride: false,
       }),
   });
-  if (!result || result.isGlitch) return;
-
-  let finalSuccesses = result.successes;
-  if (!result.edgeUsed) {
-    finalSuccesses = await awaitEdgeDecision({
-      messageId: result.messageId,
-      actor,
-      rollResult: {
-        successes: result.successes,
-        rolledDice: result.rolledDice,
-        isGlitch: result.isGlitch,
-      },
-    });
-  }
-  if (finalSuccesses > 0) {
+  await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
     emitDefenseTriggerForTarget(
       actor,
       weapon,
@@ -206,8 +192,8 @@ async function rollAttackForTarget(
       targetId,
       wideDefenseMalus,
       burstDamageBonus
-    );
-  }
+    )
+  );
 }
 
 /**
@@ -348,6 +334,7 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
     ...rangedAmmo,
   });
 
+  /** @type {{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null, wideDefenseMalus: number, burstDamageBonus: number}} */
   const result = await createRollDialog({
     title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} ${skill.system.specialization ?? ''}`,
     content,
@@ -475,27 +462,13 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
     },
   });
 
-  if (!result || result.isGlitch) return;
-
-  let finalSuccesses = result.successes;
-  if (!result.edgeUsed) {
-    finalSuccesses = await awaitEdgeDecision({
-      messageId: result.messageId,
-      actor,
-      rollResult: {
-        successes: result.successes,
-        rolledDice: result.rolledDice,
-        isGlitch: result.isGlitch,
-      },
-    });
-  }
-  if (finalSuccesses > 0) {
+  await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
     emitDefenseTrigger(
       actor,
       weapon,
       finalSuccesses,
       result.wideDefenseMalus,
       result.burstDamageBonus
-    );
-  }
+    )
+  );
 }

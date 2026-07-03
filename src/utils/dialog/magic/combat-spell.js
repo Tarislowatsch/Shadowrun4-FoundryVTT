@@ -9,8 +9,8 @@ import {
 } from '../dialogutility';
 import { openSoakDialog } from '../actions/soak';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow';
-import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
-import { getGame } from '@utils/game/game.js';
+import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import { resolveAndEmitSpellResist } from './resist-actions.js';
 import {
   computeElementArmorRules,
   getElementResistance,
@@ -91,26 +91,13 @@ export async function openDirectSpellResistDialog(
     autoRoll: true,
   });
 
-  let resistHits = result?.successes ?? null;
-  if (result && !result.edgeUsed && result.successes < castingHits) {
-    resistHits = await awaitEdgeDecision({
-      messageId: result.messageId,
-      actor: defender,
-      rollResult: {
-        successes: result.successes,
-        rolledDice: resistPool,
-        isGlitch: result.isGlitch,
-      },
-    });
-  }
-
-  getGame().socket?.emit('system.shadowrun4e', {
-    action: 'directSpellResisted',
-    payload: {
-      casterId,
-      defenderId: defender.id,
-      resistHits,
-    },
+  await resolveAndEmitSpellResist({
+    defender,
+    result,
+    rolledDice: resistPool,
+    castingHits,
+    socketAction: 'directSpellResisted',
+    casterId,
   });
 }
 
@@ -323,18 +310,17 @@ export async function openIndirectSpellDefenseDialog(
   );
   if (!soakResult) return;
 
-  let soakHits = soakResult.hits;
-  if (!soakResult.edgeUsed && soakResult.hits < baseDamage) {
-    soakHits = await awaitEdgeDecision({
+  const soakHits = await resolveEdgeForRoll(
+    defender,
+    {
+      successes: soakResult.hits,
+      rolledDice: soakResult.rolledDice,
+      isGlitch: soakResult.isGlitch,
+      edgeUsed: soakResult.edgeUsed,
       messageId: soakResult.messageId,
-      actor: defender,
-      rollResult: {
-        successes: soakResult.hits,
-        rolledDice: soakResult.rolledDice,
-        isGlitch: soakResult.isGlitch,
-      },
-    });
-  }
+    },
+    baseDamage
+  );
 
   const finalDamage = Math.max(baseDamage - soakHits, 0);
   await ApplyDamageFlow.sendCombatSummary(

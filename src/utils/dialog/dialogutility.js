@@ -62,18 +62,20 @@ export async function renderTemplate(path, data) {
 }
 
 /**
+ * @template {Record<string, unknown> & {successes: number, isGlitch: boolean}} T
  * @typedef {object} RollDialogConfig
  * @property {string} title
  * @property {string} content
  * @property {number} [dice]
- * @property {(dialog: HTMLElement) => Promise<Record<string, unknown> & {successes: number, isGlitch: boolean}>} onRoll
+ * @property {(dialog: HTMLElement) => Promise<T>} onRoll
  * @property {(html: HTMLElement, updateLabel: () => void) => void} [onRender]
  * @property {boolean} [autoRoll] Automatically trigger the roll with default options once the `flowOpposedRollTimeout` setting elapses.
  */
 
 /**
- * @param {RollDialogConfig} config
- * @returns {Promise<Record<string, unknown> & {successes: number, isGlitch: boolean}>}
+ * @template {Record<string, unknown> & {successes: number, isGlitch: boolean}} T
+ * @param {RollDialogConfig<T>} config
+ * @returns {Promise<T>}
  */
 export async function createRollDialog(config) {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
@@ -355,6 +357,22 @@ export async function rollSkillDialog(
 /**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
+ * @param {number} force
+ * @returns {Promise<(Record<string, unknown> & {successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}) | null>}
+ */
+export async function rollForcedSkill(actor, skillName, force) {
+  const numDice = getSkillDicePool(actor, skillName);
+  if (numDice === undefined) return null;
+
+  return rollSkillDialog(actor, skillName, numDice, {
+    titleSuffix: ` (${localize('sr4.spell.force')}: ${force})`,
+    force,
+  });
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} skillName
  * @returns {number | undefined}
  */
 export function getSkillDicePool(actor, skillName) {
@@ -392,6 +410,12 @@ function getSkillModifier(actor, skill) {
 }
 
 /**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {number} numDice
+ * @param {string} title
+ * @param {string} rollLabel
+ * @returns {Promise<void>}
+ */
 async function _openStandardRollDialog(actor, numDice, title, rollLabel) {
   const params = createDialogParameters(actor, numDice);
   const content = await renderTemplate(standardTemplatePath(), {

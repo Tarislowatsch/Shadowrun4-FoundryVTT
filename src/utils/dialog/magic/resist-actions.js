@@ -1,3 +1,6 @@
+import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import { getGame } from '@utils/game/game.js';
+
 const RESIST_CONFIG = {
   summon: {
     spirit: {
@@ -36,4 +39,48 @@ const RESIST_CONFIG = {
  */
 export function getResistConfig(mode, entityType) {
   return RESIST_CONFIG[mode][entityType];
+}
+
+/**
+ * @param {{
+ *   defender: import('@documents/index').SR4Actor,
+ *   result: { successes: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null } | null,
+ *   rolledDice: number,
+ *   castingHits: number,
+ *   socketAction: string,
+ *   casterId: string,
+ * }} options
+ * @returns {Promise<void>}
+ */
+export async function resolveAndEmitSpellResist({
+  defender,
+  result,
+  rolledDice,
+  castingHits,
+  socketAction,
+  casterId,
+}) {
+  let resistHits = null;
+  if (result) {
+    resistHits = await resolveEdgeForRoll(
+      defender,
+      {
+        successes: result.successes,
+        rolledDice,
+        isGlitch: result.isGlitch,
+        edgeUsed: result.edgeUsed,
+        messageId: result.messageId,
+      },
+      castingHits
+    );
+  }
+
+  getGame().socket?.emit('system.shadowrun4e', {
+    action: socketAction,
+    payload: {
+      casterId,
+      defenderId: defender.id,
+      resistHits,
+    },
+  });
 }

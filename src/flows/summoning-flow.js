@@ -1,9 +1,5 @@
-import {
-  awaitOpposedSocketResponse,
-  getGame,
-  getSkillDicePool,
-} from '@utils/index.js';
-import { localize, rollSkillDialog } from '@utils/dialog/dialogutility.js';
+import { awaitOpposedSocketResponse, getGame } from '@utils/index.js';
+import { localize, rollForcedSkill } from '@utils/dialog/dialogutility.js';
 import {
   openSummoningDialog,
   calculateSummoningDrain,
@@ -40,11 +36,7 @@ export class SummoningFlow {
     const { spiritType, force, templateItem } = selection;
 
     const skillName = isSprite ? 'compiling' : 'summoning';
-    const rollResult = await SummoningFlow._rollSummoning(
-      actor,
-      skillName,
-      force
-    );
+    const rollResult = await rollForcedSkill(actor, skillName, force);
     if (!rollResult) return;
 
     const summonerHits = await SummoningFlow._resolveSummonerHits(
@@ -101,11 +93,7 @@ export class SummoningFlow {
       return;
     }
 
-    const rollResult = await SummoningFlow._rollSummoning(
-      actor,
-      'summoning',
-      0
-    );
+    const rollResult = await rollForcedSkill(actor, 'summoning', 0);
     if (!rollResult) return;
 
     const hits = await SummoningFlow._resolveSummonerHits(actor, rollResult);
@@ -141,22 +129,6 @@ export class SummoningFlow {
       drainPool: calculateSummonedEntityDrainPool(actor, 'spirit'),
       drainValue: hits,
       isPhysical: false,
-    });
-  }
-
-  /**
-   * @param {import('@documents/index').SR4Actor} actor
-   * @param {string} skillName
-   * @param {number} force
-   * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null} | null>}
-   */
-  static async _rollSummoning(actor, skillName, force) {
-    const numDice = getSkillDicePool(actor, skillName);
-    if (numDice === undefined) return null;
-
-    return rollSkillDialog(actor, skillName, numDice, {
-      titleSuffix: ` (${localize('sr4.spell.force')}: ${force})`,
-      force,
     });
   }
 

@@ -5,8 +5,7 @@ import {
   localize,
   renderTemplate,
 } from '../dialogutility';
-import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
-import { getGame } from '@utils/game/game.js';
+import { resolveAndEmitSpellResist } from './resist-actions.js';
 
 const OPPOSED_RESIST_TEMPLATE =
   'systems/shadowrun4e/templates/magic/opposed-spell-resist.hbs';
@@ -54,25 +53,12 @@ export async function openOpposedSpellResistDialog(
     autoRoll: true,
   });
 
-  let resistHits = result?.successes ?? null;
-  if (result && !result.edgeUsed && result.successes < castingHits) {
-    resistHits = await awaitEdgeDecision({
-      messageId: result.messageId,
-      actor: defender,
-      rollResult: {
-        successes: result.successes,
-        rolledDice: resistPool,
-        isGlitch: result.isGlitch,
-      },
-    });
-  }
-
-  getGame().socket?.emit('system.shadowrun4e', {
-    action: 'opposedSpellResisted',
-    payload: {
-      casterId,
-      defenderId: defender.id,
-      resistHits,
-    },
+  await resolveAndEmitSpellResist({
+    defender,
+    result,
+    rolledDice: resistPool,
+    castingHits,
+    socketAction: 'opposedSpellResisted',
+    casterId,
   });
 }

@@ -4,6 +4,7 @@ import {
   baseDerivedStatsFields,
   modifiersField,
   sumModField,
+  descriptionFields,
 } from '@models/shared';
 import { computeVehicleDerivedStats } from '@documents/derivedStats.mapper';
 
@@ -46,8 +47,7 @@ import { computeVehicleDerivedStats } from '@documents/derivedStats.mapper';
 export class SR4VehicleData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      description: new fields.HTMLField({ initial: '' }),
-      notes: new fields.HTMLField({ initial: '' }),
+      ...descriptionFields({ source: false, notes: 'html' }),
       cost: new fields.NumberField({ initial: 0, integer: true }),
       availability: new fields.StringField({ initial: '' }),
       legality: new fields.StringField({ initial: '' }),

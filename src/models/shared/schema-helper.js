@@ -13,7 +13,7 @@ export const SecondaryAttributes = Object.freeze({
 
 export function genericItemSchema() {
   return {
-    description: new fields.HTMLField({ initial: '' }),
+    ...descriptionFields(),
     cost: new fields.NumberField({ initial: 0, integer: true }),
     avail: new fields.NumberField({ initial: 0, integer: true }),
     quantity: new fields.NumberField({ initial: 0, integer: true }),
@@ -24,8 +24,6 @@ export function genericItemSchema() {
     label: new fields.StringField({ initial: '' }),
     modable: new fields.BooleanField({ initial: false }),
     mods: new fields.ArrayField(new fields.ObjectField()),
-    notes: new fields.StringField({ initial: '' }),
-    source: new fields.StringField({ initial: '' }),
     equipped: new fields.BooleanField({ initial: false }),
   };
 }
@@ -224,13 +222,25 @@ export function genericWeaponSchema() {
 }
 
 /**
- * @param {{ notes?: boolean, source?: boolean }} [options]
+ * @param {{ description?: 'string' | 'html', notes?: 'string' | 'html' | false, source?: boolean }} [options]
  * @returns {object}
  */
-export function descriptionFields({ notes = true, source = true } = {}) {
-  const result = { description: new fields.HTMLField({ initial: '' }) };
+export function descriptionFields({
+  description = 'html',
+  notes = 'string',
+  source = true,
+} = {}) {
+  const result = {
+    description:
+      description === 'html'
+        ? new fields.HTMLField({ initial: '' })
+        : new fields.StringField({ initial: '', blank: true }),
+  };
   if (notes)
-    result.notes = new fields.StringField({ initial: '', blank: true });
+    result.notes =
+      notes === 'html'
+        ? new fields.HTMLField({ initial: '' })
+        : new fields.StringField({ initial: '', blank: true });
   if (source)
     result.source = new fields.StringField({ initial: '', blank: true });
   return result;

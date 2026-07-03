@@ -12,7 +12,7 @@ import {
   emitDefenseTrigger,
   emitDefenseTriggerForTarget,
 } from '@flows/defense-flow.js';
-import { awaitEdgeDecision } from '@utils/rolls/roll-edge-decision.js';
+import { resolveFinalSuccessesAndEmit } from '@utils/rolls/roll-edge-decision.js';
 import { openDicePoolSplitDialog } from '../dice-pool-split.js';
 import { getValidTargetActors } from '@utils/game/game.js';
 
@@ -103,23 +103,9 @@ export async function openMeleeAttackDialog(actor, skillName, weapon) {
       }),
   });
 
-  if (!result || result.isGlitch) return;
-
-  let finalSuccesses = result.successes;
-  if (!result.edgeUsed) {
-    finalSuccesses = await awaitEdgeDecision({
-      messageId: result.messageId,
-      actor,
-      rollResult: {
-        successes: result.successes,
-        rolledDice: result.rolledDice,
-        isGlitch: result.isGlitch,
-      },
-    });
-  }
-  if (finalSuccesses > 0) {
-    emitDefenseTrigger(actor, weapon, finalSuccesses);
-  }
+  await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
+    emitDefenseTrigger(actor, weapon, finalSuccesses)
+  );
 }
 
 /**
@@ -161,21 +147,7 @@ async function _rollMeleeForTarget(
         edgeAvailableOverride: false,
       }),
   });
-  if (!result || result.isGlitch) return;
-
-  let finalSuccesses = result.successes;
-  if (!result.edgeUsed) {
-    finalSuccesses = await awaitEdgeDecision({
-      messageId: result.messageId,
-      actor,
-      rollResult: {
-        successes: result.successes,
-        rolledDice: result.rolledDice,
-        isGlitch: result.isGlitch,
-      },
-    });
-  }
-  if (finalSuccesses > 0) {
-    emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetId);
-  }
+  await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
+    emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetId)
+  );
 }
