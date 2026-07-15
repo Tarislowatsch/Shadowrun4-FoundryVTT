@@ -1,5 +1,9 @@
 {
   "sr4": {
+    "critter": {
+      "templateApplied": "Vorlage \"{name}\" angewendet.",
+      "templateWrongType": "Diese Vorlage passt nicht zum Akteur-Typ."
+    },
     "spirit": {
       "attributes": "Attribute",
       "dropSummoner": "Akteur ziehen um Beschwörer zu verknüpfen",
@@ -39,22 +43,49 @@
     },
     "vehicle": {
       "accel": "Beschl.",
+      "actions": {
+        "attack": "Angriff",
+        "fullDefense": "Volle Abwehr",
+        "infiltration": "Infiltration",
+        "maneuvering": "Manövrieren",
+        "meleeDefense": "Nahkampfabwehr",
+        "perception": "Wahrnehmung",
+        "rangedDefense": "Fernkampfabwehr"
+      },
       "armor": "Panzerung",
       "autonomous": "Autonom",
       "autosofts": "Autosofts",
       "availability": "Verf.",
       "body": "Karosserie",
+      "configTab": "Konfiguration",
+      "controlMode": "Kontrollmodus",
+      "controlModes": {
+        "autonomous": "Autonom",
+        "jumped": "Eingeklinkt",
+        "remote": "Ferngesteuert"
+      },
       "cost": "Kosten",
       "dropRigger": "Akteur ziehen um Rigger zu verknüpfen",
       "handling": "Handhabung",
+      "missingAutosoft": "Keine passende Autosoft — nur Pilot",
       "name": "Name",
       "noAutosofts": "Keine Autosofts installiert",
+      "noCommandProgram": "Rigger hat kein Programm namens \"Command\" — nutze 0",
       "noDicePool": "Kein Würfelpool — Autosofts hinzufügen oder Pilot erhöhen",
+      "noRigger": "Kein Rigger verknüpft — Rückfall auf autonomen Modus",
       "noVehicles": "Keine Fahrzeuge",
       "pilot": "Pilot",
       "pilotPoolHint": "Autonomer Pool",
       "pilotRoll": "Pilotenwurf",
+      "response": "Prozessor",
       "rigger": "Rigger",
+      "riggerConfig": {
+        "globalDefault": "Globaler Standard",
+        "hint": "Überschreibt, welche Rigger-Fertigkeiten und welches Command-Programm dieses Fahrzeug nutzt. Leere Felder fallen auf die globalen Standards zurück.",
+        "manual": "Manuell…",
+        "noRigger": "Kein Rigger verknüpft — Overrides können manuell eingetragen werden.",
+        "title": "Rigger-Fertigkeits-Zuordnung"
+      },
       "riggerUuid": "Rigger UUID",
       "rollAutonomous": "Autonom würfeln",
       "sensor": "Sensor",

@@ -1,3 +1,5 @@
+import { evaluateForceFormula } from '@utils/force-formula.js';
+
 const fields = foundry.data.fields;
 
 /**
@@ -16,6 +18,7 @@ const fields = foundry.data.fields;
  * @property {string} specialization
  * @property {string} source
  * @property {number} rating
+ * @property {string} ratingFormula
  * @property {string} label
  * @property {string} category
  */
@@ -30,8 +33,23 @@ export class SR4SkillData extends foundry.abstract.TypeDataModel {
       source: new fields.StringField({ initial: '' }),
       label: new fields.StringField({ initial: '' }),
       rating: new fields.NumberField({ initial: 0, integer: true }),
+      ratingFormula: new fields.StringField({ initial: '' }),
       category: new fields.StringField({ initial: 'misc' }),
     };
+  }
+
+  prepareDerivedData() {
+    if (!this.ratingFormula) return;
+    const actor = this.parent?.actor;
+    if (!actor) return;
+    const force =
+      actor.type === 'spirit'
+        ? actor.system.force
+        : actor.type === 'sprite'
+          ? actor.system.rating
+          : null;
+    if (force === null || force === undefined) return;
+    this.rating = evaluateForceFormula(this.ratingFormula, force);
   }
 }
 

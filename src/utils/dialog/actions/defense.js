@@ -28,8 +28,8 @@ const MODIFIER_BY_TYPE = {
   [DefenseType.PARRY]: 'parryModifier',
 };
 
-const MELEE_DEFENSE_KEYS = Object.keys(DEFENSE_SKILLS);
-const RANGED_DEFENSE_KEYS = Object.keys(DEFENSE_SKILLS).filter(
+export const MELEE_DEFENSE_KEYS = Object.keys(DEFENSE_SKILLS);
+export const RANGED_DEFENSE_KEYS = Object.keys(DEFENSE_SKILLS).filter(
   (k) => DEFENSE_SKILLS[k] === DefenseType.DODGE
 );
 

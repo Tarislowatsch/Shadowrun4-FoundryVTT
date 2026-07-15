@@ -1,0 +1,41 @@
+<div class="sheet-container vehicle-header-part">
+
+  <div class="npc-header">
+    {{> "actor-image"}}
+    <div class="npc-header-info">
+      <div class="meta-field">
+        <label>{{localize 'sr4.vehicle.name'}}</label>
+        <input type="text" name="name" value="{{actor.name}}" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+      <div class="meta-field">
+        <label>{{localize 'sr4.vehicle.type'}}</label>
+        <input type="text" name="system.vehicleType" value="{{system.vehicleType}}" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+      <div class="meta-field">
+        <label>{{localize 'sr4.vehicle.availability'}}</label>
+        <input type="text" name="system.availability" value="{{system.availability}}" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+      <div class="meta-field">
+        <label>{{localize 'sr4.vehicle.cost'}}</label>
+        <input type="number" name="system.cost" value="{{system.cost}}" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+    </div>
+  </div>
+
+  {{> "actor-link-row"
+      linkLabel="sr4.vehicle.rigger"
+      dropType="riggerUuid"
+      linkedName=riggerName
+      clearAction="clearRigger"
+      dropHint="sr4.vehicle.dropRigger"}}
+
+  <div class="meta-field control-mode-field">
+    <label>{{localize 'sr4.vehicle.controlMode'}}</label>
+    <select name="system.controlMode">
+      {{#each controlModes as |mode|}}
+      <option value="{{mode.value}}" {{#if mode.selected}}selected{{/if}}>{{mode.label}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+</div>

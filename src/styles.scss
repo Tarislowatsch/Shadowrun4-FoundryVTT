@@ -16,6 +16,18 @@
 @use 'sheets/actors/character/effects';
 @use 'sheets/actors/character/magic-matrix';
 
+button[data-sr4-purge-packs] {
+  flex: 0 0 auto;
+  width: var(--input-height, 2rem);
+  height: var(--input-height, 2rem);
+  padding: 0;
+  line-height: 1;
+
+  i {
+    margin: 0;
+  }
+}
+
 input.sr4-checkbox {
   cursor: pointer;
   width: 1.5em;

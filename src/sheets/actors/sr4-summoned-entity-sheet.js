@@ -1,5 +1,6 @@
 import { handleSkillRoll, openActionDialog } from '@utils/index';
 import SR4BaseActorSheet from '@sheets/characters/sr4-base-actor-sheet';
+import { buildCritterActorData } from '@importer/build-critter.js';
 
 export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
   static DEFAULT_OPTIONS = {
@@ -118,6 +119,69 @@ export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
         .filter((i) => i.type === 'Skill')
         .sort((a, b) => a.name.localeCompare(b.name)),
     };
+  }
+
+  async _onDropItem(event, item) {
+    if (item?.type === 'CritterTemplate') {
+      await this.#applyCritterTemplate(item);
+      return null;
+    }
+    return super._onDropItem(event, item);
+  }
+
+  /**
+   * Replaces the actor's template-derived data (attributes, powers, complex
+   * forms, skills, type, image) with those of the dropped CritterTemplate,
+   * keeping name, force/rating, services/tasks and owner link.
+   * @param {object} templateItem
+   */
+  async #applyCritterTemplate(templateItem) {
+    const actor = this.actor;
+    const templateSystem = templateItem.system;
+    if (templateSystem.actorType !== actor.type) {
+      ui?.notifications?.warn(
+        game.i18n.localize('sr4.critter.templateWrongType')
+      );
+      return;
+    }
+
+    const force =
+      actor.type === 'sprite' ? actor.system.rating : actor.system.force;
+    const data = await buildCritterActorData(
+      templateSystem,
+      templateItem.name,
+      force
+    );
+
+    const removeIds = actor.items
+      .filter(
+        (i) =>
+          i.type === 'CritterPower' ||
+          i.type === 'Skill' ||
+          (i.type === 'Program' && i.system.complexform)
+      )
+      .map((i) => i.id);
+    if (data.items.length)
+      await actor.createEmbeddedDocuments('Item', data.items);
+    if (removeIds.length)
+      await actor.deleteEmbeddedDocuments('Item', removeIds);
+
+    const update = { 'system.sheetStats': data.system.sheetStats };
+    if (templateItem.img) update.img = templateItem.img;
+    const typeValue =
+      actor.type === 'sprite' ? data.system.spriteType : data.system.spiritType;
+    if (typeValue) {
+      update[
+        actor.type === 'sprite' ? 'system.spriteType' : 'system.spiritType'
+      ] = typeValue;
+    }
+    await actor.update(update);
+
+    ui?.notifications?.info(
+      game.i18n.format('sr4.critter.templateApplied', {
+        name: templateItem.name,
+      })
+    );
   }
 
   /** @param {string} uuid @returns {Promise<string | null>} */

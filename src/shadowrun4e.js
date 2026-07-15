@@ -27,6 +27,14 @@ import {
   openActionDialog,
   reloadWeapon,
   getGame,
+  ControlModes,
+  DroneActions,
+  getRiggerLookup,
+  mergeRiggerLookup,
+  openDroneAttackDialog,
+  openDroneRollDialog,
+  resolveDronePool,
+  resolveRigger,
 } from '@utils/index.js';
 import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
@@ -47,6 +55,16 @@ import { BindingFlow } from '@flows/binding-flow.js';
  * @property {typeof ThreadingFlow} ThreadingFlow
  * @property {typeof BindingFlow} BindingFlow
  * @property {typeof reloadWeapon} reloadWeapon
+ * @property {{
+ *   ControlModes: typeof ControlModes,
+ *   DroneActions: typeof DroneActions,
+ *   getRiggerLookup: Function,
+ *   mergeRiggerLookup: Function,
+ *   openDroneAttackDialog: Function,
+ *   openDroneRollDialog: Function,
+ *   resolveDronePool: Function,
+ *   resolveRigger: Function,
+ * }} rigging
  */
 globalThis.sr4 = {
   config: SR4,
@@ -61,6 +79,16 @@ globalThis.sr4 = {
   ThreadingFlow,
   BindingFlow,
   reloadWeapon,
+  rigging: {
+    ControlModes,
+    DroneActions,
+    getRiggerLookup,
+    mergeRiggerLookup,
+    openDroneAttackDialog,
+    openDroneRollDialog,
+    resolveDronePool,
+    resolveRigger,
+  },
 };
 
 registerHooks();

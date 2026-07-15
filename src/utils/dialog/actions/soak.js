@@ -23,7 +23,11 @@ export async function openSoakDialog(
   effectiveArmor,
   { rawArmor, ap, apHalf, elementResistance = 0 } = {}
 ) {
-  const body = defender.getAttribute('BODY') ?? 0;
+  const sys = /** @type {any} */ (defender).system;
+  const body =
+    defender.type === 'vehicle'
+      ? (sys?.effectiveBody ?? sys?.body ?? 0)
+      : (defender.getAttribute('BODY') ?? 0);
   const soakBonus =
     /** @type {any} */ (defender).system?.modifiers?.soakBonus ?? 0;
   const soakPool = body + effectiveArmor + soakBonus + elementResistance;

@@ -77,7 +77,7 @@ const MODES_WITH_BURST_OPTION = new Set([
  * @param {SR4Weapon} weapon
  * @returns {{ showFireModeUI: boolean, showModeRadios?: boolean, hasBurstModes: boolean, fireModes: string[], shotOptions: number[] }}
  */
-function getFireModeParams(weapon) {
+export function getFireModeParams(weapon) {
   const weaponMode = weapon.system.mode;
   const modes = MODES_BY_WEAPON_MODE[weaponMode] ?? [];
   const hasComplex = modes.some((m) => !SIMPLE_MODES.has(m));
@@ -107,7 +107,7 @@ function getFireModeParams(weapon) {
  * @param {number} shots
  * @returns {Promise<void>}
  */
-async function depleteAmmo(actor, weapon, shots) {
+export async function depleteAmmo(actor, weapon, shots) {
   /** @type {Record<string, Record<string, unknown>>} */
   const byId = {};
   if (weapon.system.maxAmmo > 0) {
@@ -249,6 +249,115 @@ async function selectFireModeForSplit(weapon) {
 }
 
 /**
+ * @param {HTMLElement} html
+ * @param {SR4Weapon & { type: 'Ranged Weapon', system: import('@models/index').SR4RangedWeaponSystem }} weapon
+ * @param {{ fireModes: string[] }} fireModeParams
+ * @param {boolean} ammoTracking
+ * @param {() => void} updateLabel
+ * @returns {void}
+ */
+export function wireFireModeControls(
+  html,
+  weapon,
+  fireModeParams,
+  ammoTracking,
+  updateLabel
+) {
+  const rc = weapon.system.rc ?? 0;
+
+  const getSelectedMode = () =>
+    /** @type {HTMLInputElement|null} */ (
+      html.querySelector('input[name="fireMode"]:checked')
+    )?.value ?? fireModeParams.fireModes[0];
+
+  /**
+   * @param {string} modeKey
+   * @param {number} shots
+   */
+  const updateBurstModifiers = (modeKey, shots) => {
+    const isBurst = MODES_WITH_BURST_OPTION.has(modeKey);
+    const selector = /** @type {HTMLElement|null} */ (
+      html.querySelector('#burstModeSelector')
+    );
+    if (selector) selector.hidden = !isBurst;
+    const bonusEl = /** @type {HTMLInputElement|null} */ (
+      html.querySelector('#burstBonus')
+    );
+    const malusEl = /** @type {HTMLInputElement|null} */ (
+      html.querySelector('#wideDefenseMalus')
+    );
+    if (!isBurst) {
+      if (bonusEl) bonusEl.value = '0';
+      if (malusEl) malusEl.value = '0';
+      updateLabel();
+      return;
+    }
+    const isNarrow =
+      /** @type {HTMLInputElement|null} */ (
+        html.querySelector('input[name="burstMode"]:checked')
+      )?.value !== 'wide';
+    const mods = BURST_MODIFIERS[shots] ?? { narrow: 0, wide: 0 };
+    const missing = ammoTracking
+      ? Math.max(0, shots - weapon.system.currentAmmo)
+      : 0;
+    const narrowBonus = Math.max(0, mods.narrow - missing);
+    const wideMalus = Math.max(0, mods.wide - missing);
+    if (bonusEl) bonusEl.value = String(isNarrow ? narrowBonus : 0);
+    if (malusEl) malusEl.value = String(isNarrow ? 0 : wideMalus);
+    updateLabel();
+  };
+
+  const updateAmmoDisplay = (/** @type {number} */ shots) => {
+    const el = /** @type {HTMLElement|null} */ (
+      html.querySelector('#ammoDisplay')
+    );
+    if (!el) return;
+    el.style.color = weapon.system.currentAmmo < shots ? 'var(--sr4-red)' : '';
+  };
+
+  const updateRecoil = () => {
+    const shots = getInt(html, 'shotCount');
+    const recoil = Math.max(0, shots - 1 - rc);
+    const display = html.querySelector('#recoilDisplay');
+    const hidden = html.querySelector('#recoilMalus');
+    if (display) display.textContent = String(recoil);
+    if (hidden) hidden.value = String(recoil);
+    updateBurstModifiers(getSelectedMode(), shots);
+    updateAmmoDisplay(shots);
+  };
+
+  const updateShotOptions = (modeKey) => {
+    const shots = SHOTS_BY_MODE[modeKey] ?? [1];
+    const select = /** @type {HTMLSelectElement|null} */ (
+      html.querySelector('#shotCount')
+    );
+    if (!select) return;
+    select.innerHTML = shots
+      .map((s) => `<option value="${s}">${s}</option>`)
+      .join('');
+    updateRecoil();
+  };
+
+  html
+    .querySelectorAll('input[name="fireMode"]')
+    .forEach((el) =>
+      el.addEventListener('change', (e) =>
+        updateShotOptions(/** @type {HTMLInputElement} */ (e.target).value)
+      )
+    );
+  html
+    .querySelectorAll('input[name="burstMode"]')
+    .forEach((el) =>
+      el.addEventListener('change', () =>
+        updateBurstModifiers(getSelectedMode(), getInt(html, 'shotCount'))
+      )
+    );
+  html.querySelector('#shotCount')?.addEventListener('change', updateRecoil);
+
+  updateShotOptions(getSelectedMode());
+}
+
+/**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
  * @param {SR4Weapon & { type: 'Ranged Weapon', system: import('@models/index').SR4RangedWeaponSystem }} weapon
@@ -340,108 +449,14 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
     content,
     dice,
     onRender: fireModeParams.showFireModeUI
-      ? (html, updateLabel) => {
-          const rc = weapon.system.rc ?? 0;
-
-          const getSelectedMode = () =>
-            /** @type {HTMLInputElement|null} */ (
-              html.querySelector('input[name="fireMode"]:checked')
-            )?.value ?? fireModeParams.fireModes[0];
-
-          /**
-           * @param {string} modeKey
-           * @param {number} shots
-           */
-          const updateBurstModifiers = (modeKey, shots) => {
-            const isBurst = MODES_WITH_BURST_OPTION.has(modeKey);
-            const selector = /** @type {HTMLElement|null} */ (
-              html.querySelector('#burstModeSelector')
-            );
-            if (selector) selector.hidden = !isBurst;
-            const bonusEl = /** @type {HTMLInputElement|null} */ (
-              html.querySelector('#burstBonus')
-            );
-            const malusEl = /** @type {HTMLInputElement|null} */ (
-              html.querySelector('#wideDefenseMalus')
-            );
-            if (!isBurst) {
-              if (bonusEl) bonusEl.value = '0';
-              if (malusEl) malusEl.value = '0';
-              updateLabel();
-              return;
-            }
-            const isNarrow =
-              /** @type {HTMLInputElement|null} */ (
-                html.querySelector('input[name="burstMode"]:checked')
-              )?.value !== 'wide';
-            const mods = BURST_MODIFIERS[shots] ?? { narrow: 0, wide: 0 };
-            const missing = ammoTracking
-              ? Math.max(0, shots - weapon.system.currentAmmo)
-              : 0;
-            const narrowBonus = Math.max(0, mods.narrow - missing);
-            const wideMalus = Math.max(0, mods.wide - missing);
-            if (bonusEl) bonusEl.value = String(isNarrow ? narrowBonus : 0);
-            if (malusEl) malusEl.value = String(isNarrow ? 0 : wideMalus);
-            updateLabel();
-          };
-
-          const updateAmmoDisplay = (/** @type {number} */ shots) => {
-            const el = /** @type {HTMLElement|null} */ (
-              html.querySelector('#ammoDisplay')
-            );
-            if (!el) return;
-            el.style.color =
-              weapon.system.currentAmmo < shots ? 'var(--sr4-red)' : '';
-          };
-
-          const updateRecoil = () => {
-            const shots = getInt(html, 'shotCount');
-            const recoil = Math.max(0, shots - 1 - rc);
-            const display = html.querySelector('#recoilDisplay');
-            const hidden = html.querySelector('#recoilMalus');
-            if (display) display.textContent = String(recoil);
-            if (hidden) hidden.value = String(recoil);
-            updateBurstModifiers(getSelectedMode(), shots);
-            updateAmmoDisplay(shots);
-          };
-
-          const updateShotOptions = (modeKey) => {
-            const shots = SHOTS_BY_MODE[modeKey] ?? [1];
-            const select = /** @type {HTMLSelectElement|null} */ (
-              html.querySelector('#shotCount')
-            );
-            if (!select) return;
-            select.innerHTML = shots
-              .map((s) => `<option value="${s}">${s}</option>`)
-              .join('');
-            updateRecoil();
-          };
-
-          html
-            .querySelectorAll('input[name="fireMode"]')
-            .forEach((el) =>
-              el.addEventListener('change', (e) =>
-                updateShotOptions(
-                  /** @type {HTMLInputElement} */ (e.target).value
-                )
-              )
-            );
-          html
-            .querySelectorAll('input[name="burstMode"]')
-            .forEach((el) =>
-              el.addEventListener('change', () =>
-                updateBurstModifiers(
-                  getSelectedMode(),
-                  getInt(html, 'shotCount')
-                )
-              )
-            );
-          html
-            .querySelector('#shotCount')
-            ?.addEventListener('change', updateRecoil);
-
-          updateShotOptions(getSelectedMode());
-        }
+      ? (html, updateLabel) =>
+          wireFireModeControls(
+            html,
+            weapon,
+            fireModeParams,
+            ammoTracking,
+            updateLabel
+          )
       : undefined,
     onRoll: async (dialog) => {
       const shots = getInt(dialog, 'shotCount') || 1;

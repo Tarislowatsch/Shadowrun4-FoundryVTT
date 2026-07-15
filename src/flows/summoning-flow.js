@@ -217,7 +217,11 @@ export class SummoningFlow {
 
     let actorData;
     if (templateSystem) {
-      actorData = buildCritterActorData(templateSystem, spiritType, force);
+      actorData = await buildCritterActorData(
+        templateSystem,
+        spiritType,
+        force
+      );
       if (templateImg) actorData.img = templateImg;
     } else {
       const defaultStats = {};

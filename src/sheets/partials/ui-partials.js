@@ -13,6 +13,15 @@ export async function registerUIPartials() {
     { path: `${basePath}/fire-mode-selector.hbs`, name: 'fire-mode-selector' },
     { path: `${basePath}/skill-select.hbs`, name: 'skill-select' },
     {
+      path: `${basePath}/control-mode-select.hbs`,
+      name: 'control-mode-select',
+    },
+    {
+      path: `${basePath}/rigger-skill-select.hbs`,
+      name: 'rigger-skill-select',
+    },
+    { path: `${basePath}/pool-breakdown.hbs`, name: 'pool-breakdown' },
+    {
       path: 'systems/shadowrun4e/templates/magic/spell-force-header.hbs',
       name: 'spell-force-header',
     },

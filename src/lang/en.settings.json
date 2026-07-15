@@ -21,6 +21,14 @@
       "updateTooltip": "Update from Chummer XML",
       "upload": "Character XML file"
     },
+    "compendium": {
+      "purge": {
+        "button": "Delete World Compendia",
+        "confirm": "Permanently delete {count} world compendium(s)? System compendia are kept. This cannot be undone.",
+        "none": "No world compendia to delete.",
+        "result": "Deleted {deleted} world compendium(s)."
+      }
+    },
     "importer": {
       "button": "Import XML",
       "colCategory": "Category",
@@ -91,6 +99,21 @@
         "save": "Save",
         "title": "NPC Default Skills",
         "toggleAll": "All / None"
+      },
+      "riggerLookupMenu": {
+        "commandProgram": "Command program name",
+        "hint": "Configure which rigger skills and which command program drone tests use by default. Vehicles can override these individually on their Config tab.",
+        "label": "Configure",
+        "name": "Rigger Skill Mapping",
+        "reset": "Reset to defaults",
+        "roles": {
+          "attackSkill": "Attack skill",
+          "fullDefenseSkill": "Full defense skill",
+          "infiltrationSkill": "Infiltration skill",
+          "perceptionSkill": "Perception skill"
+        },
+        "save": "Save",
+        "title": "Rigger Skill Mapping"
       },
       "spellWorkflow": {
         "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain).",

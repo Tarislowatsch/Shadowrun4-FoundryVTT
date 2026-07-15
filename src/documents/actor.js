@@ -1,6 +1,7 @@
 import { SpellcastingFlow } from '@flows/index';
 import { Attackskill } from '@models/index';
 import { getGame } from '@utils/index';
+import { resolveRiggerSync } from '@utils/rigging/drone-pool.js';
 import { SR4ActiveEffect } from '@effects/index';
 
 /** @type {import('@models/index').SR4SheetStats} */
@@ -165,6 +166,10 @@ export class SR4Actor extends foundry.documents.Actor {
   getInitiativeBase() {
     /** @type {any} */
     const self = this;
+    if (self.type === 'vehicle' && self.system?.controlMode !== 'autonomous') {
+      const rigger = resolveRiggerSync(self);
+      if (rigger) return rigger.getInitiativeBase();
+    }
     return self.system?.derivedStats?.initiative?.physical ?? 0;
   }
 

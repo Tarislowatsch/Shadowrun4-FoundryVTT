@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { buildCritterActorData } from '@importer/build-critter.js';
 
 describe('buildCritterActorData', () => {
-  it('builds a spirit actor from a force-based template', () => {
+  it('builds a spirit actor from a force-based template', async () => {
     const template = {
       category: 'Spirits',
       forceBased: true,
@@ -25,7 +25,7 @@ describe('buildCritterActorData', () => {
       powers: ['Accident', 'Engulf', 'Materialization'],
     };
 
-    const data = buildCritterActorData(template, 'Spirit of Fire', 5);
+    const data = await buildCritterActorData(template, 'Spirit of Fire', 5);
 
     expect(data.type).toBe('spirit');
     expect(data.name).toBe('Spirit of Fire');
@@ -40,7 +40,7 @@ describe('buildCritterActorData', () => {
     expect(data.items[0].type).toBe('CritterPower');
   });
 
-  it('builds a sprite actor from a force-based template', () => {
+  it('builds a sprite actor from a force-based template', async () => {
     const template = {
       category: 'Sprites',
       forceBased: true,
@@ -63,7 +63,7 @@ describe('buildCritterActorData', () => {
       powers: ['Electron Storm'],
     };
 
-    const data = buildCritterActorData(template, 'Fault Sprite', 4);
+    const data = await buildCritterActorData(template, 'Fault Sprite', 4);
 
     expect(data.type).toBe('sprite');
     expect(data.system.rating).toBe(4);
@@ -72,7 +72,7 @@ describe('buildCritterActorData', () => {
     expect(data.system.sheetStats.LOGIC).toBe(5);
   });
 
-  it('builds an npc actor from a fixed-stat template', () => {
+  it('builds an npc actor from a fixed-stat template', async () => {
     const template = {
       category: 'Mundane Critters',
       forceBased: false,
@@ -95,7 +95,7 @@ describe('buildCritterActorData', () => {
       powers: ['Enhanced Senses', 'Natural Weapon'],
     };
 
-    const data = buildCritterActorData(template, 'Dog', null);
+    const data = await buildCritterActorData(template, 'Dog', null);
 
     expect(data.type).toBe('npc');
     expect(data.system.sheetStats.BODY).toBe(2);
@@ -103,7 +103,7 @@ describe('buildCritterActorData', () => {
     expect(data.items).toHaveLength(2);
   });
 
-  it('force-based critter templates use the provided force value', () => {
+  it('force-based critter templates use the provided force value', async () => {
     const template = {
       category: 'Spirits',
       forceBased: true,
@@ -126,9 +126,129 @@ describe('buildCritterActorData', () => {
       powers: ['Astral Form', 'Search'],
     };
 
-    const data = buildCritterActorData(template, 'Watcher Spirit', 1);
+    const data = await buildCritterActorData(template, 'Watcher Spirit', 1);
 
     expect(data.type).toBe('spirit');
     expect(data.system.force).toBe(1);
+  });
+
+  const skillTemplate = (actorType, skills) => ({
+    category: actorType === 'sprite' ? 'Sprites' : 'Spirits',
+    forceBased: true,
+    actorType,
+    attributes: {},
+    powers: [],
+    skills,
+  });
+
+  it('creates skill items from template skills without a compendium', async () => {
+    const template = skillTemplate('spirit', [
+      { name: 'Assensing', rating: 0, ratingFormula: 'F', spec: '' },
+      { name: 'Unarmed Combat', rating: 0, ratingFormula: 'F+2', spec: '' },
+      { name: 'Perception', rating: 3, ratingFormula: '', spec: 'Visual' },
+    ]);
+
+    const data = await buildCritterActorData(template, 'Spirit of Man', 4);
+
+    const skills = data.items.filter((i) => i.type === 'Skill');
+    expect(skills).toHaveLength(3);
+    expect(skills[0]).toMatchObject({
+      name: 'Assensing',
+      system: { rating: 4, ratingFormula: 'F' },
+    });
+    expect(skills[1]).toMatchObject({
+      name: 'Unarmed Combat',
+      system: { rating: 6, ratingFormula: 'F+2' },
+    });
+    expect(skills[2]).toMatchObject({
+      name: 'Perception',
+      system: { rating: 3, ratingFormula: '', specialization: 'Visual' },
+    });
+  });
+
+  it('creates skill items for sprites using the compile rating', async () => {
+    const template = skillTemplate('sprite', [
+      { name: 'Computer', rating: 0, ratingFormula: 'F', spec: '' },
+    ]);
+
+    const data = await buildCritterActorData(template, 'Data Sprite', 3);
+
+    const skills = data.items.filter((i) => i.type === 'Skill');
+    expect(skills).toHaveLength(1);
+    expect(skills[0]).toMatchObject({
+      name: 'Computer',
+      system: { rating: 3, ratingFormula: 'F' },
+    });
+  });
+
+  it('enriches skill items with compendium data and expands groups', async () => {
+    const compendiumDocs = [
+      {
+        name: 'Assensing',
+        toObject: () => ({
+          name: 'Assensing',
+          img: 'icons/assensing.png',
+          system: {
+            attribute: 'INTUITION',
+            category: 'magic',
+            group: '',
+            label: 'sr4.skills.assensing',
+          },
+        }),
+      },
+      {
+        name: 'Pistols',
+        toObject: () => ({
+          name: 'Pistols',
+          system: { attribute: 'AGILITY', group: 'firearms' },
+        }),
+      },
+      {
+        name: 'Automatics',
+        toObject: () => ({
+          name: 'Automatics',
+          system: { attribute: 'AGILITY', group: 'firearms' },
+        }),
+      },
+    ];
+    globalThis.game.packs = {
+      get: (id) =>
+        id === 'shadowrun4e.skills'
+          ? { getDocuments: async () => compendiumDocs }
+          : undefined,
+    };
+
+    try {
+      const template = skillTemplate('spirit', [
+        { name: 'Assensing', rating: 0, ratingFormula: 'F', spec: '' },
+        { name: 'Firearms', rating: 0, ratingFormula: 'F', spec: '' },
+      ]);
+
+      const data = await buildCritterActorData(template, 'Spirit of Man', 5);
+
+      const skills = data.items.filter((i) => i.type === 'Skill');
+      expect(skills.map((s) => s.name)).toEqual([
+        'Assensing',
+        'Pistols',
+        'Automatics',
+      ]);
+      expect(skills[0]).toMatchObject({
+        img: 'icons/assensing.png',
+        system: {
+          attribute: 'INTUITION',
+          category: 'magic',
+          label: 'sr4.skills.assensing',
+          rating: 5,
+          ratingFormula: 'F',
+        },
+      });
+      expect(skills[1].system).toMatchObject({
+        attribute: 'AGILITY',
+        rating: 5,
+        ratingFormula: 'F',
+      });
+    } finally {
+      delete globalThis.game.packs;
+    }
   });
 });

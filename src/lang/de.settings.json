@@ -21,6 +21,14 @@
       "updateTooltip": "Aus Chummer-XML aktualisieren",
       "upload": "Charakter-XML-Datei"
     },
+    "compendium": {
+      "purge": {
+        "button": "Welt-Kompendien löschen",
+        "confirm": "{count} Welt-Kompendium(en) endgültig löschen? System-Kompendien bleiben erhalten. Dies kann nicht rückgängig gemacht werden.",
+        "none": "Keine Welt-Kompendien zum Löschen vorhanden.",
+        "result": "{deleted} Welt-Kompendium(en) gelöscht."
+      }
+    },
     "importer": {
       "button": "XML importieren",
       "colCategory": "Kategorie",
@@ -91,6 +99,21 @@
         "save": "Speichern",
         "title": "NSC-Standardfertigkeiten",
         "toggleAll": "Alle / Keine"
+      },
+      "riggerLookupMenu": {
+        "commandProgram": "Name des Command-Programms",
+        "hint": "Legt fest, welche Rigger-Fertigkeiten und welches Command-Programm Drohnenproben standardmäßig verwenden. Fahrzeuge können dies auf ihrem Konfigurations-Tab individuell überschreiben.",
+        "label": "Konfigurieren",
+        "name": "Rigger-Fertigkeits-Zuordnung",
+        "reset": "Auf Standard zurücksetzen",
+        "roles": {
+          "attackSkill": "Angriffs-Fertigkeit",
+          "fullDefenseSkill": "Volle-Abwehr-Fertigkeit",
+          "infiltrationSkill": "Infiltrations-Fertigkeit",
+          "perceptionSkill": "Wahrnehmungs-Fertigkeit"
+        },
+        "save": "Speichern",
+        "title": "Rigger-Fertigkeits-Zuordnung"
       },
       "spellWorkflow": {
         "hint": "Aktiviert den mehrstufigen Zauber-Workflow (Kraftwahl, Wurf, Entzug).",

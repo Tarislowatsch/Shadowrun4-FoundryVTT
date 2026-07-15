@@ -26,7 +26,11 @@ export async function buildSummonedActorData(record, ownerUuid) {
 
   const template = await resolveCritterTemplate(templateName, entityType);
   if (template) {
-    const built = buildCritterActorData(template.system, templateName, force);
+    const built = await buildCritterActorData(
+      template.system,
+      templateName,
+      force
+    );
     built.name = name;
     built.img = template.img;
     built.system.ownerUuid = ownerUuid;

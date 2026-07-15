@@ -5,6 +5,7 @@ import {
   openSoakDialog,
 } from '@utils/index';
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import { openDroneDefenseDialog } from '@utils/rigging/drone-defense.js';
 import {
   isPhysicalDamageType,
   getElementResistance,
@@ -133,9 +134,11 @@ function getArmorBreakdown(defender, weapon) {
   /** @type {import('@models/index').SR4BaseCharacterSystem} */
   const sys = /** @type {any} */ (defender).system;
   const raw =
-    weapon.system.armorType === 'impact'
-      ? (sys.armor?.impact ?? 0)
-      : (sys.armor?.ballistic ?? 0);
+    defender.type === 'vehicle'
+      ? (sys.effectiveArmor ?? sys.armor ?? 0)
+      : weapon.system.armorType === 'impact'
+        ? (sys.armor?.impact ?? 0)
+        : (sys.armor?.ballistic ?? 0);
   const apHalf = weapon.system.apHalf ?? false;
   const ap = apHalf ? null : (weapon.system.ap ?? 0);
   const effective = apHalf
@@ -204,13 +207,22 @@ export class DefenseFlow {
       return;
     }
 
-    const defenseResult = await openDefenseDialog(
-      defender,
-      attacker,
-      successes,
-      weapon,
-      wideDefenseMalus
-    );
+    const defenseResult =
+      defender.type === 'vehicle'
+        ? await openDroneDefenseDialog(
+            defender,
+            attacker,
+            successes,
+            weapon,
+            wideDefenseMalus
+          )
+        : await openDefenseDialog(
+            defender,
+            attacker,
+            successes,
+            weapon,
+            wideDefenseMalus
+          );
     if (defenseResult === null || defenseResult.successes === null) {
       await DefenseFlow._sendPotentialSummary(
         defender,

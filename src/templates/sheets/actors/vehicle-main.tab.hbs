@@ -1,41 +1,22 @@
-<div class="sheet-container">
-
-  <div class="npc-header">
-    {{> "actor-image"}}
-    <div class="npc-header-info">
-      <div class="meta-field">
-        <label>{{localize 'sr4.vehicle.name'}}</label>
-        <input type="text" name="name" value="{{actor.name}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
-      <div class="meta-field">
-        <label>{{localize 'sr4.vehicle.type'}}</label>
-        <input type="text" name="system.vehicleType" value="{{system.vehicleType}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
-      <div class="meta-field">
-        <label>{{localize 'sr4.vehicle.availability'}}</label>
-        <input type="text" name="system.availability" value="{{system.availability}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
-      <div class="meta-field">
-        <label>{{localize 'sr4.vehicle.cost'}}</label>
-        <input type="number" name="system.cost" value="{{system.cost}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
-    </div>
-  </div>
-
-  {{> "actor-link-row"
-      linkLabel="sr4.vehicle.rigger"
-      dropType="riggerUuid"
-      linkedName=riggerName
-      clearAction="clearRigger"
-      dropHint="sr4.vehicle.dropRigger"}}
-
-  <hr />
+<div class="tab main sheet-container {{tab.cssClass}}" data-group="primary" data-tab="main">
 
   <h3>{{localize 'sr4.vehicle.stats'}}</h3>
   <div class="grid">
     {{#each vehicleStats as |stat|}}
       {{> "attribute-cell" label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue}}
     {{/each}}
+  </div>
+
+  <div class="item-card-actions drone-actions">
+    <button type="button" class="roll-action" data-action="droneAction" data-drone-action="maneuvering">
+      <i class="fas fa-route"></i> {{localize 'sr4.vehicle.actions.maneuvering'}}
+    </button>
+    <button type="button" class="roll-action" data-action="droneAction" data-drone-action="perception">
+      <i class="fas fa-eye"></i> {{localize 'sr4.vehicle.actions.perception'}}
+    </button>
+    <button type="button" class="roll-action" data-action="droneAction" data-drone-action="infiltration">
+      <i class="fas fa-user-ninja"></i> {{localize 'sr4.vehicle.actions.infiltration'}}
+    </button>
   </div>
 
   <hr />
@@ -81,7 +62,10 @@
   </div>
 
   <div class="npc-section">
-    <h3>{{localize 'sr4.vehiclemod.mods'}}</h3>
+    <div class="tab-header">
+      <h3>{{localize 'sr4.vehiclemod.mods'}}</h3>
+      {{> item-create-btn btnAction="createVehicleMod" btnTooltip="sr4.vehiclemod.add"}}
+    </div>
     <small>{{localize 'sr4.vehiclemod.slotsUsed'}}: {{ usedSlots }} / {{ system.body }}
       {{#if slotWarning}}
         <i class="fas fa-exclamation-triangle warning" data-tooltip="{{localize 'sr4.vehiclemod.slotWarning'}}"></i>
@@ -101,9 +85,6 @@
     {{else}}
       <p class="empty-list">{{localize 'sr4.vehiclemod.noMods'}}</p>
     {{/if}}
-    <button type="button" data-action="createVehicleMod">
-      <i class="fas fa-plus"></i> {{localize 'sr4.vehiclemod.add'}}
-    </button>
   </div>
 
   <div class="npc-section">

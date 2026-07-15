@@ -15,7 +15,7 @@ const WATCHER_PATTERN = /^Watcher/i;
  * @param {number|null} force
  */
 async function createActorDirectly(templateSystem, templateName, force) {
-  const data = buildCritterActorData(templateSystem, templateName, force);
+  const data = await buildCritterActorData(templateSystem, templateName, force);
   await Actor.create(data, { renderSheet: true });
 }
 
@@ -101,7 +101,7 @@ export class CritterCreationDialog extends foundry.applications.api.HandlebarsAp
    * @this {CritterCreationDialog}
    */
   static async #onCreate() {
-    const data = buildCritterActorData(
+    const data = await buildCritterActorData(
       this.#templateData,
       this.#templateName,
       this.#force

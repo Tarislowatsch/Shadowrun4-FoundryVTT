@@ -1,0 +1,25 @@
+<div class="tab config sheet-container {{tab.cssClass}}" data-group="primary" data-tab="config">
+
+  <h3>{{localize 'sr4.vehicle.riggerConfig.title'}}</h3>
+  <p class="hint">{{localize 'sr4.vehicle.riggerConfig.hint'}}</p>
+
+  {{#unless riggerName}}
+  <p class="empty-list">{{localize 'sr4.vehicle.riggerConfig.noRigger'}}</p>
+  {{/unless}}
+
+  {{#each riggerConfig as |role|}}
+  <div class="meta-field rigger-config-row" data-role="{{role.key}}">
+    <label>{{localize role.label}}</label>
+    <select data-config-select>
+      <option value="">{{localize 'sr4.vehicle.riggerConfig.globalDefault'}} ({{role.defaultDisplay}})</option>
+      {{#each role.options}}
+      <option value="{{value}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+      {{/each}}
+      <option value="__manual__" {{#if role.manual}}selected{{/if}}>{{localize 'sr4.vehicle.riggerConfig.manual'}}</option>
+    </select>
+    <input type="text" data-config-manual value="{{#if role.manual}}{{role.stored}}{{/if}}"
+      {{#unless role.manual}}style="display:none"{{/unless}} />
+  </div>
+  {{/each}}
+
+</div>

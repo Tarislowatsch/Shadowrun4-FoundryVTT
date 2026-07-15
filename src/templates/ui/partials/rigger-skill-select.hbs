@@ -1,0 +1,10 @@
+{{#if riggerSkills.length}}
+<div class="form-group" id="riggerSkillGroup">
+  <label for="riggerSkill">{{localize "sr4.defense.skill"}}</label>
+  <select id="riggerSkill" name="riggerSkill">
+    {{#each riggerSkills}}
+    <option value="{{ this.value }}">{{ this.label }} ({{ this.rating }})</option>
+    {{/each}}
+  </select>
+</div>
+{{/if}}

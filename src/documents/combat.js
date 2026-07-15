@@ -1,8 +1,12 @@
 // @ts-nocheck
+import { resolveRiggerSync } from '@utils/rigging/drone-pool.js';
+
 export function getPhysicalPassCount(combatant) {
-  return (
-    1 + (combatant.actor?.system?.modifiers?.initiative?.passes?.physical ?? 0)
-  );
+  let actor = combatant.actor;
+  if (actor?.type === 'vehicle' && actor.system?.controlMode !== 'autonomous') {
+    actor = resolveRiggerSync(actor) ?? actor;
+  }
+  return 1 + (actor?.system?.modifiers?.initiative?.passes?.physical ?? 0);
 }
 
 export class SR4Combat extends Combat {

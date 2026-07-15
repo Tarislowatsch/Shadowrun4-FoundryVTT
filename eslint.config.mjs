@@ -53,6 +53,7 @@ export default [
         foundry: 'readonly',
 
         fromUuid: 'readonly',
+        fromUuidSync: 'readonly',
         loadTemplates: 'readonly',
 
         shadowrun4e: 'readonly',

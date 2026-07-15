@@ -4,6 +4,7 @@ import {
   DEFAULT_NPC_SKILLS_JSON,
 } from '../sheets/settings/npc-skills-menu.js';
 import { XmlImporterApp } from '../sheets/importer/importer-app.js';
+import { RiggerLookupMenu } from '../sheets/settings/rigger-lookup-menu.js';
 
 export class SettingsHook {
   constructor() {
@@ -182,6 +183,22 @@ export class SettingsHook {
         config: false,
         type: String,
         default: DEFAULT_NPC_SKILLS_JSON,
+      });
+
+      game.settings.registerMenu('shadowrun4e', 'riggerLookupMenu', {
+        name: 'sr4.settings.riggerLookupMenu.name',
+        label: 'sr4.settings.riggerLookupMenu.label',
+        hint: 'sr4.settings.riggerLookupMenu.hint',
+        icon: 'fas fa-satellite-dish',
+        type: RiggerLookupMenu,
+        restricted: true,
+      });
+
+      game.settings.register('shadowrun4e', 'riggerLookup', {
+        scope: 'world',
+        config: false,
+        type: String,
+        default: '{}',
       });
     });
   }

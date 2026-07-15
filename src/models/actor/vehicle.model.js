@@ -29,6 +29,8 @@ import { computeVehicleDerivedStats } from '@documents/derivedStats.mapper';
  * @property {number}  speed
  * @property {number}  accel
  * @property {string}  riggerUuid
+ * @property {'autonomous'|'remote'|'jumped'} controlMode
+ * @property {{ attackSkill: string, fullDefenseSkill: string, perceptionSkill: string, infiltrationSkill: string, commandProgram: string }} riggerOverrides
  * @property {number}  effectiveHandling
  * @property {number}  effectiveSpeed
  * @property {number}  effectiveAccel
@@ -61,6 +63,17 @@ export class SR4VehicleData extends foundry.abstract.TypeDataModel {
       speed: new fields.NumberField({ initial: 3, integer: true }),
       accel: new fields.NumberField({ initial: 2, integer: true }),
       riggerUuid: new fields.StringField({ initial: '', blank: true }),
+      controlMode: new fields.StringField({
+        initial: 'autonomous',
+        choices: ['autonomous', 'remote', 'jumped'],
+      }),
+      riggerOverrides: new fields.SchemaField({
+        attackSkill: new fields.StringField({ initial: '', blank: true }),
+        fullDefenseSkill: new fields.StringField({ initial: '', blank: true }),
+        perceptionSkill: new fields.StringField({ initial: '', blank: true }),
+        infiltrationSkill: new fields.StringField({ initial: '', blank: true }),
+        commandProgram: new fields.StringField({ initial: '', blank: true }),
+      }),
       modifiers: modifiersField(),
       derivedStats: new fields.SchemaField({
         ...baseDerivedStatsFields(),

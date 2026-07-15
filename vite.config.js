@@ -30,6 +30,24 @@ function copyStaticPlugin(outDir, isWatch) {
   };
 }
 
+function copyDirTolerant(src, dest, failures) {
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirTolerant(srcPath, destPath, failures);
+    } else {
+      try {
+        fs.copyFileSync(srcPath, destPath);
+      } catch (err) {
+        failures.push({ path: srcPath, code: err.code });
+      }
+    }
+  }
+}
+
 function foundryDeployPlugin(foundryDir) {
   if (!foundryDir) return null;
   const outDir = path.resolve('shadowrun4e');
@@ -37,8 +55,18 @@ function foundryDeployPlugin(foundryDir) {
     name: 'foundry-deploy',
     closeBundle() {
       if (!fs.existsSync(outDir)) return;
-      copyDir(outDir, path.join(foundryDir, 'shadowrun4e'));
-      console.log('[foundry-deploy] deployed to Foundry');
+      const failures = [];
+      copyDirTolerant(outDir, path.join(foundryDir, 'shadowrun4e'), failures);
+      if (failures.length) {
+        console.warn(
+          `[foundry-deploy] deployed with ${failures.length} skipped file(s) — Foundry is probably running:`
+        );
+        for (const f of failures) {
+          console.warn(`  ${f.code}: ${path.relative(outDir, f.path)}`);
+        }
+      } else {
+        console.log('[foundry-deploy] deployed to Foundry');
+      }
     },
   };
 }

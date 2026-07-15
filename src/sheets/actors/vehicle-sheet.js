@@ -1,5 +1,22 @@
-import { openActionDialog } from '@utils/index';
+import {
+  ControlModes,
+  DEFAULT_RIGGER_LOOKUP,
+  localize,
+  mergeRiggerLookup,
+  openActionDialog,
+  openDroneAttackDialog,
+  openDroneRollDialog,
+  resolveRiggerSync,
+} from '@utils/index';
 import { SR4SummonedEntitySheet } from './sr4-summoned-entity-sheet.js';
+
+const RIGGER_CONFIG_ROLES = [
+  { key: 'attackSkill', itemType: 'Skill' },
+  { key: 'fullDefenseSkill', itemType: 'Skill' },
+  { key: 'perceptionSkill', itemType: 'Skill' },
+  { key: 'infiltrationSkill', itemType: 'Skill' },
+  { key: 'commandProgram', itemType: 'Program' },
+];
 
 export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
   static DEFAULT_OPTIONS = {
@@ -9,15 +26,43 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
       monitorBox: SR4VehicleSheet.#onMonitorBox,
       rollAutonomous: SR4VehicleSheet.#onRollAutonomous,
       attackRoll: SR4VehicleSheet.#onAttackRoll,
+      droneAction: SR4VehicleSheet.#onDroneAction,
       clearRigger: SR4VehicleSheet.#onClearRigger,
       createVehicleMod: SR4VehicleSheet.#onCreateVehicleMod,
     },
   };
 
   static PARTS = {
-    sheet: {
-      template: 'systems/shadowrun4e/templates/sheets/actors/vehicle.sheet.hbs',
+    header: {
+      template:
+        'systems/shadowrun4e/templates/sheets/actors/vehicle-header.hbs',
+    },
+    tabs: {
+      template: 'templates/generic/tab-navigation.hbs',
+    },
+    main: {
+      template:
+        'systems/shadowrun4e/templates/sheets/actors/vehicle-main.tab.hbs',
       scrollable: [''],
+    },
+    config: {
+      template:
+        'systems/shadowrun4e/templates/sheets/actors/vehicle-config.tab.hbs',
+      scrollable: [''],
+    },
+  };
+
+  static TABS = {
+    primary: {
+      tabs: [
+        { id: 'main', icon: 'fas fa-car', label: 'sr4.tab.main' },
+        {
+          id: 'config',
+          icon: 'fas fa-sliders-h',
+          label: 'sr4.vehicle.configTab',
+        },
+      ],
+      initial: 'main',
     },
   };
 
@@ -90,6 +135,7 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
 
     return {
       editMode: this.editMode,
+      tabs: this._prepareTabs('primary'),
       actor: {
         img: actorData.img,
         name: actorData.name,
@@ -106,10 +152,69 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
       ),
       vehicleStats,
       vehicleMods,
+      controlModes: Object.values(ControlModes).map((mode) => ({
+        value: mode,
+        label: localize(`sr4.vehicle.controlModes.${mode}`),
+        selected: mode === actorData.system.controlMode,
+      })),
+      riggerConfig: this.#buildRiggerConfig(actorData.system.riggerOverrides),
       usedSlots: live.usedSlots ?? 0,
       slotWarning: live.slotWarning ?? false,
       totalModCost: live.totalModCost ?? 0,
     };
+  }
+
+  async _preparePartContext(partId, context) {
+    if (context.tabs?.[partId]) context.tab = context.tabs[partId];
+    return context;
+  }
+
+  /**
+   * @param {Record<string, string>} overrides
+   * @returns {{ key: string, label: string, stored: string, defaultDisplay: string, options: { value: string, name: string, selected: boolean }[], manual: boolean }[]}
+   */
+  #buildRiggerConfig(overrides = {}) {
+    const rigger = resolveRiggerSync(this.document);
+    const globalDefaults = mergeRiggerLookup(
+      DEFAULT_RIGGER_LOOKUP,
+      typeof game !== 'undefined' && game?.settings
+        ? game.settings.get('shadowrun4e', 'riggerLookup')
+        : '{}'
+    );
+
+    return RIGGER_CONFIG_ROLES.map(({ key, itemType }) => {
+      const stored = overrides?.[key] ?? '';
+      const items = rigger
+        ? rigger.items.filter((i) => i.type === itemType)
+        : [];
+      const options = items
+        .map((item) => ({
+          value: item.system.label || item.name,
+          name: item.name,
+          selected: false,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      for (const option of options) option.selected = option.value === stored;
+      const manual = stored !== '' && !options.some((o) => o.selected);
+      const defaultRef = globalDefaults[key];
+      const defaultDisplay =
+        items.find(
+          (item) =>
+            item.system.label === defaultRef ||
+            item.name.toLowerCase() === defaultRef.toLowerCase()
+        )?.name ?? defaultRef;
+      return {
+        key,
+        label:
+          key === 'commandProgram'
+            ? 'sr4.settings.riggerLookupMenu.commandProgram'
+            : `sr4.settings.riggerLookupMenu.roles.${key}`,
+        stored,
+        defaultDisplay,
+        options,
+        manual,
+      };
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -140,6 +245,39 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
           await item.update({ [target.name]: value });
         });
       });
+
+    this.element.querySelectorAll('[data-config-select]').forEach((el) => {
+      el.addEventListener('change', async (event) => {
+        event.stopPropagation();
+        const select = /** @type {HTMLSelectElement} */ (event.currentTarget);
+        const row = select.closest('[data-role]');
+        const role = /** @type {HTMLElement} */ (row).dataset.role;
+        const manualInput = /** @type {HTMLInputElement} */ (
+          row.querySelector('[data-config-manual]')
+        );
+        if (select.value === '__manual__') {
+          manualInput.style.display = '';
+          manualInput.focus();
+          return;
+        }
+        manualInput.style.display = 'none';
+        await this.actor.update({
+          [`system.riggerOverrides.${role}`]: select.value,
+        });
+      });
+    });
+
+    this.element.querySelectorAll('[data-config-manual]').forEach((el) => {
+      el.addEventListener('change', async (event) => {
+        event.stopPropagation();
+        const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+        const role = /** @type {HTMLElement} */ (input.closest('[data-role]'))
+          .dataset.role;
+        await this.actor.update({
+          [`system.riggerOverrides.${role}`]: input.value.trim(),
+        });
+      });
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -174,9 +312,12 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
   static async #onAttackRoll(event, target) {
     const itemId = target.closest('[data-item-id]')?.dataset.itemId;
     const weapon = this.actor.items.get(itemId);
-    const pilot = this.actor.system.pilot ?? 0;
-    const label = `${game.i18n.localize('sr4.vehicle.autonomous')}: ${weapon?.name ?? ''}`;
-    openActionDialog(this.actor, label, pilot);
+    if (!weapon) return;
+    await openDroneAttackDialog(this.actor, weapon);
+  }
+
+  static async #onDroneAction(event, target) {
+    await openDroneRollDialog(this.actor, target.dataset.droneAction);
   }
 
   static async #onClearRigger() {

@@ -1,0 +1,28 @@
+<div class="rigger-lookup-menu" style="display:flex; flex-direction:column; gap:8px; padding:8px; box-sizing:border-box;">
+  <p class="hint" style="margin:0;">{{localize "sr4.settings.riggerLookupMenu.hint"}}</p>
+
+  {{#each roles}}
+  <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+    <label style="flex:1;">{{localize label}}</label>
+    <select name="{{key}}" style="flex:2;">
+      {{#each options}}
+      <option value="{{value}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+  {{/each}}
+
+  <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+    <label style="flex:1;">{{localize "sr4.settings.riggerLookupMenu.commandProgram"}}</label>
+    <input type="text" name="commandProgram" value="{{commandProgram}}" style="flex:2;" />
+  </div>
+
+  <footer class="sheet-footer flexrow" style="margin-top:8px; gap:8px; flex-shrink:0;">
+    <button type="button" data-action="save">
+      <i class="fas fa-save"></i> {{localize "sr4.settings.riggerLookupMenu.save"}}
+    </button>
+    <button type="button" data-action="reset">
+      <i class="fas fa-rotate-left"></i> {{localize "sr4.settings.riggerLookupMenu.reset"}}
+    </button>
+  </footer>
+</div>

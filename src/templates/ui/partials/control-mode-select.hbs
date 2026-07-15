@@ -1,0 +1,8 @@
+<div class="form-group">
+  <label for="controlMode">{{localize "sr4.vehicle.controlMode"}}</label>
+  <select id="controlMode" name="controlMode">
+    {{#each controlModes}}
+    <option value="{{ this.value }}" {{#if this.selected}}selected{{/if}}>{{ this.label }}</option>
+    {{/each}}
+  </select>
+</div>

@@ -1,5 +1,9 @@
 {
   "sr4": {
+    "critter": {
+      "templateApplied": "Template \"{name}\" applied.",
+      "templateWrongType": "This template does not match the actor type."
+    },
     "spirit": {
       "attributes": "Attributes",
       "dropSummoner": "Drop actor to link summoner",
@@ -39,22 +43,49 @@
     },
     "vehicle": {
       "accel": "Accel",
+      "actions": {
+        "attack": "Attack",
+        "fullDefense": "Full Defense",
+        "infiltration": "Infiltration",
+        "maneuvering": "Maneuvering",
+        "meleeDefense": "Melee Defense",
+        "perception": "Perception",
+        "rangedDefense": "Ranged Defense"
+      },
       "armor": "Armor",
       "autonomous": "Autonomous",
       "autosofts": "Autosofts",
       "availability": "Avail.",
       "body": "Body",
+      "configTab": "Configuration",
+      "controlMode": "Control Mode",
+      "controlModes": {
+        "autonomous": "Autonomous",
+        "jumped": "Jumped In",
+        "remote": "Remote Control"
+      },
       "cost": "Cost",
       "dropRigger": "Drop actor to link rigger",
       "handling": "Handling",
+      "missingAutosoft": "No matching autosoft — Pilot only",
       "name": "Name",
       "noAutosofts": "No autosofts installed",
+      "noCommandProgram": "Rigger has no program named \"Command\" — using 0",
       "noDicePool": "No dice — add autosofts or increase Pilot",
+      "noRigger": "No rigger linked — falling back to autonomous mode",
       "noVehicles": "No vehicles",
       "pilot": "Pilot",
       "pilotPoolHint": "Autonomous pool",
       "pilotRoll": "Pilot Roll",
+      "response": "Response",
       "rigger": "Rigger",
+      "riggerConfig": {
+        "globalDefault": "Global default",
+        "hint": "Override which rigger skills and command program this vehicle uses. Empty fields fall back to the global defaults.",
+        "manual": "Manual…",
+        "noRigger": "No rigger linked — overrides can be entered manually.",
+        "title": "Rigger Skill Mapping"
+      },
       "riggerUuid": "Rigger UUID",
       "rollAutonomous": "Roll autonomous",
       "sensor": "Sensor",

@@ -1,0 +1,11 @@
+<form class="skill-roll-dialog drone-roll-dialog">
+  {{> control-mode-select}}
+  {{> rigger-skill-select}}
+  {{> pool-breakdown}}
+
+  {{> bonus-input}}
+  {{> malus-input}}
+  {{> specialization-checkbox}}
+  {{> edge-checkbox}}
+  <input type="hidden" id="maxEdge" value="{{ maxEdge }}" />
+</form>
