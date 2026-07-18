@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   isPhysicalDamageType,
   isRangedWeapon,
+  isMeleeWeapon,
   AP_HALF_TYPES,
   SR4RangedWeaponData,
   SR4MeleeWeaponData,
@@ -36,6 +37,20 @@ describe('isRangedWeapon', () => {
 
   it('returns false for other types', () => {
     expect(isRangedWeapon({ type: 'armor', system: {} })).toBe(false);
+  });
+});
+
+describe('isMeleeWeapon', () => {
+  it('returns true for Melee Weapon type', () => {
+    expect(isMeleeWeapon({ type: 'Melee Weapon', system: {} })).toBe(true);
+  });
+
+  it('returns false for Ranged Weapon type', () => {
+    expect(isMeleeWeapon({ type: 'Ranged Weapon', system: {} })).toBe(false);
+  });
+
+  it('returns false for other types', () => {
+    expect(isMeleeWeapon({ type: 'armor', system: {} })).toBe(false);
   });
 });
 

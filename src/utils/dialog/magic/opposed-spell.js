@@ -16,7 +16,7 @@ const OPPOSED_RESIST_TEMPLATE =
  * @param {number} castingHits
  * @param {number} force
  * @param {string} resistAttribute
- * @param {string} casterId
+ * @param {string} casterUuid
  * @returns {Promise<void>}
  */
 export async function openOpposedSpellResistDialog(
@@ -25,7 +25,7 @@ export async function openOpposedSpellResistDialog(
   castingHits,
   force,
   resistAttribute,
-  casterId
+  casterUuid
 ) {
   const baseResist = defender.getAttribute(resistAttribute) ?? 0;
   const counterspelling =
@@ -59,6 +59,6 @@ export async function openOpposedSpellResistDialog(
     rolledDice: resistPool,
     castingHits,
     socketAction: 'opposedSpellResisted',
-    casterId,
+    casterUuid,
   });
 }

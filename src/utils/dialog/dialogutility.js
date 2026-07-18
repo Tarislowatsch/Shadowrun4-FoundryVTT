@@ -286,19 +286,22 @@ export async function dialogActions(
  * @param {import('@documents/index').SR4Actor} actor
  * @param {number} [numDice]
  * @param {import('@models/index').SR4Weapon} [weapon]
- * @param {{ ignoreModifiers?: boolean }} [options]
+ * @param {{ ignoreModifiers?: boolean, isAttack?: boolean }} [options]
  * @returns {DialogParameters}
  */
 export function createDialogParameters(
   actor,
   numDice = 0,
   weapon = undefined,
-  { ignoreModifiers = false } = {}
+  { ignoreModifiers = false, isAttack = false } = {}
 ) {
   const hasSmartlink = weapon ? resolveSmartlink(weapon) : false;
+  const attackMalus = isAttack
+    ? (actor.system.modifiers.attackModifier ?? 0)
+    : 0;
   const malus = ignoreModifiers
     ? 0
-    : -(actor.system.derivedStats.dicePoolModifier ?? 0);
+    : -(actor.system.derivedStats.dicePoolModifier ?? 0) - attackMalus;
   return {
     currentEdge: actor.getAttribute('CURRENTEDGE'),
     edgeAvailable: actor.getAttribute('CURRENTEDGE') > 0,
@@ -442,6 +445,47 @@ export async function openActionDialog(actor, action, numDice) {
     numDice,
     `${localize('sr4.roll.rolling')} ${localize('sr4.action.' + action)}`,
     action
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {number} numDice
+ * @param {string} label
+ * @returns {Promise<void>}
+ */
+async function _openLabeledRollDialog(actor, numDice, label) {
+  await _openStandardRollDialog(
+    actor,
+    numDice,
+    `${localize('sr4.roll.rolling')} ${label}`,
+    label
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} statKey
+ * @returns {Promise<void>}
+ */
+export async function openDerivedStatDialog(actor, statKey) {
+  await _openLabeledRollDialog(
+    actor,
+    actor.system.derivedStats?.[statKey] ?? 0,
+    localize(`sr4.action.${statKey}`)
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} attributeKey
+ * @returns {Promise<void>}
+ */
+export async function openAttributeRollDialog(actor, attributeKey) {
+  await _openLabeledRollDialog(
+    actor,
+    actor.getAttribute(attributeKey) ?? 0,
+    localize(`sr4.stats.${attributeKey}`)
   );
 }
 

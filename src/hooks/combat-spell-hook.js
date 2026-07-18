@@ -9,8 +9,8 @@ import { getGame, isResponsibleForActor } from '@utils/index';
 
 /**
  * @typedef {object} DirectSpellResistPayload
- * @property {string} defenderId
- * @property {string} casterId
+ * @property {string} defenderUuid
+ * @property {string} casterUuid
  * @property {string} spellName
  * @property {number} castingHits
  * @property {number} force
@@ -19,8 +19,8 @@ import { getGame, isResponsibleForActor } from '@utils/index';
 
 /**
  * @typedef {object} DirectSpellDamagePayload
- * @property {string} defenderId
- * @property {string} casterId
+ * @property {string} defenderUuid
+ * @property {string} casterUuid
  * @property {string} spellName
  * @property {number} damage
  * @property {boolean} isPhysical
@@ -28,8 +28,8 @@ import { getGame, isResponsibleForActor } from '@utils/index';
 
 /**
  * @typedef {object} IndirectSpellDefensePayload
- * @property {string} defenderId
- * @property {string} casterId
+ * @property {string} defenderUuid
+ * @property {string} casterUuid
  * @property {import('@models/index').SR4Spell} spell
  * @property {number} castingHits
  * @property {number} force
@@ -37,8 +37,8 @@ import { getGame, isResponsibleForActor } from '@utils/index';
 
 /**
  * @typedef {object} OpposedSpellResistPayload
- * @property {string} defenderId
- * @property {string} casterId
+ * @property {string} defenderUuid
+ * @property {string} casterUuid
  * @property {string} spellName
  * @property {number} castingHits
  * @property {number} force
@@ -74,16 +74,16 @@ export class CombatSpellHook {
     )
       return;
 
-    const { defenderId } = data.payload ?? {};
+    const { defenderUuid } = data.payload ?? {};
 
     /** @type {import('@documents/index').SR4Actor | undefined} */
-    const defender = getGame().actors?.get(defenderId);
+    const defender = /** @type {any} */ (await fromUuid(defenderUuid));
     if (!defender) return;
 
-    if (!isResponsibleForActor(defenderId)) return;
+    if (!isResponsibleForActor(/** @type {any} */ (defender).id)) return;
 
     if (data.action === 'triggerDirectSpellResist') {
-      const { casterId, spellName, castingHits, force, isMana } =
+      const { casterUuid, spellName, castingHits, force, isMana } =
         /** @type {DirectSpellResistPayload} */ (data.payload);
       await openDirectSpellResistDialog(
         defender,
@@ -91,12 +91,12 @@ export class CombatSpellHook {
         castingHits,
         force,
         isMana,
-        casterId
+        casterUuid
       );
     } else if (data.action === 'applyDirectSpellDamage') {
-      const { damage, isPhysical, spellName, casterId, effects } =
+      const { damage, isPhysical, spellName, casterUuid, effects } =
         /** @type {DirectSpellDamagePayload} */ (data.payload);
-      const caster = getGame().actors?.get(casterId);
+      const caster = /** @type {any} */ (await fromUuid(casterUuid));
       await ApplyDamageFlow.sendCombatSummary(
         caster?.name ?? '?',
         defender.name,
@@ -113,10 +113,10 @@ export class CombatSpellHook {
         await sendEffectDecisionMessage(defender, effects, spellName);
       }
     } else if (data.action === 'triggerIndirectSpellDefense') {
-      const { casterId, spell, castingHits, force } =
+      const { casterUuid, spell, castingHits, force } =
         /** @type {IndirectSpellDefensePayload} */ (data.payload);
       /** @type {import('@documents/index').SR4Actor | undefined} */
-      const attacker = getGame().actors?.get(casterId);
+      const attacker = /** @type {any} */ (await fromUuid(casterUuid));
       if (!attacker) return;
       await openIndirectSpellDefenseDialog(
         defender,
@@ -126,7 +126,7 @@ export class CombatSpellHook {
         force
       );
     } else if (data.action === 'triggerOpposedSpellResist') {
-      const { casterId, spellName, castingHits, force, resistAttribute } =
+      const { casterUuid, spellName, castingHits, force, resistAttribute } =
         /** @type {OpposedSpellResistPayload} */ (data.payload);
       await openOpposedSpellResistDialog(
         defender,
@@ -134,7 +134,7 @@ export class CombatSpellHook {
         castingHits,
         force,
         resistAttribute,
-        casterId
+        casterUuid
       );
     }
   }

@@ -12,11 +12,13 @@
       "type": "Type"
     },
     "commlink": {
+      "active": "Active",
       "firewall": "Firewall",
       "noCommlinks": "This is where I keep my commlinks, if I had any",
       "os": "System",
       "response": "Response",
-      "signal": "Signal"
+      "signal": "Signal",
+      "toggleActive": "Set as active commlink (used for Matrix initiative)"
     },
     "matrix": {
       "attribute": "Attribute",
@@ -80,6 +82,11 @@
       "useComplexFormHint": "Roll Complex Form Rating + Resonance",
       "vrMatrixInitiative": "VR Matrix Initiative",
       "vrMatrixInitiativePasses": "VR Matrix Init. Passes",
+      "simMode": {
+        "label": "Sim Mode",
+        "cold": "Cold Sim",
+        "hot": "Hot Sim"
+      },
       "world": "World"
     },
     "program": {

@@ -3,6 +3,10 @@ export async function registerCharacterPartials() {
 
   const templatePaths = [
     { path: `${basePath}/statblock.sheet.hbs`, name: 'statblock-sheet' },
+    {
+      path: `${basePath}/derived-stat-actions.hbs`,
+      name: 'derived-stat-actions',
+    },
     { path: `${basePath}/metadata.sheet.hbs`, name: 'metadata-sheet' },
     { path: `${basePath}/skills.grid.hbs`, name: 'skills-grid' },
     { path: `${basePath}/tabs/defense.tab.hbs`, name: 'defense-tab' },

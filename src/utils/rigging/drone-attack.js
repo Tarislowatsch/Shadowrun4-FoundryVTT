@@ -7,11 +7,10 @@ import {
   renderTemplate,
 } from '../dialog/dialogutility';
 import {
-  depleteAmmo,
   getFireModeParams,
   wireFireModeControls,
 } from '../dialog/actions/attack';
-import { reloadWeapon } from '../weapons.js';
+import { depleteAmmo, reloadWeapon } from '../weapons.js';
 import { emitDefenseTrigger } from '@flows/defense-flow.js';
 import { resolveFinalSuccessesAndEmit } from '@utils/rolls/roll-edge-decision.js';
 import {
@@ -147,12 +146,9 @@ export async function openDroneAttackDialog(vehicle, weapon) {
   if (!result) return;
   const actor = controllingActor(vehicle, rigger, result.mode);
   await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
-    emitDefenseTrigger(
-      vehicle,
-      weapon,
-      finalSuccesses,
-      result.wideDefenseMalus ?? 0,
-      result.burstDamageBonus ?? 0
-    )
+    emitDefenseTrigger(vehicle, weapon, finalSuccesses, {
+      wideDefenseMalus: result.wideDefenseMalus ?? 0,
+      burstDamageBonus: result.burstDamageBonus ?? 0,
+    })
   );
 }

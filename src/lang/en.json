@@ -12,14 +12,18 @@
       "Action": "Action",
       "Ammo": "Ammo",
       "Armor": "Armor",
+      "Armor Mod": "Armor Mod",
       "Autosoft": "Autosoft",
       "Commlink": "Commlink",
+      "CritterPower": "Critter Power",
+      "CritterTemplate": "Critter Template",
       "Fetish": "Fetish",
       "Focus": "Focus",
       "Gear": "Gear",
       "Implant": "Implant",
       "Item": "Item",
       "Melee Weapon": "Melee Weapon",
+      "Metatype": "Metatype",
       "Power": "Power",
       "Program": "Program",
       "Quality": "Quality",
@@ -27,16 +31,11 @@
       "Skill": "Skill",
       "Spell": "Spell",
       "Vehicle": "Vehicle",
-      "Weapon Mod": "Weapon Mod",
-      "Armor Mod": "Armor Mod",
       "Vehicle Mod": "Vehicle Mod",
-      "Metatype": "Metatype",
-      "CritterPower": "Critter Power",
-      "CritterTemplate": "Critter Template"
+      "Weapon Mod": "Weapon Mod"
     }
   },
   "sr4": {
-    "cancel": "Cancel",
     "action": {
       "actiontype": {
         "complex": "Complex",
@@ -58,8 +57,12 @@
         "STRENGTH": "STR",
         "WILLPOWER": "WIL"
       },
+      "composure": "Composure",
       "delete": "Delete",
       "edit": "Edit",
+      "judgeIntentions": "Judge Intentions",
+      "liftCarry": "Lift/Carry",
+      "memory": "Memory",
       "new": "New Action",
       "noActions": "This Character has no actions",
       "noRatingForAction": "Please add ratings for this action",
@@ -98,6 +101,12 @@
       "soakBonus": "Soak Bonus",
       "woundModBonus": "Wound Mod. Bonus"
     },
+    "cancel": "Cancel",
+    "conditionMonitor": {
+      "physical": "Physical Condition Monitor",
+      "simpleHp": "Simple HP (physical only)",
+      "stun": "Stun Condition Monitor"
+    },
     "connection": {
       "archetype": "Archetype",
       "connection": "Connection",
@@ -112,15 +121,12 @@
       "notes": "Notes",
       "type": "Type"
     },
-    "conditionMonitor": {
-      "physical": "Physical Condition Monitor",
-      "simpleHp": "Simple HP (physical only)",
-      "stun": "Stun Condition Monitor"
-    },
     "effect": {
       "active": "Active",
       "add": "Add Effect",
+      "addChange": "Add Change",
       "addFromTemplate": "— Add effect —",
+      "applyToTarget": "Apply Effects",
       "attribute": "Attribute",
       "changeIcon": "Click to change icon",
       "delete": "Delete",
@@ -133,45 +139,28 @@
         "multiply": "Multiplier",
         "override": "Override"
       },
-      "addChange": "Add Change",
-      "removeChange": "Remove Change",
       "name": "Name",
       "new": "New Effect",
       "none": "No effects present",
       "notes": "Notes",
+      "pendingEffects": "{name}: Effects from {spell} pending.",
+      "removeChange": "Remove Change",
       "showOnToken": "Show on Token",
       "source": "Source",
       "templates": {
-        "label": "Templates",
         "blind": "Blinded",
         "blindFlareComp": "Blinded (Flare Compensation)",
         "disoriented": "Disoriented (Electricity)",
         "knockedDown": "Knocked Down",
+        "label": "Templates",
         "sustain": "Sustaining"
       },
-      "value": "Value",
-      "applyToTarget": "Apply Effects",
-      "pendingEffects": "{name}: Effects from {spell} pending."
+      "value": "Value"
     },
     "effectTarget": {
       "attackModifier": "Attack Dice Pool Modifier",
       "defenseModifier": "Defense Dice Pool Modifier",
       "generalModifier": "General Dice Pool Modifier",
-      "skillGroup": {
-        "athletics": "Skill Group: Athletics",
-        "biotech": "Skill Group: Biotech",
-        "closeCombat": "Skill Group: Close Combat",
-        "conjuring": "Skill Group: Conjuring",
-        "cracking": "Skill Group: Cracking",
-        "electronics": "Skill Group: Electronics",
-        "influence": "Skill Group: Influence",
-        "mechanic": "Skill Group: Mechanic",
-        "outdoors": "Skill Group: Outdoors",
-        "rangedCombat": "Skill Group: Ranged Combat",
-        "sorcery": "Skill Group: Sorcery",
-        "stealth": "Skill Group: Stealth",
-        "tasking": "Skill Group: Tasking"
-      },
       "skill": {
         "aeronauticsmechanic": "Skill: Aeronautics-Mechanic",
         "arcana": "Skill: Arcana",
@@ -246,33 +235,49 @@
         "throwingweapons": "Skill: Throwing-Weapons",
         "tracking": "Skill: Tracking",
         "unarmedcombat": "Skill: Unarmed-Combat"
+      },
+      "skillGroup": {
+        "athletics": "Skill Group: Athletics",
+        "biotech": "Skill Group: Biotech",
+        "closeCombat": "Skill Group: Close Combat",
+        "conjuring": "Skill Group: Conjuring",
+        "cracking": "Skill Group: Cracking",
+        "electronics": "Skill Group: Electronics",
+        "influence": "Skill Group: Influence",
+        "mechanic": "Skill Group: Mechanic",
+        "outdoors": "Skill Group: Outdoors",
+        "rangedCombat": "Skill Group: Ranged Combat",
+        "sorcery": "Skill Group: Sorcery",
+        "stealth": "Skill Group: Stealth",
+        "tasking": "Skill Group: Tasking"
       }
     },
     "focus": {
       "noFoci": "No foci"
     },
     "implant": {
-      "noImplants": "No implants installed",
-      "essenceCyber": "Cyberware Essence",
+      "currentEssence": "Current Essence",
       "essenceBio": "Bioware Essence",
+      "essenceCyber": "Cyberware Essence",
       "essenceHalved": "Halved (lesser)",
       "essenceLoss": "Total Essence Loss",
-      "currentEssence": "Current Essence",
-      "type": {
-        "cyberware": "Cyberware",
-        "bioware": "Bioware",
-        "nanoware": "Nanoware",
-        "geneware": "Geneware"
-      },
       "grade": {
-        "secondHand": "Second-Hand",
-        "standard": "Standard",
         "alpha": "Alpha",
         "beta": "Beta",
-        "delta": "Delta"
+        "delta": "Delta",
+        "secondHand": "Second-Hand",
+        "standard": "Standard"
+      },
+      "noImplants": "No implants installed",
+      "type": {
+        "bioware": "Bioware",
+        "cyberware": "Cyberware",
+        "geneware": "Geneware",
+        "nanoware": "Nanoware"
       }
     },
     "inventory": {
+      "ammo": "Ammunition",
       "armor": "Armor",
       "commlinks": "Commlinks",
       "cyberware": "Cyberware",
@@ -283,7 +288,6 @@
       "lifestyle": "Lifestyle",
       "other": "Other",
       "programs": "Programs",
-      "ammo": "Ammunition",
       "vehicles": "Vehicles",
       "weapons": "Weapons"
     },
@@ -297,11 +301,11 @@
       "cost": "Cost",
       "create": "Create Item",
       "delete": "Delete",
+      "description": "Description",
+      "edit": "Edit",
       "essence": "Essence",
       "essenceActual": "Actual Essence",
       "grade": "Grade",
-      "description": "Description",
-      "edit": "Edit",
       "legality": "Legality",
       "name": "Name",
       "noItems": "This is where I keep my items, if I had any",
@@ -311,6 +315,8 @@
       "rating1": "Rating part 1",
       "rating2": "Rating part 2",
       "source": "Source",
+      "active": "Active",
+      "equipped": "Equipped",
       "toggleEquip": "Toggle equipped",
       "type": "Type"
     },
@@ -334,28 +340,28 @@
       "totalKarma": "Total Karma",
       "weight": "Weight"
     },
+    "metatype": {
+      "armorBonus": "Natural Armor",
+      "attribute": "Attribute",
+      "attributeLimits": "Attribute Limits",
+      "aug": "Augmented",
+      "baseMetatype": "Base Metatype",
+      "bp": "BP",
+      "category": "Category",
+      "create": "Create Metatype",
+      "max": "Maximum",
+      "min": "Minimum",
+      "movement": "Movement",
+      "noMetatype": "No metatype set. Drag one from a compendium.",
+      "onlyOneAllowed": "Only one metatype per character is allowed.",
+      "optionalPowers": "Optional Powers",
+      "powers": "Racial Powers",
+      "reach": "Reach"
+    },
     "program": {
       "category": "Category",
       "complexform": "Complex Form",
       "maxrating": "Max. Rating"
-    },
-    "metatype": {
-      "attribute": "Attribute",
-      "attributeLimits": "Attribute Limits",
-      "aug": "Augmented",
-      "armorBonus": "Natural Armor",
-      "baseMetatype": "Base Metatype",
-      "bp": "BP",
-      "category": "Category",
-      "max": "Maximum",
-      "min": "Minimum",
-      "movement": "Movement",
-      "optionalPowers": "Optional Powers",
-      "powers": "Racial Powers",
-      "create": "Create Metatype",
-      "noMetatype": "No metatype set. Drag one from a compendium.",
-      "onlyOneAllowed": "Only one metatype per character is allowed.",
-      "reach": "Reach"
     },
     "quality": {
       "bp": "BP",
@@ -418,26 +424,26 @@
       "physical": "Physical",
       "special": "Special"
     },
-    "ui": {
-      "createTemplate": "Create Template",
-      "linkedActorNotFound": "Linked actor could not be found; it may have been deleted.",
-      "openSheet": "Open Sheet",
-      "bindActor": "Bind",
-      "rebindActor": "Rebind"
-    },
     "tab": {
       "actions": "Actions",
       "bio": "Bio & Contacts",
       "defense": "Defense",
       "effects": "Effects",
+      "implants": "Implants",
       "inventory": "Inventory",
       "magic": "Magic",
       "main": "Main",
       "matrix": "Matrix",
       "modifiers": "Modifiers",
-      "implants": "Implants",
       "skills": "Skills",
       "weapons": "Weapons"
+    },
+    "ui": {
+      "bindActor": "Bind",
+      "createTemplate": "Create Template",
+      "linkedActorNotFound": "Linked actor could not be found; it may have been deleted.",
+      "openSheet": "Open Sheet",
+      "rebindActor": "Rebind"
     }
   }
 }

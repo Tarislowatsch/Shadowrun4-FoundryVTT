@@ -86,3 +86,34 @@ export async function openDicePoolSplitDialog(totalDice, targets, label) {
     },
   });
 }
+
+/**
+ * @typedef {object} TargetAllocation
+ * @property {import('@documents/index').SR4Actor | undefined} target
+ * @property {string} targetUuid
+ * @property {number} allocatedDice
+ */
+
+/**
+ * @param {number} dice
+ * @param {import('@documents/index').SR4Actor[]} targets
+ * @param {string} weaponName
+ * @returns {Promise<TargetAllocation[] | null>}
+ */
+export async function splitDiceAcrossTargets(dice, targets, weaponName) {
+  const splitTargets = targets.map((t) => ({
+    id: /** @type {any} */ (t).uuid ?? '',
+    name: t.name,
+  }));
+  const allocations = await openDicePoolSplitDialog(
+    dice,
+    splitTargets,
+    weaponName
+  );
+  if (!allocations) return null;
+  return allocations.map(({ targetId, allocatedDice }) => ({
+    target: targets.find((a) => /** @type {any} */ (a).uuid === targetId),
+    targetUuid: targetId,
+    allocatedDice,
+  }));
+}

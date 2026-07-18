@@ -10,6 +10,22 @@
     gap: 1rem;
   }
 
+  .derived-stat-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+
+    .roll-action {
+      flex: 1 1 0;
+      padding: 2px 6px;
+      gap: 0.3rem;
+      font-size: 0.65rem;
+      border: 1px solid var(--sr4-border-dim);
+    }
+  }
+
   .character-header {
     width: 100%;
     display: flex;

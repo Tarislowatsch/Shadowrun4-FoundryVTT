@@ -13,33 +13,11 @@ import {
   emitDefenseTriggerForTarget,
 } from '@flows/defense-flow.js';
 import { resolveFinalSuccessesAndEmit } from '@utils/rolls/roll-edge-decision.js';
-import { openDicePoolSplitDialog } from '../dice-pool-split.js';
+import { splitDiceAcrossTargets } from '../dice-pool-split.js';
 import { getValidTargetActors } from '@utils/game/game.js';
+import { getEquippedMeleeReach, computeReachModifier } from '../../weapons.js';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
-
-/**
- * @param {import('@documents/index').SR4Actor} actor
- * @returns {number}
- */
-export function getEquippedMeleeReach(actor) {
-  let maxReach = 0;
-  for (const i of /** @type {any} */ (actor).items ?? []) {
-    if (i.type === 'Melee Weapon' && i.system?.equipped === true) {
-      maxReach = Math.max(maxReach, i.system.reach ?? 0);
-    }
-  }
-  return maxReach;
-}
-
-/**
- * @param {number} attackerReach
- * @param {number} defenderReach
- * @returns {number}
- */
-export function computeReachModifier(attackerReach, defenderReach) {
-  return attackerReach - defenderReach;
-}
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
@@ -51,61 +29,38 @@ export async function openMeleeAttackDialog(actor, skillName, weapon) {
   const dice = getSkillDicePool(actor, skillName);
   if (dice === undefined) return;
 
+  const skill = actor.getSkill(skillName);
   const targets = getValidTargetActors();
+
   if (targets.length > 1) {
-    const splitTargets = targets.map((t) => ({
-      id: /** @type {any} */ (t).id ?? '',
-      name: t.name,
-    }));
-    const allocations = await openDicePoolSplitDialog(
+    const allocations = await splitDiceAcrossTargets(
       dice,
-      splitTargets,
+      targets,
       weapon.name
     );
     if (!allocations) return;
-    for (const { targetId, allocatedDice } of allocations) {
-      const t = targets.find((a) => /** @type {any} */ (a).id === targetId);
-      await _rollMeleeForTarget(
-        actor,
-        skillName,
-        allocatedDice,
-        weapon,
-        targetId,
-        t?.name ?? ''
-      );
+    for (const { target, targetUuid, allocatedDice } of allocations) {
+      await rollMeleeForTarget(actor, skillName, allocatedDice, weapon, {
+        target,
+        titleSuffix: ` → ${target?.name ?? ''}`,
+        emit: (finalSuccesses) =>
+          emitDefenseTriggerForTarget(
+            actor,
+            weapon,
+            finalSuccesses,
+            targetUuid
+          ),
+      });
     }
     return;
   }
 
-  const params = createDialogParameters(actor, dice, weapon);
-  params.malus -= actor.system.modifiers.attackModifier ?? 0;
-
-  const attackerReach = weapon.system.reach ?? 0;
   const target = [...(getGame().user?.targets ?? [])][0]?.actor;
-  const defenderReach = target ? getEquippedMeleeReach(target) : 0;
-  const reachModifier = computeReachModifier(attackerReach, defenderReach);
-
-  const skill = actor.getSkill(skillName);
-  const totalDice = Math.max(1, dice + reachModifier);
-
-  const content = await renderTemplate(meleeAttackTemplatePath(), {
-    ...params,
-    reachModifier,
+  await rollMeleeForTarget(actor, skillName, dice, weapon, {
+    target,
+    titleSuffix: ` ${skill.system.specialization ?? ''}`,
+    emit: (finalSuccesses) => emitDefenseTrigger(actor, weapon, finalSuccesses),
   });
-
-  const result = await createRollDialog({
-    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} ${skill.system.specialization ?? ''}`,
-    content,
-    dice: totalDice,
-    onRoll: (dialog) =>
-      dialogActions(dialog, actor, skillName, totalDice, weapon, {
-        edgeAvailableOverride: false,
-      }),
-  });
-
-  await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
-    emitDefenseTrigger(actor, weapon, finalSuccesses)
-  );
 }
 
 /**
@@ -113,33 +68,32 @@ export async function openMeleeAttackDialog(actor, skillName, weapon) {
  * @param {string} skillName
  * @param {number} dice
  * @param {SR4Weapon} weapon
- * @param {string} targetId
- * @param {string} targetName
+ * @param {{ target?: import('@documents/index').SR4Actor, titleSuffix: string, emit: (finalSuccesses: number) => void }} options
  * @returns {Promise<void>}
  */
-async function _rollMeleeForTarget(
+async function rollMeleeForTarget(
   actor,
   skillName,
   dice,
   weapon,
-  targetId,
-  targetName
+  { target, titleSuffix, emit }
 ) {
-  const target = getGame().actors?.get(targetId);
   const attackerReach = weapon.system.reach ?? 0;
   const defenderReach = target ? getEquippedMeleeReach(target) : 0;
   const reachModifier = computeReachModifier(attackerReach, defenderReach);
   const totalDice = Math.max(1, dice + reachModifier);
 
-  const params = createDialogParameters(actor, totalDice, weapon);
-  params.malus -= actor.system.modifiers.attackModifier ?? 0;
+  const params = createDialogParameters(actor, totalDice, weapon, {
+    isAttack: true,
+  });
   const skill = actor.getSkill(skillName);
   const content = await renderTemplate(meleeAttackTemplatePath(), {
     ...params,
     reachModifier,
   });
+
   const result = await createRollDialog({
-    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)} → ${targetName}`,
+    title: `${localize('sr4.roll.rolling')} ${localize(skill.system.label)}${titleSuffix}`,
     content,
     dice: totalDice,
     onRoll: (dialog) =>
@@ -147,7 +101,6 @@ async function _rollMeleeForTarget(
         edgeAvailableOverride: false,
       }),
   });
-  await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
-    emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetId)
-  );
+
+  await resolveFinalSuccessesAndEmit(actor, result, emit);
 }

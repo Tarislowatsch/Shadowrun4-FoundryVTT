@@ -3,8 +3,8 @@ import { getGame, isResponsibleForActor, isPrimaryGM } from '@utils/index';
 
 /**
  * @typedef {object} DefenseSocketPayload
- * @property {string} defenderId
- * @property {string} attackerId
+ * @property {string} defenderUuid
+ * @property {string} attackerUuid
  * @property {number} successes
  * @property {import('@models/index').SR4Weapon} weapon
  * @property {number} [wideDefenseMalus]
@@ -13,7 +13,7 @@ import { getGame, isResponsibleForActor, isPrimaryGM } from '@utils/index';
 
 /**
  * @typedef {object} SelectDefenderPayload
- * @property {string} attackerId
+ * @property {string} attackerUuid
  * @property {number} successes
  * @property {import('@models/index').SR4Weapon} weapon
  * @property {number} [wideDefenseMalus]
@@ -51,14 +51,14 @@ export class DefenseHook {
     if (data.action === 'selectDefender') {
       if (!isPrimaryGM()) return;
       const {
-        attackerId,
+        attackerUuid,
         successes,
         weapon,
         wideDefenseMalus = 0,
         burstDamageBonus = 0,
       } = data.payload ?? {};
       await startDefenderPickerFlow(
-        attackerId,
+        attackerUuid,
         successes,
         weapon,
         wideDefenseMalus,
@@ -69,22 +69,22 @@ export class DefenseHook {
 
     if (data.action !== 'triggerDefense') return;
     const {
-      defenderId,
-      attackerId,
+      defenderUuid,
+      attackerUuid,
       successes,
       weapon,
       wideDefenseMalus = 0,
       burstDamageBonus = 0,
     } = data.payload ?? {};
     /** @type {import('@documents/index').SR4Actor | undefined} */
-    const defender = getGame().actors?.get(defenderId);
+    const defender = /** @type {any} */ (await fromUuid(defenderUuid));
     if (!defender) return;
 
-    if (!isResponsibleForActor(defenderId)) return;
+    if (!isResponsibleForActor(/** @type {any} */ (defender).id)) return;
 
     await DefenseFlow.start(
       defender,
-      attackerId,
+      attackerUuid,
       successes,
       weapon,
       wideDefenseMalus,

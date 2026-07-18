@@ -12,6 +12,61 @@ function computeWoundModifier(monitor, woundModBonus = 0) {
 }
 
 /**
+ * @param {object} system
+ * @returns {number}
+ */
+export function matrixSimPasses(system) {
+  return system?.matrixSimMode === 'hot'
+    ? SR4.rules.matrix.hotSimPasses
+    : SR4.rules.matrix.coldSimPasses;
+}
+
+/**
+ * @param {object} system
+ * @returns {number}
+ */
+export function matrixSimInitiativeBonus(system) {
+  return system?.matrixSimMode === 'hot'
+    ? SR4.rules.matrix.hotSimInitiativeBonus
+    : 0;
+}
+
+/**
+ * @param {object} system
+ * @param {Array<{ type: string, system?: { equipped?: boolean } }>} [items]
+ * @returns {boolean}
+ */
+export function hasMatrixAccess(system, items = system?.parent?.items ?? []) {
+  return (
+    system?.technomancy?.technomancer === true ||
+    items.some((i) => i.type === 'Commlink' && i.system?.equipped)
+  );
+}
+
+/**
+ * Matrix Response used for VR initiative: living persona for technomancers,
+ * otherwise the best equipped commlink.
+ * @param {object} system
+ * @param {Array<{ type: string, system?: { equipped?: boolean, response?: number } }>} [items]
+ * @returns {number}
+ */
+export function computeMatrixResponse(
+  system,
+  items = system?.parent?.items ?? []
+) {
+  if (system?.technomancy?.technomancer) {
+    return (
+      (system.sheetStats?.INTUITION ?? 0) +
+      (system.livingPersona?.responseBonus ?? 0)
+    );
+  }
+  const responses = items
+    .filter((i) => i.type === 'Commlink' && i.system?.equipped)
+    .map((i) => i.system?.response ?? 0);
+  return responses.length ? Math.max(...responses) : 0;
+}
+
+/**
  * @param {object} systemData
  * @param {{ physical: number, astral: number, matrix: number, passesString: string }} initiative
  * @returns {object}
@@ -47,7 +102,7 @@ export function computeSpiritDerivedStats(systemData) {
     physical: ss.INTUITION + ss.REACTION,
     astral: ss.INTUITION * 2,
     matrix: 0,
-    passesString: '2/2/0',
+    passesString: '2/0/2',
   });
 }
 
@@ -57,7 +112,7 @@ export function computeSpriteDerivedStats(systemData) {
     physical: ss.INTUITION + ss.REACTION,
     astral: 0,
     matrix: ss.INTUITION * 2,
-    passesString: '2/0/2',
+    passesString: '2/2/0',
   });
 }
 
@@ -85,6 +140,23 @@ export function computeVehicleDerivedStats(systemData) {
 }
 
 /**
+ * @param {import('@models/index').SR4BaseCharacterSystem} system
+ * @returns {{ physical: number, astral: number, matrix: number }}
+ */
+export function computeRealmPasses(system) {
+  const passes = system?.modifiers?.initiative?.passes;
+  const magic = system?.magic;
+  const canProject = magic?.magician === true && magic?.adept !== true;
+  return {
+    physical: 1 + (passes?.physical ?? 0),
+    astral: canProject ? 3 + (passes?.astral ?? 0) : 0,
+    matrix: hasMatrixAccess(system)
+      ? matrixSimPasses(system) + (passes?.matrix ?? 0)
+      : 0,
+  };
+}
+
+/**
  * @param {import('@models/index').SR4BaseCharacterSystem} actorData
  * @returns {import('@models/index').SR4DerivedStats}
  */
@@ -92,7 +164,6 @@ export function computeDerivedStats(actorData) {
   const sheetStats = actorData.sheetStats;
   const modifiers = actorData.modifiers;
   const derivedStats = { ...actorData.derivedStats };
-  const initiativePasses = modifiers.initiative.passes;
   const initiativeBonus = modifiers.initiative.bonuses;
   const initiative = derivedStats.initiative;
   const monitor = actorData.conditionMonitor;
@@ -115,17 +186,25 @@ export function computeDerivedStats(actorData) {
 
   initiative.physical =
     sheetStats.INTUITION + sheetStats.REACTION + initiativeBonus.physical;
-  initiative.matrix = sheetStats.INTUITION + initiativeBonus.matrix;
 
-  const isMagician = actorData.magic?.magician === true;
+  initiative.matrix = hasMatrixAccess(actorData)
+    ? computeMatrixResponse(actorData) +
+      sheetStats.INTUITION +
+      initiativeBonus.matrix +
+      matrixSimInitiativeBonus(actorData)
+    : 0;
+
+  const isMagician =
+    actorData.magic?.magician === true && actorData.magic?.adept !== true;
   initiative.astral = isMagician
     ? sheetStats.INTUITION * 2 + initiativeBonus.astral
     : 0;
 
+  const realmPasses = computeRealmPasses(actorData);
   derivedStats.passesString = [
-    1 + initiativePasses.physical,
-    isMagician ? 1 + initiativePasses.astral : 0,
-    initiativePasses.matrix,
+    realmPasses.physical,
+    realmPasses.matrix,
+    realmPasses.astral,
   ].join('/');
 
   sheetStats.INITIATIVE = initiative.physical;

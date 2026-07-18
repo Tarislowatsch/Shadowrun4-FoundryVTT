@@ -87,17 +87,6 @@ export class DiceUtility {
     return totalSuccesses;
   }
 
-  /**
-   * @param {boolean} edgeUsed
-   * @param {number} numDice
-   * @returns {Promise<{successes: number, isGlitch: boolean}>}
-   */
-  static async rollInitiative(edgeUsed, numDice) {
-    if (edgeUsed)
-      return { successes: SR4.rules.edgeInitiativeSentinel, isGlitch: false };
-    return this.rollAndShow({ numDice });
-  }
-
   // ---------------------------------------------------------------------------
   // Roll formula & result evaluation (delegates to free functions)
   // ---------------------------------------------------------------------------

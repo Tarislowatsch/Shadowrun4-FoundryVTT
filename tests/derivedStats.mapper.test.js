@@ -26,6 +26,9 @@ function makeActorData({
   astralBonus = 0,
   matrixBonus = 0,
   magician = false,
+  adept = false,
+  matrixSimMode = 'cold',
+  technomancer = false,
 } = {}) {
   return {
     sheetStats: {
@@ -81,7 +84,9 @@ function makeActorData({
       memory: 0,
       composure: 0,
     },
-    magic: { magician },
+    magic: { magician, adept },
+    matrixSimMode,
+    technomancy: { technomancer },
   };
 }
 
@@ -189,10 +194,30 @@ describe('computeDerivedStats', () => {
       expect(result.initiative.physical).toBe(9);
     });
 
-    it('matrix = INTUITION + matrix bonus', () => {
+    it('matrix = 0 without technomancer or equipped commlink', () => {
       const data = makeActorData({ INTUITION: 5, matrixBonus: 1 });
       const result = computeDerivedStats(data);
-      expect(result.initiative.matrix).toBe(6);
+      expect(result.initiative.matrix).toBe(0);
+    });
+
+    it('matrix = Response + INTUITION + matrix bonus for technomancers', () => {
+      const data = makeActorData({
+        INTUITION: 5,
+        matrixBonus: 1,
+        technomancer: true,
+      });
+      const result = computeDerivedStats(data);
+      expect(result.initiative.matrix).toBe(5 + 5 + 1);
+    });
+
+    it('matrix hot sim adds the hot sim initiative bonus', () => {
+      const data = makeActorData({
+        INTUITION: 4,
+        technomancer: true,
+        matrixSimMode: 'hot',
+      });
+      const result = computeDerivedStats(data);
+      expect(result.initiative.matrix).toBe(4 + 4 + 1);
     });
 
     it('astral = 0 for non-magicians', () => {
@@ -216,30 +241,55 @@ describe('computeDerivedStats', () => {
       const result = computeDerivedStats(data);
       expect(result.initiative.astral).toBe(10);
     });
+
+    it('astral = 0 for mystic adepts (magician + adept)', () => {
+      const data = makeActorData({ magician: true, adept: true, INTUITION: 6 });
+      const result = computeDerivedStats(data);
+      expect(result.initiative.astral).toBe(0);
+    });
   });
 
   describe('passesString', () => {
-    it('non-magician defaults to "1/0/0"', () => {
+    it('mundane without matrix access defaults to "1/0/0"', () => {
       const data = makeActorData({ magician: false });
       const result = computeDerivedStats(data);
       expect(result.passesString).toBe('1/0/0');
     });
 
-    it('magician defaults to "1/1/0"', () => {
+    it('magician defaults to "1/0/3" (physical/matrix/astral)', () => {
       const data = makeActorData({ magician: true });
       const result = computeDerivedStats(data);
-      expect(result.passesString).toBe('1/1/0');
+      expect(result.passesString).toBe('1/0/3');
     });
 
-    it('reflects initiative pass bonuses', () => {
+    it('mystic adept (magician + adept) has 0 astral passes', () => {
+      const data = makeActorData({ magician: true, adept: true });
+      const result = computeDerivedStats(data);
+      expect(result.passesString).toBe('1/0/0');
+    });
+
+    it('technomancer cold sim has coldSimPasses matrix passes', () => {
+      const data = makeActorData({ technomancer: true });
+      const result = computeDerivedStats(data);
+      expect(result.passesString).toBe('1/2/0');
+    });
+
+    it('hot sim raises matrix passes to hotSimPasses', () => {
+      const data = makeActorData({ technomancer: true, matrixSimMode: 'hot' });
+      const result = computeDerivedStats(data);
+      expect(result.passesString).toBe('1/3/0');
+    });
+
+    it('reflects initiative pass bonuses (physical/matrix/astral)', () => {
       const data = makeActorData({
         magician: true,
+        technomancer: true,
         physPasses: 1,
         astralPasses: 1,
         matrixPasses: 1,
       });
       const result = computeDerivedStats(data);
-      expect(result.passesString).toBe('2/2/1');
+      expect(result.passesString).toBe('2/3/4');
     });
   });
 
@@ -288,9 +338,9 @@ describe('computeDerivedStats', () => {
     });
 
     it('writes matrix initiative back to sheetStats.MATRIXINITIATIVE', () => {
-      const data = makeActorData({ INTUITION: 5 });
+      const data = makeActorData({ INTUITION: 5, technomancer: true });
       computeDerivedStats(data);
-      expect(data.sheetStats.MATRIXINITIATIVE).toBe(5);
+      expect(data.sheetStats.MATRIXINITIATIVE).toBe(10);
     });
   });
 
@@ -391,10 +441,10 @@ describe('computeSpiritDerivedStats', () => {
     expect(result.dicePoolModifier).toBe(-3);
   });
 
-  it('passesString is always "2/2/0"', () => {
+  it('passesString is always "2/0/2"', () => {
     const data = makeSpiritData();
     const result = computeSpiritDerivedStats(data);
-    expect(result.passesString).toBe('2/2/0');
+    expect(result.passesString).toBe('2/0/2');
   });
 });
 
@@ -482,10 +532,10 @@ describe('computeSpriteDerivedStats', () => {
     expect(result.dicePoolModifier).toBe(-3);
   });
 
-  it('passesString is always "2/0/2"', () => {
+  it('passesString is always "2/2/0"', () => {
     const data = makeSpriteData();
     const result = computeSpriteDerivedStats(data);
-    expect(result.passesString).toBe('2/0/2');
+    expect(result.passesString).toBe('2/2/0');
   });
 });
 
@@ -544,11 +594,11 @@ describe('spirit vs sprite symmetry/divergence', () => {
     );
   });
 
-  it('passesString mirrors astral/matrix passes', () => {
+  it('passesString mirrors matrix/astral passes (physical/matrix/astral)', () => {
     const spirit = computeSpiritDerivedStats(makeEntityData());
     const sprite = computeSpriteDerivedStats(makeEntityData());
-    expect(spirit.passesString).toBe('2/2/0');
-    expect(sprite.passesString).toBe('2/0/2');
+    expect(spirit.passesString).toBe('2/0/2');
+    expect(sprite.passesString).toBe('2/2/0');
   });
 });
 

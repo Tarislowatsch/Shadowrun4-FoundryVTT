@@ -1,6 +1,7 @@
 <div class="item-card item focus-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
   <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
+    {{> item-active-badge label="sr4.item.equipped"}}
     <div class="item-actions">
       {{> item-toggle-equip equippedIcon="fas fa-link" unequippedIcon="fas fa-link-slash" tooltip="sr4.item.toggleEquip"}}
       {{> item-edit-btn}}

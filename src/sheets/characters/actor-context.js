@@ -1,5 +1,5 @@
 import { getGame } from '@utils/index';
-import { AmmoCategory } from '@models/index';
+import { AmmoCategory, SR4Attributes } from '@models/index';
 
 /**
  * @param {object[]} items
@@ -118,6 +118,10 @@ export function buildComputedStats(
       'MATRIXINITIATIVE',
       'ASTRALINITIATIVE',
     ],
+    rollableAttributes: Object.keys(SR4Attributes).filter(
+      (key) =>
+        key !== 'ESSENCE' && (actorData.system.sheetStats?.[key] ?? 0) > 0
+    ),
     derivedBaseValues: sourceStats
       ? {
           ESSENCE: currentEssence,

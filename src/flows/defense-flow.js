@@ -36,23 +36,27 @@ function buildWeaponSnapshot(weapon) {
 }
 
 /**
+ * @typedef {object} CombatModifiers
+ * @property {number} [wideDefenseMalus]
+ * @property {number} [burstDamageBonus]
+ */
+
+/**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {import('@models/index').SR4Weapon} weapon
  * @param {number} successes
- * @param {number} [wideDefenseMalus]
- * @param {number} [burstDamageBonus]
+ * @param {CombatModifiers} [modifiers]
  * @returns {void}
  */
 export function emitDefenseTrigger(
   actor,
   weapon,
   successes,
-  wideDefenseMalus = 0,
-  burstDamageBonus = 0
+  { wideDefenseMalus = 0, burstDamageBonus = 0 } = {}
 ) {
   if (!weapon?.type) return;
 
-  const actorId = /** @type {any} */ (actor).id;
+  const attackerUuid = /** @type {any} */ (actor).uuid;
   const validTargets = getValidTargetActors();
 
   const weaponSnapshot = buildWeaponSnapshot(weapon);
@@ -65,7 +69,7 @@ export function emitDefenseTrigger(
       getGame().socket?.emit('system.shadowrun4e', {
         action: 'selectDefender',
         payload: {
-          attackerId: actorId,
+          attackerUuid,
           successes,
           weapon: weaponSnapshot,
           wideDefenseMalus,
@@ -77,13 +81,13 @@ export function emitDefenseTrigger(
   }
 
   for (const target of validTargets) {
-    const defenderId = /** @type {any} */ (target).id;
-    if (!defenderId) continue;
+    const defenderUuid = /** @type {any} */ (target).uuid;
+    if (!defenderUuid) continue;
     getGame().socket?.emit('system.shadowrun4e', {
       action: 'triggerDefense',
       payload: {
-        defenderId,
-        attackerId: actor.id,
+        defenderUuid,
+        attackerUuid,
         successes,
         weapon: weaponSnapshot,
         wideDefenseMalus,
@@ -97,26 +101,24 @@ export function emitDefenseTrigger(
  * @param {import('@documents/index').SR4Actor} actor
  * @param {import('@models/index').SR4Weapon} weapon
  * @param {number} successes
- * @param {string} targetId
- * @param {number} [wideDefenseMalus]
- * @param {number} [burstDamageBonus]
+ * @param {string} targetUuid
+ * @param {CombatModifiers} [modifiers]
  * @returns {void}
  */
 export function emitDefenseTriggerForTarget(
   actor,
   weapon,
   successes,
-  targetId,
-  wideDefenseMalus = 0,
-  burstDamageBonus = 0
+  targetUuid,
+  { wideDefenseMalus = 0, burstDamageBonus = 0 } = {}
 ) {
   if (!weapon?.type) return;
   const weaponSnapshot = buildWeaponSnapshot(weapon);
   getGame().socket?.emit('system.shadowrun4e', {
     action: 'triggerDefense',
     payload: {
-      defenderId: targetId,
-      attackerId: /** @type {any} */ (actor).id,
+      defenderUuid: targetUuid,
+      attackerUuid: /** @type {any} */ (actor).uuid,
       successes,
       weapon: weaponSnapshot,
       wideDefenseMalus,
@@ -177,7 +179,7 @@ export class DefenseFlow {
 
   /**
    * @param {import('@documents/index').SR4Actor} defender
-   * @param {string} attackerId
+   * @param {string} attackerUuid
    * @param {number} successes
    * @param {import('@models/index').SR4Weapon} weapon
    * @param {number} [wideDefenseMalus]
@@ -186,14 +188,14 @@ export class DefenseFlow {
    */
   static async start(
     defender,
-    attackerId,
+    attackerUuid,
     successes,
     weapon,
     wideDefenseMalus = 0,
     burstDamageBonus = 0
   ) {
     /** @type {import('@documents/index').SR4Actor | undefined} */
-    const attacker = getGame().actors?.get(attackerId);
+    const attacker = /** @type {any} */ (await fromUuid(attackerUuid));
     if (!defender || !attacker) return;
 
     if (!getGame().settings.get('shadowrun4e', 'combatDefenseWorkflow')) {

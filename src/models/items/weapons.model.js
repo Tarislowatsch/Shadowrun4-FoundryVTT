@@ -202,6 +202,7 @@ function resolveWeaponMods(ids, actor) {
 }
 
 const RANGED_WEAPON_TYPE = 'Ranged Weapon';
+const MELEE_WEAPON_TYPE = 'Melee Weapon';
 
 /**
  * @param {SR4Weapon} item
@@ -209,6 +210,14 @@ const RANGED_WEAPON_TYPE = 'Ranged Weapon';
  */
 export function isRangedWeapon(item) {
   return item.type === RANGED_WEAPON_TYPE;
+}
+
+/**
+ * @param {SR4Weapon} item
+ * @returns {item is SR4Weapon & { type: 'Melee Weapon', system: SR4MeleeWeaponSystem }}
+ */
+export function isMeleeWeapon(item) {
+  return item.type === MELEE_WEAPON_TYPE;
 }
 
 /** @param {string} dt */

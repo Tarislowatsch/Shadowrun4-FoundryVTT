@@ -87,8 +87,8 @@
         "unknownAttacker": "Unknown"
       },
       "liveInitiativeReduction": {
-        "hint": "Automatically reduce a combatant's initiative score when their wound modifier increases.",
-        "name": "Live Initiative Reduction"
+        "hint": "Automatically adjust a combatant's Initiative Score mid-turn when their Initiative attribute or wound modifier changes.",
+        "name": "Live Initiative Changes"
       },
       "npcSkillsMenu": {
         "filter": "Filter skills…",

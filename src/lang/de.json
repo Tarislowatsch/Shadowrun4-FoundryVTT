@@ -12,14 +12,18 @@
       "Action": "Aktion",
       "Ammo": "Munition",
       "Armor": "Panzerung",
+      "Armor Mod": "Panzerungsmodifikation",
       "Autosoft": "Autosoft",
       "Commlink": "Commlink",
+      "CritterPower": "Critterkraft",
+      "CritterTemplate": "Critter-Vorlage",
       "Fetish": "Fetisch",
       "Focus": "Fokus",
       "Gear": "Ausrüstung",
       "Implant": "Implantat",
       "Item": "Gegenstand",
       "Melee Weapon": "Nahkampfwaffe",
+      "Metatype": "Metatyp",
       "Power": "Kraft",
       "Program": "Programm",
       "Quality": "Gabe/Handicap",
@@ -27,16 +31,11 @@
       "Skill": "Fertigkeit",
       "Spell": "Zauber",
       "Vehicle": "Fahrzeug",
-      "Weapon Mod": "Waffenmodifikation",
-      "Armor Mod": "Panzerungsmodifikation",
       "Vehicle Mod": "Fahrzeugmodifikation",
-      "Metatype": "Metatyp",
-      "CritterPower": "Critterkraft",
-      "CritterTemplate": "Critter-Vorlage"
+      "Weapon Mod": "Waffenmodifikation"
     }
   },
   "sr4": {
-    "cancel": "Abbrechen",
     "action": {
       "actiontype": {
         "complex": "Komplexe Handlung",
@@ -59,8 +58,12 @@
         "strength": "STR",
         "willpower": "WIL"
       },
+      "composure": "Selbstbeherrschung",
       "delete": "Löschen",
       "edit": "Bearbeiten",
+      "judgeIntentions": "Menschenkenntnis",
+      "liftCarry": "Heben und Tragen",
+      "memory": "Erinnerungsvermögen",
       "new": "Neue Aktion",
       "noActions": "Dieser Charakter hat keine Actions",
       "noRatingForAction": "Bitte Werte für diese Handlung hinzufügen",
@@ -99,6 +102,12 @@
       "soakBonus": "Schadenswiderstands Bonus",
       "woundModBonus": "Wundmodifikator Bonus"
     },
+    "cancel": "Abbrechen",
+    "conditionMonitor": {
+      "physical": "Körperlicher Zustandsmonitor",
+      "simpleHp": "Einfache HP (nur physisch)",
+      "stun": "Geistiger Zustandsmonitor"
+    },
     "connection": {
       "archetype": "Archetyp",
       "connection": "Beziehung",
@@ -113,15 +122,12 @@
       "notes": "Notizen",
       "type": "Typ"
     },
-    "conditionMonitor": {
-      "physical": "Körperlicher Zustandsmonitor",
-      "simpleHp": "Einfache HP (nur physisch)",
-      "stun": "Geistiger Zustandsmonitor"
-    },
     "effect": {
       "active": "Aktiv",
       "add": "Effekt hinzufügen",
+      "addChange": "Änderung hinzufügen",
       "addFromTemplate": "— Effekt hinzufügen —",
+      "applyToTarget": "Effekte anwenden",
       "attribute": "Attribut",
       "changeIcon": "Klicken zum Icon ändern",
       "delete": "Löschen",
@@ -134,45 +140,28 @@
         "multiply": "Multiplikator",
         "override": "Überschreiben"
       },
-      "addChange": "Änderung hinzufügen",
-      "removeChange": "Änderung entfernen",
       "name": "Name",
       "new": "Neuer Effekt",
       "none": "Keine Effekte vorhanden",
       "notes": "Notizen",
+      "pendingEffects": "{name}: Effekte von {spell} ausstehend.",
+      "removeChange": "Änderung entfernen",
       "showOnToken": "Am Token anzeigen",
       "source": "Quelle",
       "templates": {
-        "label": "Vorlagen",
         "blind": "Geblendet",
         "blindFlareComp": "Geblendet (Blendschutz)",
         "disoriented": "Desorientiert (Elektrizität)",
         "knockedDown": "Am Boden",
+        "label": "Vorlagen",
         "sustain": "Aufrechterhalten"
       },
-      "value": "Wert",
-      "applyToTarget": "Effekte anwenden",
-      "pendingEffects": "{name}: Effekte von {spell} ausstehend."
+      "value": "Wert"
     },
     "effectTarget": {
       "attackModifier": "Angriffs-Würfelpool-Modifikator",
       "defenseModifier": "Verteidigungs-Würfelpool-Modifikator",
       "generalModifier": "Allgemeiner Würfelpool-Modifikator",
-      "skillGroup": {
-        "athletics": "Fertigkeitsgruppe: Athletik",
-        "biotech": "Fertigkeitsgruppe: Biotechnologie",
-        "closeCombat": "Fertigkeitsgruppe: Nahkampf",
-        "conjuring": "Fertigkeitsgruppe: Beschwörung",
-        "cracking": "Fertigkeitsgruppe: Cracking",
-        "electronics": "Fertigkeitsgruppe: Elektronik",
-        "influence": "Fertigkeitsgruppe: Einflussnahme",
-        "mechanic": "Fertigkeitsgruppe: Mechanik",
-        "outdoors": "Fertigkeitsgruppe: Outdoor",
-        "rangedCombat": "Fertigkeitsgruppe: Fernkampf",
-        "sorcery": "Fertigkeitsgruppe: Hexerei",
-        "stealth": "Fertigkeitsgruppe: Heimlichkeit",
-        "tasking": "Fertigkeitsgruppe: Tasking"
-      },
       "skill": {
         "aeronauticsmechanic": "Fertigkeit: Luftfahrtmechanik",
         "arcana": "Fertigkeit: Arcana",
@@ -247,33 +236,49 @@
         "throwingweapons": "Fertigkeit: Wurfwaffen",
         "tracking": "Fertigkeit: Spurenlesen",
         "unarmedcombat": "Fertigkeit: Waffenloser Kampf"
+      },
+      "skillGroup": {
+        "athletics": "Fertigkeitsgruppe: Athletik",
+        "biotech": "Fertigkeitsgruppe: Biotechnologie",
+        "closeCombat": "Fertigkeitsgruppe: Nahkampf",
+        "conjuring": "Fertigkeitsgruppe: Beschwörung",
+        "cracking": "Fertigkeitsgruppe: Cracking",
+        "electronics": "Fertigkeitsgruppe: Elektronik",
+        "influence": "Fertigkeitsgruppe: Einflussnahme",
+        "mechanic": "Fertigkeitsgruppe: Mechanik",
+        "outdoors": "Fertigkeitsgruppe: Outdoor",
+        "rangedCombat": "Fertigkeitsgruppe: Fernkampf",
+        "sorcery": "Fertigkeitsgruppe: Hexerei",
+        "stealth": "Fertigkeitsgruppe: Heimlichkeit",
+        "tasking": "Fertigkeitsgruppe: Tasking"
       }
     },
     "focus": {
       "noFoci": "Keine Foki vorhanden"
     },
     "implant": {
-      "noImplants": "Keine Implantate vorhanden",
-      "essenceCyber": "Cyberware-Essenz",
+      "currentEssence": "Aktuelle Essenz",
       "essenceBio": "Bioware-Essenz",
+      "essenceCyber": "Cyberware-Essenz",
       "essenceHalved": "Halbiert (kleinere)",
       "essenceLoss": "Essenzverlust gesamt",
-      "currentEssence": "Aktuelle Essenz",
-      "type": {
-        "cyberware": "Cyberware",
-        "bioware": "Bioware",
-        "nanoware": "Nanoware",
-        "geneware": "Geneware"
-      },
       "grade": {
-        "secondHand": "Gebraucht",
-        "standard": "Standard",
         "alpha": "Alpha",
         "beta": "Beta",
-        "delta": "Delta"
+        "delta": "Delta",
+        "secondHand": "Gebraucht",
+        "standard": "Standard"
+      },
+      "noImplants": "Keine Implantate vorhanden",
+      "type": {
+        "bioware": "Bioware",
+        "cyberware": "Cyberware",
+        "geneware": "Geneware",
+        "nanoware": "Nanoware"
       }
     },
     "inventory": {
+      "ammo": "Munition",
       "armor": "Panzerung",
       "commlinks": "Commlinks",
       "cyberware": "Cyberware",
@@ -284,7 +289,6 @@
       "lifestyle": "Lebensstil",
       "other": "andere",
       "programs": "Programme",
-      "ammo": "Munition",
       "vehicles": "Fahrzeuge",
       "weapons": "Waffen"
     },
@@ -298,11 +302,11 @@
       "cost": "Kosten",
       "create": "Item erstellen",
       "delete": "Löschen",
+      "description": "Beschreibung",
+      "edit": "Bearbeiten",
       "essence": "Essenz",
       "essenceActual": "Tatsächliche Essenz",
       "grade": "Grad",
-      "description": "Beschreibung",
-      "edit": "Bearbeiten",
       "legality": "Legalität",
       "name": "Name",
       "noItems": "Hier würde ich meine Gegenstände aufbewahren, wenn ich welche hätte",
@@ -312,6 +316,8 @@
       "rating1": "Rating Teil 1",
       "rating2": "Rating Teil 2",
       "source": "Quelle",
+      "active": "Aktiv",
+      "equipped": "Angelegt",
       "toggleEquip": "An-/Ablegen",
       "type": "Typ"
     },
@@ -335,28 +341,28 @@
       "totalKarma": "Gesamtkarma",
       "weight": "Gewicht"
     },
+    "metatype": {
+      "armorBonus": "Natürliche Panzerung",
+      "attribute": "Attribut",
+      "attributeLimits": "Attributsgrenzen",
+      "aug": "Augmentiert",
+      "baseMetatype": "Basis-Metatyp",
+      "bp": "BP",
+      "category": "Kategorie",
+      "create": "Metatyp erstellen",
+      "max": "Maximum",
+      "min": "Minimum",
+      "movement": "Bewegung",
+      "noMetatype": "Kein Metatyp gesetzt. Einen aus einem Kompendium hierher ziehen.",
+      "onlyOneAllowed": "Nur ein Metatyp pro Charakter erlaubt.",
+      "optionalPowers": "Optionale Kräfte",
+      "powers": "Rassenkräfte",
+      "reach": "Reichweite"
+    },
     "program": {
       "category": "Kategorie",
       "complexform": "Komplexe Form",
       "maxrating": "Max. Stufe"
-    },
-    "metatype": {
-      "attribute": "Attribut",
-      "attributeLimits": "Attributsgrenzen",
-      "aug": "Augmentiert",
-      "armorBonus": "Natürliche Panzerung",
-      "baseMetatype": "Basis-Metatyp",
-      "bp": "BP",
-      "category": "Kategorie",
-      "max": "Maximum",
-      "min": "Minimum",
-      "movement": "Bewegung",
-      "optionalPowers": "Optionale Kräfte",
-      "powers": "Rassenkräfte",
-      "create": "Metatyp erstellen",
-      "noMetatype": "Kein Metatyp gesetzt. Einen aus einem Kompendium hierher ziehen.",
-      "onlyOneAllowed": "Nur ein Metatyp pro Charakter erlaubt.",
-      "reach": "Reichweite"
     },
     "quality": {
       "bp": "BP",
@@ -388,12 +394,12 @@
       },
       "category": "Kategorie",
       "complexForm": "Komplexe Form",
+      "group": "Fertigkeitsgruppe",
       "knowledge": "Wissensfertigkeit",
       "knowledgeAndComplexForms": "Wissen",
       "name": "Name",
       "rating": "Stufe",
       "search": "Skillsuche",
-      "group": "Fertigkeitsgruppe",
       "source": "Quelle",
       "specialization": "Spezialisierung",
       "type": "Typ"
@@ -420,26 +426,26 @@
       "physical": "Körperlich",
       "special": "Spezial"
     },
-    "ui": {
-      "createTemplate": "Template erstellen",
-      "linkedActorNotFound": "Verknüpfter Akteur wurde nicht gefunden; er wurde möglicherweise gelöscht.",
-      "openSheet": "Charakterbogen öffnen",
-      "bindActor": "Binden",
-      "rebindActor": "Erneut binden"
-    },
     "tab": {
       "actions": "Aktionen",
       "bio": "Bio & Kontakte",
       "defense": "Verteidigung",
       "effects": "Effekte",
+      "implants": "Implantate",
       "inventory": "Inventar",
       "magic": "Magie",
       "main": "Übersicht",
       "matrix": "Matrix",
       "modifiers": "Modifikatoren",
-      "implants": "Implantate",
       "skills": "Fertigkeiten",
       "weapons": "Waffen"
+    },
+    "ui": {
+      "bindActor": "Binden",
+      "createTemplate": "Template erstellen",
+      "linkedActorNotFound": "Verknüpfter Akteur wurde nicht gefunden; er wurde möglicherweise gelöscht.",
+      "openSheet": "Charakterbogen öffnen",
+      "rebindActor": "Erneut binden"
     }
   }
 }

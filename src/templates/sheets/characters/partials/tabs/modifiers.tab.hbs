@@ -27,12 +27,20 @@
 
     <div class="modifier-section">
       <h3>{{localize "sr4.modifiers.initiative.title"}}</h3>
+      <div class="modifier-field realm-default-field">
+        <label>{{localize "sr4.combat.realmDefault"}}</label>
+        <select name="system.realm" {{#unless editMode}}disabled{{/unless}}>
+          {{#each realmOptions as |opt|}}
+          <option value="{{opt.value}}" {{#if (eq opt.value @root.system.realm)}}selected{{/if}}>{{opt.label}}</option>
+          {{/each}}
+        </select>
+      </div>
       {{> "modifier-field" label="sr4.modifiers.initiative.physicalBonus" name="system.modifiers.initiative.bonuses.physical" value=sourceModifiers.initiative.bonuses.physical}}
       {{> "modifier-field" label="sr4.modifiers.initiative.physicalPasses" name="system.modifiers.initiative.passes.physical" value=sourceModifiers.initiative.passes.physical}}
       {{> "modifier-field" label="sr4.modifiers.initiative.astralBonus" name="system.modifiers.initiative.bonuses.astral" value=sourceModifiers.initiative.bonuses.astral}}
       {{> "modifier-field" label="sr4.modifiers.initiative.astralPasses" name="system.modifiers.initiative.passes.astral" value=sourceModifiers.initiative.passes.astral}}
       {{> "modifier-field" label="sr4.modifiers.initiative.matrixBonus" name="system.modifiers.initiative.bonuses.matrix" value=sourceModifiers.initiative.bonuses.matrix}}
-      {{> "modifier-field" label="sr4.modifiers.initiative.matrixPasses" name="system.modifiers.initiative.passes.matrix" value=sourceModifiers.initiative.passes.matrix min=1}}
+      {{> "modifier-field" label="sr4.modifiers.initiative.matrixPasses" name="system.modifiers.initiative.passes.matrix" value=sourceModifiers.initiative.passes.matrix}}
     </div>
 
     <div class="modifier-section">

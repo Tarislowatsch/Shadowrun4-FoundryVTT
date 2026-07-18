@@ -48,7 +48,7 @@ export function getResistConfig(mode, entityType) {
  *   rolledDice: number,
  *   castingHits: number,
  *   socketAction: string,
- *   casterId: string,
+ *   casterUuid: string,
  * }} options
  * @returns {Promise<void>}
  */
@@ -58,7 +58,7 @@ export async function resolveAndEmitSpellResist({
   rolledDice,
   castingHits,
   socketAction,
-  casterId,
+  casterUuid,
 }) {
   let resistHits = null;
   if (result) {
@@ -78,8 +78,8 @@ export async function resolveAndEmitSpellResist({
   getGame().socket?.emit('system.shadowrun4e', {
     action: socketAction,
     payload: {
-      casterId,
-      defenderId: defender.id,
+      casterUuid,
+      defenderUuid: /** @type {any} */ (defender).uuid,
       resistHits,
     },
   });

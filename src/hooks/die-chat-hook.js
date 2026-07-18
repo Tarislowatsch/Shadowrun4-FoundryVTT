@@ -17,15 +17,35 @@ import {
   resolveEffectDecision,
   applySpellEffects,
 } from '@flows/apply-effects-flow.js';
-import { isResponsibleForActor } from '@utils/actor-ownership.js';
+import { isResponsibleForActor, isPrimaryGM } from '@utils/actor-ownership.js';
 
 export class DieChatHook {
   constructor() {
     Hooks.on('renderChatMessageHTML', (chatMessage, html) => {
       DieChatHook.appendEdgeButton(chatMessage, html);
+      DieChatHook.renderInitiativeEdgeCard(chatMessage, html);
       DieChatHook.renderDamageDecisionCard(chatMessage, html);
       DieChatHook.renderEffectDecisionCard(chatMessage, html);
     });
+    this._boundHandler = this._onSocketMessage.bind(this);
+    Hooks.once('ready', () => {
+      const socket = game.socket;
+      if (!socket) return;
+      socket.off('system.shadowrun4e', this._boundHandler);
+      socket.on('system.shadowrun4e', this._boundHandler);
+    });
+  }
+
+  /**
+   * @param {{ action: string, payload: { messageId: string } }} data
+   * @returns {Promise<void>}
+   */
+  async _onSocketMessage(data) {
+    if (data.action !== 'resolveInitiativeEdge') return;
+    if (!isPrimaryGM()) return;
+    const message = game.messages?.get(data.payload?.messageId);
+    if (!message || message.flags?.sr4?.initiativeEdge?.resolved) return;
+    await message.update({ 'flags.sr4.initiativeEdge.resolved': true });
   }
 
   static async appendEdgeButton(chatMessage, html) {
@@ -141,6 +161,61 @@ export class DieChatHook {
         { once: true }
       );
     }
+  }
+
+  /**
+   * @param {ChatMessage} chatMessage
+   * @param {HTMLElement} html
+   */
+  static async renderInitiativeEdgeCard(chatMessage, html) {
+    const info = chatMessage.flags?.sr4?.initiativeEdge;
+    if (!info || info.resolved) return;
+    if (!isResponsibleForActor(chatMessage.flags?.sr4?.actorId)) return;
+
+    const actor = game.actors.get(chatMessage.flags.sr4.actorId);
+    if (!actor || actor.getAttribute('CURRENTEDGE') <= 0) return;
+
+    const combatant = game.combats
+      ?.get(info.combatId)
+      ?.combatants.get(info.combatantId);
+    if (!combatant) return;
+
+    const container = html.querySelector('.roll-results') ?? html;
+    const edgeBtn = document.createElement('button');
+    edgeBtn.className = 'edge-use-button';
+    edgeBtn.textContent = game.i18n.localize('sr4.roll.edge.use');
+    const fallbackTimer = setTimeout(() => edgeBtn.remove(), 1000 * 60 * 30);
+
+    edgeBtn.addEventListener(
+      'click',
+      async () => {
+        clearTimeout(fallbackTimer);
+        edgeBtn.remove();
+        if (chatMessage.isAuthor || game.user?.isGM) {
+          await chatMessage.update({
+            'flags.sr4.initiativeEdge.resolved': true,
+          });
+        } else {
+          game.socket?.emit('system.shadowrun4e', {
+            action: 'resolveInitiativeEdge',
+            payload: { messageId: chatMessage.id },
+          });
+        }
+        const total = await DiceUtility.followUpRoll({
+          numDice: actor.getAttribute('EDGE') ?? 6,
+          explode: true,
+          reroll: false,
+          edgeAvailable: false,
+          prevSuccesses: info.successes,
+          actor,
+        });
+        await combatant.update({
+          initiative: info.base + (total ?? info.successes),
+        });
+      },
+      { once: true }
+    );
+    container.appendChild(edgeBtn);
   }
 
   /**

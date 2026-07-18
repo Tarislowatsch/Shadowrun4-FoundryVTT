@@ -3,6 +3,8 @@ import { Attackskill } from '@models/index';
 import { getGame } from '@utils/index';
 import { resolveRiggerSync } from '@utils/rigging/drone-pool.js';
 import { SR4ActiveEffect } from '@effects/index';
+import { SR4 } from '../config.js';
+import { getInitiativeBase, getCombatantRealm } from './initiative.js';
 
 /** @type {import('@models/index').SR4SheetStats} */
 const DEFAULT_STATS = {
@@ -228,29 +230,47 @@ export class SR4Actor extends foundry.documents.Actor {
   async _preUpdate(changed, options, userId) {
     await super._preUpdate(changed, options, userId);
     if (game.settings.get('shadowrun4e', 'liveInitiativeReduction'))
-      options._sr4Malus = this.getMalus();
+      options._sr4IniScores = this.#activeInitiativeScores();
   }
 
   async _onUpdate(changed, options, userId) {
     await super._onUpdate(changed, options, userId);
     if (!game.settings.get('shadowrun4e', 'liveInitiativeReduction')) return;
 
-    const oldMalus = options._sr4Malus;
-    if (oldMalus === undefined) return;
+    const oldScores = options._sr4IniScores;
+    if (!oldScores) return;
 
-    const delta = this.getMalus() - oldMalus;
-    if (delta === 0) return;
-
-    /** @type {any} */
-    const self = this;
-    for (const combat of game?.combats ?? []) {
-      // @ts-ignore — combatants is the correct Foundry EmbeddedCollection property
-      const combatant = combat.combatants.find((c) => c.actor?.id === self.id);
-      if (!combatant || combatant.initiative === null) continue;
+    const newScores = this.#activeInitiativeScores();
+    for (const [combatantId, { combatant, score }] of newScores) {
+      const previous = oldScores.get(combatantId);
+      if (!previous) continue;
+      const delta = score - previous.score;
+      if (delta === 0) continue;
       await combatant.update({
         initiative: Math.max(0, combatant.initiative + delta),
       });
     }
+  }
+
+  /**
+   * @returns {Map<string, { combatant: object, score: number }>}
+   */
+  #activeInitiativeScores() {
+    /** @type {any} */
+    const self = this;
+    const map = new Map();
+    for (const combat of game?.combats ?? []) {
+      const combatants = combat.combatants.filter(
+        (c) => c.actor?.id === self.id
+      );
+      for (const combatant of combatants) {
+        if (combatant.initiative === null) continue;
+        if (combatant.initiative >= SR4.rules.edgeInitiativeSentinel) continue;
+        const base = getInitiativeBase(self, getCombatantRealm(combatant));
+        map.set(combatant.id, { combatant, score: base - this.getMalus() });
+      }
+    }
+    return map;
   }
 
   async _onCreate(data, options, userId) {

@@ -12,11 +12,13 @@
       "type": "Typ"
     },
     "commlink": {
+      "active": "Aktiv",
       "firewall": "Firewall",
       "noCommlinks": "Kein Commlink vorhanden",
       "os": "System",
       "response": "Reaktion",
-      "signal": "Signal"
+      "signal": "Signal",
+      "toggleActive": "Als aktives Commlink setzen (für Matrix-Initiative genutzt)"
     },
     "matrix": {
       "attribute": "Attribut",
@@ -80,6 +82,11 @@
       "useComplexFormHint": "Komplexe-Form-Stufe + Resonanz würfeln",
       "vrMatrixInitiative": "VR Matrix-Initiative",
       "vrMatrixInitiativePasses": "VR Matrix-Ini-Pässe",
+      "simMode": {
+        "label": "Sim-Modus",
+        "cold": "Cold Sim",
+        "hot": "Hot Sim"
+      },
       "world": "Welt"
     },
     "program": {

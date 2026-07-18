@@ -1,5 +1,16 @@
 // @ts-nocheck
-import { getPhysicalPassCount } from './combat.js';
+import { getCombatantRealm, getAvailableRealms } from './initiative.js';
+import { combatantPasses } from './combat.js';
+
+const REALM_ICONS = {
+  physical: 'fa-person',
+  matrix: 'fa-wifi',
+  astral: 'fa-eye',
+};
+
+function realmLabel(realm) {
+  return game.i18n.localize(`sr4.combat.realm.${realm}`);
+}
 
 // foundry.applications.ui.CombatTracker is not available at module load time.
 export function createSR4CombatTracker() {
@@ -11,7 +22,7 @@ export function createSR4CombatTracker() {
 
       const pass = combat.initiativePass;
       const maxPass = combat.combatants.reduce(
-        (max, c) => Math.max(max, getPhysicalPassCount(c)),
+        (max, c) => Math.max(max, combatantPasses(c)),
         1
       );
 
@@ -39,9 +50,42 @@ export function createSR4CombatTracker() {
         if (!combatant) return;
         li.classList.toggle(
           'sr4-pass-inactive',
-          getPhysicalPassCount(combatant) < pass
+          combatantPasses(combatant) < pass
         );
+        this._renderRealmToggle(li, combatant);
       });
+    }
+
+    _renderRealmToggle(li, combatant) {
+      li.querySelector('.sr4-realm-toggle')?.remove();
+      const realms = getAvailableRealms(combatant.actor);
+      const realm = getCombatantRealm(combatant);
+
+      const toggle = document.createElement('a');
+      toggle.className = `sr4-realm-toggle sr4-realm-${realm}`;
+      toggle.dataset.realm = realm;
+      toggle.innerHTML = `<i class="fa-solid ${REALM_ICONS[realm] ?? REALM_ICONS.physical}"></i>`;
+
+      if (combatant.isOwner && realms.length > 1) {
+        toggle.title = game.i18n.format('sr4.combat.realm.toggleHint', {
+          realm: realmLabel(realm),
+        });
+        toggle.addEventListener('click', async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const next = realms[(realms.indexOf(realm) + 1) % realms.length];
+          await combatant.setFlag('shadowrun4e', 'realm', next);
+          if (combatant.initiative !== null) {
+            await this.viewed.rollInitiative([combatant.id]);
+          }
+        });
+      } else {
+        toggle.title = realmLabel(realm);
+        toggle.classList.add('sr4-realm-static');
+      }
+
+      const controls = li.querySelector('.combatant-controls') ?? li;
+      controls.prepend(toggle);
     }
   };
 }

@@ -3,15 +3,11 @@
     "actions": {
       "analyze_iconnode": "Analyze Icon/Node",
       "capture_wireless_signal": "Capture Wireless Signal",
-      "composure": "Composure",
       "control_device": "Control Device",
       "crash_node": "Crash Node",
       "crash_program": "Crash Program",
       "data_search": "Data Search",
-      "judge_intensions": "Judge Intensions",
-      "liftcarry": "Lift/Carry",
       "melee_defense": "Melee Defense",
-      "memory": "Memory",
       "ranged_defense_full": "Ranged Defense (Full)"
     },
     "skills": {

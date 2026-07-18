@@ -7,6 +7,7 @@ import {
   localize,
   renderTemplate,
 } from '../dialogutility';
+import { isMeleeWeapon } from '@models/index';
 
 /** @enum {string} */
 const DefenseType = { DODGE: 'dodge', BLOCK: 'block', PARRY: 'parry' };
@@ -100,7 +101,7 @@ export async function openDefenseDialog(
   weapon,
   wideDefenseMalus = 0
 ) {
-  const isMelee = weapon.type.toLowerCase().includes('melee');
+  const isMelee = isMeleeWeapon(weapon);
   const reaction = defender.getAttribute('REACTION') ?? 0;
   const params = createDialogParameters(defender);
   const mods = defender.system.modifiers;

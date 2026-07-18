@@ -225,6 +225,8 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       isTechnomancer: actorData.system.technomancy?.technomancer ?? false,
       effectTargets: SR4EffectTargets,
       resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
+      realmOptions: SR4BaseActorSheet._buildRealmOptions(this.actor),
+      simModeOptions: SR4BaseActorSheet._buildSimModeOptions(),
     };
   }
 

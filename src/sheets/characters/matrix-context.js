@@ -3,6 +3,11 @@ import {
   StreamLabels,
   StreamSpriteTypes,
 } from '@models/index';
+import { getInitiativeBase } from '@documents/initiative.js';
+import {
+  computeMatrixResponse,
+  matrixSimPasses,
+} from '@documents/derivedStats.mapper.js';
 import { buildAffinityCategories } from './affinity-context.js';
 import { getLinkedActors, buildStatRows } from './actor-context.js';
 
@@ -52,15 +57,15 @@ export async function buildMatrixContext(actorData, ownerUuid) {
       buildSpriteStats
     ),
     livingPersona: {
-      response: (stats.INTUITION ?? 0) + (bonuses.responseBonus ?? 0),
+      response: computeMatrixResponse(actorData.system),
       signal:
         Math.ceil((stats.RESONANCE ?? 0) / 2) + (bonuses.signalBonus ?? 0),
       firewall: (stats.WILLPOWER ?? 0) + (bonuses.firewallBonus ?? 0),
       system: (stats.LOGIC ?? 0) + (bonuses.systemBonus ?? 0),
       biofeedbackFilter:
         (stats.CHARISMA ?? 0) + (bonuses.biofeedbackFilterBonus ?? 0),
-      vrMatrixInitiative: (stats.INTUITION ?? 0) * 2 + 1,
-      vrMatrixInitiativePasses: 3,
+      vrMatrixInitiative: getInitiativeBase(actorData, 'matrix'),
+      vrMatrixInitiativePasses: matrixSimPasses(actorData.system),
     },
   };
 }

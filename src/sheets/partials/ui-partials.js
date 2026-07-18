@@ -26,6 +26,7 @@ export async function registerUIPartials() {
       name: 'spell-force-header',
     },
     { path: `${basePath}/item-toggle-equip.hbs`, name: 'item-toggle-equip' },
+    { path: `${basePath}/item-active-badge.hbs`, name: 'item-active-badge' },
     {
       path: `${basePath}/collapsible-section.hbs`,
       name: 'collapsible-section',

@@ -87,8 +87,8 @@
         "unknownAttacker": "Unbekannt"
       },
       "liveInitiativeReduction": {
-        "hint": "Reduziert den Initiativwert eines Kämpfers automatisch wenn sein Wundmodifikator steigt.",
-        "name": "Live-Initiativreduktion"
+        "hint": "Passt den Initiativwert eines Kämpfers mitten im Durchgang automatisch an, wenn sich sein Initiative-Attribut oder Wundmodifikator ändert.",
+        "name": "Live-Initiativänderungen"
       },
       "npcSkillsMenu": {
         "filter": "Fertigkeiten filtern…",

@@ -129,7 +129,7 @@ export class SpellcastingFlow {
 
     const isHealth = spell.system?.category === 'HEALTH';
     const splitTargets = targets.map((t) => ({
-      id: t.id ?? '',
+      id: t.uuid ?? '',
       name: t.name,
       essencePenalty: isHealth ? calculateEssencePenalty(t) : 0,
     }));
@@ -149,7 +149,7 @@ export class SpellcastingFlow {
     const perTargetHits = [];
 
     for (const { targetId, allocatedDice } of allocations) {
-      const target = targets.find((t) => t.id === targetId);
+      const target = targets.find((t) => t.uuid === targetId);
       if (!target) continue;
 
       const penalty = isHealth ? -calculateEssencePenalty(target) : 0;

@@ -1,7 +1,9 @@
 <div class="item-card item commlink-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
   <div class="item-header item-row">
     <span class="item-name">{{ this.name }}</span>
+    {{> item-active-badge label="sr4.commlink.active"}}
     <div class="item-actions">
+      {{> item-toggle-equip equippedIcon="fas fa-tower-broadcast" unequippedIcon="fas fa-power-off" tooltip="sr4.commlink.toggleActive"}}
       {{> item-edit-btn}}
       {{> item-delete-btn}}
     </div>

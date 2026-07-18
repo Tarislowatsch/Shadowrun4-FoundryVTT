@@ -4,7 +4,7 @@ import {
   emitDefenseTriggerForTarget,
 } from '@flows/defense-flow.js';
 import { resolveFinalSuccessesAndEmit } from '@utils/rolls/roll-edge-decision.js';
-import { openDicePoolSplitDialog } from '../dice-pool-split.js';
+import { splitDiceAcrossTargets } from '../dice-pool-split.js';
 import { getValidTargetActors } from '@utils/game/game.js';
 
 /**
@@ -20,25 +20,20 @@ export async function handleSkillRoll(actor, skillName, weapon) {
   if (weapon) {
     const targets = getValidTargetActors();
     if (targets.length > 1) {
-      const splitTargets = targets.map((t) => ({
-        id: /** @type {any} */ (t).id ?? '',
-        name: t.name,
-      }));
-      const allocations = await openDicePoolSplitDialog(
+      const allocations = await splitDiceAcrossTargets(
         dice,
-        splitTargets,
+        targets,
         weapon.name
       );
       if (!allocations) return;
-      for (const { targetId, allocatedDice } of allocations) {
-        const t = targets.find((a) => /** @type {any} */ (a).id === targetId);
+      for (const { target, targetUuid, allocatedDice } of allocations) {
         await _rollSkillForTarget(
           actor,
           skillName,
           allocatedDice,
           weapon,
-          targetId,
-          t?.name ?? ''
+          targetUuid,
+          target?.name ?? ''
         );
       }
       return;
@@ -72,7 +67,7 @@ export async function openSkillDialog(actor, skillName, dice, weapon) {
  * @param {string} skillName
  * @param {number} dice
  * @param {SR4Weapon} weapon
- * @param {string} targetId
+ * @param {string} targetUuid
  * @param {string} targetName
  * @returns {Promise<void>}
  */
@@ -81,7 +76,7 @@ async function _rollSkillForTarget(
   skillName,
   dice,
   weapon,
-  targetId,
+  targetUuid,
   targetName
 ) {
   const result = await rollSkillDialog(actor, skillName, dice, {
@@ -90,6 +85,6 @@ async function _rollSkillForTarget(
     edgeAvailableOverride: false,
   });
   await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
-    emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetId)
+    emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetUuid)
   );
 }

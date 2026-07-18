@@ -91,7 +91,21 @@
       "unarmed": "Unarmed"
     },
     "combat": {
-      "initiativePass": "Initiative Pass {pass} / {maxPass}"
+      "initiativePass": "Initiative Pass {pass} / {maxPass}",
+      "realm": {
+        "physical": "Meatspace",
+        "matrix": "Matrix (VR)",
+        "astral": "Astral",
+        "toggleHint": "Combat realm: {realm} (click to switch)"
+      },
+      "realmDefault": "Default Combat Realm",
+      "glitch": "glitch — acts after ties",
+      "edgeFirst": {
+        "title": "Edge on Initiative",
+        "prompt": "Spend a point of Edge to act first this Combat Turn (no roll)?",
+        "yes": "Act first (Edge)",
+        "no": "Roll normally"
+      }
     },
     "damage": {
       "PHYSICAL": "Physical",

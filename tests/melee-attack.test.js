@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   getEquippedMeleeReach,
   computeReachModifier,
-} from '../src/utils/dialog/actions/melee.js';
+} from '../src/utils/weapons.js';
 
 function makeActor(items = []) {
   return { items };

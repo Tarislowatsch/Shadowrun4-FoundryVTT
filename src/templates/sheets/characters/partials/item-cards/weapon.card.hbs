@@ -8,6 +8,8 @@
       {{ this.name }}
     </span>
 
+    {{> item-active-badge label="sr4.item.equipped"}}
+
     <div class="item-actions">
       <button
         class="attack roll-action"
@@ -22,7 +24,8 @@
       {{> item-toggle-equip equippedIcon="fas fa-hand-fist" unequippedIcon="far fa-hand" tooltip="sr4.item.toggleEquip"}}
       {{/if}}
       {{#if (eq this.type 'Ranged Weapon')}}
-        {{#if this.system.maxAmmo}}
+      {{> item-toggle-equip equippedIcon="fas fa-gun" unequippedIcon="fas fa-gun" tooltip="sr4.item.toggleEquip"}}
+      {{#if this.system.maxAmmo}}
         <button class="item-reload" data-action="reloadWeapon" data-tooltip="{{localize 'sr4.weapon.reload'}}">
           <i class="fas fa-rotate-right"></i>
         </button>

@@ -21,7 +21,7 @@ export default class SR4SpriteSheet extends SR4SummonedEntitySheet {
     const ss = ctx.system.sheetStats;
     const src = ctx.sourceStats;
     const passesMatrix =
-      ctx.system.derivedStats?.passesString?.split('/')[2] ?? '0';
+      ctx.system.derivedStats?.passesString?.split('/')[1] ?? '0';
 
     ctx.matrixStats = [
       {

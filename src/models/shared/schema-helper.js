@@ -1,5 +1,20 @@
 const fields = foundry.data.fields;
 
+/** @type {readonly string[]} */
+export const REALM_CHOICES = Object.freeze(['physical', 'matrix', 'astral']);
+
+/** @type {readonly string[]} */
+export const SIM_MODE_CHOICES = Object.freeze(['cold', 'hot']);
+
+/** @returns {foundry.data.fields.StringField} */
+export function realmModeField() {
+  return new fields.StringField({
+    initial: 'physical',
+    choices: [...REALM_CHOICES],
+    blank: false,
+  });
+}
+
 /**
  * @readonly
  * @enum {string}
@@ -206,6 +221,7 @@ export function summonedEntityFields() {
     }),
     conditionMonitor: conditionMonitorField(),
     notes: new fields.HTMLField({ initial: '' }),
+    realm: realmModeField(),
   };
 }
 

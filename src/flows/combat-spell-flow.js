@@ -38,7 +38,7 @@ export class CombatSpellFlow {
 
     let maxAppliedHits = 0;
     for (const target of targets) {
-      if (!target.id) continue;
+      if (!target.uuid) continue;
       const applied = await CombatSpellFlow._directSpellVsTarget(
         caster,
         spell,
@@ -60,14 +60,14 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async _directSpellVsTarget(caster, spell, castingHits, force, target) {
-    const defenderId = target.id;
+    const defenderUuid = target.uuid;
     const isMana = spell.system?.type === 'MANA';
 
     const netHits = await awaitOpposedSocketResponse({
       triggerAction: 'triggerDirectSpellResist',
       triggerPayload: {
-        defenderId,
-        casterId: caster.id,
+        defenderUuid,
+        casterUuid: caster.uuid,
         spellName: spell.name,
         castingHits,
         force,
@@ -75,7 +75,8 @@ export class CombatSpellFlow {
       },
       matchAction: 'directSpellResisted',
       matches: (payload) =>
-        payload?.casterId === caster.id && payload?.defenderId === defenderId,
+        payload?.casterUuid === caster.uuid &&
+        payload?.defenderUuid === defenderUuid,
       onMatch: (payload) =>
         payload.resistHits === null
           ? 0
@@ -102,8 +103,8 @@ export class CombatSpellFlow {
     getGame().socket?.emit('system.shadowrun4e', {
       action: 'applyDirectSpellDamage',
       payload: {
-        defenderId,
-        casterId: caster.id,
+        defenderUuid,
+        casterUuid: caster.uuid,
         spellName: spell.name,
         damage: force + appliedHits,
         isPhysical,
@@ -127,13 +128,13 @@ export class CombatSpellFlow {
 
     const spellSnapshot = spell.toObject();
     for (const target of targets) {
-      const defenderId = target.id;
-      if (!defenderId) continue;
+      const defenderUuid = target.uuid;
+      if (!defenderUuid) continue;
       getGame().socket?.emit('system.shadowrun4e', {
         action: 'triggerIndirectSpellDefense',
         payload: {
-          defenderId,
-          casterId: caster.id,
+          defenderUuid,
+          casterUuid: caster.uuid,
           spell: spellSnapshot,
           castingHits,
           force,
@@ -158,7 +159,7 @@ export class CombatSpellFlow {
     if (combatType === 'DIRECT') {
       let maxAppliedHits = 0;
       for (const { target, hits } of perTargetHits) {
-        if (!target.id) continue;
+        if (!target.uuid) continue;
         const applied = await CombatSpellFlow._directSpellVsTarget(
           caster,
           spell,
@@ -173,13 +174,13 @@ export class CombatSpellFlow {
 
     const spellSnapshot = spell.toObject();
     for (const { target, hits } of perTargetHits) {
-      const defenderId = target.id;
-      if (!defenderId) continue;
+      const defenderUuid = target.uuid;
+      if (!defenderUuid) continue;
       getGame().socket?.emit('system.shadowrun4e', {
         action: 'triggerIndirectSpellDefense',
         payload: {
-          defenderId,
-          casterId: caster.id,
+          defenderUuid,
+          casterUuid: caster.uuid,
           spell: spellSnapshot,
           castingHits: hits,
           force,

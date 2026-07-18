@@ -2,7 +2,7 @@ import { getGame, localize, openDefenderPickerDialog } from '@utils/index';
 import { DefenseFlow } from './defense-flow';
 
 /**
- * @param {string} attackerId
+ * @param {string} attackerUuid
  * @param {number} successes
  * @param {import('@models/index').SR4Weapon} weapon
  * @param {number} [wideDefenseMalus]
@@ -10,16 +10,16 @@ import { DefenseFlow } from './defense-flow';
  * @returns {Promise<void>}
  */
 export async function startDefenderPickerFlow(
-  attackerId,
+  attackerUuid,
   successes,
   weapon,
   wideDefenseMalus = 0,
   burstDamageBonus = 0
 ) {
-  const attacker = getGame().actors?.get(attackerId);
+  const attacker = /** @type {any} */ (await fromUuid(attackerUuid));
   const actors = (getGame().actors?.contents ?? [])
     .filter((a) => a.type === 'character' || a.type === 'npc')
-    .map((a) => ({ id: /** @type {any} */ (a).id, name: a.name }));
+    .map((a) => ({ id: /** @type {any} */ (a).uuid, name: a.name }));
 
   if (!actors.length) {
     ui.notifications?.warn(
@@ -30,19 +30,19 @@ export async function startDefenderPickerFlow(
 
   const attackerName =
     attacker?.name ?? localize('sr4.settings.gmDefenderPicker.unknownAttacker');
-  const defenderId = await openDefenderPickerDialog(
+  const defenderUuid = await openDefenderPickerDialog(
     attackerName,
     successes,
     actors
   );
-  if (!defenderId) return;
+  if (!defenderUuid) return;
 
-  const defender = getGame().actors?.get(defenderId);
+  const defender = /** @type {any} */ (await fromUuid(defenderUuid));
   if (!defender) return;
 
   await DefenseFlow.start(
     defender,
-    attackerId,
+    attackerUuid,
     successes,
     weapon,
     wideDefenseMalus,

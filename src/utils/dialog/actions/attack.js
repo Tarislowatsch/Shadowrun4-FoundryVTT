@@ -10,13 +10,13 @@ import {
   renderTemplate,
 } from '../dialogutility';
 import { openMeleeAttackDialog } from './melee';
-import { reloadWeapon } from '../../weapons.js';
+import { reloadWeapon, depleteAmmo } from '../../weapons.js';
 import {
   emitDefenseTrigger,
   emitDefenseTriggerForTarget,
 } from '@flows/defense-flow.js';
 import { resolveFinalSuccessesAndEmit } from '@utils/rolls/roll-edge-decision.js';
-import { openDicePoolSplitDialog } from '../dice-pool-split.js';
+import { splitDiceAcrossTargets } from '../dice-pool-split.js';
 import { getValidTargetActors } from '@utils/game/game.js';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
@@ -103,38 +103,6 @@ export function getFireModeParams(weapon) {
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
- * @param {SR4Weapon & { type: 'Ranged Weapon', system: import('@models/index').SR4RangedWeaponSystem }} weapon
- * @param {number} shots
- * @returns {Promise<void>}
- */
-export async function depleteAmmo(actor, weapon, shots) {
-  /** @type {Record<string, Record<string, unknown>>} */
-  const byId = {};
-  if (weapon.system.maxAmmo > 0) {
-    byId[weapon.id] = {
-      'system.currentAmmo': Math.max(0, weapon.system.currentAmmo - shots),
-    };
-  }
-  if (weapon.system.loadedAmmoId) {
-    const ammo = actor.items?.get(weapon.system.loadedAmmoId);
-    if (ammo) {
-      const newQty = Math.max(0, ammo.system.quantity - shots);
-      byId[ammo.id] = { 'system.quantity': newQty };
-      if (newQty === 0) {
-        byId[weapon.id] ??= {};
-        byId[weapon.id]['system.loadedAmmoId'] = '';
-      }
-    }
-  }
-  const batch = Object.entries(byId).map(([id, data]) => ({
-    _id: id,
-    ...data,
-  }));
-  if (batch.length) await actor.updateEmbeddedDocuments('Item', batch);
-}
-
-/**
- * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
  * @param {SR4Weapon} weapon
  * @returns {Promise<void>}
@@ -152,10 +120,9 @@ export async function handleAttackRoll(actor, skillName, weapon) {
  * @param {string} skillName
  * @param {number} dice
  * @param {SR4Weapon} weapon
- * @param {string} targetId
+ * @param {string} targetUuid
  * @param {string} targetName
- * @param {number} [wideDefenseMalus]
- * @param {number} [burstDamageBonus]
+ * @param {import('@flows/defense-flow.js').CombatModifiers} [modifiers]
  * @returns {Promise<void>}
  */
 async function rollAttackForTarget(
@@ -163,13 +130,13 @@ async function rollAttackForTarget(
   skillName,
   dice,
   weapon,
-  targetId,
+  targetUuid,
   targetName,
-  wideDefenseMalus = 0,
-  burstDamageBonus = 0
+  modifiers = {}
 ) {
-  const params = createDialogParameters(actor, dice, weapon);
-  params.malus -= actor.system.modifiers.attackModifier ?? 0;
+  const params = createDialogParameters(actor, dice, weapon, {
+    isAttack: true,
+  });
   const skill = actor.getSkill(skillName);
   const content = await renderTemplate(
     'systems/shadowrun4e/templates/dicerolls/roll-dialog.hbs',
@@ -189,9 +156,8 @@ async function rollAttackForTarget(
       actor,
       weapon,
       finalSuccesses,
-      targetId,
-      wideDefenseMalus,
-      burstDamageBonus
+      targetUuid,
+      modifiers
     )
   );
 }
@@ -393,37 +359,35 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
     if (!fireMode) return;
 
     const effectiveDice = Math.max(1, dice - fireMode.recoil);
-    const splitTargets = targets.map((t) => ({
-      id: /** @type {any} */ (t).id ?? '',
-      name: t.name,
-    }));
-    const allocations = await openDicePoolSplitDialog(
+    const allocations = await splitDiceAcrossTargets(
       effectiveDice,
-      splitTargets,
+      targets,
       weapon.name
     );
     if (!allocations) return;
 
     if (ammoTracking) await depleteAmmo(actor, weapon, fireMode.shots);
 
-    for (const { targetId, allocatedDice } of allocations) {
-      const t = targets.find((a) => /** @type {any} */ (a).id === targetId);
+    for (const { target, targetUuid, allocatedDice } of allocations) {
       await rollAttackForTarget(
         actor,
         skillName,
         allocatedDice,
         weapon,
-        targetId,
-        t?.name ?? '',
-        fireMode.wideDefenseMalus,
-        fireMode.burstDamageBonus
+        targetUuid,
+        target?.name ?? '',
+        {
+          wideDefenseMalus: fireMode.wideDefenseMalus,
+          burstDamageBonus: fireMode.burstDamageBonus,
+        }
       );
     }
     return;
   }
 
-  const params = createDialogParameters(actor, dice, weapon);
-  params.malus -= actor.system.modifiers.attackModifier ?? 0;
+  const params = createDialogParameters(actor, dice, weapon, {
+    isAttack: true,
+  });
   const fireModeParams = getFireModeParams(weapon);
   const skill = actor.getSkill(skillName);
 
@@ -478,12 +442,9 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
   });
 
   await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
-    emitDefenseTrigger(
-      actor,
-      weapon,
-      finalSuccesses,
-      result.wideDefenseMalus,
-      result.burstDamageBonus
-    )
+    emitDefenseTrigger(actor, weapon, finalSuccesses, {
+      wideDefenseMalus: result.wideDefenseMalus,
+      burstDamageBonus: result.burstDamageBonus,
+    })
   );
 }

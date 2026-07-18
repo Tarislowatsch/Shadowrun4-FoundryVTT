@@ -6,6 +6,8 @@ import {
   SR4SheetStatsData,
   modifiersField,
   migrateLegacyValue,
+  realmModeField,
+  SIM_MODE_CHOICES,
 } from '@models/shared';
 import { computeDerivedStats } from '@documents/derivedStats.mapper';
 
@@ -483,6 +485,12 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       elementResistances: elementResistancesField(),
       magic: magicField(),
       technomancy: technomancyField(),
+      realm: realmModeField(),
+      matrixSimMode: new fields.StringField({
+        initial: 'cold',
+        choices: [...SIM_MODE_CHOICES],
+        blank: false,
+      }),
       simpleHp: new fields.BooleanField({ initial: false }),
       livingPersona: new fields.SchemaField({
         firewallBonus: new fields.NumberField({ initial: 0, integer: true }),

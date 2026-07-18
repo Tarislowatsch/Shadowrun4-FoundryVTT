@@ -40,6 +40,11 @@ import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
 import { ThreadingFlow } from '@flows/threading-flow.js';
 import { BindingFlow } from '@flows/binding-flow.js';
+import {
+  REALMS,
+  getAvailableRealms,
+  getCombatantRealm,
+} from './documents/initiative.js';
 
 /**
  * @typedef {object} SR4Global
@@ -65,6 +70,11 @@ import { BindingFlow } from '@flows/binding-flow.js';
  *   resolveDronePool: Function,
  *   resolveRigger: Function,
  * }} rigging
+ * @property {{
+ *   REALMS: readonly string[],
+ *   getAvailableRealms: Function,
+ *   getCombatantRealm: Function,
+ * }} initiative
  */
 globalThis.sr4 = {
   config: SR4,
@@ -88,6 +98,11 @@ globalThis.sr4 = {
     openDroneRollDialog,
     resolveDronePool,
     resolveRigger,
+  },
+  initiative: {
+    REALMS,
+    getAvailableRealms,
+    getCombatantRealm,
   },
 };
 

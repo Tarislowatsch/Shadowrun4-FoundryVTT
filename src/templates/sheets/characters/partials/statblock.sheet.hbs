@@ -25,7 +25,10 @@
           {{#if @root.hasMetatypeLimits}}min="{{lookup @root.attributeMinimum key}}" max="{{lookup @root.attributeMaximum key}}" data-tooltip="Min {{lookup @root.attributeMinimum key}} / Max {{lookup @root.attributeMaximum key}} / Aug {{lookup @root.augmentedMaximum key}}"{{/if}}
         />
       {{else}}
-        <span class="stat-display">
+        <span
+          class="stat-display{{#if (includes @root.rollableAttributes key)}} rollable{{/if}}"
+          {{#if (includes @root.rollableAttributes key)}}data-action="rollAttribute" data-attribute="{{key}}"{{/if}}
+        >
           {{#if (includes @root.derivedKeys key)}}
             {{lookup @root.derivedBaseValues key}}
             {{#if (and (ne key "ESSENCE") (ne (lookup @root.derivedBaseValues key) (lookup @root.system.sheetStats key)))}}

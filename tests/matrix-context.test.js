@@ -31,6 +31,7 @@ function makeActorData(technomancy = {}) {
         CHARISMA: 1,
       },
       livingPersona: {},
+      derivedStats: { initiative: { matrix: 6 } },
       technomancy: { technomancer: true, ...technomancy },
     },
   };
@@ -63,7 +64,8 @@ describe('buildMatrixContext', () => {
     expect(ctx.livingPersona.firewall).toBe(2);
     expect(ctx.livingPersona.system).toBe(5);
     expect(ctx.livingPersona.biofeedbackFilter).toBe(1);
-    expect(ctx.livingPersona.vrMatrixInitiative).toBe(7);
+    expect(ctx.livingPersona.vrMatrixInitiative).toBe(3 + 3);
+    expect(ctx.livingPersona.vrMatrixInitiativePasses).toBe(2);
   });
 
   it('resolves sprite affinity categories for the actor stream', async () => {

@@ -52,7 +52,7 @@ function buildSpellDodgeSkills(defender) {
  * @param {number} castingHits
  * @param {number} force
  * @param {boolean} isMana
- * @param {string} casterId
+ * @param {string} casterUuid
  * @returns {Promise<void>}
  */
 export async function openDirectSpellResistDialog(
@@ -61,7 +61,7 @@ export async function openDirectSpellResistDialog(
   castingHits,
   force,
   isMana,
-  casterId
+  casterUuid
 ) {
   const attr = isMana ? 'WILLPOWER' : 'BODY';
   const baseResist = defender.getAttribute(attr) ?? 0;
@@ -97,7 +97,7 @@ export async function openDirectSpellResistDialog(
     rolledDice: resistPool,
     castingHits,
     socketAction: 'directSpellResisted',
-    casterId,
+    casterUuid,
   });
 }
 

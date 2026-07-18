@@ -91,7 +91,21 @@
       "unarmed": "Waffenloser Kampf"
     },
     "combat": {
-      "initiativePass": "Initiativdurchgang {pass} / {maxPass}"
+      "initiativePass": "Initiativdurchgang {pass} / {maxPass}",
+      "realm": {
+        "physical": "Meatspace",
+        "matrix": "Matrix (VR)",
+        "astral": "Astralraum",
+        "toggleHint": "Kampf-Welt: {realm} (Klicken zum Wechseln)"
+      },
+      "realmDefault": "Standard-Kampfwelt",
+      "glitch": "Patzer — handelt nach Gleichstand",
+      "edgeFirst": {
+        "title": "Edge auf Initiative",
+        "prompt": "Einen Edge-Punkt einsetzen, um in diesem Kampfdurchgang zuerst zu handeln (ohne Wurf)?",
+        "yes": "Zuerst handeln (Edge)",
+        "no": "Normal würfeln"
+      }
     },
     "damage": {
       "PHYSICAL": "Körperlich (K)",

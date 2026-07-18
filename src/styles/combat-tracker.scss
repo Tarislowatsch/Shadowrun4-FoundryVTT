@@ -11,3 +11,31 @@
   opacity: 0.35;
   filter: grayscale(0.5);
 }
+
+.sr4-realm-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  cursor: pointer;
+
+  &.sr4-realm-static {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  &.sr4-realm-physical {
+    color: var(--sr4-teal, #6cc);
+  }
+  &.sr4-realm-matrix {
+    color: #4fc3f7;
+  }
+  &.sr4-realm-astral {
+    color: #b388ff;
+  }
+
+  &:not(.sr4-realm-static):hover {
+    filter: brightness(1.4);
+  }
+}

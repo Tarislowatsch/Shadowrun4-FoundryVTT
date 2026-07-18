@@ -37,7 +37,7 @@ export class OpposedSpellFlow {
     const resistAttribute = getOpposedResistAttribute(category, spellType);
 
     for (const target of targets) {
-      if (!target.id) continue;
+      if (!target.uuid) continue;
       await OpposedSpellFlow.opposedVsTarget(
         caster,
         spell,
@@ -69,13 +69,13 @@ export class OpposedSpellFlow {
     resistAttribute,
     effectData
   ) {
-    const defenderId = target.id;
+    const defenderUuid = target.uuid;
 
     const netHits = await awaitOpposedSocketResponse({
       triggerAction: 'triggerOpposedSpellResist',
       triggerPayload: {
-        defenderId,
-        casterId: caster.id,
+        defenderUuid,
+        casterUuid: caster.uuid,
         spellName: spell.name,
         castingHits,
         force,
@@ -83,7 +83,8 @@ export class OpposedSpellFlow {
       },
       matchAction: 'opposedSpellResisted',
       matches: (payload) =>
-        payload?.casterId === caster.id && payload?.defenderId === defenderId,
+        payload?.casterUuid === caster.uuid &&
+        payload?.defenderUuid === defenderUuid,
       onMatch: (payload) =>
         payload.resistHits === null
           ? 0

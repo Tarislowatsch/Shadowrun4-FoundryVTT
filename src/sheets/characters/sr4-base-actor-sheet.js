@@ -1,5 +1,13 @@
-import { handleAttackRoll, openActionDialog, reloadWeapon } from '@utils/index';
+import {
+  handleAttackRoll,
+  openActionDialog,
+  openAttributeRollDialog,
+  openDerivedStatDialog,
+  reloadWeapon,
+} from '@utils/index';
 import { RESISTANCE_ELEMENTS } from '@models/actor/basecharacter.model';
+import { REALM_CHOICES, SIM_MODE_CHOICES } from '@models/shared';
+import { getAvailableRealms } from '@documents/initiative.js';
 
 export default class SR4BaseActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ActorSheetV2
@@ -28,6 +36,8 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       createMod: SR4BaseActorSheet._onCreateMod,
       toggleItemEffect: SR4BaseActorSheet._onToggleItemEffect,
       rollAction: SR4BaseActorSheet._onRollAction,
+      rollDerivedStat: SR4BaseActorSheet._onRollDerivedStat,
+      rollAttribute: SR4BaseActorSheet._onRollAttribute,
       createElementResistance: SR4BaseActorSheet._onCreateElementResistance,
       deleteElementResistance: SR4BaseActorSheet._onDeleteElementResistance,
     },
@@ -260,7 +270,19 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     if (!itemId) return;
     const item = this.actor.items.get(itemId);
     if (!item) return;
-    await item.update({ 'system.equipped': !item.system.equipped });
+    const equipped = !item.system.equipped;
+    await item.update({ 'system.equipped': equipped });
+    if (equipped && item.type === 'Commlink') {
+      const others = this.actor.items.filter(
+        (i) => i.type === 'Commlink' && i.id !== item.id && i.system?.equipped
+      );
+      if (others.length) {
+        await this.actor.updateEmbeddedDocuments(
+          'Item',
+          others.map((i) => ({ _id: i.id, 'system.equipped': false }))
+        );
+      }
+    }
   }
 
   static async _onMonitorBox(event, target) {
@@ -314,6 +336,16 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
 
     const actionName = `${item.name} (${action1}${action2 ? ` + ${action2}` : ''})`;
     openActionDialog(this.actor, actionName, numDice);
+  }
+
+  static async _onRollDerivedStat(event, target) {
+    const stat = target.dataset.stat;
+    if (stat) await openDerivedStatDialog(this.actor, stat);
+  }
+
+  static async _onRollAttribute(event, target) {
+    const attribute = target.dataset.attribute;
+    if (attribute) await openAttributeRollDialog(this.actor, attribute);
   }
 
   static async _onCreateMod(event, target) {
@@ -374,6 +406,23 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     return RESISTANCE_ELEMENTS.map((el) => ({
       value: el,
       label: game.i18n.localize(`sr4.resistance.${el}`),
+    }));
+  }
+
+  static _buildRealmOptions(actor) {
+    const available = getAvailableRealms(actor);
+    return REALM_CHOICES.filter((realm) => available.includes(realm)).map(
+      (realm) => ({
+        value: realm,
+        label: game.i18n.localize(`sr4.combat.realm.${realm}`),
+      })
+    );
+  }
+
+  static _buildSimModeOptions() {
+    return SIM_MODE_CHOICES.map((mode) => ({
+      value: mode,
+      label: game.i18n.localize(`sr4.matrix.simMode.${mode}`),
     }));
   }
 }

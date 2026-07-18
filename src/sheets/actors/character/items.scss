@@ -172,7 +172,8 @@
   padding-right: 1rem;
 }
 
-.roll-skill {
+.roll-skill,
+.stat-display.rollable {
   cursor: pointer;
 
   &:hover {
@@ -181,14 +182,28 @@
 }
 
 a.item-toggle-equip {
-  color: var(--sr4-border-dim);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: color 0.15s;
+  @include sr4-icon-btn;
+  @include sr4-teal-hover;
+  font-size: 0.75rem;
+  line-height: 1;
 
-  &:hover {
+  &[data-equipped='true'] {
     color: var(--sr4-teal);
+    border-color: var(--sr4-teal);
+    background: var(--sr4-teal-glow);
   }
+}
+
+.item-active-badge {
+  padding: 1px 6px;
+  border: 1px solid var(--sr4-teal);
+  border-radius: 3px;
+  background: var(--sr4-teal-glow);
+  color: var(--sr4-teal);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 /* ---------------- LISTS ---------------- */

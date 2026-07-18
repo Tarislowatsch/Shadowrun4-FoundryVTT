@@ -4,6 +4,8 @@
  * @property {number} conditionMonitorBase
  * @property {number} woundModifierDivisor
  * @property {number} edgeInitiativeSentinel
+ * @property {number} initiativeGlitchTiebreak
+ * @property {{ coldSimPasses: number, hotSimPasses: number, hotSimInitiativeBonus: number }} matrix
  */
 
 /**
@@ -58,6 +60,12 @@ export const SR4 = {
     conditionMonitorBase: 8,
     woundModifierDivisor: 3,
     edgeInitiativeSentinel: 99,
+    initiativeGlitchTiebreak: 0.01,
+    matrix: {
+      coldSimPasses: 2,
+      hotSimPasses: 3,
+      hotSimInitiativeBonus: 1,
+    },
   },
   workflow: {
     opposedRollFallbackBufferSeconds: 10,

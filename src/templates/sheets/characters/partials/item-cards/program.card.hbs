@@ -4,6 +4,7 @@
     {{#if this.system.threaded}}
     <span class="badge threaded-badge" data-tooltip="{{localize 'sr4.matrix.threadedHint'}}">{{localize "sr4.matrix.threaded"}}</span>
     {{/if}}
+    {{> item-active-badge label="sr4.item.active"}}
     <div class="item-actions">
       {{#if this.system.complexform}}
       <button
