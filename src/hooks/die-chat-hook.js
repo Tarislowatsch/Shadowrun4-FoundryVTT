@@ -17,22 +17,39 @@ import {
   resolveEffectDecision,
   applySpellEffects,
 } from '@flows/apply-effects-flow.js';
+import {
+  MatrixDamageFlow,
+  getMatrixDamageDecisionEntry,
+  resolveMatrixDamageDecision,
+} from '@flows/matrix-damage-flow.js';
 import { isResponsibleForActor, isPrimaryGM } from '@utils/actor-ownership.js';
+import { BaseSocketHook } from './base-socket-hook.js';
 
-export class DieChatHook {
+const EDGE_BUTTON_LIFETIME_MS = 1000 * 60 * 30;
+
+/**
+ * @param {HTMLElement} container
+ * @param {{ className: string, label: string, onClick: (event: MouseEvent) => void | Promise<void>, once?: boolean }} config
+ * @returns {HTMLButtonElement}
+ */
+function appendButton(container, { className, label, onClick, once = true }) {
+  const btn = document.createElement('button');
+  btn.className = className;
+  btn.textContent = label;
+  btn.addEventListener('click', onClick, once ? { once: true } : undefined);
+  container.appendChild(btn);
+  return btn;
+}
+
+export class DieChatHook extends BaseSocketHook {
   constructor() {
+    super();
     Hooks.on('renderChatMessageHTML', (chatMessage, html) => {
       DieChatHook.appendEdgeButton(chatMessage, html);
       DieChatHook.renderInitiativeEdgeCard(chatMessage, html);
       DieChatHook.renderDamageDecisionCard(chatMessage, html);
+      DieChatHook.renderMatrixDamageDecisionCard(chatMessage, html);
       DieChatHook.renderEffectDecisionCard(chatMessage, html);
-    });
-    this._boundHandler = this._onSocketMessage.bind(this);
-    Hooks.once('ready', () => {
-      const socket = game.socket;
-      if (!socket) return;
-      socket.off('system.shadowrun4e', this._boundHandler);
-      socket.on('system.shadowrun4e', this._boundHandler);
     });
   }
 
@@ -86,22 +103,19 @@ export class DieChatHook {
       extended && rolledDice > 1 && !isGlitch && !isCriticalGlitch && !reroll;
 
     if (canExtend) {
-      const extBtn = document.createElement('button');
-      extBtn.className = 'extended-test-button';
-      extBtn.textContent = game.i18n.localize('sr4.roll.extendTest');
-      container.appendChild(extBtn);
-
+      let extBtn = null;
       let edgeExBtn = null;
 
       const cleanup = () => {
-        extBtn.remove();
+        extBtn?.remove();
         edgeExBtn?.remove();
         edgeBtn?.remove();
       };
 
-      extBtn.addEventListener(
-        'click',
-        async () => {
+      extBtn = appendButton(container, {
+        className: 'extended-test-button',
+        label: game.i18n.localize('sr4.roll.extendTest'),
+        onClick: async () => {
           cleanup();
           await DiceUtility.followUpRoll({
             ...options,
@@ -110,18 +124,13 @@ export class DieChatHook {
             reroll: false,
           });
         },
-        { once: true }
-      );
+      });
 
       if (edgeAvailable) {
-        edgeExBtn = document.createElement('button');
-        edgeExBtn.className = 'extended-edge-button';
-        edgeExBtn.textContent = game.i18n.localize('sr4.roll.extendEdge');
-        container.appendChild(edgeExBtn);
-
-        edgeExBtn.addEventListener(
-          'click',
-          async () => {
+        edgeExBtn = appendButton(container, {
+          className: 'extended-edge-button',
+          label: game.i18n.localize('sr4.roll.extendEdge'),
+          onClick: async () => {
             cleanup();
             await DiceUtility.followUpRoll({
               ...options,
@@ -131,22 +140,16 @@ export class DieChatHook {
               reroll: false,
             });
           },
-          { once: true }
-        );
+        });
       }
     }
 
     if (edgeAvailable && !extended) {
-      edgeBtn = document.createElement('button');
-      edgeBtn.className = 'edge-use-button';
-      edgeBtn.textContent = game.i18n.localize('sr4.roll.edge.use');
-      container.appendChild(edgeBtn);
-
-      const fallbackTimer = setTimeout(() => edgeBtn.remove(), 1000 * 60 * 30);
-
-      edgeBtn.addEventListener(
-        'click',
-        async () => {
+      let fallbackTimer = null;
+      edgeBtn = appendButton(container, {
+        className: 'edge-use-button',
+        label: game.i18n.localize('sr4.roll.edge.use'),
+        onClick: async () => {
           clearTimeout(fallbackTimer);
           edgeBtn.remove();
           await showEdgeDialog({
@@ -158,7 +161,10 @@ export class DieChatHook {
             onComplete: () => {},
           });
         },
-        { once: true }
+      });
+      fallbackTimer = setTimeout(
+        () => edgeBtn.remove(),
+        EDGE_BUTTON_LIFETIME_MS
       );
     }
   }
@@ -181,14 +187,11 @@ export class DieChatHook {
     if (!combatant) return;
 
     const container = html.querySelector('.roll-results') ?? html;
-    const edgeBtn = document.createElement('button');
-    edgeBtn.className = 'edge-use-button';
-    edgeBtn.textContent = game.i18n.localize('sr4.roll.edge.use');
-    const fallbackTimer = setTimeout(() => edgeBtn.remove(), 1000 * 60 * 30);
-
-    edgeBtn.addEventListener(
-      'click',
-      async () => {
+    let fallbackTimer = null;
+    const edgeBtn = appendButton(container, {
+      className: 'edge-use-button',
+      label: game.i18n.localize('sr4.roll.edge.use'),
+      onClick: async () => {
         clearTimeout(fallbackTimer);
         edgeBtn.remove();
         if (chatMessage.isAuthor || game.user?.isGM) {
@@ -213,9 +216,8 @@ export class DieChatHook {
           initiative: info.base + (total ?? info.successes),
         });
       },
-      { once: true }
-    );
-    container.appendChild(edgeBtn);
+    });
+    fallbackTimer = setTimeout(() => edgeBtn.remove(), EDGE_BUTTON_LIFETIME_MS);
   }
 
   /**
@@ -237,12 +239,10 @@ export class DieChatHook {
     btnWrap.className = 'edge-offer-buttons';
     const cleanup = () => btnWrap.remove();
 
-    const edgeBtn = document.createElement('button');
-    edgeBtn.className = 'edge-use-button';
-    edgeBtn.textContent = game.i18n.localize('sr4.roll.edge.use');
-    edgeBtn.addEventListener(
-      'click',
-      async () => {
+    appendButton(btnWrap, {
+      className: 'edge-use-button',
+      label: game.i18n.localize('sr4.roll.edge.use'),
+      onClick: async () => {
         cleanup();
         await showEdgeDialog({
           isCriticalGlitch,
@@ -257,22 +257,16 @@ export class DieChatHook {
           await resolveEdgeDecision(chatMessage.id);
         }
       },
-      { once: true }
-    );
-    btnWrap.appendChild(edgeBtn);
+    });
 
-    const skipBtn = document.createElement('button');
-    skipBtn.className = 'abort';
-    skipBtn.textContent = game.i18n.localize('sr4.roll.edge.skip');
-    skipBtn.addEventListener(
-      'click',
-      async () => {
+    appendButton(btnWrap, {
+      className: 'abort',
+      label: game.i18n.localize('sr4.roll.edge.skip'),
+      onClick: async () => {
         cleanup();
         await resolveEdgeDecision(chatMessage.id);
       },
-      { once: true }
-    );
-    btnWrap.appendChild(skipBtn);
+    });
 
     container.appendChild(btnWrap);
   }
@@ -300,12 +294,10 @@ export class DieChatHook {
       ? game.i18n.localize('sr4.damage.physical')
       : game.i18n.localize('sr4.damage.stun');
 
-    const applyBtn = document.createElement('button');
-    applyBtn.className = 'apply-damage';
-    applyBtn.textContent = `${game.i18n.localize('sr4.damage.apply')} (${entry.amount} ${damageType})`;
-    applyBtn.addEventListener(
-      'click',
-      async () => {
+    appendButton(btnWrap, {
+      className: 'apply-damage',
+      label: `${game.i18n.localize('sr4.damage.apply')} (${entry.amount} ${damageType})`,
+      onClick: async () => {
         cleanup();
         await resolveDamageDecision(chatMessage.id);
         await ApplyDamageFlow.applyAndSend(
@@ -316,31 +308,63 @@ export class DieChatHook {
           entry.onApply
         );
       },
-      { once: true }
-    );
-    btnWrap.appendChild(applyBtn);
-
-    const modifyBtn = document.createElement('button');
-    modifyBtn.className = 'modify-damage';
-    modifyBtn.textContent = game.i18n.localize('sr4.damage.modify');
-    modifyBtn.addEventListener('click', async () => {
-      const finalAmount = await openModifyDamageDialog(
-        entry.actor,
-        entry.amount,
-        entry.isPhysical
-      );
-      if (finalAmount === null) return;
-      cleanup();
-      await resolveDamageDecision(chatMessage.id);
-      await ApplyDamageFlow.applyAndSend(
-        finalAmount,
-        entry.isPhysical,
-        entry.actor,
-        entry.context,
-        entry.onApply
-      );
     });
-    btnWrap.appendChild(modifyBtn);
+
+    appendButton(btnWrap, {
+      className: 'modify-damage',
+      label: game.i18n.localize('sr4.damage.modify'),
+      once: false,
+      onClick: async () => {
+        const finalAmount = await openModifyDamageDialog(
+          entry.actor,
+          entry.amount,
+          entry.isPhysical
+        );
+        if (finalAmount === null) return;
+        cleanup();
+        await resolveDamageDecision(chatMessage.id);
+        await ApplyDamageFlow.applyAndSend(
+          finalAmount,
+          entry.isPhysical,
+          entry.actor,
+          entry.context,
+          entry.onApply
+        );
+      },
+    });
+
+    container.appendChild(btnWrap);
+  }
+
+  /**
+   * @param {ChatMessage} chatMessage
+   * @param {HTMLElement} html
+   */
+  static renderMatrixDamageDecisionCard(chatMessage, html) {
+    const decision = chatMessage.flags?.sr4?.matrixDamageDecision;
+    if (!decision) return;
+    if (decision.resolved) return;
+    if (!isResponsibleForActor(decision.actorId)) return;
+
+    const entry = getMatrixDamageDecisionEntry(chatMessage.id);
+    if (!entry) return;
+
+    const container =
+      html.querySelector('.matrix-damage-decision-card') ?? html;
+    const btnWrap = document.createElement('div');
+    btnWrap.className = 'matrix-damage-decision-buttons';
+
+    const cleanup = () => btnWrap.remove();
+
+    appendButton(btnWrap, {
+      className: 'apply-damage',
+      label: `${game.i18n.localize('sr4.damage.apply')} (${entry.amount})`,
+      onClick: async () => {
+        cleanup();
+        await resolveMatrixDamageDecision(chatMessage.id);
+        await MatrixDamageFlow.apply(entry.amount, entry.actor, entry.context);
+      },
+    });
 
     container.appendChild(btnWrap);
   }
@@ -364,19 +388,15 @@ export class DieChatHook {
 
     const cleanup = () => btnWrap.remove();
 
-    const applyBtn = document.createElement('button');
-    applyBtn.className = 'apply-effects';
-    applyBtn.textContent = game.i18n.localize('sr4.effect.applyToTarget');
-    applyBtn.addEventListener(
-      'click',
-      async () => {
+    appendButton(btnWrap, {
+      className: 'apply-effects',
+      label: game.i18n.localize('sr4.effect.applyToTarget'),
+      onClick: async () => {
         cleanup();
         await resolveEffectDecision(chatMessage.id);
         await applySpellEffects(entry.effectData, entry.target);
       },
-      { once: true }
-    );
-    btnWrap.appendChild(applyBtn);
+    });
 
     container.appendChild(btnWrap);
   }

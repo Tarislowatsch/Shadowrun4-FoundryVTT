@@ -4,6 +4,7 @@ export * from './armormod.model';
 export * from './autosoft.model';
 export * from './commlink.model';
 export * from './implant.model';
+export * from './mentor.model';
 export * from './program.model';
 export * from './quality.model';
 export * from './vehiclemod.model';

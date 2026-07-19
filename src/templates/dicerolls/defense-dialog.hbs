@@ -1,12 +1,5 @@
 <form class="defense-roll-dialog">
-  <div class="form-group attack-info">
-    <span
-      >{{ attackerName }} · {{ weaponName }} ·
-      {{#unless hideSuccesses}}
-      {{localize "sr4.defense.attackSuccesses"}}: {{ attackSuccesses }}
-      {{/unless}}</span
-    >
-  </div>
+  {{> attack-info}}
 
   <div class="form-group">
     <span class="defense-stat"
@@ -14,13 +7,7 @@
     >
   </div>
 
-  {{#if wideDefenseMalus}}
-  <div class="form-group">
-    <span class="defense-stat defense-malus"
-      >{{localize "sr4.defense.wideBurstMalus"}}: -{{ wideDefenseMalus }}</span
-    >
-  </div>
-  {{/if}}
+  {{> wide-burst-malus}}
 
   {{#if isMelee}}
   {{#if meleeSkills.length}}

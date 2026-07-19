@@ -7,6 +7,7 @@ import {
   mapCyberware,
   mapGear,
   mapArmor,
+  mapMentor,
   mapPower,
   mapProgram,
   mapQuality,
@@ -31,7 +32,64 @@ const COLLECTION_MAPPERS = {
       : mapCyberware(record),
   bioware: mapBioware,
   program: mapProgram,
+  mentorspirit: mapMentor,
 };
+
+/**
+ * Matches Chummer quality names for a mentor spirit or paragon that was
+ * exported only as a Quality (no dedicated `<mentorspirit>` collection).
+ * @type {RegExp}
+ */
+const MENTOR_QUALITY_NAME = /^(Mentor Spirit|Paragon)\s*\((.+)\)$/i;
+
+/**
+ * Chummer's SR4 character-export tag for the chosen mentor/paragon is
+ * unverified (no sample export in this repo). Builds a minimal Mentor item
+ * — without mechanical effects — from whatever fallback source is available,
+ * so the character at least shows the chosen mentor/paragon by name.
+ *
+ * @param {import('./parse-character.js').ParsedCharacter} parsed
+ * @param {Array<{ name: string, type: string, system: object }>} mappedItems
+ * @returns {{ name: string, type: string, system: object, effects: object[] } | null}
+ */
+function buildFallbackMentorItem(parsed, mappedItems) {
+  if (mappedItems.some((i) => i.type === 'Mentor')) return null;
+
+  /** @param {string} name @param {string} category */
+  const minimalMentor = (name, category) => ({
+    name,
+    type: 'Mentor',
+    system: {
+      category,
+      advantage: '',
+      disadvantage: '',
+      choices: [],
+      selectedChoices: {},
+      source: '',
+    },
+    effects: [],
+  });
+
+  const leaf = parsed.character?.mentorspirit;
+  const leafName =
+    typeof leaf === 'string'
+      ? leaf.trim()
+      : String(leaf?.['#text'] ?? '').trim();
+  if (leafName) return minimalMentor(leafName, 'Other');
+
+  const qualityMatch = mappedItems
+    .filter((i) => i.type === 'Quality')
+    .map((i) => i.name.match(MENTOR_QUALITY_NAME))
+    .find(Boolean);
+  if (qualityMatch) {
+    return minimalMentor(
+      qualityMatch[2],
+      /paragon/i.test(qualityMatch[1]) ? 'Resonance' : 'Other'
+    );
+  }
+
+  return null;
+}
 
 /**
  * @param {Record<string, Array<Record<string, unknown>>>} [parsedItems]
@@ -210,6 +268,7 @@ export function buildActorData(parsed, canonicalSkills) {
     .map(mapCharacterSkill);
 
   const metatypeItem = mapCharacterMetatype(parsed.character);
+  const fallbackMentorItem = buildFallbackMentorItem(parsed, items);
 
   const gearGuidToName = buildGearGuidToName(parsed.items);
   const ammoLinks = buildAmmoLinks(parsed.items, gearGuidToName);
@@ -225,6 +284,7 @@ export function buildActorData(parsed, canonicalSkills) {
     items: [
       ...(metatypeItem ? [metatypeItem] : []),
       ...items,
+      ...(fallbackMentorItem ? [fallbackMentorItem] : []),
       ...modItems,
       ...activeSkills,
       ...knowledgeSkills,

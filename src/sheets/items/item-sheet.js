@@ -15,8 +15,14 @@ import {
   SpellDurations,
   SpellElements,
   ActionType,
+  MentorCategories,
 } from '@models/index';
-import { SR4EffectTargets, EFFECT_TEMPLATES } from '@effects/index';
+import {
+  SR4EffectTargets,
+  EFFECT_TEMPLATES,
+  buildMentorContext,
+  selectMentorChoice,
+} from '@effects/index';
 import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
 import {
   buildModPoolFromCollection,
@@ -99,6 +105,9 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     },
     quality: {
       template: 'systems/shadowrun4e/templates/sheets/items/quality.sheet.hbs',
+    },
+    mentor: {
+      template: 'systems/shadowrun4e/templates/sheets/items/mentor.sheet.hbs',
     },
     weaponmod: {
       template:
@@ -228,6 +237,11 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       );
     }
 
+    if (this.item.type === 'Mentor') {
+      context.mentorcategories = MentorCategories;
+      context.mentorContext = buildMentorContext(this.document);
+    }
+
     this._prepareActionsEffectsContext(context);
 
     return context;
@@ -302,6 +316,16 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       .querySelectorAll('input[type="number"], input[type="text"]')
       .forEach((input) => {
         input.addEventListener('focus', () => input.select());
+      });
+
+    this.element
+      .querySelectorAll('select[data-mentor-choice]')
+      .forEach((select) => {
+        select.addEventListener('change', async (event) => {
+          const set = event.currentTarget.dataset.set;
+          if (!set) return;
+          await selectMentorChoice(this.item, set, event.currentTarget.value);
+        });
       });
 
     this.element

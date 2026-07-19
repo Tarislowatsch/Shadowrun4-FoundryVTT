@@ -1,6 +1,6 @@
 import { SpellcastingFlow } from '@flows/index';
 import { Attackskill } from '@models/index';
-import { getGame } from '@utils/index';
+import { getGame, isJammedMatrixEscape } from '@utils/index';
 import { resolveRiggerSync } from '@utils/rigging/drone-pool.js';
 import { SR4ActiveEffect } from '@effects/index';
 import { SR4 } from '../config.js';
@@ -228,6 +228,26 @@ export class SR4Actor extends foundry.documents.Actor {
   }
 
   async _preUpdate(changed, options, userId) {
+    /** @type {any} */
+    const self = this;
+    const jammedBy = self.system?.matrix?.jammedBy;
+    if (jammedBy) {
+      const matrixChange = changed.system?.matrix;
+      const clearingJam =
+        matrixChange && 'jammedBy' in matrixChange && !matrixChange.jammedBy;
+      if (
+        isJammedMatrixEscape(jammedBy, {
+          changedRealm: changed.system?.realm,
+          changedSimMode: changed.system?.matrixSimMode,
+          clearingJam,
+        })
+      ) {
+        ui?.notifications?.warn(
+          game.i18n.localize('sr4.matrix.cybercombat.jammedBlock')
+        );
+        return false;
+      }
+    }
     await super._preUpdate(changed, options, userId);
     if (game.settings.get('shadowrun4e', 'liveInitiativeReduction'))
       options._sr4IniScores = this.#activeInitiativeScores();
@@ -346,7 +366,7 @@ export class SR4Actor extends foundry.documents.Actor {
   }
 
   /**
-   * @param {'physical'|'stun'} track
+   * @param {'physical'|'stun'|'matrix'} track
    * @param {number} amount
    */
   async dealMonitorDamage(track, amount) {
@@ -356,7 +376,7 @@ export class SR4Actor extends foundry.documents.Actor {
     await this.update({ [`system.conditionMonitor.${track}.value`]: clamped });
   }
 
-  /** @param {'physical'|'stun'} track */
+  /** @param {'physical'|'stun'|'matrix'} track */
   async resetMonitor(track) {
     /** @type {any} */
     const self = this;

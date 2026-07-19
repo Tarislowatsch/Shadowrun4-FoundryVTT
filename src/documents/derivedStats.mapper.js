@@ -12,11 +12,21 @@ function computeWoundModifier(monitor, woundModBonus = 0) {
 }
 
 /**
+ * Technomancers in full VR always run hot sim (SR4A p.239, living persona).
+ * @param {object} system
+ * @returns {'cold'|'hot'}
+ */
+export function effectiveSimMode(system) {
+  if (system?.technomancy?.technomancer) return 'hot';
+  return system?.matrixSimMode === 'hot' ? 'hot' : 'cold';
+}
+
+/**
  * @param {object} system
  * @returns {number}
  */
 export function matrixSimPasses(system) {
-  return system?.matrixSimMode === 'hot'
+  return effectiveSimMode(system) === 'hot'
     ? SR4.rules.matrix.hotSimPasses
     : SR4.rules.matrix.coldSimPasses;
 }
@@ -26,9 +36,20 @@ export function matrixSimPasses(system) {
  * @returns {number}
  */
 export function matrixSimInitiativeBonus(system) {
-  return system?.matrixSimMode === 'hot'
+  return effectiveSimMode(system) === 'hot'
     ? SR4.rules.matrix.hotSimInitiativeBonus
     : 0;
+}
+
+function capAtResonance(system, value) {
+  return Math.min(value, system?.sheetStats?.RESONANCE ?? 0);
+}
+
+function bestEquippedCommlinkStat(items, key) {
+  const values = items
+    .filter((i) => i.type === 'Commlink' && i.system?.equipped)
+    .map((i) => i.system?.[key] ?? 0);
+  return values.length ? Math.max(...values) : 0;
 }
 
 /**
@@ -55,15 +76,83 @@ export function computeMatrixResponse(
   items = system?.parent?.items ?? []
 ) {
   if (system?.technomancy?.technomancer) {
-    return (
+    return capAtResonance(
+      system,
       (system.sheetStats?.INTUITION ?? 0) +
-      (system.livingPersona?.responseBonus ?? 0)
+        (system.livingPersona?.responseBonus ?? 0)
     );
   }
-  const responses = items
-    .filter((i) => i.type === 'Commlink' && i.system?.equipped)
-    .map((i) => i.system?.response ?? 0);
-  return responses.length ? Math.max(...responses) : 0;
+  return bestEquippedCommlinkStat(items, 'response');
+}
+
+/**
+ * @param {object} system
+ * @param {Array<{ type: string, system?: { equipped?: boolean, os?: number } }>} [items]
+ * @returns {number}
+ */
+export function computeMatrixSystem(
+  system,
+  items = system?.parent?.items ?? []
+) {
+  if (system?.technomancy?.technomancer) {
+    return capAtResonance(
+      system,
+      (system.sheetStats?.LOGIC ?? 0) + (system.livingPersona?.systemBonus ?? 0)
+    );
+  }
+  return bestEquippedCommlinkStat(items, 'os');
+}
+
+/**
+ * @param {object} system
+ * @param {Array<{ type: string, name?: string, system?: { equipped?: boolean, rating?: number, category?: string } }>} [items]
+ * @returns {number}
+ */
+export function computeBiofeedbackFilter(
+  system,
+  items = system?.parent?.items ?? []
+) {
+  if (system?.technomancy?.technomancer) {
+    return capAtResonance(
+      system,
+      (system.sheetStats?.CHARISMA ?? 0) +
+        (system.livingPersona?.biofeedbackFilterBonus ?? 0)
+    );
+  }
+  const filter = items.find(
+    (i) =>
+      i.type === 'Program' &&
+      (i.system?.category === 'biofeedbackFilter' ||
+        /biofeedback/i.test(i.name ?? ''))
+  );
+  return filter?.system?.rating ?? 0;
+}
+
+/**
+ * @param {object} system
+ * @param {Array<{ type: string, system?: { equipped?: boolean, firewall?: number } }>} [items]
+ * @returns {number}
+ */
+export function computeMatrixFirewall(
+  system,
+  items = system?.parent?.items ?? []
+) {
+  if (system?.technomancy?.technomancer) {
+    return capAtResonance(
+      system,
+      (system.sheetStats?.WILLPOWER ?? 0) +
+        (system.livingPersona?.firewallBonus ?? 0)
+    );
+  }
+  return bestEquippedCommlinkStat(items, 'firewall');
+}
+
+/**
+ * @param {number} system - matrix System rating
+ * @returns {number}
+ */
+export function computeMatrixMonitorMax(system) {
+  return SR4.rules.conditionMonitorBase + Math.ceil((system ?? 0) / 2);
 }
 
 /**
@@ -78,10 +167,12 @@ function computeSummonedEntityStats(systemData, initiative) {
 
   monitor.physical.max = computeMonitorMax(sheetStats.BODY);
   monitor.stun.max = computeMonitorMax(sheetStats.WILLPOWER);
+  if (monitor.matrix) {
+    monitor.matrix.max = 0;
+  }
 
-  derivedStats.woundModifier = computeWoundModifier(monitor);
-  derivedStats.dicePoolModifier =
-    derivedStats.woundModifier + systemData.modifiers.generalModifier;
+  derivedStats.woundModifier = 0;
+  derivedStats.dicePoolModifier = systemData.modifiers.generalModifier;
   derivedStats.meleeDamageBonus = Math.ceil((sheetStats.STRENGTH ?? 0) / 2);
 
   derivedStats.initiative.physical = initiative.physical;
@@ -126,9 +217,8 @@ export function computeVehicleDerivedStats(systemData) {
 
   monitor.physical.max = computeMonitorMax(systemData.body);
 
-  derivedStats.woundModifier = computeWoundModifier(monitor);
-  derivedStats.dicePoolModifier =
-    derivedStats.woundModifier + systemData.modifiers.generalModifier;
+  derivedStats.woundModifier = 0;
+  derivedStats.dicePoolModifier = systemData.modifiers.generalModifier;
 
   derivedStats.initiative.physical =
     (systemData.pilot ?? 0) + (systemData.response ?? 0);
@@ -175,6 +265,11 @@ export function computeDerivedStats(actorData) {
 
   monitor.physical.max = computeMonitorMax(sheetStats.BODY);
   monitor.stun.max = computeMonitorMax(sheetStats.WILLPOWER);
+  if (monitor.matrix) {
+    monitor.matrix.max = actorData.technomancy?.technomancer
+      ? 0
+      : computeMatrixMonitorMax(computeMatrixSystem(actorData));
+  }
 
   derivedStats.overflow = sheetStats.BODY + modifiers.overflowBonus;
   derivedStats.woundModifier = computeWoundModifier(

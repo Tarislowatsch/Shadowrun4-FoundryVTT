@@ -1,8 +1,9 @@
 import { SR4Attributes } from '@models/index';
 import { SR4SkillGroupKeys } from '@models/actions/skills.model';
+import { SpellCategories } from '@models/magic/spells.models';
 
 /** @type {readonly string[]} */
-const SKILL_KEYS = [
+export const SKILL_KEYS = [
   'aeronauticsmechanic',
   'arcana',
   'archery',
@@ -114,6 +115,13 @@ export const SR4EffectTargets = Object.freeze({
     'sr4.modifiers.initiative.matrixPasses',
   'system.armor.ballistic': 'sr4.armor.ballisticarmor',
   'system.armor.impact': 'sr4.armor.impactarmor',
+  'system.modifiers.soakBonus': 'sr4.bonus.soakBonus',
+  ...Object.fromEntries(
+    Object.keys(SpellCategories).map((key) => [
+      `system.modifiers.spellCategoryBonuses.${key}`,
+      `sr4.effectTarget.spellCategory.${key}`,
+    ])
+  ),
   ...Object.fromEntries(
     Object.keys(SR4SkillGroupKeys).map((key) => [
       `system.modifiers.skillGroupBonuses.${key}`,

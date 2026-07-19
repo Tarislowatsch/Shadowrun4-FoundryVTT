@@ -443,3 +443,103 @@ describe('buildActorData', () => {
     expect(unarmed.system.rating).toBe(3);
   });
 });
+
+describe('buildActorData mentor spirits', () => {
+  it('maps a <mentorspirit> collection entry to a Mentor item', () => {
+    const parsed = {
+      character: baseCharacter,
+      items: {
+        mentorspirit: [
+          {
+            name: 'Sun',
+            category: 'Other',
+            advantage: '+2 dice for Combat spells',
+            _bonus: [{ kind: 'spellcategory', name: 'Combat', val: 2 }],
+            _choices: [],
+          },
+        ],
+      },
+      skills: [],
+    };
+    const data = buildActorData(parsed, []);
+
+    const mentor = data.items.find((i) => i.type === 'Mentor');
+    expect(mentor).toBeDefined();
+    expect(mentor.name).toBe('Sun');
+    expect(mentor.system.advantage).toBe('+2 dice for Combat spells');
+    expect(mentor.effects).toHaveLength(1);
+  });
+
+  it('falls back to a minimal Mentor item from a leaf character.mentorspirit string', () => {
+    const parsed = {
+      character: { ...baseCharacter, mentorspirit: 'Cat' },
+      items: {},
+      skills: [],
+    };
+    const data = buildActorData(parsed, []);
+
+    const mentor = data.items.find((i) => i.type === 'Mentor');
+    expect(mentor).toBeDefined();
+    expect(mentor.name).toBe('Cat');
+    expect(mentor.effects).toEqual([]);
+  });
+
+  it('falls back to a minimal Mentor item derived from a "Mentor Spirit (Name)" Quality', () => {
+    const parsed = {
+      character: baseCharacter,
+      items: {
+        quality: [{ name: 'Mentor Spirit (Bear)', qualitytype: 'Positive' }],
+      },
+      skills: [],
+    };
+    const data = buildActorData(parsed, []);
+
+    const mentor = data.items.find((i) => i.type === 'Mentor');
+    expect(mentor).toBeDefined();
+    expect(mentor.name).toBe('Bear');
+    expect(mentor.system.category).toBe('Other');
+    expect(
+      data.items.some(
+        (i) => i.type === 'Quality' && i.name === 'Mentor Spirit (Bear)'
+      )
+    ).toBe(true);
+  });
+
+  it('derives the Resonance category from a "Paragon (Name)" Quality', () => {
+    const parsed = {
+      character: baseCharacter,
+      items: {
+        quality: [{ name: 'Paragon (Shooter)', qualitytype: 'Positive' }],
+      },
+      skills: [],
+    };
+    const data = buildActorData(parsed, []);
+
+    const mentor = data.items.find((i) => i.type === 'Mentor');
+    expect(mentor.name).toBe('Shooter');
+    expect(mentor.system.category).toBe('Resonance');
+  });
+
+  it('skips both fallbacks when a <mentorspirit> item is already present', () => {
+    const parsed = {
+      character: { ...baseCharacter, mentorspirit: 'Cat' },
+      items: {
+        mentorspirit: [
+          { name: 'Sun', category: 'Other', _bonus: [], _choices: [] },
+        ],
+      },
+      skills: [],
+    };
+    const data = buildActorData(parsed, []);
+
+    const mentors = data.items.filter((i) => i.type === 'Mentor');
+    expect(mentors).toHaveLength(1);
+    expect(mentors[0].name).toBe('Sun');
+  });
+
+  it('does not create a Mentor item when there is no fallback source', () => {
+    const parsed = { character: baseCharacter, items: {}, skills: [] };
+    const data = buildActorData(parsed, []);
+    expect(data.items.some((i) => i.type === 'Mentor')).toBe(false);
+  });
+});

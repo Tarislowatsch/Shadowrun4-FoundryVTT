@@ -38,6 +38,14 @@ export async function registerCharacterPartials() {
       path: `${basePath}/item-cards/partials/ammo-stats.hbs`,
       name: 'ammo-stats',
     },
+    {
+      path: `${basePath}/item-cards/partials/item-card-header.hbs`,
+      name: 'item-card-header',
+    },
+    {
+      path: `${basePath}/item-cards/partials/item-card-mods.hbs`,
+      name: 'item-card-mods',
+    },
   ];
 
   await Promise.all(

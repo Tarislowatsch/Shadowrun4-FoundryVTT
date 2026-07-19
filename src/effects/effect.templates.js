@@ -58,6 +58,19 @@ export const EFFECT_TEMPLATES = Object.freeze({
     ],
     duration: { turns: 1 },
   },
+  /** Dumpshock disorientation: -2 to all dice pools for (10 − Willpower) minutes */
+  dumpshocked: {
+    name: 'sr4.effect.templates.dumpshocked',
+    img: 'icons/svg/stoned.svg',
+    statuses: ['sr4-dumpshocked'],
+    changes: [
+      {
+        key: 'system.modifiers.generalModifier',
+        type: 'add',
+        value: '-2',
+      },
+    ],
+  },
   /** Knocked down: -2 to all dice pools until standing up */
   knockedDown: {
     name: 'sr4.effect.templates.knockedDown',

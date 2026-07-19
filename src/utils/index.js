@@ -4,5 +4,8 @@ export * from './game/opposed-roll-timeout';
 export * from './game/opposed-socket-wait';
 export * from './actor-ownership';
 export * from './dialog';
+export * from './matrix/matrix-persona';
+export * from './matrix/matrix-rules';
 export * from './rigging';
 export * from './weapons';
+export * from './pdf-source';

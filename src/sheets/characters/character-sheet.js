@@ -1,6 +1,7 @@
 import { handleSkillRoll, rollComplexFormDialog } from '@utils/index';
 import { SummoningFlow } from '@flows/summoning-flow.js';
 import { ThreadingFlow } from '@flows/threading-flow.js';
+import { CybercombatFlow } from '@flows/cybercombat-flow.js';
 import {
   ActionType,
   Attackskill,
@@ -10,7 +11,11 @@ import {
   SR4Attributes,
   TraditionLabels,
 } from '@models/index';
-import { SR4EffectTargets } from '@effects/index';
+import {
+  SR4EffectTargets,
+  buildMentorContext,
+  selectMentorChoice,
+} from '@effects/index';
 import { buildWeaponContext } from './weapon-context.js';
 import { buildArmorContext } from './armor-context.js';
 import {
@@ -53,6 +58,8 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       rollSkill: SR4CharacterSheet.#onRollSkill,
       threadComplexForm: SR4CharacterSheet.#onThreadComplexForm,
       useComplexForm: SR4CharacterSheet.#onUseComplexForm,
+      matrixAttack: SR4CharacterSheet.#onMatrixAttack,
+      matrixJackOut: SR4CharacterSheet.#onMatrixJackOut,
       createEffect: onCreateEffect,
       toggleEffect: onToggleEffect,
       editEffect: onEditEffect,
@@ -66,6 +73,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       compileSprite: SR4CharacterSheet.#onCompileSprite,
       createSpriteTemplate: SR4CharacterSheet.#onCreateSpriteTemplate,
       createSpiritTemplate: SR4CharacterSheet.#onCreateSpiritTemplate,
+      createMentor: SR4CharacterSheet.#onCreateMentor,
     },
   };
 
@@ -234,7 +242,18 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     const powers = this._enrichItemContext(items, 'Power');
     const sys = this.document.system;
     const implants = this._enrichItemContext(items, 'Implant');
+    const mentorItem =
+      this.actor.items.find(
+        (i) => i.type === 'Mentor' && !i.system.isParagon
+      ) ?? null;
+    const paragonItem =
+      this.actor.items.find((i) => i.type === 'Mentor' && i.system.isParagon) ??
+      null;
     return {
+      mentorContext: mentorItem ? buildMentorContext(mentorItem) : null,
+      mentorItemId: mentorItem?.id ?? null,
+      paragonContext: paragonItem ? buildMentorContext(paragonItem) : null,
+      paragonItemId: paragonItem?.id ?? null,
       weapons: buildWeaponContext(items, {
         meleeDmgBonus: sys.derivedStats.meleeDamageBonus ?? 0,
         meleeDamageModifier: sys.modifiers?.meleeDamageModifier ?? 0,
@@ -325,6 +344,23 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     const { signal } = this._listenerAbort;
 
     this.element
+      .querySelectorAll('select[data-mentor-choice]')
+      .forEach((select) => {
+        select.addEventListener(
+          'change',
+          async (event) => {
+            const target = event.currentTarget;
+            const itemId = target.closest('[data-item-id]')?.dataset.itemId;
+            const set = target.dataset.set;
+            const item = itemId ? this.actor.items.get(itemId) : undefined;
+            if (!item || !set) return;
+            await selectMentorChoice(item, set, target.value);
+          },
+          { signal }
+        );
+      });
+
+    this.element
       .querySelectorAll('input[type="number"], input[type="text"]')
       .forEach((input) => {
         input.addEventListener(
@@ -387,6 +423,14 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     if (skill) await handleSkillRoll(this.actor, skill);
   }
 
+  static async #onMatrixAttack() {
+    await CybercombatFlow.start(this.actor);
+  }
+
+  static async #onMatrixJackOut() {
+    await CybercombatFlow.jackOut(this.actor);
+  }
+
   // ── Summoning / Compiling actions ─────────────────────────────────────────
 
   static async #onSummonSpirit() {
@@ -417,5 +461,17 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       { name, type: 'spirit', system: { spiritType, force: 1 } },
       { renderSheet: true }
     );
+  }
+
+  static async #onCreateMentor(event, target) {
+    const category = target.dataset.category || 'Other';
+    const [item] = await this.actor.createEmbeddedDocuments('Item', [
+      {
+        name: game.i18n.localize('TYPES.Item.Mentor'),
+        type: 'Mentor',
+        system: { category },
+      },
+    ]);
+    item?.sheet?.render(true);
   }
 }

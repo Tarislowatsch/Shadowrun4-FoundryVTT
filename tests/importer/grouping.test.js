@@ -210,6 +210,29 @@ describe('buildImportGroups', () => {
     ]);
   });
 
+  it('splits mentor records into Mentor Spirits vs Paragons typeLabels by category', () => {
+    const parsed = {
+      mentor: [
+        { name: 'Sun', category: 'Other', source: 'SM' },
+        { name: 'Bear', category: 'Animal', source: 'SM' },
+        { name: 'Shooter', category: 'Resonance', source: 'UN' },
+        { name: 'Corruption', category: 'Disonance', source: 'UN' },
+      ],
+    };
+    const groups = buildImportGroups(parsed);
+
+    const spirits = groups.filter((g) => g.typeLabel === 'Mentor Spirits');
+    const paragons = groups.filter((g) => g.typeLabel === 'Paragons');
+    expect(spirits.map((g) => g.subcategory).sort()).toEqual([
+      'Animal',
+      'Other',
+    ]);
+    expect(paragons.map((g) => g.subcategory).sort()).toEqual([
+      'Disonance',
+      'Resonance',
+    ]);
+  });
+
   it('places metatype subcategories under a single Metatypes type without parentFolder', () => {
     const parsed = {
       metatype: [

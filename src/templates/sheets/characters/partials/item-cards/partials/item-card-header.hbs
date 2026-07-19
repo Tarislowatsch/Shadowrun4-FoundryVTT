@@ -1,0 +1,15 @@
+<div class="item-header item-row">
+  <span class="item-name">{{ this.name }}</span>
+  {{#if badgeShow}}
+  <span class="badge {{badgeClass}}" data-tooltip="{{localize badgeTooltip}}">{{localize badgeLabel}}</span>
+  {{/if}}
+  {{#if activeBadgeLabel}}{{> item-active-badge label=activeBadgeLabel}}{{/if}}
+  <div class="item-actions">
+    {{!-- named slot instead of @partial-block: HB4 resolves block-helper
+          paths inside @partial-block content against the wrong depth --}}
+    {{#> card-buttons}}{{/card-buttons}}
+    {{> item-source-btn source=this.system.source}}
+    {{> item-edit-btn}}
+    {{> item-delete-btn}}
+  </div>
+</div>

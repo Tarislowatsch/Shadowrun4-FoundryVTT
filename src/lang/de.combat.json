@@ -136,8 +136,11 @@
       "pendingChat": "{name}: {amount} {type}-Schaden ausstehend.",
       "physical": "Körperlich (K)",
       "reason": {
+        "blackIc": "Schwarzes IC",
         "combat": "Kampf",
+        "cybercombat": "Cyberkampf",
         "drain": "Entzug",
+        "dumpshock": "Dumpshock",
         "spell": "Zauber"
       },
       "resisted": "{name} hat dem Schaden Widerstanden",

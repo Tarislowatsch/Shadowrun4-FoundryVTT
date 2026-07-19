@@ -6,6 +6,7 @@ import {
   mapCyberware,
   mapGear,
   mapMod,
+  mapMentor,
   mapMetatype,
   mapMetavariant,
   mapPower,
@@ -18,6 +19,7 @@ import {
   modKind,
   isAmmunition,
   isCommlink,
+  isParagonRecord,
 } from './mappers/index.js';
 
 const MOD_TYPE_LABEL = {
@@ -130,6 +132,13 @@ export const TAG_CONFIGS = [
     map: mapQuality,
     typeLabel: () => 'Qualities',
     subcategory: categoryOr('Qualities'),
+  },
+  {
+    xmlTag: 'mentor',
+    map: mapMentor,
+    typeLabel: (record) =>
+      isParagonRecord(record) ? 'Paragons' : 'Mentor Spirits',
+    subcategory: categoryOr('Other'),
   },
   {
     xmlTag: 'skill',

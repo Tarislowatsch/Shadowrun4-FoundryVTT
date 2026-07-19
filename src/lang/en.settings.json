@@ -76,6 +76,10 @@
         "hint": "When enabled, defenders are prompted to roll soak after defense. Requires Combat: Defense Workflow to be active.",
         "name": "Combat: Soak Workflow"
       },
+      "cybercombatWorkflow": {
+        "hint": "When enabled, Matrix attacks prompt targets for defense and resistance rolls. Disabling turns off the Cybercombat flow.",
+        "name": "Matrix: Cybercombat Workflow"
+      },
       "gmDefenderPicker": {
         "attackerLabel": "Attacker",
         "confirm": "Start Defense",
@@ -114,6 +118,18 @@
         },
         "save": "Save",
         "title": "Rigger Skill Mapping"
+      },
+      "sourceBooksMenu": {
+        "addRow": "Add Book",
+        "codePlaceholder": "Book code, e.g. SR4",
+        "hint": "Bind a rulebook code (as it appears in item source fields, e.g. \"SR4\" or \"AR\") to a PDF page created via the PDF Pager module. Requires the optional PDF Pager module.",
+        "label": "Configure",
+        "name": "Source Books",
+        "noPdf": "— select PDF —",
+        "removeRow": "Remove",
+        "reset": "Reset",
+        "save": "Save",
+        "title": "Source Books"
       },
       "spellWorkflow": {
         "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain).",

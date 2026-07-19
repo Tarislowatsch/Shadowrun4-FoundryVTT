@@ -1,0 +1,39 @@
+<div class="source-books-menu" style="display:flex; flex-direction:column; gap:8px; padding:8px; box-sizing:border-box;">
+  <p class="hint" style="margin:0;">{{localize "sr4.settings.sourceBooksMenu.hint"}}</p>
+
+  <div class="source-books-rows" style="display:flex; flex-direction:column; gap:6px;">
+    {{#each rows}}
+    <div class="form-group" data-row-index="{{index}}" style="display:flex; align-items:center; gap:8px;">
+      <input
+        type="text"
+        name="code-{{index}}"
+        value="{{code}}"
+        placeholder="{{localize 'sr4.settings.sourceBooksMenu.codePlaceholder'}}"
+        style="flex:1;"
+      />
+      <select name="page-{{index}}" style="flex:2;">
+        <option value="">{{localize "sr4.settings.sourceBooksMenu.noPdf"}}</option>
+        {{#each pages}}
+        <option value="{{uuid}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+        {{/each}}
+      </select>
+      <button type="button" data-action="removeRow" data-tooltip="{{localize 'sr4.settings.sourceBooksMenu.removeRow'}}">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    {{/each}}
+  </div>
+
+  <button type="button" data-action="addRow" style="align-self:flex-start;">
+    <i class="fas fa-plus"></i> {{localize "sr4.settings.sourceBooksMenu.addRow"}}
+  </button>
+
+  <footer class="sheet-footer flexrow" style="margin-top:8px; gap:8px; flex-shrink:0;">
+    <button type="button" data-action="save">
+      <i class="fas fa-save"></i> {{localize "sr4.settings.sourceBooksMenu.save"}}
+    </button>
+    <button type="button" data-action="reset">
+      <i class="fas fa-rotate-left"></i> {{localize "sr4.settings.sourceBooksMenu.reset"}}
+    </button>
+  </footer>
+</div>

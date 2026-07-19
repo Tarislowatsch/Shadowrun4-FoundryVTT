@@ -9,6 +9,7 @@
       <div class="item-row">
         <span class="item-name">{{power.name}}</span>
         {{#if power.system.source}}<span class="item-source">{{power.system.source}}</span>{{/if}}
+        {{> item-source-btn source=power.system.source}}
         {{> item-edit-btn itemId=power._id}}
         {{> item-delete-btn itemId=power._id}}
       </div>

@@ -6,9 +6,12 @@ vi.mock('@utils/rolls/diceutility.js', () => ({
   DiceUtility: { rollAndShow: (...args) => rollAndShowMock(...args) },
 }));
 
-const { rollForcedSkill, getSkillDicePool } = await import(
-  '@utils/dialog/dialogutility.js'
-);
+const {
+  rollForcedSkill,
+  getSkillDicePool,
+  getSpellCategoryBonus,
+  getSpellcastingDicePool,
+} = await import('@utils/dialog/dialogutility.js');
 
 /**
  * @param {{ rating?: number, attribute?: string, attributes?: Record<string, number> }} [options]
@@ -63,6 +66,68 @@ describe('getSkillDicePool', () => {
       attributes: { CHARISMA: 3 },
     });
     expect(getSkillDicePool(actor, 'binding')).toBe(7);
+  });
+});
+
+describe('getSpellCategoryBonus', () => {
+  const spell = (category) => ({ system: { category } });
+
+  it('returns the matching category bonus', () => {
+    const actor = {
+      system: { modifiers: { spellCategoryBonuses: { COMBAT: 2 } } },
+    };
+    expect(getSpellCategoryBonus(actor, spell('COMBAT'))).toBe(2);
+  });
+
+  it('returns 0 when no bonus is set for the category', () => {
+    const actor = {
+      system: { modifiers: { spellCategoryBonuses: { COMBAT: 2 } } },
+    };
+    expect(getSpellCategoryBonus(actor, spell('HEALTH'))).toBe(0);
+  });
+
+  it('returns 0 when the bonus is not a number', () => {
+    const actor = {
+      system: { modifiers: { spellCategoryBonuses: { COMBAT: 'oops' } } },
+    };
+    expect(getSpellCategoryBonus(actor, spell('COMBAT'))).toBe(0);
+  });
+
+  it('coerces numeric string bonuses from applied effects', () => {
+    const actor = {
+      system: { modifiers: { spellCategoryBonuses: { COMBAT: '2' } } },
+    };
+    expect(getSpellCategoryBonus(actor, spell('COMBAT'))).toBe(2);
+  });
+
+  it('returns 0 when modifiers are missing entirely', () => {
+    const actor = { system: {} };
+    expect(getSpellCategoryBonus(actor, spell('COMBAT'))).toBe(0);
+  });
+});
+
+describe('getSpellcastingDicePool', () => {
+  const spell = (category) => ({ system: { category } });
+
+  it('returns undefined when the actor lacks the spellcasting skill', () => {
+    const actor = { getSkill: () => undefined };
+    expect(getSpellcastingDicePool(actor, spell('COMBAT'))).toBeUndefined();
+  });
+
+  it('adds the spell category bonus to the skill pool', () => {
+    const actor = makeActor({
+      rating: 4,
+      attribute: 'CHARISMA',
+      attributes: { CHARISMA: 2 },
+    });
+    actor.system.modifiers = { spellCategoryBonuses: { COMBAT: 2 } };
+    expect(getSpellcastingDicePool(actor, spell('COMBAT'))).toBe(8);
+  });
+
+  it('clamps the pool to a minimum of 1 with negative category bonuses', () => {
+    const actor = makeActor({ rating: 1 });
+    actor.system.modifiers = { spellCategoryBonuses: { COMBAT: -1 } };
+    expect(getSpellcastingDicePool(actor, spell('COMBAT'))).toBe(1);
   });
 });
 

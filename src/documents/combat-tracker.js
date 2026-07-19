@@ -73,6 +73,12 @@ export function createSR4CombatTracker() {
         toggle.addEventListener('click', async (event) => {
           event.preventDefault();
           event.stopPropagation();
+          if (realm === 'matrix' && combatant.actor?.system?.matrix?.jammedBy) {
+            ui?.notifications?.warn(
+              game.i18n.localize('sr4.matrix.cybercombat.jammedBlock')
+            );
+            return;
+          }
           const next = realms[(realms.indexOf(realm) + 1) % realms.length];
           await combatant.setFlag('shadowrun4e', 'realm', next);
           if (combatant.initiative !== null) {

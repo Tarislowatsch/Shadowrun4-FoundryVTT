@@ -5,6 +5,7 @@ import {
 } from '../sheets/settings/npc-skills-menu.js';
 import { XmlImporterApp } from '../sheets/importer/importer-app.js';
 import { RiggerLookupMenu } from '../sheets/settings/rigger-lookup-menu.js';
+import { SourceBooksMenu } from '../sheets/settings/source-books-menu.js';
 
 export class SettingsHook {
   constructor() {
@@ -25,6 +26,15 @@ export class SettingsHook {
       game.settings.register('shadowrun4e', 'combatSoakWorkflow', {
         name: 'sr4.settings.combatSoakWorkflow.name',
         hint: 'sr4.settings.combatSoakWorkflow.hint',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+      });
+
+      game.settings.register('shadowrun4e', 'cybercombatWorkflow', {
+        name: 'sr4.settings.cybercombatWorkflow.name',
+        hint: 'sr4.settings.cybercombatWorkflow.hint',
         scope: 'world',
         config: true,
         type: Boolean,
@@ -195,6 +205,22 @@ export class SettingsHook {
       });
 
       game.settings.register('shadowrun4e', 'riggerLookup', {
+        scope: 'world',
+        config: false,
+        type: String,
+        default: '{}',
+      });
+
+      game.settings.registerMenu('shadowrun4e', 'sourceBooksMenu', {
+        name: 'sr4.settings.sourceBooksMenu.name',
+        label: 'sr4.settings.sourceBooksMenu.label',
+        hint: 'sr4.settings.sourceBooksMenu.hint',
+        icon: 'fas fa-book-open',
+        type: SourceBooksMenu,
+        restricted: true,
+      });
+
+      game.settings.register('shadowrun4e', 'sourceBookBindings', {
         scope: 'world',
         config: false,
         type: String,

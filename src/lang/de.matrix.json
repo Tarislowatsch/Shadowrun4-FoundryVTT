@@ -24,6 +24,42 @@
       "attribute": "Attribut",
       "biofeedbackFilter": "Biofeedback-Filter",
       "bonus": "Bonus",
+      "cybercombat": {
+        "label": "Cyberkampf",
+        "attack": "Matrix-Angriff",
+        "attackTitle": "Cyberkampf-Angriff",
+        "program": "Programm",
+        "noPrograms": "Keine Angriffsprogramme (Angriff/Schwarzer Hammer/Blackout) verfügbar.",
+        "attackedBy": "Angegriffen von",
+        "defenseTitle": "Matrix-Verteidigung",
+        "fullDefense": "Volle Matrix-Verteidigung",
+        "fullDefenseHint": "Volle Verteidigung addiert Hacking (oder Stufe), kostet aber eine komplexe Handlung.",
+        "resistTitle": "Matrix-Schadenswiderstand",
+        "biofeedbackResistTitle": "Biofeedback-Widerstand",
+        "miss": "{attacker} → {defender}: Angriff verfehlt.",
+        "noEffect": "{defender}: keine Wirkung (Gerät/Agent/IC).",
+        "noEffectAr": "{defender}: Schwarzes IC wirkt in AR nicht (nicht in VR).",
+        "jammed": "{name}s Verbindung wird von Schwarzem IC blockiert!",
+        "jammedBlock": "Verbindung von Schwarzem IC blockiert — du kannst die Matrix nicht verlassen. Klink dich zuerst aus.",
+        "jackOut": "Ausklinken",
+        "jackOutTitle": "Ausklinken (Willenskraft + Biofeedback-Filter)",
+        "jackOutIc": "Schwarzes IC (Stufe + Reaktion)",
+        "jackOutSuccess": "{name} klinkt sich aus — erleidet aber Dumpshock!",
+        "jackOutFail": "{name} kann sich nicht ausklinken und bleibt blockiert."
+      },
+      "damage": {
+        "summary": "{name} erleidet {amount} Matrix-Schaden durch {reason}.",
+        "resisted": "{name} hat allen Matrix-Schaden widerstanden.",
+        "crashed": "{name}s Icon ist abgestürzt!",
+        "pendingChat": "{name}: {amount} Matrix-Schaden ausstehend.",
+        "pendingStunChat": "{name}: {amount} Matrix-Schaden ausstehend (wird als geistiger Schaden angewendet).",
+        "reason": {
+          "cybercombat": "Cyberkampf"
+        }
+      },
+      "dumpshock": {
+        "resistTitle": "Dumpshock-Widerstand (Willenskraft + Biofeedback-Filter)"
+      },
       "commlinks": "Commlinks",
       "compendium": "Kompendium",
       "compiledSprites": "Kompilierte Sprites",

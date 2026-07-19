@@ -1,25 +1,13 @@
-<header class="item-header">
-  <div class="item-image">
-    <img
-      data-edit="img"
-      name="img"
-      src="{{ item.img }}"
-      alt="{{ item.name }}"
-    />
-  </div>
-  <div class="item-meta">
-    <label for="name">{{localize 'sr4.item.name'}}</label>
-    <input type="text" name="name" value="{{ item.name }}" />
-  </div>
-</header>
+<div class="item-sheet-body">
+  {{> "item-sheet-header" nameKey="sr4.item.name"}}
 
-<div>
-  <table>
+  <table class="item-stats-table">
     <thead>
       <tr>
         <th>{{localize 'sr4.item.rating'}}</th>
         <th>{{localize 'sr4.item.legality'}}</th>
         <th>{{localize 'sr4.item.cost'}}</th>
+        {{> item-source-header}}
       </tr>
     </thead>
     <tbody>
@@ -48,28 +36,10 @@
             data-dtype="Number"
           />
         </td>
+        {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
   </table>
 
-  <div class="text-wrapper">
-    <div class="w-1/2">
-      <label for="notes">{{localize 'sr4.weapon.notes'}}</label>
-      <textarea
-        name="system.notes"
-        data-dtype="String"
-        placeholder="{{localize 'sr4.weapon.notes'}}"
-        >{{ system.notes }}</textarea
-      >
-    </div>
-    <div class="w-1/2">
-      <label for="description">{{localize 'sr4.weapon.description'}}</label>
-      <textarea
-        name="system.description"
-        data-dtype="String"
-        placeholder="{{localize 'sr4.weapon.description'}}"
-        >{{ system.description }}</textarea
-      >
-    </div>
-  </div>
+  {{> "item-textareas"}}
 </div>

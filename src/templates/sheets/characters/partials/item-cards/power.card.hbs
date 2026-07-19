@@ -4,13 +4,7 @@
   data-item-id="{{ this._id }}"
   title="{{ this.system.description }}"
 >
-  <div class="item-header item-row">
-    <span class="item-name">{{ this.name }}</span>
-    <div class="item-actions">
-      {{> item-edit-btn}}
-      {{> item-delete-btn}}
-    </div>
-  </div>
+  {{> item-card-header}}
   <div class="item-body">
     <span class="item-property">
       <strong>{{localize "sr4.power.totalCost"}}</strong>

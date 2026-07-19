@@ -414,6 +414,30 @@ function getSkillModifier(actor, skill) {
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
+ * @param {import('@models/index').SR4Spell} spell
+ * @returns {number}
+ */
+export function getSpellCategoryBonus(actor, spell) {
+  const bonuses = /** @type {any} */ (actor).system?.modifiers
+    ?.spellCategoryBonuses;
+  const category = spell?.system?.category;
+  if (!bonuses || !category) return 0;
+  return Number(bonuses[category]) || 0;
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {import('@models/index').SR4Spell} spell
+ * @returns {number | undefined}
+ */
+export function getSpellcastingDicePool(actor, spell) {
+  const baseDice = getSkillDicePool(actor, 'spellcasting');
+  if (baseDice === undefined) return undefined;
+  return Math.max(baseDice + getSpellCategoryBonus(actor, spell), 1);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
  * @param {number} numDice
  * @param {string} title
  * @param {string} rollLabel

@@ -38,11 +38,14 @@ function makeActorData(technomancy = {}) {
 }
 
 describe('buildMatrixContext', () => {
-  it('returns an empty object for non-technomancers', async () => {
+  it('returns only the base persona context for non-technomancers', async () => {
     const ctx = await buildMatrixContext({
       system: { technomancy: { technomancer: false } },
     });
-    expect(ctx).toEqual({});
+    expect(ctx.streams).toBeUndefined();
+    expect(ctx).toHaveProperty('hasMatrixAccess');
+    expect(ctx).toHaveProperty('matrixPersona');
+    expect(ctx).toHaveProperty('matrixJammed', false);
   });
 
   it('computes fadingPool from RESONANCE + fading attribute (default WILLPOWER)', async () => {
@@ -62,10 +65,10 @@ describe('buildMatrixContext', () => {
     expect(ctx.livingPersona.response).toBe(3);
     expect(ctx.livingPersona.signal).toBe(2);
     expect(ctx.livingPersona.firewall).toBe(2);
-    expect(ctx.livingPersona.system).toBe(5);
+    expect(ctx.livingPersona.system).toBe(4); // LOGIC 5 capped at RESONANCE 4
     expect(ctx.livingPersona.biofeedbackFilter).toBe(1);
     expect(ctx.livingPersona.vrMatrixInitiative).toBe(3 + 3);
-    expect(ctx.livingPersona.vrMatrixInitiativePasses).toBe(2);
+    expect(ctx.livingPersona.vrMatrixInitiativePasses).toBe(3);
   });
 
   it('resolves sprite affinity categories for the actor stream', async () => {

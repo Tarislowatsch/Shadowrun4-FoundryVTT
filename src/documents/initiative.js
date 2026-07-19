@@ -78,6 +78,9 @@ export function getPassCount(combatant, realm = getCombatantRealm(combatant)) {
     actor = resolveRiggerSync(actor) ?? actor;
   }
   const passes = actor.system?.modifiers?.initiative?.passes;
+  if (actor.type === 'device' && realm === 'matrix') {
+    return SR4.rules.matrix.devicePasses + (passes?.matrix ?? 0);
+  }
   if (realm === 'matrix') {
     return matrixSimPasses(actor.system) + (passes?.matrix ?? 0);
   }
@@ -107,6 +110,7 @@ function parsePassesString(system) {
 export function getAvailableRealms(actor) {
   if (!actor) return ['physical'];
   if (actor.type === 'vehicle') return ['physical'];
+  if (actor.type === 'device') return ['matrix'];
   const realms = ['physical'];
   const system = actor.system;
   if (hasMatrixAccess(system, actor.items ?? [])) realms.push('matrix');

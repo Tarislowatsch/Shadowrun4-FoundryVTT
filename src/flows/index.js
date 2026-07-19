@@ -7,3 +7,6 @@ export * from './apply-effects-flow';
 export * from './opposed-spell-flow';
 export * from './summoning-flow';
 export * from './threading-flow';
+export * from './cybercombat-flow';
+export * from './matrix-damage-flow';
+export * from './dumpshock-flow';

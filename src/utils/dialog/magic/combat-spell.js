@@ -22,7 +22,7 @@ import {
 } from '@flows/apply-effects-flow';
 
 const DIRECT_RESIST_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/direct-spell-resist.hbs';
+  'systems/shadowrun4e/templates/magic/spell-resist.hbs';
 const DIRECT_ALLOCATION_TEMPLATE =
   'systems/shadowrun4e/templates/magic/direct-spell-allocation.hbs';
 const INDIRECT_DEFENSE_TEMPLATE =

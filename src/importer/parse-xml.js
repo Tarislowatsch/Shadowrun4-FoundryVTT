@@ -1,8 +1,25 @@
 import { TAG_CONFIGS } from './registry.js';
 import { ALL_CRITTER_CATEGORIES } from './mappers/constants.js';
+import { detachMentorBonusAndChoices } from './mappers/mentors.js';
 
 /** @type {string[]} */
 const KNOWN_TAGS = [...new Set(TAG_CONFIGS.map((c) => c.xmlTag))];
+
+/**
+ * @param {Element} element
+ * @returns {string | Record<string, string>} trimmed text, or `{ '#text', ...attributes }` when the element carries XML attributes
+ */
+function leafValue(element) {
+  const text = element.textContent?.trim() ?? '';
+  const attrs = element.attributes;
+  if (!attrs?.length) return text;
+  /** @type {Record<string, string>} */
+  const value = { '#text': text };
+  for (const attr of Array.from(attrs)) {
+    value[attr.name] = attr.value;
+  }
+  return value;
+}
 
 /**
  * @param {Element} element
@@ -11,18 +28,30 @@ const KNOWN_TAGS = [...new Set(TAG_CONFIGS.map((c) => c.xmlTag))];
 export function elementToRecord(element) {
   /** @type {Record<string, unknown>} */
   const record = {};
+  const assign = (/** @type {string} */ key, /** @type {unknown} */ value) => {
+    if (!(key in record)) {
+      record[key] = value;
+      return;
+    }
+    const existing = record[key];
+    if (Array.isArray(existing)) existing.push(value);
+    else record[key] = [existing, value];
+  };
   for (const child of element.children) {
     const key = child.tagName;
     const nested = [...child.children];
     if (nested.length === 0) {
-      record[key] = child.textContent?.trim() ?? '';
+      assign(key, leafValue(child));
     } else if (
       nested.length > 1 &&
       new Set(nested.map((n) => n.tagName)).size === 1
     ) {
-      record[key] = nested.map((n) => n.textContent?.trim() ?? '');
+      assign(
+        key,
+        nested.map((n) => leafValue(n))
+      );
     } else {
-      record[key] = elementToRecord(child);
+      assign(key, elementToRecord(child));
     }
   }
   return record;
@@ -51,6 +80,21 @@ function extractMetatypeRecords(root) {
     }
   }
   return records;
+}
+
+/**
+ * @param {Element} root
+ * @returns {Array<Record<string, unknown>>}
+ */
+function extractMentorRecords(root) {
+  const elements = [...root.querySelectorAll(':scope > mentors > mentor')];
+  return elements.map((el) => {
+    const { bonus, choices } = detachMentorBonusAndChoices(el);
+    const record = elementToRecord(el);
+    record._bonus = bonus;
+    record._choices = choices;
+    return record;
+  });
 }
 
 /**
@@ -91,6 +135,11 @@ export function extractRecords(xmlString) {
       continue;
     }
     if (tag === 'critter') continue;
+    if (tag === 'mentor') {
+      const records = extractMentorRecords(root);
+      if (records.length > 0) result.mentor = records;
+      continue;
+    }
     const elements = [...root.querySelectorAll(`:scope > * > ${tag}`)];
     if (elements.length > 0) result[tag] = elements.map(elementToRecord);
   }

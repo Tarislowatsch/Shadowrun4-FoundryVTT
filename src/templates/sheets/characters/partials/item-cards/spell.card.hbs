@@ -4,17 +4,14 @@
   data-item-id="{{ this._id }}"
   title="{{ this.system.description }}"
 >
-  <div class="item-header item-row">
-    <span class="item-name">{{ this.name }}</span>
-    <div class="item-actions">
+  {{#> item-card-header}}
+    {{#*inline "card-buttons"}}
       <button class="spell-cast" data-action="castSpell"
         data-tooltip="{{localize 'sr4.spell.cast'}}">
         <i class="fas fa-dice-d20"></i>
       </button>
-      {{> item-edit-btn}}
-      {{> item-delete-btn}}
-    </div>
-  </div>
+    {{/inline}}
+  {{/item-card-header}}
   <div class="item-body">
     <span class="item-property">
       <strong>{{localize "sr4.spell.category"}}</strong>

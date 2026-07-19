@@ -2,7 +2,7 @@ import {
   askSpellForce,
   calculateWillpowerResistancePool,
   getGame,
-  getSkillDicePool,
+  getSpellcastingDicePool,
   getValidTargetActors,
   openSpellcastingDialog,
   resolveDrain,
@@ -124,7 +124,7 @@ export class SpellcastingFlow {
    * @returns {Promise<void>}
    */
   static async _handleMultiTarget(actor, spell, force, targets) {
-    const numDice = getSkillDicePool(actor, 'spellcasting');
+    const numDice = getSpellcastingDicePool(actor, spell);
     if (numDice === undefined) return;
 
     const isHealth = spell.system?.category === 'HEALTH';
@@ -227,7 +227,7 @@ export class SpellcastingFlow {
    */
   static async rollSpellcasting(actor, spell, force, poolModifier = 0) {
     const skillName = 'spellcasting';
-    const numDice = getSkillDicePool(actor, skillName);
+    const numDice = getSpellcastingDicePool(actor, spell);
     if (numDice === undefined) return null;
     return openSpellcastingDialog(
       actor,

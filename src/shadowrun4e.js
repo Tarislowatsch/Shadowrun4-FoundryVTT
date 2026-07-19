@@ -14,6 +14,7 @@ import {
   SR4NpcSheet,
   SR4SpiritSheet,
   SR4SpriteSheet,
+  SR4DeviceSheet,
   SR4VehicleSheet,
   SR4ActiveEffectSheet,
   registerUIPartials,
@@ -35,6 +36,7 @@ import {
   openDroneRollDialog,
   resolveDronePool,
   resolveRigger,
+  openSourceReference,
 } from '@utils/index.js';
 import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
@@ -117,6 +119,13 @@ Hooks.once('init', async function () {
   await registerUIPartials();
   await registerSharedPartials();
 
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('[data-sr4-source]');
+    if (!link) return;
+    event.preventDefault();
+    openSourceReference(link.dataset.sr4Source);
+  });
+
   globalThis.sr4 = game.sr4 = Object.assign(game.system, globalThis.sr4);
 
   CONFIG.SR4 = SR4;
@@ -149,6 +158,11 @@ Hooks.once('init', async function () {
       id: 'sr4-knocked-down',
       label: 'sr4.effect.templates.knockedDown',
       img: 'icons/svg/falling.svg',
+    },
+    {
+      id: 'sr4-dumpshocked',
+      label: 'sr4.effect.templates.dumpshocked',
+      img: 'icons/svg/stoned.svg',
     }
   );
   CONFIG.Actor.prototypeToken = {
@@ -183,6 +197,12 @@ Hooks.once('init', async function () {
     types: ['sprite'],
     makeDefault: true,
     label: 'SR4 Sprite Sheet',
+  });
+
+  DocumentSheetConfig.registerSheet(Actor, 'sr4', SR4DeviceSheet, {
+    types: ['device'],
+    makeDefault: true,
+    label: 'SR4 Device Sheet',
   });
 
   DocumentSheetConfig.registerSheet(Actor, 'sr4', SR4VehicleSheet, {

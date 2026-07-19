@@ -6,10 +6,10 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 ## Actors
 
-* Player character, NPC, Spirit, Sprite, and Vehicle actor sheets
+* Player character, NPC, Spirit, Sprite, Vehicle, and Device (IC/Agent/Node) actor sheets
 * Dedicated summoned-entity sheet shared by Spirits and Sprites
 * Attribute and skill management
-* Condition monitors (Physical / Stun)
+* Condition monitors (Physical / Stun / Matrix)
 * Lifestyle field
 * Edit-mode toggle for locked sheets
 * Character import from Chummer XML (GM tool, *unstable*)
@@ -26,6 +26,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Skills and actions
 * Vehicle mods
 * Generic gear / item fallback for system automation
+* Rulebook source link on item cards, opening the page via the optional [PDF Pager](https://github.com/farling42/fvtt-pdf-pager) module
 
 ## Roll System
 
@@ -45,6 +46,15 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Automatic Sustain effect creation for sustained spells (client setting)
 * Adept and critter powers
 
+## Matrix
+
+* Cybercombat flow: Matrix attacks with offensive programs (Attack, Black Hammer, Blackout) and networked defender resolution
+* Matrix persona derived from equipped commlink or living persona (technomancer)
+* Matrix condition monitor with icon crash and dumpshock on forced disconnect
+* Black IC: biofeedback damage (VR only), connection jamming, and jack-out opposed test
+* Device actor type for IC, Agents, and Nodes with matrix initiative and passes
+* Matrix realm integration in combat tracker (hot/cold sim initiative and passes)
+
 ## Combat
 
 * SR4Combat: initiative pass tracking
@@ -58,7 +68,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 ## Active Effects
 
 * Native Foundry ActiveEffect integration
-* Predefined effect templates: Sustain, Disoriented, Blind, Blind Flare Compensation, Knocked Down
+* Predefined effect templates: Sustain, Disoriented, Blind, Blind Flare Compensation, Knocked Down, Dumpshocked
 * Attack and defense modifiers via effects
 * Optional Foundry default effect sheet (GM setting)
 
@@ -66,6 +76,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 * Configurable NPC default skill list (GM menu)
 * Combat defense workflow toggle, with automatic soak sub-toggle
+* Cybercombat workflow toggle
 * GM defender picker for untargeted attacks
 * Damage application workflow toggle
 * Edge decision timeout for interactive flows
@@ -74,6 +85,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Spell workflow & automatic Sustain effect (client settings)
 * Optional Foundry default effect sheet for GMs
 * XML Importer (GM tool for bulk item import, *unstable*)
+* Source Books (GM menu): bind rulebook codes to PDF Pager PDF pages for the item-card source link
 
 ## Character Importer
 

@@ -68,6 +68,39 @@
     }
   }
 
+  .mentor-spirit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    .mentor-name {
+      flex: 0 0 auto;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--sr4-teal);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .mentor-info {
+      flex: 0 0 auto;
+      color: var(--sr4-text-muted);
+      cursor: help;
+
+      &:hover {
+        color: var(--sr4-teal);
+      }
+    }
+
+    .mentor-advantage {
+      font-size: 0.72rem;
+      color: var(--sr4-text-muted);
+    }
+  }
+
   .magic-stat {
     display: flex;
     align-items: center;

@@ -6,7 +6,11 @@ import {
 import { getInitiativeBase } from '@documents/initiative.js';
 import {
   computeMatrixResponse,
+  computeMatrixSystem,
+  computeMatrixFirewall,
+  computeBiofeedbackFilter,
   matrixSimPasses,
+  hasMatrixAccess,
 } from '@documents/derivedStats.mapper.js';
 import { buildAffinityCategories } from './affinity-context.js';
 import { getLinkedActors, buildStatRows } from './actor-context.js';
@@ -31,13 +35,29 @@ function buildSpriteStats(actor) {
  * @param {string} ownerUuid
  */
 export async function buildMatrixContext(actorData, ownerUuid) {
-  const tn = actorData.system.technomancy;
-  if (!tn?.technomancer) return {};
-  const stats = actorData.system.sheetStats;
-  const bonuses = actorData.system.livingPersona;
+  const system = actorData.system;
+  const items = actorData.items ?? [];
+  const tn = system.technomancy;
+
+  const base = {
+    hasMatrixAccess: hasMatrixAccess(system, items),
+    matrixJammed: !!system.matrix?.jammedBy,
+    matrixMonitor: system.conditionMonitor?.matrix ?? { value: 0, max: 0 },
+    matrixPersona: {
+      response: computeMatrixResponse(system, items),
+      firewall: computeMatrixFirewall(system, items),
+      system: computeMatrixSystem(system, items),
+      biofeedbackFilter: computeBiofeedbackFilter(system, items),
+    },
+  };
+
+  if (!tn?.technomancer) return base;
+  const stats = system.sheetStats;
+  const bonuses = system.livingPersona;
   const fadingAttr = tn.fadingAttribute ?? 'WILLPOWER';
   const spriteKeys = StreamSpriteTypes[tn.stream] ?? [];
   return {
+    ...base,
     streams: StreamLabels,
     fadingAttributes: FadingAttributes,
     fadingPool:
@@ -58,12 +78,13 @@ export async function buildMatrixContext(actorData, ownerUuid) {
     ),
     livingPersona: {
       response: computeMatrixResponse(actorData.system),
-      signal:
+      signal: Math.min(
         Math.ceil((stats.RESONANCE ?? 0) / 2) + (bonuses.signalBonus ?? 0),
-      firewall: (stats.WILLPOWER ?? 0) + (bonuses.firewallBonus ?? 0),
-      system: (stats.LOGIC ?? 0) + (bonuses.systemBonus ?? 0),
-      biofeedbackFilter:
-        (stats.CHARISMA ?? 0) + (bonuses.biofeedbackFilterBonus ?? 0),
+        stats.RESONANCE ?? 0
+      ),
+      firewall: computeMatrixFirewall(actorData.system),
+      system: computeMatrixSystem(actorData.system),
+      biofeedbackFilter: computeBiofeedbackFilter(actorData.system),
       vrMatrixInitiative: getInitiativeBase(actorData, 'matrix'),
       vrMatrixInitiativePasses: matrixSimPasses(actorData.system),
     },

@@ -1,0 +1,55 @@
+<div class="item-sheet-body">
+  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize 'sr4.mentor.category'}}</th>
+        <th>{{localize 'sr4.item.source'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <select name="system.category">
+            {{selectOptions mentorcategories selected=system.category localize=true}}
+          </select>
+        </td>
+        <td>
+          <input type="text" name="system.source" value="{{ system.source }}" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="item-textareas">
+    {{> textarea-field label='sr4.mentor.advantage' name='system.advantage' value=system.advantage}}
+    {{> textarea-field label='sr4.mentor.disadvantage' name='system.disadvantage' value=system.disadvantage}}
+  </div>
+
+  {{#if mentorContext.sets.length}}
+  <div class="inventory-section">
+    <h3>{{localize 'sr4.mentor.choice'}}</h3>
+    <table class="item-stats-table">
+      <tbody>
+        {{#each mentorContext.sets as |set|}}
+        <tr>
+          <td>{{localize 'sr4.mentor.set'}} {{set.set}}</td>
+          <td>
+            <select data-mentor-choice data-set="{{set.set}}">
+              <option value="">{{localize 'sr4.mentor.none'}}</option>
+              {{#each set.options as |opt|}}
+              <option value="{{opt.name}}" {{#if opt.selected}}selected{{/if}}>{{opt.name}}{{#if opt.hasBonus}} ✦{{/if}}</option>
+              {{/each}}
+            </select>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{/if}}
+
+  {{> "item-textareas"}}
+  {{> "item-actions-effects"}}
+</div>

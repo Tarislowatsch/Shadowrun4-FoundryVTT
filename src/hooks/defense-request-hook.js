@@ -1,5 +1,6 @@
 import { DefenseFlow, startDefenderPickerFlow } from '@flows/index';
-import { getGame, isResponsibleForActor, isPrimaryGM } from '@utils/index';
+import { isResponsibleForActor, isPrimaryGM } from '@utils/index';
+import { BaseSocketHook } from './base-socket-hook.js';
 
 /**
  * @typedef {object} DefenseSocketPayload
@@ -24,25 +25,7 @@ import { getGame, isResponsibleForActor, isPrimaryGM } from '@utils/index';
  * @typedef {{ action: 'triggerDefense', payload: DefenseSocketPayload } | { action: 'selectDefender', payload: SelectDefenderPayload }} DefenseSocketMessage
  */
 
-export class DefenseHook {
-  constructor() {
-    this._boundHandler = this._onSocketMessage.bind(this);
-    this._registerSocketHandler();
-  }
-
-  /** @returns {void} */
-  _registerSocketHandler() {
-    Hooks.once('ready', () => {
-      const socket = getGame().socket;
-      if (!socket) {
-        console.error('SR4 | DefenseHook: socket not available after ready');
-        return;
-      }
-      socket.off('system.shadowrun4e', this._boundHandler);
-      socket.on('system.shadowrun4e', this._boundHandler);
-    });
-  }
-
+export class DefenseHook extends BaseSocketHook {
   /**
    * @param {DefenseSocketMessage} data
    * @returns {Promise<void>}

@@ -8,7 +8,7 @@ import {
 import { resolveAndEmitSpellResist } from './resist-actions.js';
 
 const OPPOSED_RESIST_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/opposed-spell-resist.hbs';
+  'systems/shadowrun4e/templates/magic/spell-resist.hbs';
 
 /**
  * @param {import('@documents/index').SR4Actor} defender

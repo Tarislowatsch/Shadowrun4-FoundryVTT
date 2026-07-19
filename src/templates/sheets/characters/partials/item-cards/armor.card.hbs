@@ -1,13 +1,9 @@
 <div class="item-card item armor-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
-  <div class="item-header item-row">
-    <span class="item-name">{{ this.name }}</span>
-    {{> item-active-badge label="sr4.item.equipped"}}
-    <div class="item-actions">
+  {{#> item-card-header activeBadgeLabel="sr4.item.equipped"}}
+    {{#*inline "card-buttons"}}
       {{> item-toggle-equip equippedIcon="fas fa-shield-alt" unequippedIcon="fas fa-shield" tooltip="sr4.item.toggleEquip"}}
-      {{> item-edit-btn}}
-      {{> item-delete-btn}}
-    </div>
-  </div>
+    {{/inline}}
+  {{/item-card-header}}
   <div class="item-body">
     {{#if (or (eq this.system.stackingType "accessory") (eq this.system.stackingType "formFitting"))}}
     <span class="item-property armor-stacking-badge">
@@ -43,22 +39,5 @@
     </span>
   </div>
 
-  <div class="item-card-mods">
-    {{#each this.installedMods as |mod|}}
-    <span class="mod-entry">
-      <span class="mod-name">{{ mod.name }}</span>
-      {{> item-edit-btn itemId=mod.id}}
-      <button type="button" class="item-delete" data-action="removeMod" data-mod-id="{{ mod.id }}" data-tooltip="{{localize 'sr4.item.delete'}}"><i class="fas fa-times"></i></button>
-    </span>
-    {{/each}}
-    {{#if this.availableArmorMods.length}}
-    <select class="mod-add-select">
-      <option value="">+ {{localize 'sr4.armormod.add'}}</option>
-      {{#each this.availableArmorMods as |m|}}
-      <option value="{{ m.id }}">{{ m.name }}</option>
-      {{/each}}
-    </select>
-    {{/if}}
-    {{> item-create-btn btnAction="createMod" btnItemType="Armor Mod" btnTooltip="sr4.armormod.add"}}
-  </div>
+  {{> item-card-mods mods=this.installedMods availableMods=this.availableArmorMods addKey="sr4.armormod.add" modType="Armor Mod"}}
 </div>

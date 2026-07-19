@@ -10,6 +10,7 @@
         <th>{{localize 'sr4.item.cost'}}</th>
         <th>{{localize 'sr4.item.legality'}}</th>
         <th>{{localize 'sr4.item.avail'}}</th>
+        {{> item-source-header}}
       </tr>
     </thead>
     <tbody>
@@ -40,6 +41,7 @@
         <td>
           <input type="text" name="system.availability" value="{{ system.availability }}" />
         </td>
+        {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
   </table>

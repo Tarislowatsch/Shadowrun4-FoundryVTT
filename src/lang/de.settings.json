@@ -76,6 +76,10 @@
         "hint": "Wenn aktiv, werden Verteidiger nach dem Ausweichen zum Schadenswiderstand aufgefordert. Erfordert aktiven Ausweichen-Workflow.",
         "name": "Kampf: Schadenswiderstand-Workflow"
       },
+      "cybercombatWorkflow": {
+        "hint": "Wenn aktiv, fordern Matrix-Angriffe Ziele zu Verteidigungs- und Widerstandswürfen auf. Deaktivieren schaltet den Cyberkampf-Ablauf aus.",
+        "name": "Matrix: Cyberkampf-Workflow"
+      },
       "gmDefenderPicker": {
         "attackerLabel": "Angreifer",
         "confirm": "Ausweichen starten",
@@ -114,6 +118,18 @@
         },
         "save": "Speichern",
         "title": "Rigger-Fertigkeits-Zuordnung"
+      },
+      "sourceBooksMenu": {
+        "addRow": "Buch hinzufügen",
+        "codePlaceholder": "Buchcode, z.B. SR4",
+        "hint": "Verknüpfe einen Regelwerk-Code (wie er in den Quelle-Feldern der Items steht, z.B. „SR4“ oder „AR“) mit einer über das PDF-Pager-Modul angelegten PDF-Seite. Erfordert das optionale PDF-Pager-Modul.",
+        "label": "Konfigurieren",
+        "name": "Quellenbücher",
+        "noPdf": "— PDF wählen —",
+        "removeRow": "Entfernen",
+        "reset": "Zurücksetzen",
+        "save": "Speichern",
+        "title": "Quellenbücher"
       },
       "spellWorkflow": {
         "hint": "Aktiviert den mehrstufigen Zauber-Workflow (Kraftwahl, Wurf, Entzug).",

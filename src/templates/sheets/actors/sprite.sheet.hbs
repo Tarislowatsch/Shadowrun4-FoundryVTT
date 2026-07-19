@@ -3,22 +3,14 @@
   <div class="npc-header">
     {{> "actor-image"}}
     <div class="npc-header-info">
-      <div class="meta-field">
-        <label>{{localize 'sr4.sprite.name'}}</label>
-        <input type="text" name="name" value="{{actor.name}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
-      <div class="meta-field">
-        <label>{{localize 'sr4.sprite.type'}}</label>
-        <input type="text" name="system.spriteType" value="{{system.spriteType}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
-      <div class="meta-field">
-        <label>{{localize 'sr4.sprite.rating'}}</label>
-        <input type="number" name="system.rating" value="{{system.rating}}" {{#unless editMode}}readonly{{/unless}} />
-      </div>
+      {{> meta-field label="sr4.sprite.name" name="name" value=actor.name editMode=editMode}}
+      {{> meta-field label="sr4.sprite.type" name="system.spriteType" value=system.spriteType editMode=editMode}}
+      {{> meta-field label="sr4.sprite.rating" name="system.rating" value=system.rating numeric=true editMode=editMode}}
       <div class="meta-field">
         <label>{{localize 'sr4.sprite.tasks'}}</label>
         <input type="number" name="system.tasks" value="{{system.tasks}}" />
       </div>
+      {{> meta-field label="sr4.item.source" name="system.source" value=system.source editMode=editMode}}
     </div>
   </div>
 
@@ -40,18 +32,7 @@
 
   <hr />
 
-  <div class="monitor-tracks">
-    {{> "status-track-card"
-        title="sr4.conditionMonitor.physical"
-        type="physical"
-        max=system.conditionMonitor.physical.max
-        current=system.conditionMonitor.physical.value}}
-    {{> "status-track-card"
-        title="sr4.conditionMonitor.stun"
-        type="stun"
-        max=system.conditionMonitor.stun.max
-        current=system.conditionMonitor.stun.value}}
-  </div>
+  {{> "monitor-tracks"}}
 
   <hr />
 
@@ -79,9 +60,6 @@
 
   {{> "npc-skills-section" skills=skills emptyKey="sr4.sprite.noSkills"}}
 
-  <div class="npc-section">
-    <h3>{{localize 'sr4.item.notes'}}</h3>
-    <textarea name="system.notes">{{ system.notes }}</textarea>
-  </div>
+  {{> "npc-notes"}}
 
 </div>

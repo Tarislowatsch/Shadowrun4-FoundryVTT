@@ -10,6 +10,7 @@
       <span class="item-property metatype-variant-tag">{{ this.system.baseMetatype }}</span>
     {{/if}}
     <div class="item-actions">
+      {{> item-source-btn source=this.system.source}}
       {{> item-edit-btn}}
       {{> item-delete-btn}}
     </div>

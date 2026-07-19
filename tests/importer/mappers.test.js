@@ -13,6 +13,7 @@ import {
   mapPower,
   mapWeaponMod,
   mapMod,
+  mapCritter,
   parseMount,
   isAmmunition,
   isCommlink,
@@ -803,5 +804,59 @@ describe('mod dispatch', () => {
     const item = mapMod(input);
     expect(item.type).toBe(type);
     expect(item.system).toMatchObject(system);
+  });
+});
+
+describe('critter skills', () => {
+  it('maps a collapsed same-tag skill array with force ratings and specs', () => {
+    const critter = mapCritter({
+      name: 'Spirit of Air',
+      category: 'Spirits',
+      skills: [
+        { '#text': 'Assensing', rating: 'F' },
+        { '#text': 'Unarmed Combat', rating: 'F', spec: 'Grapple' },
+        'Dodge',
+      ],
+    });
+    expect(critter.system.skills).toEqual([
+      { name: 'Assensing', rating: 0, ratingFormula: 'F', spec: '' },
+      {
+        name: 'Unarmed Combat',
+        rating: 0,
+        ratingFormula: 'F',
+        spec: 'Grapple',
+      },
+      { name: 'Dodge', rating: 0, ratingFormula: '', spec: '' },
+    ]);
+  });
+
+  it('maps mixed skill/group containers including repeated skills', () => {
+    const critter = mapCritter({
+      name: 'Hellhound',
+      category: 'Mundane Critters',
+      skills: {
+        skill: [
+          { '#text': 'Infiltration', rating: '3' },
+          { '#text': 'Tracking', rating: '4' },
+        ],
+        group: 'Athletics',
+      },
+    });
+    expect(critter.system.skills).toEqual([
+      { name: 'Infiltration', rating: 3, ratingFormula: '', spec: '' },
+      { name: 'Tracking', rating: 4, ratingFormula: '', spec: '' },
+      { name: 'Athletics', rating: 0, ratingFormula: '', spec: '' },
+    ]);
+  });
+
+  it('ignores force formulas for non-force-based critters', () => {
+    const critter = mapCritter({
+      name: 'Barghest',
+      category: 'Paranormal Critters',
+      skills: [{ '#text': 'Dodge', rating: '2' }],
+    });
+    expect(critter.system.skills).toEqual([
+      { name: 'Dodge', rating: 2, ratingFormula: '', spec: '' },
+    ]);
   });
 });

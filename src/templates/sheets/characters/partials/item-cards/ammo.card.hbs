@@ -3,13 +3,7 @@
   data-item-id="{{ this._id }}"
   id="{{ this._id }}"
 >
-  <div class="item-header item-row">
-    <span class="item-name">{{ this.name }}</span>
-    <div class="item-actions">
-      {{> item-edit-btn}}
-      {{> item-delete-btn}}
-    </div>
-  </div>
+  {{> item-card-header}}
   <div class="item-body">
     {{> ammo-stats this=this}}
     <input class="item-quantity" type="number" name="system.quantity" value="{{ this.system.quantity }}" data-dtype="Number" />

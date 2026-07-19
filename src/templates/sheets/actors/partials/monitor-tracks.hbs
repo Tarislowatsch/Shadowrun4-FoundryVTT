@@ -1,0 +1,12 @@
+<div class="monitor-tracks">
+  {{> "status-track-card"
+      title="sr4.conditionMonitor.physical"
+      type="physical"
+      max=system.conditionMonitor.physical.max
+      current=system.conditionMonitor.physical.value}}
+  {{> "status-track-card"
+      title="sr4.conditionMonitor.stun"
+      type="stun"
+      max=system.conditionMonitor.stun.max
+      current=system.conditionMonitor.stun.value}}
+</div>

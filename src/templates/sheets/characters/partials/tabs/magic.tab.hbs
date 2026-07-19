@@ -40,15 +40,7 @@
           {{selectOptions traditions selected=system.magic.tradition localize=true}}
         </select>
       </div>
-      <div class="magic-input">
-        <label for="totem">{{localize "sr4.magic.totem"}}</label>
-        <input
-          type="text"
-          id="totem"
-          name="system.magic.totem"
-          value="{{ system.magic.totem }}"
-        />
-      </div>
+      {{> mentor-section context=mentorContext itemId=mentorItemId labelKey="sr4.mentor.label" category="Other"}}
       {{/if}}
     </div>
 

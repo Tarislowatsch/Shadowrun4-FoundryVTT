@@ -5,7 +5,7 @@
  * @property {number} woundModifierDivisor
  * @property {number} edgeInitiativeSentinel
  * @property {number} initiativeGlitchTiebreak
- * @property {{ coldSimPasses: number, hotSimPasses: number, hotSimInitiativeBonus: number }} matrix
+ * @property {{ coldSimPasses: number, hotSimPasses: number, hotSimInitiativeBonus: number, devicePasses: number, dumpshockDv: number }} matrix
  */
 
 /**
@@ -65,6 +65,8 @@ export const SR4 = {
       coldSimPasses: 2,
       hotSimPasses: 3,
       hotSimInitiativeBonus: 1,
+      devicePasses: 3,
+      dumpshockDv: 5,
     },
   },
   workflow: {

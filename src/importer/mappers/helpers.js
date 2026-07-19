@@ -171,6 +171,18 @@ export function normalizeMode(raw) {
 }
 
 /**
+ * @param {unknown} value
+ * @returns {string}
+ */
+export function textOf(value) {
+  if (value !== null && typeof value === 'object') {
+    const text = /** @type {Record<string, unknown>} */ (value)['#text'];
+    return String(text ?? '').trim();
+  }
+  return String(value ?? '').trim();
+}
+
+/**
  * @param {Record<string, unknown>} record
  * @returns {{ positive: string[], negative: string[] }}
  */
@@ -180,10 +192,9 @@ export function parseQualities(record) {
 
   const q = /** @type {Record<string, unknown>} */ (raw);
   const toArray = (/** @type {unknown} */ val) => {
-    if (Array.isArray(val))
-      return val.map((v) => String(v).trim()).filter(Boolean);
-    if (typeof val === 'string' && val.trim()) return [val.trim()];
-    return [];
+    if (Array.isArray(val)) return val.map(textOf).filter(Boolean);
+    const single = textOf(val);
+    return single ? [single] : [];
   };
 
   const pos = q.positive;
@@ -230,15 +241,15 @@ export function parseBonus(record) {
 export function parsePowerList(record, field) {
   const raw = record[field];
   if (!raw) return [];
-  if (Array.isArray(raw))
-    return raw.map((v) => String(v).trim()).filter(Boolean);
+  if (Array.isArray(raw)) return raw.map(textOf).filter(Boolean);
   if (typeof raw === 'object') {
     const obj = /** @type {Record<string, unknown>} */ (raw);
     const power = obj.power;
-    if (Array.isArray(power))
-      return power.map((v) => String(v).trim()).filter(Boolean);
-    if (typeof power === 'string' && power.trim()) return [power.trim()];
+    if (Array.isArray(power)) return power.map(textOf).filter(Boolean);
+    const single = textOf(power);
+    if (single) return [single];
+    return [];
   }
-  if (typeof raw === 'string' && raw.trim()) return [raw.trim()];
-  return [];
+  const text = textOf(raw);
+  return text ? [text] : [];
 }

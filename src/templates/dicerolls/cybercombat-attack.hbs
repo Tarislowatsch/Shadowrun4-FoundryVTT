@@ -1,0 +1,15 @@
+<form class="skill-roll-dialog">
+  <div class="form-group">
+    <label for="matrixProgram">{{localize "sr4.matrix.cybercombat.program"}}</label>
+    <select id="matrixProgram" name="matrixProgram">
+      {{#each programs as |prog|}}
+      <option value="{{prog.category}}" data-rating="{{prog.rating}}" data-name="{{prog.name}}">
+        {{prog.name}} ({{prog.rating}})
+      </option>
+      {{/each}}
+    </select>
+  </div>
+  {{> bonus-input}}
+  {{> malus-input}}
+  {{> edge-checkbox}}
+</form>

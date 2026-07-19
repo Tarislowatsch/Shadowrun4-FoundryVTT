@@ -23,6 +23,7 @@
       "Implant": "Implantat",
       "Item": "Gegenstand",
       "Melee Weapon": "Nahkampfwaffe",
+      "Mentor": "Mentorgeist",
       "Metatype": "Metatyp",
       "Power": "Kraft",
       "Program": "Programm",
@@ -104,6 +105,7 @@
     },
     "cancel": "Abbrechen",
     "conditionMonitor": {
+      "matrix": "Matrix-Zustandsmonitor",
       "physical": "Körperlicher Zustandsmonitor",
       "simpleHp": "Einfache HP (nur physisch)",
       "stun": "Geistiger Zustandsmonitor"
@@ -121,6 +123,18 @@
       "noConnections": "Keine Kontakte vorhanden",
       "notes": "Notizen",
       "type": "Typ"
+    },
+    "device": {
+      "attributes": "Attribute",
+      "name": "Name",
+      "pilot": "Pilot",
+      "type": {
+        "label": "Gerätetyp",
+        "agent": "Agent",
+        "ic": "IC",
+        "blackIc": "Schwarzes IC",
+        "node": "Knoten"
+      }
     },
     "effect": {
       "active": "Aktiv",
@@ -152,6 +166,7 @@
         "blind": "Geblendet",
         "blindFlareComp": "Geblendet (Blendschutz)",
         "disoriented": "Desorientiert (Elektrizität)",
+        "dumpshocked": "Dumpshock",
         "knockedDown": "Am Boden",
         "label": "Vorlagen",
         "sustain": "Aufrechterhalten"
@@ -251,6 +266,14 @@
         "sorcery": "Fertigkeitsgruppe: Hexerei",
         "stealth": "Fertigkeitsgruppe: Heimlichkeit",
         "tasking": "Fertigkeitsgruppe: Tasking"
+      },
+      "spellCategory": {
+        "COMBAT": "Zauberei: Kampfzauber",
+        "DETECTION": "Zauberei: Wahrnehmungszauber",
+        "GEOMANCY": "Zauberei: Geomantiezauber",
+        "HEALTH": "Zauberei: Heilzauber",
+        "ILLUSION": "Zauberei: Illusionszauber",
+        "MANIPULATION": "Zauberei: Manipulationszauber"
       }
     },
     "focus": {
@@ -296,6 +319,7 @@
       "actionPart1": "Aktion Teil 1",
       "actionPart2": "Aktion Teil 2",
       "actionType": "Aktionsart",
+      "active": "Aktiv",
       "avail": "Verfügbarkeit",
       "capacity": "Kapazität",
       "clearLink": "Verknüpfung entfernen",
@@ -304,6 +328,7 @@
       "delete": "Löschen",
       "description": "Beschreibung",
       "edit": "Bearbeiten",
+      "equipped": "Angelegt",
       "essence": "Essenz",
       "essenceActual": "Tatsächliche Essenz",
       "grade": "Grad",
@@ -316,8 +341,6 @@
       "rating1": "Rating Teil 1",
       "rating2": "Rating Teil 2",
       "source": "Quelle",
-      "active": "Aktiv",
-      "equipped": "Angelegt",
       "toggleEquip": "An-/Ablegen",
       "type": "Typ"
     },
@@ -403,6 +426,9 @@
       "source": "Quelle",
       "specialization": "Spezialisierung",
       "type": "Typ"
+    },
+    "source": {
+      "openTooltip": "PDF öffnen"
     },
     "stats": {
       "AGILITY": "Geschicklichkeit",

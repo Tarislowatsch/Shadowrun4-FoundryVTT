@@ -126,6 +126,7 @@
 .item-edit,
 .item-delete,
 .item-reload,
+.item-source-btn,
 .spell-cast,
 .attack,
 .linked-actor-open {
@@ -139,6 +140,7 @@
 .attack,
 .item-edit,
 .item-reload,
+.item-source-btn,
 .linked-actor-open {
   @include sr4-teal-hover;
 }

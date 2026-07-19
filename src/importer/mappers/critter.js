@@ -41,35 +41,39 @@ function parseSkills(record, forceBased) {
   const raw = record.skills;
   if (!raw || typeof raw !== 'object') return [];
 
-  const container = /** @type {Record<string, unknown>} */ (raw);
+  /** @type {unknown[]} */
+  let list;
+  if (Array.isArray(raw)) {
+    list = raw;
+  } else {
+    const container = /** @type {Record<string, unknown>} */ (raw);
+    list = ['skill', 'group'].flatMap((key) => {
+      const value = container[key];
+      if (value === undefined || value === null) return [];
+      return Array.isArray(value) ? value : [value];
+    });
+  }
+
   const entries = [];
+  for (const entry of list) {
+    const el =
+      typeof entry === 'object' && entry !== null
+        ? /** @type {Record<string, unknown>} */ (entry)
+        : null;
+    const name = String(el ? (el['#text'] ?? '') : (entry ?? '')).trim();
+    if (!name) continue;
+    const rawRating = el ? String(el.rating ?? '0') : '0';
+    const spec = el ? String(el.spec ?? '').trim() : '';
 
-  for (const key of ['skill', 'group']) {
-    let list = container[key];
-    if (!list) continue;
-    if (!Array.isArray(list)) list = [list];
-    for (const entry of /** @type {unknown[]} */ (list)) {
-      const str = String(entry ?? '').trim();
-      if (!str) continue;
-
-      const el =
-        typeof entry === 'object' && entry !== null
-          ? /** @type {Record<string, unknown>} */ (entry)
-          : null;
-      const name = el ? String(el['#text'] ?? entry).trim() : str;
-      const rawRating = el ? String(el.rating ?? '0') : '0';
-      const spec = el ? String(el.spec ?? '').trim() : '';
-
-      if (forceBased && isForceFormula(rawRating)) {
-        entries.push({ name, rating: 0, ratingFormula: rawRating, spec });
-      } else {
-        entries.push({
-          name,
-          rating: parseNumber(rawRating, 0),
-          ratingFormula: '',
-          spec,
-        });
-      }
+    if (forceBased && isForceFormula(rawRating)) {
+      entries.push({ name, rating: 0, ratingFormula: rawRating, spec });
+    } else {
+      entries.push({
+        name,
+        rating: parseNumber(rawRating, 0),
+        ratingFormula: '',
+        spec,
+      });
     }
   }
   return entries;

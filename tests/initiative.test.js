@@ -46,7 +46,7 @@ function makeActor({
     system: {
       realm,
       matrixSimMode: simMode,
-      sheetStats: { INTUITION: intuition, REACTION: reaction },
+      sheetStats: { INTUITION: intuition, REACTION: reaction, RESONANCE: 6 },
       derivedStats: {
         initiative: { astral, matrix: matrixInitiative },
         passesString,
@@ -166,6 +166,16 @@ describe('getPassCount', () => {
     expect(getPassCount(combatantFor(spirit), 'physical')).toBe(2);
     expect(getPassCount(combatantFor(spirit), 'astral')).toBe(2);
   });
+
+  it('device matrix passes are devicePasses + matrix pass bonus', () => {
+    const device = makeActor({
+      type: 'device',
+      passes: { physical: 0, astral: 0, matrix: 1 },
+    });
+    expect(getPassCount(combatantFor(device), 'matrix')).toBe(
+      SR4.rules.matrix.devicePasses + 1
+    );
+  });
 });
 
 describe('getAvailableRealms', () => {
@@ -192,6 +202,12 @@ describe('getAvailableRealms', () => {
       expect.arrayContaining(['physical', 'matrix'])
     );
     expect(getAvailableRealms(techno)).toContain('matrix');
+  });
+
+  it('devices only have matrix', () => {
+    expect(getAvailableRealms(makeActor({ type: 'device' }))).toEqual([
+      'matrix',
+    ]);
   });
 
   it('vehicles only have physical', () => {

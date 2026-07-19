@@ -1,6 +1,7 @@
 import { DataModelRegistrationHook } from './datamodel-registration-hook';
 import { DefenseHook } from './defense-request-hook';
 import { CombatSpellHook } from './combat-spell-hook';
+import { CybercombatHook } from './cybercombat-hook';
 import { DieChatHook } from './die-chat-hook';
 import { InitiativeHook } from './initiative-hook';
 import { SettingsHook } from './settings-hook';
@@ -13,6 +14,7 @@ export function registerHooks() {
   new SettingsHook();
   new DefenseHook();
   new CombatSpellHook();
+  new CybercombatHook();
   new SummoningHook();
   new DataModelRegistrationHook();
   new InitiativeHook();

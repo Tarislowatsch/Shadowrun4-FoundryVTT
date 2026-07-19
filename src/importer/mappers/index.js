@@ -4,6 +4,7 @@ export * from './armor.js';
 export * from './character.js';
 export * from './gear.js';
 export * from './implants.js';
+export * from './mentors.js';
 export * from './mods.js';
 export * from './powers.js';
 export * from './programs.js';

@@ -12,6 +12,8 @@ export async function registerActorPartials() {
       name: 'linked-actor-card',
     },
     { path: `${basePath}/npc-skills-section.hbs`, name: 'npc-skills-section' },
+    { path: `${basePath}/monitor-tracks.hbs`, name: 'monitor-tracks' },
+    { path: `${basePath}/npc-notes.hbs`, name: 'npc-notes' },
   ];
 
   await Promise.all(

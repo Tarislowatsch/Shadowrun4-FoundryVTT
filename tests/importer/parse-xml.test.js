@@ -3,17 +3,22 @@ import { elementToRecord } from '@importer/parse-xml.js';
 
 /**
  * Builds a minimal DOM-like node usable by elementToRecord, which only reads
- * `tagName`, `children` and `textContent`.
+ * `tagName`, `children`, `textContent` and `attributes`.
  *
  * @param {string} tagName
  * @param {string | Array} value - leaf text, or child nodes
- * @returns {{ tagName: string, children: any[], textContent: string }}
+ * @param {Record<string, string>} [attrs] - XML attributes
+ * @returns {{ tagName: string, children: any[], textContent: string, attributes: Array<{ name: string, value: string }> }}
  */
-function node(tagName, value) {
+function node(tagName, value, attrs = {}) {
+  const attributes = Object.entries(attrs).map(([name, val]) => ({
+    name,
+    value: val,
+  }));
   if (Array.isArray(value)) {
-    return { tagName, children: value, textContent: '' };
+    return { tagName, children: value, textContent: '', attributes };
   }
-  return { tagName, children: [], textContent: value };
+  return { tagName, children: [], textContent: value, attributes };
 }
 
 describe('elementToRecord', () => {
@@ -53,6 +58,34 @@ describe('elementToRecord', () => {
     ]);
     expect(elementToRecord(el)).toEqual({
       weaponbonus: { ap: '2', damage: '-1', damagetype: 'S' },
+    });
+  });
+
+  it('keeps XML attributes on leaf children as #text objects', () => {
+    const el = node('critter', [
+      node('skills', [
+        node('skill', 'Assensing', { rating: 'F' }),
+        node('skill', 'Unarmed Combat', { rating: 'F', spec: 'Grapple' }),
+      ]),
+    ]);
+    expect(elementToRecord(el)).toEqual({
+      skills: [
+        { '#text': 'Assensing', rating: 'F' },
+        { '#text': 'Unarmed Combat', rating: 'F', spec: 'Grapple' },
+      ],
+    });
+  });
+
+  it('accumulates repeated tags among mixed siblings into arrays', () => {
+    const el = node('critter', [
+      node('skills', [
+        node('skill', 'Assensing'),
+        node('skill', 'Dodge'),
+        node('group', 'Influence'),
+      ]),
+    ]);
+    expect(elementToRecord(el)).toEqual({
+      skills: { skill: ['Assensing', 'Dodge'], group: 'Influence' },
     });
   });
 });

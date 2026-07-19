@@ -4,12 +4,14 @@ import {
   SR4VehicleData,
   SR4SpiritData,
   SR4SpriteData,
+  SR4DeviceData,
   SR4AmmoData,
   SR4ArmorModData,
   SR4RangedWeaponData,
   SR4MeleeWeaponData,
   SR4ArmorData,
   SR4ImplantData,
+  SR4MentorData,
   SR4SkillData,
   SR4SpellData,
   SR4CommlinkData,
@@ -39,6 +41,7 @@ export class DataModelRegistrationHook {
       vehicle: SR4VehicleData,
       spirit: SR4SpiritData,
       sprite: SR4SpriteData,
+      device: SR4DeviceData,
     });
 
     Object.assign(CONFIG.Item.dataModels, {
@@ -47,6 +50,7 @@ export class DataModelRegistrationHook {
       'Melee Weapon': SR4MeleeWeaponData,
       Armor: SR4ArmorData,
       Implant: SR4ImplantData,
+      Mentor: SR4MentorData,
       Skill: SR4SkillData,
       Spell: SR4SpellData,
       Commlink: SR4CommlinkData,

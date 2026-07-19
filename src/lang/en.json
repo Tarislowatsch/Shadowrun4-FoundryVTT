@@ -23,6 +23,7 @@
       "Implant": "Implant",
       "Item": "Item",
       "Melee Weapon": "Melee Weapon",
+      "Mentor": "Mentor Spirit",
       "Metatype": "Metatype",
       "Power": "Power",
       "Program": "Program",
@@ -103,6 +104,7 @@
     },
     "cancel": "Cancel",
     "conditionMonitor": {
+      "matrix": "Matrix Condition Monitor",
       "physical": "Physical Condition Monitor",
       "simpleHp": "Simple HP (physical only)",
       "stun": "Stun Condition Monitor"
@@ -120,6 +122,18 @@
       "noConnections": "No connections present",
       "notes": "Notes",
       "type": "Type"
+    },
+    "device": {
+      "attributes": "Attributes",
+      "name": "Name",
+      "pilot": "Pilot",
+      "type": {
+        "label": "Device Type",
+        "agent": "Agent",
+        "ic": "IC",
+        "blackIc": "Black IC",
+        "node": "Node"
+      }
     },
     "effect": {
       "active": "Active",
@@ -151,6 +165,7 @@
         "blind": "Blinded",
         "blindFlareComp": "Blinded (Flare Compensation)",
         "disoriented": "Disoriented (Electricity)",
+        "dumpshocked": "Dumpshocked",
         "knockedDown": "Knocked Down",
         "label": "Templates",
         "sustain": "Sustaining"
@@ -250,6 +265,14 @@
         "sorcery": "Skill Group: Sorcery",
         "stealth": "Skill Group: Stealth",
         "tasking": "Skill Group: Tasking"
+      },
+      "spellCategory": {
+        "COMBAT": "Spellcasting: Combat Spells",
+        "DETECTION": "Spellcasting: Detection Spells",
+        "GEOMANCY": "Spellcasting: Geomancy Spells",
+        "HEALTH": "Spellcasting: Health Spells",
+        "ILLUSION": "Spellcasting: Illusion Spells",
+        "MANIPULATION": "Spellcasting: Manipulation Spells"
       }
     },
     "focus": {
@@ -295,6 +318,7 @@
       "actionPart1": "Action part 1",
       "actionPart2": "Action part 2",
       "actionType": "Action type",
+      "active": "Active",
       "avail": "Availability",
       "capacity": "Capacity",
       "clearLink": "Remove link",
@@ -303,6 +327,7 @@
       "delete": "Delete",
       "description": "Description",
       "edit": "Edit",
+      "equipped": "Equipped",
       "essence": "Essence",
       "essenceActual": "Actual Essence",
       "grade": "Grade",
@@ -315,8 +340,6 @@
       "rating1": "Rating part 1",
       "rating2": "Rating part 2",
       "source": "Source",
-      "active": "Active",
-      "equipped": "Equipped",
       "toggleEquip": "Toggle equipped",
       "type": "Type"
     },
@@ -401,6 +424,9 @@
       "source": "Source",
       "specialization": "Specialization",
       "type": "Type"
+    },
+    "source": {
+      "openTooltip": "Open in PDF"
     },
     "stats": {
       "AGILITY": "Agility",

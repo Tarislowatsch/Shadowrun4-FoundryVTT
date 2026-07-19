@@ -15,6 +15,7 @@
           {{checked system.technomancy.technomancer}}
         />
       </div>
+      {{#unless system.technomancy.technomancer}}
       <div class="magic-input">
         <label for="matrixSimMode">{{localize "sr4.matrix.simMode.label"}}</label>
         <select id="matrixSimMode" name="system.matrixSimMode" data-dtype="String" {{#unless editMode}}disabled{{/unless}}>
@@ -23,8 +24,50 @@
           {{/each}}
         </select>
       </div>
+      {{/unless}}
     </div>
   </div>
+
+  {{#if hasMatrixAccess}}
+  <div class="magic-section-subtitle">
+    <h3>{{localize "sr4.matrix.cybercombat.label"}}</h3>
+    <button type="button" class="thread-button" data-action="matrixAttack">
+      <i class="fas fa-bolt"></i>
+      {{localize "sr4.matrix.cybercombat.attack"}}
+    </button>
+    {{#if matrixJammed}}
+    <button type="button" class="thread-button" data-action="matrixJackOut">
+      <i class="fas fa-plug-circle-xmark"></i>
+      {{localize "sr4.matrix.cybercombat.jackOut"}}
+    </button>
+    {{/if}}
+  </div>
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize "sr4.matrix.system"}}</th>
+        <th>{{localize "sr4.matrix.firewall"}}</th>
+        <th>{{localize "sr4.matrix.biofeedbackFilter"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ matrixPersona.system }}</td>
+        <td>{{ matrixPersona.firewall }}</td>
+        <td>{{ matrixPersona.biofeedbackFilter }}</td>
+      </tr>
+    </tbody>
+  </table>
+  {{#if matrixMonitor.max}}
+  <div class="monitor-tracks">
+    {{> "status-track-card"
+        title="sr4.conditionMonitor.matrix"
+        type="matrix"
+        max=matrixMonitor.max
+        current=matrixMonitor.value}}
+  </div>
+  {{/if}}
+  {{/if}}
 
   {{#if isTechnomancer}}
 
@@ -42,6 +85,7 @@
           {{selectOptions fadingAttributes selected=system.technomancy.fadingAttribute localize=true}}
         </select>
       </div>
+      {{> mentor-section context=paragonContext itemId=paragonItemId labelKey="sr4.mentor.paragon" category="Resonance"}}
     </div>
     <div class="magic-column">
       <div class="magic-stat">

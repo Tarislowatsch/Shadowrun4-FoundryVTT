@@ -138,7 +138,6 @@ export const characterMetaDataField = () =>
  * @property {number} drainBonus
  * @property {number} summoningDrainBonus
  * @property {string} tradition
- * @property {string} totem
  * @property {number} traditionBonus
  * @property {boolean} adept
  * @property {boolean} magician
@@ -190,8 +189,6 @@ export const magicField = () =>
     }),
     adept: new fields.BooleanField({ initial: false }),
     magician: new fields.BooleanField({ initial: false }),
-
-    totem: new fields.StringField({ initial: '', blank: true }),
 
     traditionBonus: new fields.NumberField({ initial: 0, integer: true }),
 
@@ -490,6 +487,9 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
         initial: 'cold',
         choices: [...SIM_MODE_CHOICES],
         blank: false,
+      }),
+      matrix: new fields.SchemaField({
+        jammedBy: new fields.StringField({ initial: '', blank: true }),
       }),
       simpleHp: new fields.BooleanField({ initial: false }),
       livingPersona: new fields.SchemaField({

@@ -1,6 +1,7 @@
 import { openSpiritResistDialog } from '@utils/dialog/magic/spirit-resist.js';
-import { getGame, isPrimaryGM } from '@utils/index';
+import { isPrimaryGM } from '@utils/index';
 import { SummoningFlow } from '@flows/summoning-flow.js';
+import { BaseSocketHook } from './base-socket-hook.js';
 
 /**
  * @typedef {object} SummoningResistPayload
@@ -10,21 +11,7 @@ import { SummoningFlow } from '@flows/summoning-flow.js';
  * @property {'spirit' | 'sprite'} entityType
  */
 
-export class SummoningHook {
-  constructor() {
-    this._boundHandler = this._onSocketMessage.bind(this);
-    this._registerSocketHandler();
-  }
-
-  _registerSocketHandler() {
-    Hooks.once('ready', () => {
-      const socket = getGame().socket;
-      if (!socket) return;
-      socket.off('system.shadowrun4e', this._boundHandler);
-      socket.on('system.shadowrun4e', this._boundHandler);
-    });
-  }
-
+export class SummoningHook extends BaseSocketHook {
   /**
    * @param {{ action: string, payload: SummoningResistPayload | object }} data
    * @returns {Promise<void>}

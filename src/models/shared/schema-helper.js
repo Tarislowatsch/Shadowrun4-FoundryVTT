@@ -105,6 +105,7 @@ export function conditionMonitorField() {
   return new fields.SchemaField({
     physical: monitorField(),
     stun: monitorField(),
+    matrix: monitorField(),
   });
 }
 
@@ -205,6 +206,7 @@ export const modifiersField = () =>
     soakBonus: new fields.NumberField({ initial: 0, integer: true }),
     skillGroupBonuses: new fields.ObjectField({ initial: {} }),
     skillBonuses: new fields.ObjectField({ initial: {} }),
+    spellCategoryBonuses: new fields.ObjectField({ initial: {} }),
   });
 
 /**
@@ -222,6 +224,7 @@ export function summonedEntityFields() {
     conditionMonitor: conditionMonitorField(),
     notes: new fields.HTMLField({ initial: '' }),
     realm: realmModeField(),
+    source: new fields.StringField({ initial: '', blank: true }),
   };
 }
 

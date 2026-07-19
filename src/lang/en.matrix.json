@@ -24,6 +24,42 @@
       "attribute": "Attribute",
       "biofeedbackFilter": "Biofeedback Filter",
       "bonus": "Bonus",
+      "cybercombat": {
+        "label": "Cybercombat",
+        "attack": "Matrix Attack",
+        "attackTitle": "Cybercombat Attack",
+        "program": "Program",
+        "noPrograms": "No offensive programs (Attack/Black Hammer/Blackout) available.",
+        "attackedBy": "Attacked by",
+        "defenseTitle": "Matrix Defense",
+        "fullDefense": "Full Matrix Defense",
+        "fullDefenseHint": "Full Defense adds Hacking (or Rating) but costs a Complex Action.",
+        "resistTitle": "Matrix Damage Resistance",
+        "biofeedbackResistTitle": "Biofeedback Resistance",
+        "miss": "{attacker} → {defender}: attack missed.",
+        "noEffect": "{defender}: no effect (device/agent/IC).",
+        "noEffectAr": "{defender}: Black IC has no effect in AR (not in VR).",
+        "jammed": "{name}'s connection is jammed by Black IC!",
+        "jammedBlock": "Connection jammed by Black IC — you cannot leave the Matrix. Jack out first.",
+        "jackOut": "Jack Out",
+        "jackOutTitle": "Jack Out (Willpower + Biofeedback Filter)",
+        "jackOutIc": "Black IC (Rating + Response)",
+        "jackOutSuccess": "{name} jacks out — but suffers dumpshock!",
+        "jackOutFail": "{name} fails to jack out and stays jammed."
+      },
+      "damage": {
+        "summary": "{name} takes {amount} Matrix damage from {reason}.",
+        "resisted": "{name} resisted all Matrix damage.",
+        "crashed": "{name}'s icon crashed!",
+        "pendingChat": "{name}: {amount} Matrix damage pending.",
+        "pendingStunChat": "{name}: {amount} Matrix damage pending (applied as Stun damage).",
+        "reason": {
+          "cybercombat": "Cybercombat"
+        }
+      },
+      "dumpshock": {
+        "resistTitle": "Dumpshock Resistance (Willpower + Biofeedback Filter)"
+      },
       "commlinks": "Commlinks",
       "compendium": "Compendium",
       "compiledSprites": "Compiled Sprites",

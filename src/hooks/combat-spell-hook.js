@@ -5,7 +5,8 @@ import {
 import { openOpposedSpellResistDialog } from '@utils/dialog/magic/opposed-spell.js';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow';
 import { sendEffectDecisionMessage } from '@flows/apply-effects-flow';
-import { getGame, isResponsibleForActor } from '@utils/index';
+import { isResponsibleForActor } from '@utils/index';
+import { BaseSocketHook } from './base-socket-hook.js';
 
 /**
  * @typedef {object} DirectSpellResistPayload
@@ -45,22 +46,7 @@ import { getGame, isResponsibleForActor } from '@utils/index';
  * @property {string} resistAttribute
  */
 
-export class CombatSpellHook {
-  constructor() {
-    this._boundHandler = this._onSocketMessage.bind(this);
-    this._registerSocketHandler();
-  }
-
-  /** @returns {void} */
-  _registerSocketHandler() {
-    Hooks.once('ready', () => {
-      const socket = getGame().socket;
-      if (!socket) return;
-      socket.off('system.shadowrun4e', this._boundHandler);
-      socket.on('system.shadowrun4e', this._boundHandler);
-    });
-  }
-
+export class CombatSpellHook extends BaseSocketHook {
   /**
    * @param {{ action: string, payload: DirectSpellResistPayload | DirectSpellDamagePayload | IndirectSpellDefensePayload | OpposedSpellResistPayload }} data
    * @returns {Promise<void>}

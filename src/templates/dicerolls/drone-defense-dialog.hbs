@@ -1,18 +1,7 @@
 <form class="defense-roll-dialog drone-roll-dialog">
-  <div class="form-group attack-info">
-    <span
-      >{{ attackerName }} · {{ weaponName }} ·
-      {{localize "sr4.defense.attackSuccesses"}}: {{ attackSuccesses }}</span
-    >
-  </div>
+  {{> attack-info}}
 
-  {{#if wideDefenseMalus}}
-  <div class="form-group">
-    <span class="defense-stat defense-malus"
-      >{{localize "sr4.defense.wideBurstMalus"}}: -{{ wideDefenseMalus }}</span
-    >
-  </div>
-  {{/if}}
+  {{> wide-burst-malus}}
 
   {{> control-mode-select}}
   {{> rigger-skill-select}}

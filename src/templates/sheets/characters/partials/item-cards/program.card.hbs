@@ -1,11 +1,10 @@
 <div class="item-card item program-card" data-item-id="{{ this._id }}" title="{{ this.system.description }}">
-  <div class="item-header item-row">
-    <span class="item-name">{{ this.name }}</span>
-    {{#if this.system.threaded}}
-    <span class="badge threaded-badge" data-tooltip="{{localize 'sr4.matrix.threadedHint'}}">{{localize "sr4.matrix.threaded"}}</span>
-    {{/if}}
-    {{> item-active-badge label="sr4.item.active"}}
-    <div class="item-actions">
+  {{#> item-card-header activeBadgeLabel="sr4.item.active"
+      badgeShow=this.system.threaded
+      badgeClass="threaded-badge"
+      badgeLabel="sr4.matrix.threaded"
+      badgeTooltip="sr4.matrix.threadedHint"}}
+    {{#*inline "card-buttons"}}
       {{#if this.system.complexform}}
       <button
         type="button"
@@ -17,10 +16,8 @@
       </button>
       {{/if}}
       {{> item-toggle-equip equippedIcon="fas fa-toggle-on" unequippedIcon="fas fa-toggle-off" tooltip="sr4.item.toggleEquip"}}
-      {{> item-edit-btn}}
-      {{> item-delete-btn}}
-    </div>
-  </div>
+    {{/inline}}
+  {{/item-card-header}}
   <div class="item-body">
     <span class="item-property">
       <strong>{{localize "sr4.item.rating"}}</strong>

@@ -1,4 +1,5 @@
 import { elementToRecord } from './parse-xml.js';
+import { detachMentorBonusAndChoices } from './mappers/mentors.js';
 
 /** @type {Array<[string, string]>} */
 const COLLECTIONS = [
@@ -11,6 +12,7 @@ const COLLECTIONS = [
   ['cyberware', 'cyberwares'],
   ['bioware', 'biowares'],
   ['program', 'techprograms'],
+  ['mentorspirit', 'mentorspirits'],
 ];
 
 /**
@@ -81,6 +83,16 @@ export function extractCharacter(xmlString) {
       ...characterEl.querySelectorAll(`:scope > ${container} > ${child}`),
     ];
     if (els.length === 0) continue;
+    if (child === 'mentorspirit') {
+      items[child] = els.map((el) => {
+        const { bonus, choices } = detachMentorBonusAndChoices(el);
+        const record = elementToRecord(el);
+        record._bonus = bonus;
+        record._choices = choices;
+        return record;
+      });
+      continue;
+    }
     items[child] = els.map(elementToRecord);
     if (child === 'weapon') weaponEls = els;
     if (child === 'gear') gearEls = els;

@@ -21,6 +21,8 @@ export async function registerUIPartials() {
       name: 'rigger-skill-select',
     },
     { path: `${basePath}/pool-breakdown.hbs`, name: 'pool-breakdown' },
+    { path: `${basePath}/attack-info.hbs`, name: 'attack-info' },
+    { path: `${basePath}/wide-burst-malus.hbs`, name: 'wide-burst-malus' },
     {
       path: 'systems/shadowrun4e/templates/magic/spell-force-header.hbs',
       name: 'spell-force-header',
@@ -40,7 +42,14 @@ export async function registerUIPartials() {
     { path: `${basePath}/item-delete-btn.hbs`, name: 'item-delete-btn' },
     { path: `${basePath}/meta-field.hbs`, name: 'meta-field' },
     { path: `${basePath}/entity-affinities.hbs`, name: 'entity-affinities' },
+    { path: `${basePath}/mentor-section.hbs`, name: 'mentor-section' },
     { path: `${basePath}/textarea-field.hbs`, name: 'textarea-field' },
+    { path: `${basePath}/item-source-btn.hbs`, name: 'item-source-btn' },
+    {
+      path: `${basePath}/item-source-header.hbs`,
+      name: 'item-source-header',
+    },
+    { path: `${basePath}/item-source-cell.hbs`, name: 'item-source-cell' },
   ];
   await Promise.all(
     templatePaths.map(async ({ path, name }) => {

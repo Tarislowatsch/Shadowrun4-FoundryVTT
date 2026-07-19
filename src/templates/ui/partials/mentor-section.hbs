@@ -1,0 +1,31 @@
+{{#if context}}
+<div class="mentor-spirit" data-item-id="{{ itemId }}">
+  <div class="magic-input">
+    <label>{{localize labelKey}}</label>
+    <a class="mentor-name" data-action="editItem">{{ context.name }}</a>
+    {{#if context.disadvantage}}
+    <i class="fa-solid fa-circle-info mentor-info" data-tooltip="{{ context.disadvantage }}"></i>
+    {{/if}}
+    {{> item-delete-btn}}
+  </div>
+  {{#if context.advantage}}
+  <div class="mentor-advantage">{{ context.advantage }}</div>
+  {{/if}}
+  {{#each context.sets as |set|}}
+  <div class="magic-input mentor-choice">
+    <label>{{localize "sr4.mentor.set"}} {{set.set}}</label>
+    <select data-mentor-choice data-set="{{set.set}}">
+      <option value="">{{localize "sr4.mentor.none"}}</option>
+      {{#each set.options as |opt|}}
+      <option value="{{opt.name}}" {{#if opt.selected}}selected{{/if}}>{{opt.name}}{{#if opt.hasBonus}} ✦{{/if}}</option>
+      {{/each}}
+    </select>
+  </div>
+  {{/each}}
+</div>
+{{else}}
+<div class="magic-input">
+  <label>{{localize labelKey}}</label>
+  {{> item-create-btn btnAction="createMentor" btnCategory=category btnTooltip="sr4.mentor.add"}}
+</div>
+{{/if}}

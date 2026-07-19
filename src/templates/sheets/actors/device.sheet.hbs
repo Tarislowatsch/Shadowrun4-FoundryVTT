@@ -1,0 +1,98 @@
+<div class="sheet-container">
+
+  <div class="npc-header">
+    {{> "actor-image"}}
+    <div class="npc-header-info">
+      <div class="meta-field">
+        <label>{{localize 'sr4.device.name'}}</label>
+        <input type="text" name="name" value="{{actor.name}}" {{#unless editMode}}readonly{{/unless}} />
+      </div>
+      <div class="meta-field">
+        <label>{{localize 'sr4.device.type.label'}}</label>
+        <select name="system.deviceType" data-dtype="String" {{#unless editMode}}disabled{{/unless}}>
+          {{#each deviceTypeOptions as |opt|}}
+          <option value="{{opt.value}}" {{#if (eq opt.value @root.system.deviceType)}}selected{{/if}}>{{opt.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <h3>{{localize 'sr4.device.attributes'}}</h3>
+  <div class="grid">
+    <div class="meta-field">
+      <label>{{localize 'sr4.device.pilot'}}</label>
+      <input type="number" name="system.pilot" value="{{system.pilot}}" />
+    </div>
+    <div class="meta-field">
+      <label>{{localize 'sr4.commlink.response'}}</label>
+      <input type="number" name="system.response" value="{{system.response}}" />
+    </div>
+    <div class="meta-field">
+      <label>{{localize 'sr4.commlink.signal'}}</label>
+      <input type="number" name="system.signal" value="{{system.signal}}" />
+    </div>
+    <div class="meta-field">
+      <label>{{localize 'sr4.commlink.firewall'}}</label>
+      <input type="number" name="system.firewall" value="{{system.firewall}}" />
+    </div>
+    <div class="meta-field">
+      <label>{{localize 'sr4.matrix.system'}}</label>
+      <input type="number" name="system.system" value="{{system.system}}" />
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="meta-field">
+      <label>{{localize 'sr4.sprite.matrixInit'}}</label>
+      <span>{{matrixInitiative}}</span>
+    </div>
+    <div class="meta-field">
+      <label>{{localize 'sr4.sprite.ip'}}</label>
+      <span>{{matrixPasses}}</span>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="monitor-tracks">
+    {{> "status-track-card"
+        title="sr4.conditionMonitor.matrix"
+        type="matrix"
+        max=system.conditionMonitor.matrix.max
+        current=system.conditionMonitor.matrix.value}}
+  </div>
+
+  <hr />
+
+  <div class="npc-section">
+    <h3>
+      {{localize 'sr4.matrix.software'}}
+      {{#if editMode}}{{> item-create-btn btnAction="createProgram" btnTooltip="sr4.matrix.software"}}{{/if}}
+    </h3>
+    {{#if programs.length}}
+      {{#each programs as |prog|}}
+      <div class="item-card power-card item" data-item-id="{{prog._id}}">
+        <div class="item-row">
+          <span class="item-name">{{prog.name}}</span>
+          <span class="item-property">{{prog.system.rating}}</span>
+          {{> item-edit-btn itemId=prog._id}}
+          {{> item-delete-btn itemId=prog._id}}
+        </div>
+      </div>
+      {{/each}}
+    {{else}}
+      <p class="empty-list">{{localize 'sr4.matrix.noSoftware'}}</p>
+    {{/if}}
+  </div>
+
+  <button type="button" class="thread-button" data-action="matrixAttack">
+    <i class="fas fa-bolt"></i>
+    {{localize 'sr4.matrix.cybercombat.attack'}}
+  </button>
+
+  {{> "npc-notes"}}
+
+</div>

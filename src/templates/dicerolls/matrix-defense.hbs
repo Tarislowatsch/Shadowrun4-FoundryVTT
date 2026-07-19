@@ -1,0 +1,14 @@
+<form class="skill-roll-dialog">
+  <p class="dialog-hint">
+    {{localize "sr4.matrix.cybercombat.attackedBy"}}: <strong>{{attackerName}}</strong>
+    — {{programName}} ({{attackHits}})
+  </p>
+  {{> bonus-input}}
+  {{> malus-input}}
+  <div class="form-group">
+    <label for="fullDefense">{{localize "sr4.matrix.cybercombat.fullDefense"}}</label>
+    <input type="checkbox" class="sr4-checkbox" id="fullDefense" name="fullDefense" />
+  </div>
+  <p class="dialog-hint"><em>{{localize "sr4.matrix.cybercombat.fullDefenseHint"}}</em></p>
+  {{> edge-checkbox}}
+</form>

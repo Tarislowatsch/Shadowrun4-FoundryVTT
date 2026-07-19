@@ -136,8 +136,11 @@
       "pendingChat": "{name}: {amount} {type} damage pending.",
       "physical": "Physical",
       "reason": {
+        "blackIc": "Black IC",
         "combat": "Combat",
+        "cybercombat": "Cybercombat",
         "drain": "Drain",
+        "dumpshock": "Dumpshock",
         "spell": "Spell"
       },
       "resisted": "{name} resisted all damage",
