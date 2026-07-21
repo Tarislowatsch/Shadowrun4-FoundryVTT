@@ -1,5 +1,7 @@
 import { handleSkillRoll, rollComplexFormDialog } from '@utils/index';
 import { SummoningFlow } from '@flows/summoning-flow.js';
+import { DismissalFlow } from '@flows/dismissal-flow.js';
+import { BindingFlow } from '@flows/binding-flow.js';
 import { ThreadingFlow } from '@flows/threading-flow.js';
 import { CybercombatFlow } from '@flows/cybercombat-flow.js';
 import {
@@ -71,6 +73,10 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       summonSpirit: SR4CharacterSheet.#onSummonSpirit,
       summonWatcher: SR4CharacterSheet.#onSummonWatcher,
       compileSprite: SR4CharacterSheet.#onCompileSprite,
+      decompileSprite: SR4CharacterSheet.#onDecompileSprite,
+      banishSpirit: SR4CharacterSheet.#onBanishSpirit,
+      bindSpirit: SR4CharacterSheet.#onBindSpirit,
+      bindSprite: SR4CharacterSheet.#onBindSprite,
       createSpriteTemplate: SR4CharacterSheet.#onCreateSpriteTemplate,
       createSpiritTemplate: SR4CharacterSheet.#onCreateSpiritTemplate,
       createMentor: SR4CharacterSheet.#onCreateMentor,
@@ -443,6 +449,22 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
 
   static async #onCompileSprite() {
     await SummoningFlow.start(this.actor, 'sprite');
+  }
+
+  static async #onDecompileSprite() {
+    await DismissalFlow.start(this.actor, 'sprite');
+  }
+
+  static async #onBanishSpirit() {
+    await DismissalFlow.start(this.actor, 'spirit');
+  }
+
+  static async #onBindSpirit() {
+    await BindingFlow.startTargeted(this.actor, 'spirit');
+  }
+
+  static async #onBindSprite() {
+    await BindingFlow.startTargeted(this.actor, 'sprite');
   }
 
   static async #onCreateSpriteTemplate(event) {

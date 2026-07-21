@@ -18,7 +18,7 @@
       {{#unless system.technomancy.technomancer}}
       <div class="magic-input">
         <label for="matrixSimMode">{{localize "sr4.matrix.simMode.label"}}</label>
-        <select id="matrixSimMode" name="system.matrixSimMode" data-dtype="String" {{#unless editMode}}disabled{{/unless}}>
+        <select id="matrixSimMode" name="system.matrixSimMode" data-dtype="String">
           {{#each simModeOptions as |opt|}}
           <option value="{{opt.value}}" {{#if (eq opt.value @root.system.matrixSimMode)}}selected{{/if}}>{{opt.label}}</option>
           {{/each}}
@@ -29,19 +29,14 @@
   </div>
 
   {{#if hasMatrixAccess}}
-  <div class="magic-section-subtitle">
-    <h3>{{localize "sr4.matrix.cybercombat.label"}}</h3>
-    <button type="button" class="thread-button" data-action="matrixAttack">
-      <i class="fas fa-bolt"></i>
-      {{localize "sr4.matrix.cybercombat.attack"}}
-    </button>
-    {{#if matrixJammed}}
-    <button type="button" class="thread-button" data-action="matrixJackOut">
-      <i class="fas fa-plug-circle-xmark"></i>
-      {{localize "sr4.matrix.cybercombat.jackOut"}}
-    </button>
-    {{/if}}
-  </div>
+  {{#> action-button-bar title="sr4.matrix.cybercombat.label"}}
+    {{#*inline "buttons"}}
+      {{> action-button action="matrixAttack" icon="fas fa-bolt" label="sr4.matrix.cybercombat.attack"}}
+      {{#if matrixJammed}}
+      {{> action-button action="matrixJackOut" icon="fas fa-plug-circle-xmark" label="sr4.matrix.cybercombat.jackOut"}}
+      {{/if}}
+    {{/inline}}
+  {{/action-button-bar}}
   <table class="item-stats-table">
     <thead>
       <tr>
@@ -68,6 +63,18 @@
   </div>
   {{/if}}
   {{/if}}
+
+  {{#> collapsible-section title=(localize "sr4.matrix.actions") btnAction="createItem" btnItemType="Action" btnTooltip="sr4.item.create"}}
+    {{#if matrixActions.length}}
+    <ul class="action-list">
+      {{#each matrixActions as |action|}}
+      {{> "action-card" action actiontypes=@root.actiontypes}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p>{{localize "sr4.action.noActions"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
 
   {{#if isTechnomancer}}
 
@@ -188,9 +195,11 @@
     categories=spriteAffinityCategories
     idPrefix="spriteAffinity"
     namePrefix="system.technomancy.spriteAffinities"
-    btnAction="compileSprite"
-    btnIcon="fas fa-microchip"
-    btnLabel="sr4.magic.compile"
+    buttons=(array
+      (object action="compileSprite" icon="fas fa-microchip" label="sr4.magic.compile" tooltip="sr4.magic.compile")
+      (object action="decompileSprite" icon="fas fa-eraser" label="sr4.magic.decompile" tooltip="sr4.magic.decompileHint")
+      (object action="bindSprite" icon="fas fa-link" label="sr4.ui.bindActor" tooltip="sr4.magic.bindSpriteHint")
+    )
     createAction="createSpriteTemplate"
   }}
 
@@ -206,18 +215,11 @@
     {{/if}}
   {{/collapsible-section}}
 
-  <div class="magic-section-subtitle">
-    <h3>{{localize "sr4.matrix.complexForms"}}</h3>
-    <button
-      type="button"
-      class="thread-button"
-      data-action="threadComplexForm"
-      data-tooltip="{{localize 'sr4.matrix.threadingHint'}}"
-    >
-      <i class="fas fa-dice-d20"></i>
-      {{localize "sr4.matrix.threading"}}
-    </button>
-  </div>
+  {{#> action-button-bar title="sr4.matrix.complexForms"}}
+    {{#*inline "buttons"}}
+      {{> action-button action="threadComplexForm" icon="fas fa-dice-d20" label="sr4.matrix.threading" tooltip="sr4.matrix.threadingHint"}}
+    {{/inline}}
+  {{/action-button-bar}}
   {{#if complexForms}}
   <ul class="item-list">
     {{#each complexForms as |form|}}

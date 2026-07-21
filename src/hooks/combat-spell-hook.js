@@ -3,9 +3,20 @@ import {
   openIndirectSpellDefenseDialog,
 } from '@utils/dialog/magic/combat-spell.js';
 import { openOpposedSpellResistDialog } from '@utils/dialog/magic/opposed-spell.js';
+import {
+  autoResolveSpellResist,
+  directSpellResistAttribute,
+  localizeResistAttribute,
+} from '@utils/dialog/magic/resist-actions.js';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow';
 import { sendEffectDecisionMessage } from '@flows/apply-effects-flow';
 import { isResponsibleForActor } from '@utils/index';
+import {
+  requestReactiveDecision,
+  DecisionCategory,
+  DecisionKind,
+  DecisionRouting,
+} from '@utils/rolls/decision-provider.js';
 import { BaseSocketHook } from './base-socket-hook.js';
 
 /**
@@ -71,14 +82,32 @@ export class CombatSpellHook extends BaseSocketHook {
     if (data.action === 'triggerDirectSpellResist') {
       const { casterUuid, spellName, castingHits, force, isMana } =
         /** @type {DirectSpellResistPayload} */ (data.payload);
-      await openDirectSpellResistDialog(
-        defender,
-        spellName,
-        castingHits,
-        force,
-        isMana,
-        casterUuid
-      );
+      const attr = directSpellResistAttribute(isMana);
+      await requestReactiveDecision({
+        actor: defender,
+        category: DecisionCategory.MAGIC,
+        dialogKind: DecisionKind.DIRECT_SPELL_RESIST,
+        routing: DecisionRouting.OWNER,
+        chatModeSupported: true,
+        defaultResult: () =>
+          autoResolveSpellResist({
+            defender,
+            resistAttribute: attr,
+            label: localizeResistAttribute(attr),
+            castingHits,
+            socketAction: 'directSpellResisted',
+            casterUuid,
+          }),
+        openDialog: () =>
+          openDirectSpellResistDialog(
+            defender,
+            spellName,
+            castingHits,
+            force,
+            isMana,
+            casterUuid
+          ),
+      });
     } else if (data.action === 'applyDirectSpellDamage') {
       const { damage, isPhysical, spellName, casterUuid, effects } =
         /** @type {DirectSpellDamagePayload} */ (data.payload);
@@ -104,24 +133,48 @@ export class CombatSpellHook extends BaseSocketHook {
       /** @type {import('@documents/index').SR4Actor | undefined} */
       const attacker = /** @type {any} */ (await fromUuid(casterUuid));
       if (!attacker) return;
-      await openIndirectSpellDefenseDialog(
-        defender,
-        attacker,
-        spell,
-        castingHits,
-        force
-      );
+      await requestReactiveDecision({
+        actor: defender,
+        category: DecisionCategory.MAGIC,
+        dialogKind: DecisionKind.INDIRECT_SPELL_DEFENSE,
+        routing: DecisionRouting.OWNER,
+        openDialog: () =>
+          openIndirectSpellDefenseDialog(
+            defender,
+            attacker,
+            spell,
+            castingHits,
+            force
+          ),
+      });
     } else if (data.action === 'triggerOpposedSpellResist') {
       const { casterUuid, spellName, castingHits, force, resistAttribute } =
         /** @type {OpposedSpellResistPayload} */ (data.payload);
-      await openOpposedSpellResistDialog(
-        defender,
-        spellName,
-        castingHits,
-        force,
-        resistAttribute,
-        casterUuid
-      );
+      await requestReactiveDecision({
+        actor: defender,
+        category: DecisionCategory.MAGIC,
+        dialogKind: DecisionKind.OPPOSED_SPELL_RESIST,
+        routing: DecisionRouting.OWNER,
+        chatModeSupported: true,
+        defaultResult: () =>
+          autoResolveSpellResist({
+            defender,
+            resistAttribute,
+            label: localizeResistAttribute(resistAttribute),
+            castingHits,
+            socketAction: 'opposedSpellResisted',
+            casterUuid,
+          }),
+        openDialog: () =>
+          openOpposedSpellResistDialog(
+            defender,
+            spellName,
+            castingHits,
+            force,
+            resistAttribute,
+            casterUuid
+          ),
+      });
     }
   }
 }

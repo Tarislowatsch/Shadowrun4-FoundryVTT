@@ -220,13 +220,21 @@ export function isMeleeWeapon(item) {
   return item.type === MELEE_WEAPON_TYPE;
 }
 
+const PHYSICAL_DAMAGE_TYPES = new Set([
+  'PHYSICAL',
+  'FIRE',
+  'LASER',
+  'BLAST',
+  'LIGHT',
+  'ACID',
+  'ICE',
+  'METAL',
+  'SAND',
+  'WATER',
+  'RADIATION',
+]);
+
 /** @param {string} dt */
 export function isPhysicalDamageType(dt) {
-  return (
-    dt === 'PHYSICAL' ||
-    dt === 'FIRE' ||
-    dt === 'LASER' ||
-    dt === 'BLAST' ||
-    dt === 'LIGHT'
-  );
+  return PHYSICAL_DAMAGE_TYPES.has(dt);
 }

@@ -67,7 +67,7 @@
           {{selectOptions drainAttributes selected=system.magic.drainAttribute localize=true}}
         </select>
       </div>
-      <div class="magic-section-subtitle">
+      <div class="section-subtitle">
         {{localize "sr4.magic.drainboni.label"}}
       </div>
       <div class="magic-input">
@@ -119,12 +119,12 @@
     categories=spiritAffinityCategories
     idPrefix="spiritAffinity"
     namePrefix="system.magic.spiritAffinities"
-    btnAction="summonSpirit"
-    btnIcon="fas fa-ghost"
-    btnLabel="sr4.magic.summon"
-    btn2Action="summonWatcher"
-    btn2Icon="fas fa-eye"
-    btn2Label="sr4.magic.summonWatcher"
+    buttons=(array
+      (object action="summonSpirit" icon="fas fa-ghost" label="sr4.magic.summon" tooltip="sr4.magic.summon")
+      (object action="summonWatcher" icon="fas fa-eye" label="sr4.magic.summonWatcher" tooltip="sr4.magic.summonWatcher")
+      (object action="banishSpirit" icon="fas fa-skull" label="sr4.magic.banish" tooltip="sr4.magic.banishHint")
+      (object action="bindSpirit" icon="fas fa-link" label="sr4.ui.bindActor" tooltip="sr4.magic.bindSpiritHint")
+    )
     createAction="createSpiritTemplate"
   }}
 

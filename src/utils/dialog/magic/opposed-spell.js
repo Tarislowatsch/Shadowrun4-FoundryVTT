@@ -5,7 +5,11 @@ import {
   localize,
   renderTemplate,
 } from '../dialogutility';
-import { resolveAndEmitSpellResist } from './resist-actions.js';
+import {
+  resolveAndEmitSpellResist,
+  spellResistPool,
+  localizeResistAttribute,
+} from './resist-actions.js';
 
 const OPPOSED_RESIST_TEMPLATE =
   'systems/shadowrun4e/templates/magic/spell-resist.hbs';
@@ -30,8 +34,8 @@ export async function openOpposedSpellResistDialog(
   const baseResist = defender.getAttribute(resistAttribute) ?? 0;
   const counterspelling =
     defender.getSkill('counterspelling')?.system?.rating ?? 0;
-  const resistPool = baseResist + counterspelling;
-  const resistAttrLabel = localize(`sr4.stats.${resistAttribute}`);
+  const resistPool = spellResistPool(defender, resistAttribute);
+  const resistAttrLabel = localizeResistAttribute(resistAttribute);
   const params = createDialogParameters(defender, resistPool);
 
   const content = await renderTemplate(OPPOSED_RESIST_TEMPLATE, {
@@ -49,7 +53,7 @@ export async function openOpposedSpellResistDialog(
     content,
     dice: resistPool,
     onRoll: (dialog) =>
-      dialogActions(dialog, defender, resistAttribute, resistPool),
+      dialogActions(dialog, defender, resistAttrLabel, resistPool),
     autoRoll: true,
   });
 

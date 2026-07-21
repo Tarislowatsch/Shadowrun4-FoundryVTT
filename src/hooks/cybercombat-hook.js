@@ -5,8 +5,16 @@ import {
   computeBiofeedbackDamage,
 } from '@utils/index';
 import {
+  requestReactiveDecision,
+  DecisionCategory,
+  DecisionKind,
+  DecisionRouting,
+} from '@utils/rolls/decision-provider.js';
+import {
   openMatrixDefenseDialog,
   openMatrixResistDialog,
+  defaultMatrixDefenseHits,
+  defaultMatrixResistHits,
 } from '@utils/dialog/matrix/cybercombat.js';
 import { MatrixDamageFlow } from '@flows/matrix-damage-flow.js';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow.js';
@@ -55,10 +63,19 @@ export class CybercombatHook extends BaseSocketHook {
    */
   async #handleDefense(defender, payload) {
     const attacker = /** @type {any} */ (await fromUuid(payload.attackerUuid));
-    const defenseHits = await openMatrixDefenseDialog(defender, {
-      attackerName: attacker?.name ?? '?',
-      programName: payload.programName,
-      attackHits: payload.attackHits,
+    const defenseHits = await requestReactiveDecision({
+      actor: defender,
+      category: DecisionCategory.MATRIX,
+      dialogKind: DecisionKind.MATRIX_DEFENSE,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: true,
+      defaultResult: () => defaultMatrixDefenseHits(defender),
+      openDialog: () =>
+        openMatrixDefenseDialog(defender, {
+          attackerName: attacker?.name ?? '?',
+          programName: payload.programName,
+          attackHits: payload.attackHits,
+        }),
     });
 
     getGame().socket?.emit('system.shadowrun4e', {
@@ -77,10 +94,20 @@ export class CybercombatHook extends BaseSocketHook {
    */
   async #handleMatrixResist(defender, payload) {
     const label = getGame().i18n.localize('sr4.matrix.cybercombat.resistTitle');
-    const hits = await openMatrixResistDialog(defender, {
-      dv: payload.dv,
-      label,
-      biofeedback: false,
+    const hits = await requestReactiveDecision({
+      actor: defender,
+      category: DecisionCategory.MATRIX,
+      dialogKind: DecisionKind.MATRIX_RESIST,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: true,
+      defaultResult: () =>
+        defaultMatrixResistHits(defender, { label, biofeedback: false }),
+      openDialog: () =>
+        openMatrixResistDialog(defender, {
+          dv: payload.dv,
+          label,
+          biofeedback: false,
+        }),
     });
     const unresisted = Math.max(payload.dv - (hits ?? 0), 0);
     await MatrixDamageFlow.sendDecisionMessage(
@@ -108,10 +135,20 @@ export class CybercombatHook extends BaseSocketHook {
     const label = getGame().i18n.localize(
       'sr4.matrix.cybercombat.biofeedbackResistTitle'
     );
-    const hits = await openMatrixResistDialog(defender, {
-      dv: payload.dv,
-      label,
-      biofeedback: true,
+    const hits = await requestReactiveDecision({
+      actor: defender,
+      category: DecisionCategory.MATRIX,
+      dialogKind: DecisionKind.BIOFEEDBACK_RESIST,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: true,
+      defaultResult: () =>
+        defaultMatrixResistHits(defender, { label, biofeedback: true }),
+      openDialog: () =>
+        openMatrixResistDialog(defender, {
+          dv: payload.dv,
+          label,
+          biofeedback: true,
+        }),
     });
 
     /** @type {any} */

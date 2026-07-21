@@ -3,10 +3,12 @@ import {
   openActionDialog,
   openAttributeRollDialog,
   openDerivedStatDialog,
+  openMatrixActionDialog,
   reloadWeapon,
 } from '@utils/index';
 import { RESISTANCE_ELEMENTS } from '@models/actor/basecharacter.model';
 import { REALM_CHOICES, SIM_MODE_CHOICES } from '@models/shared';
+import { ActionCategory } from '@models/actions/actions.model';
 import { getAvailableRealms } from '@documents/initiative.js';
 
 export default class SR4BaseActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
@@ -323,6 +325,7 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     const rating2 = Number(target.dataset.rating2) || 0;
     const action1 = target.dataset.action1;
     const action2 = target.dataset.action2;
+    const category = target.dataset.category;
     const itemId = target.closest('[data-item-id]')?.dataset.itemId;
     const item = this.actor.items.get(itemId);
     const numDice = rating1 + rating2;
@@ -335,7 +338,15 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     }
 
     const actionName = `${item.name} (${action1}${action2 ? ` + ${action2}` : ''})`;
-    openActionDialog(this.actor, actionName, numDice);
+
+    if (
+      category === ActionCategory.MATRIX ||
+      category === ActionCategory.RIGGING
+    ) {
+      return openMatrixActionDialog(this.actor, actionName, numDice, category);
+    }
+
+    return openActionDialog(this.actor, actionName, numDice);
   }
 
   static async _onRollDerivedStat(event, target) {

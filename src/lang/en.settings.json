@@ -1,17 +1,17 @@
 {
   "sr4": {
     "characterImporter": {
+      "ammoLinkError": "Could not link ammunition for \"{name}\". Ammo can be assigned manually.",
       "button": "Import Character",
       "createError": "Could not create actor: {error}",
       "hint": "Upload a single Chummer character XML export to create a new character actor.",
       "import": "Import Character",
       "itemCount": "Items",
       "linkedActorError": "Could not import spirits/sprites/vehicles for \"{name}\": {error}",
+      "modLinkError": "Could not link weapon mods for \"{name}\". Mods can be assigned manually.",
       "parseError": "Could not parse \"{file}\": {error}",
       "preview": "Preview",
       "skillCount": "Skills",
-      "ammoLinkError": "Could not link ammunition for \"{name}\". Ammo can be assigned manually.",
-      "modLinkError": "Could not link weapon mods for \"{name}\". Mods can be assigned manually.",
       "success": "Imported character \"{name}\".",
       "title": "Character Importer",
       "updateButton": "Update from Chummer XML",
@@ -60,14 +60,6 @@
         "hint": "Automatically create a sustain active effect when a sustained spell is cast.",
         "name": "Auto Sustain Effect"
       },
-      "flowEdgeTimeout": {
-        "hint": "How long (in seconds) the Edge buttons stay active on a roll card during a combat or magic flow before they are automatically removed and the flow continues with the original result.",
-        "name": "Flow Edge Timeout"
-      },
-      "flowOpposedRollTimeout": {
-        "hint": "How long (in seconds) a combat or magic flow waits for the defender's opposed roll (resist, summoning) before it is rolled automatically with default options.",
-        "name": "Flow Opposed Roll Timeout"
-      },
       "combatDefenseWorkflow": {
         "hint": "When enabled, targeted tokens are automatically prompted to roll defense after an attack. Disabling this also disables the Soak Workflow.",
         "name": "Combat: Defense Workflow"
@@ -79,6 +71,58 @@
       "cybercombatWorkflow": {
         "hint": "When enabled, Matrix attacks prompt targets for defense and resistance rolls. Disabling turns off the Cybercombat flow.",
         "name": "Matrix: Cybercombat Workflow"
+      },
+      "decisionMode": {
+        "choices": {
+          "chat": "Chat Button",
+          "custom": "Custom (per category)",
+          "dialog": "Dialog"
+        },
+        "hint": "How reactive rolls (defense, soak, resist) are requested from the affected player. Dialog opens a prompt immediately; Chat Button posts a public card that opens the same dialog when the responsible player clicks it. Custom lets you decide per category below.",
+        "name": "Reactive Decision Mode"
+      },
+      "decisionModeCombat": {
+        "hint": "Decision mode for reactive combat rolls (defense, soak) when the global mode is set to Custom.",
+        "name": "Decision Mode: Combat"
+      },
+      "decisionModeMagic": {
+        "hint": "Decision mode for reactive magic rolls (spell resist, spirit resist) when the global mode is set to Custom.",
+        "name": "Decision Mode: Magic"
+      },
+      "decisionModeMatrix": {
+        "hint": "Decision mode for reactive matrix rolls (matrix defense, resist, dumpshock) when the global mode is set to Custom.",
+        "name": "Decision Mode: Matrix"
+      },
+      "defaultTokenVision": {
+        "hint": "Automatically enable vision on the prototype token when creating a new actor.",
+        "name": "Default Token Vision"
+      },
+      "defaultTokenVisionRange": {
+        "hint": "Default vision range (in grid units) for newly created actors. Set to 0 for unlimited range.",
+        "name": "Default Token Vision Range"
+      },
+      "flowEdgeTimeout": {
+        "hint": "How long (in seconds) the Edge buttons stay active on a roll card during a combat or magic flow before they are automatically removed and the flow continues with the original result.",
+        "name": "Flow Edge Timeout"
+      },
+      "flowOpposedRollTimeout": {
+        "hint": "How long (in seconds) a combat or magic flow waits for the defender's opposed roll (resist, summoning) before it is rolled automatically with default options.",
+        "name": "Flow Opposed Roll Timeout"
+      },
+      "flowSettingsMenu": {
+        "hint": "All combat, magic, and matrix flow settings in one place: automatic workflows, reactive decisions, and timeouts.",
+        "label": "Configure",
+        "name": "Combat & Reaction Flows",
+        "playerNotice": "World settings can only be changed by the gamemaster. You can still adjust your personal settings here.",
+        "reset": "Reset to defaults",
+        "save": "Save",
+        "sections": {
+          "client": "Personal (this client only)",
+          "reactive": "Reactive Decisions",
+          "timeouts": "Timeouts",
+          "workflows": "Automatic Workflows"
+        },
+        "title": "Combat & Reaction Flows"
       },
       "gmDefenderPicker": {
         "attackerLabel": "Attacker",
@@ -135,18 +179,6 @@
         "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain).",
         "name": "Spell Workflow"
       },
-      "defaultTokenVision": {
-        "hint": "Automatically enable vision on the prototype token when creating a new actor.",
-        "name": "Default Token Vision"
-      },
-      "defaultTokenVisionRange": {
-        "hint": "Default vision range (in grid units) for newly created actors. Set to 0 for unlimited range.",
-        "name": "Default Token Vision Range"
-      },
-      "useDefaultEffectSheet": {
-        "hint": "When enabled, active effects open with Foundry's built-in sheet instead of the SR4 custom sheet.",
-        "name": "Use Default Effect Sheet"
-      },
       "spiritCompendium": {
         "hint": "Compendium pack used to populate spirit type dropdowns on the Magic tab. Leave blank to use free-text input.",
         "name": "Spirit Compendium"
@@ -154,6 +186,10 @@
       "spriteCompendium": {
         "hint": "Compendium pack used to populate sprite type dropdowns on the Matrix tab. Leave blank to use free-text input.",
         "name": "Sprite Compendium"
+      },
+      "useDefaultEffectSheet": {
+        "hint": "When enabled, active effects open with Foundry's built-in sheet instead of the SR4 custom sheet.",
+        "name": "Use Default Effect Sheet"
       },
       "xmlImporter": {
         "hint": "Import items from external XML statblock files into world compendia.",

@@ -44,12 +44,13 @@ function makeVehicle({
 }
 
 /**
- * @param {{ skills?: Record<string, number>, commandRating?: number|null, initiative?: number }} [options]
+ * @param {{ skills?: Record<string, number>, commandRating?: number|null, initiative?: number, matrixSimMode?: string }} [options]
  */
 function makeRigger({
   skills = {},
   commandRating = null,
   initiative = 9,
+  matrixSimMode = 'cold',
 } = {}) {
   const items = Object.entries(skills).map(([name, rating]) => ({
     type: 'Skill',
@@ -66,6 +67,7 @@ function makeRigger({
   return {
     type: 'character',
     items,
+    system: { matrixSimMode },
     getSkill(name) {
       return (
         items.find(
@@ -103,28 +105,28 @@ const rigger = makeRigger({
 
 describe('resolveDronePool full table', () => {
   it.each([
-    [DroneActions.ATTACK, 'jumped', 8],
+    [DroneActions.ATTACK, 'jumped', 10],
     [DroneActions.ATTACK, 'autonomous', 5],
     [DroneActions.ATTACK, 'remote', 7],
-    [DroneActions.MELEE_DEFENSE, 'jumped', 6],
+    [DroneActions.MELEE_DEFENSE, 'jumped', 8],
     [DroneActions.MELEE_DEFENSE, 'autonomous', 4],
     [DroneActions.MELEE_DEFENSE, 'remote', 6],
-    [DroneActions.RANGED_DEFENSE, 'jumped', 3],
+    [DroneActions.RANGED_DEFENSE, 'jumped', 5],
     [DroneActions.RANGED_DEFENSE, 'autonomous', 3],
     [DroneActions.RANGED_DEFENSE, 'remote', 3],
-    [DroneActions.DAMAGE_RESISTANCE, 'jumped', 5],
+    [DroneActions.DAMAGE_RESISTANCE, 'jumped', 7],
     [DroneActions.DAMAGE_RESISTANCE, 'autonomous', 5],
     [DroneActions.DAMAGE_RESISTANCE, 'remote', 5],
-    [DroneActions.INFILTRATION, 'jumped', 6],
+    [DroneActions.INFILTRATION, 'jumped', 8],
     [DroneActions.INFILTRATION, 'autonomous', 3],
     [DroneActions.INFILTRATION, 'remote', 6],
-    [DroneActions.MANEUVERING, 'jumped', 8],
+    [DroneActions.MANEUVERING, 'jumped', 10],
     [DroneActions.MANEUVERING, 'autonomous', 6],
     [DroneActions.MANEUVERING, 'remote', 8],
-    [DroneActions.PERCEPTION, 'jumped', 6],
+    [DroneActions.PERCEPTION, 'jumped', 8],
     [DroneActions.PERCEPTION, 'autonomous', 6],
     [DroneActions.PERCEPTION, 'remote', 6],
-    [DroneActions.INITIATIVE, 'jumped', 9],
+    [DroneActions.INITIATIVE, 'jumped', 11],
     [DroneActions.INITIATIVE, 'autonomous', 5],
     [DroneActions.INITIATIVE, 'remote', 9],
   ])('%s in %s mode yields pool %i', (action, mode, expected) => {
@@ -134,7 +136,7 @@ describe('resolveDronePool full table', () => {
   });
 
   it.each([
-    ['jumped', 6],
+    ['jumped', 8],
     ['autonomous', 5],
     ['remote', 6],
   ])('ranged full defense in %s mode yields pool %i', (mode, expected) => {
@@ -156,7 +158,7 @@ describe('resolveDronePool full table', () => {
       DroneActions.FULL_DEFENSE,
       { melee: true }
     );
-    expect(pool).toBe(9);
+    expect(pool).toBe(11);
   });
 
   it('reports pool parts with labels and values', () => {
@@ -164,7 +166,74 @@ describe('resolveDronePool full table', () => {
     expect(parts).toEqual([
       { label: 'sr4.vehicle.sensor', value: 4 },
       { label: 'sr4.skills.gunnery', value: 4 },
+      { label: 'sr4.matrix.controlRigBonus', value: 2 },
     ]);
+  });
+});
+
+describe('resolveDronePool jumped-in Control Rig / Hot Sim bonuses', () => {
+  it('adds a flat +2 Control Rig bonus whenever jumped in', () => {
+    const { pool: jumped } = resolveDronePool(
+      vehicle,
+      rigger,
+      'jumped',
+      'attack'
+    );
+    const { pool: remote } = resolveDronePool(
+      vehicle,
+      rigger,
+      'remote',
+      'attack'
+    );
+    expect(jumped).toBe(remote + 3);
+  });
+
+  it('stacks an additional +2 Hot Sim bonus on top of Control Rig', () => {
+    const hotRigger = makeRigger({
+      skills: { gunnery: 4 },
+      commandRating: 3,
+      matrixSimMode: 'hot',
+    });
+    const { pool, parts } = resolveDronePool(
+      vehicle,
+      hotRigger,
+      'jumped',
+      'attack'
+    );
+    expect(parts).toContainEqual({
+      label: 'sr4.matrix.hotSimBonus',
+      value: 2,
+    });
+    expect(pool).toBe(12);
+  });
+
+  it('does not apply either bonus without a linked rigger, even when jumped in', () => {
+    const { pool, parts } = resolveDronePool(vehicle, null, 'jumped', 'attack');
+    expect(parts.some((p) => p.label === 'sr4.matrix.controlRigBonus')).toBe(
+      false
+    );
+    expect(pool).toBe(4);
+  });
+
+  it('does not apply the Control Rig bonus in remote or autonomous mode', () => {
+    const { parts: remoteParts } = resolveDronePool(
+      vehicle,
+      rigger,
+      'remote',
+      'attack'
+    );
+    const { parts: autoParts } = resolveDronePool(
+      vehicle,
+      rigger,
+      'autonomous',
+      'attack'
+    );
+    expect(
+      remoteParts.some((p) => p.label === 'sr4.matrix.controlRigBonus')
+    ).toBe(false);
+    expect(
+      autoParts.some((p) => p.label === 'sr4.matrix.controlRigBonus')
+    ).toBe(false);
   });
 });
 
@@ -184,7 +253,7 @@ describe('resolveDronePool fallbacks', () => {
   it('defaults a missing rigger skill at -1', () => {
     const unskilled = makeRigger({ commandRating: 3 });
     const { pool } = resolveDronePool(vehicle, unskilled, 'jumped', 'attack');
-    expect(pool).toBe(3);
+    expect(pool).toBe(5);
   });
 
   it('treats a missing Command program as 0 with a warning', () => {
@@ -225,7 +294,7 @@ describe('resolveDronePool fallbacks', () => {
   it('never returns a negative pool', () => {
     const weak = makeVehicle({ sensor: 0 });
     const unskilled = makeRigger({ commandRating: 0 });
-    const { pool } = resolveDronePool(weak, unskilled, 'jumped', 'attack');
+    const { pool } = resolveDronePool(weak, unskilled, 'remote', 'attack');
     expect(pool).toBe(0);
   });
 });
@@ -386,7 +455,7 @@ describe('resolveDronePool with custom lookup', () => {
         lookup: { ...DEFAULT_RIGGER_LOOKUP, attackSkill: 'heavyweapons' },
       }
     );
-    expect(pool).toBe(9);
+    expect(pool).toBe(11);
     expect(parts[1]).toEqual({ label: 'sr4.skills.heavyweapons', value: 5 });
   });
 

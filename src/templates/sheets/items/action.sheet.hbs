@@ -6,6 +6,7 @@
       <thead>
         <tr>
           <th>{{localize 'sr4.item.actionType'}}</th>
+          <th>{{localize 'sr4.action.category'}}</th>
           <th>{{localize 'sr4.item.actionPart1'}}</th>
           <th>{{localize 'sr4.item.rating1'}}</th>
           <th>{{localize 'sr4.item.actionPart2'}}</th>
@@ -17,6 +18,11 @@
           <td>
             <select name="system.actionType">
               {{selectOptions actiontypes selected=system.actionType localize=true}}
+            </select>
+          </td>
+          <td>
+            <select name="system.category">
+              {{selectOptions actioncategories selected=system.category localize=true}}
             </select>
           </td>
           <td>

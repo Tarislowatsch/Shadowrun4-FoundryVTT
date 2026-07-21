@@ -1,17 +1,17 @@
 {
   "sr4": {
     "characterImporter": {
+      "ammoLinkError": "Munition für „{name}“ konnte nicht verknüpft werden. Munition kann manuell zugewiesen werden.",
       "button": "Charakter importieren",
       "createError": "Actor konnte nicht erstellt werden: {error}",
       "hint": "Lade eine einzelne Chummer-Charakter-XML hoch, um einen neuen Charakter-Actor zu erstellen.",
       "import": "Charakter importieren",
       "itemCount": "Gegenstände",
       "linkedActorError": "Geister/Sprites/Fahrzeuge für „{name}“ konnten nicht importiert werden: {error}",
+      "modLinkError": "Waffenmodifikationen für „{name}“ konnten nicht verknüpft werden. Mods können manuell zugewiesen werden.",
       "parseError": "„{file}“ konnte nicht gelesen werden: {error}",
       "preview": "Vorschau",
       "skillCount": "Fertigkeiten",
-      "ammoLinkError": "Munition für „{name}“ konnte nicht verknüpft werden. Munition kann manuell zugewiesen werden.",
-      "modLinkError": "Waffenmodifikationen für „{name}“ konnten nicht verknüpft werden. Mods können manuell zugewiesen werden.",
       "success": "Charakter „{name}“ importiert.",
       "title": "Charakter-Importer",
       "updateButton": "Aus Chummer-XML aktualisieren",
@@ -60,14 +60,6 @@
         "hint": "Erstellt automatisch einen Aufrechterhaltungs-Effekt wenn ein aufrechtzuerhaltender Zauber gewirkt wird.",
         "name": "Automatische Aufrechterhaltung"
       },
-      "flowEdgeTimeout": {
-        "hint": "Wie lange (in Sekunden) die Edge-Buttons auf einer Wurfkarte während eines Kampf- oder Magie-Flows aktiv bleiben, bevor sie automatisch entfernt werden und der Flow mit dem ursprünglichen Ergebnis weiterläuft.",
-        "name": "Flow-Edge-Timeout"
-      },
-      "flowOpposedRollTimeout": {
-        "hint": "Wie lange (in Sekunden) ein Kampf- oder Magie-Flow auf den gegnerischen Wurf (Widerstand, Beschwörung) wartet, bevor dieser automatisch mit Standardoptionen gewürfelt wird.",
-        "name": "Flow-Gegenwurf-Timeout"
-      },
       "combatDefenseWorkflow": {
         "hint": "Wenn aktiv, werden gezielte Tokens nach einem Angriff automatisch zum Ausweichen aufgefordert. Deaktivieren schaltet auch den Schadenswiderstand-Workflow aus.",
         "name": "Kampf: Ausweichen-Workflow"
@@ -79,6 +71,58 @@
       "cybercombatWorkflow": {
         "hint": "Wenn aktiv, fordern Matrix-Angriffe Ziele zu Verteidigungs- und Widerstandswürfen auf. Deaktivieren schaltet den Cyberkampf-Ablauf aus.",
         "name": "Matrix: Cyberkampf-Workflow"
+      },
+      "decisionMode": {
+        "choices": {
+          "chat": "Chat-Button",
+          "custom": "Benutzerdefiniert (je Kategorie)",
+          "dialog": "Dialog"
+        },
+        "hint": "Wie reaktive Würfe (Ausweichen, Schadenswiderstand, Widerstand) beim betroffenen Spieler abgeholt werden. Dialog öffnet sofort ein Fenster; Chat-Button postet eine öffentliche Karte, die beim Klick des zuständigen Spielers denselben Dialog öffnet. Benutzerdefiniert erlaubt die Wahl je Kategorie unten.",
+        "name": "Modus für reaktive Entscheidungen"
+      },
+      "decisionModeCombat": {
+        "hint": "Entscheidungsmodus für reaktive Kampfwürfe (Ausweichen, Schadenswiderstand), wenn der globale Modus auf Benutzerdefiniert steht.",
+        "name": "Entscheidungsmodus: Kampf"
+      },
+      "decisionModeMagic": {
+        "hint": "Entscheidungsmodus für reaktive Magiewürfe (Zauberwiderstand, Geisterwiderstand), wenn der globale Modus auf Benutzerdefiniert steht.",
+        "name": "Entscheidungsmodus: Magie"
+      },
+      "decisionModeMatrix": {
+        "hint": "Entscheidungsmodus für reaktive Matrixwürfe (Matrixausweichen, -widerstand, Dumpshock), wenn der globale Modus auf Benutzerdefiniert steht.",
+        "name": "Entscheidungsmodus: Matrix"
+      },
+      "defaultTokenVision": {
+        "hint": "Aktiviert automatisch die Sicht auf dem Prototyp-Token wenn ein neuer Actor erstellt wird.",
+        "name": "Standard-Token-Sicht"
+      },
+      "defaultTokenVisionRange": {
+        "hint": "Standard-Sichtweite (in Rastereinheiten) für neu erstellte Actors. 0 für unbegrenzte Sicht.",
+        "name": "Standard-Token-Sichtweite"
+      },
+      "flowEdgeTimeout": {
+        "hint": "Wie lange (in Sekunden) die Edge-Buttons auf einer Wurfkarte während eines Kampf- oder Magie-Flows aktiv bleiben, bevor sie automatisch entfernt werden und der Flow mit dem ursprünglichen Ergebnis weiterläuft.",
+        "name": "Flow-Edge-Timeout"
+      },
+      "flowOpposedRollTimeout": {
+        "hint": "Wie lange (in Sekunden) ein Kampf- oder Magie-Flow auf den gegnerischen Wurf (Widerstand, Beschwörung) wartet, bevor dieser automatisch mit Standardoptionen gewürfelt wird.",
+        "name": "Flow-Gegenwurf-Timeout"
+      },
+      "flowSettingsMenu": {
+        "hint": "Alle Einstellungen zu Kampf-, Magie- und Matrix-Flows an einem Ort: automatische Abläufe, reaktive Entscheidungen und Timeouts.",
+        "label": "Konfigurieren",
+        "name": "Kampf- & Reaktions-Flows",
+        "playerNotice": "Weltweite Einstellungen kann nur der Spielleiter ändern. Deine persönlichen Einstellungen kannst du hier trotzdem anpassen.",
+        "reset": "Auf Standard zurücksetzen",
+        "save": "Speichern",
+        "sections": {
+          "client": "Persönlich (nur dieser Client)",
+          "reactive": "Reaktive Entscheidungen",
+          "timeouts": "Timeouts",
+          "workflows": "Automatische Abläufe"
+        },
+        "title": "Kampf- & Reaktions-Flows"
       },
       "gmDefenderPicker": {
         "attackerLabel": "Angreifer",
@@ -135,18 +179,6 @@
         "hint": "Aktiviert den mehrstufigen Zauber-Workflow (Kraftwahl, Wurf, Entzug).",
         "name": "Zauber-Workflow"
       },
-      "defaultTokenVision": {
-        "hint": "Aktiviert automatisch die Sicht auf dem Prototyp-Token wenn ein neuer Actor erstellt wird.",
-        "name": "Standard-Token-Sicht"
-      },
-      "defaultTokenVisionRange": {
-        "hint": "Standard-Sichtweite (in Rastereinheiten) für neu erstellte Actors. 0 für unbegrenzte Sicht.",
-        "name": "Standard-Token-Sichtweite"
-      },
-      "useDefaultEffectSheet": {
-        "hint": "Wenn aktiv, öffnen aktive Effekte mit Foundrys eingebautem Sheet statt dem SR4-eigenen.",
-        "name": "Standard-Effekt-Sheet verwenden"
-      },
       "spiritCompendium": {
         "hint": "Kompendium-Pack für die Geist-Typ-Dropdowns im Magie-Tab. Leer lassen für Freitext-Eingabe.",
         "name": "Geister-Kompendium"
@@ -154,6 +186,10 @@
       "spriteCompendium": {
         "hint": "Kompendium-Pack für die Sprite-Typ-Dropdowns im Matrix-Tab. Leer lassen für Freitext-Eingabe.",
         "name": "Sprite-Kompendium"
+      },
+      "useDefaultEffectSheet": {
+        "hint": "Wenn aktiv, öffnen aktive Effekte mit Foundrys eingebautem Sheet statt dem SR4-eigenen.",
+        "name": "Standard-Effekt-Sheet verwenden"
       },
       "xmlImporter": {
         "hint": "Importiert Items aus externen XML-Statblock-Dateien in Welt-Kompendien.",

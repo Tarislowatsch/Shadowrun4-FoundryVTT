@@ -1,6 +1,15 @@
-import { isRangedWeapon, SR4SkillGroupByName } from '@models/index';
+import {
+  isRangedWeapon,
+  SR4SkillGroupByName,
+  ActionCategory,
+} from '@models/index';
+import { SimMode } from '@models/shared';
 import { getGame } from '../game/game.js';
 import { DiceUtility } from '../rolls/diceutility.js';
+import { effectiveSimMode } from '@documents/derivedStats.mapper.js';
+import { isJumpedIn } from '@utils/rigging/rigger-state.js';
+
+const MATRIX_ACTION_CATEGORIES = Object.freeze(Object.values(ActionCategory));
 
 /** @typedef {import('@models/index').SR4RangedWeaponData} SR4RangedWeaponData */
 /** @typedef {import('@models/index').SR4MeleeWeaponData} SR4MeleeWeaponData */
@@ -30,6 +39,11 @@ export function standardTemplatePath() {
 /** @returns {string} */
 export function attackTemplatePath() {
   return 'systems/shadowrun4e/templates/dicerolls/attack-roll-dialog.hbs';
+}
+
+/** @returns {string} */
+export function matrixActionTemplatePath() {
+  return 'systems/shadowrun4e/templates/dicerolls/matrix-action-roll-dialog.hbs';
 }
 
 /** @returns {string} */
@@ -185,6 +199,8 @@ function getRollParameters(actor, dialog, smartlinkOverride) {
     smartlink: getChecked(dialog, 'smartlink') || smartlinkOverride,
     extended: getChecked(dialog, 'extended'),
     specialization: getChecked(dialog, 'specialization'),
+    hotSim: getChecked(dialog, 'hotSim'),
+    controlRig: getChecked(dialog, 'controlRig'),
   };
 }
 
@@ -197,6 +213,8 @@ export function determineBoni(rollParameters) {
   return (
     (rollParameters.specialization ? 2 : 0) +
     (rollParameters.smartlink ? 2 : 0) +
+    (rollParameters.hotSim ? 2 : 0) +
+    (rollParameters.controlRig ? 2 : 0) +
     edge
   );
 }
@@ -214,6 +232,33 @@ export function computeFinalPool(baseDice, rollParameters, recoilMalus = 0) {
     rollParameters.malus -
     recoilMalus +
     determineBoni(rollParameters)
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {number} baseDice
+ * @param {{ ignoreModifiers?: boolean }} [options]
+ * @returns {number}
+ */
+export function standardAutoRollPool(
+  actor,
+  baseDice,
+  { ignoreModifiers } = {}
+) {
+  const { malus } = createDialogParameters(actor, baseDice, undefined, {
+    ignoreModifiers,
+  });
+  return Math.max(
+    1,
+    computeFinalPool(baseDice, {
+      bonus: 0,
+      malus,
+      explode: false,
+      specialization: false,
+      smartlink: false,
+      maxEdge: 0,
+    })
   );
 }
 
@@ -470,6 +515,36 @@ export async function openActionDialog(actor, action, numDice) {
     `${localize('sr4.roll.rolling')} ${localize('sr4.action.' + action)}`,
     action
   );
+}
+
+/**
+ * Opens the roll dialog for a categorised Matrix/Rigging Action item, adding
+ * Hot Sim (+2) and Control Rig (+2) checkboxes on top of the standard dialog.
+ * @param {import('@documents/index').SR4Actor} actor
+ * @param {string} action
+ * @param {number} numDice
+ * @param {string} category - 'MATRIX' or 'RIGGING'
+ * @returns {Promise<void>}
+ */
+export async function openMatrixActionDialog(actor, action, numDice, category) {
+  const hotSimAvailable = MATRIX_ACTION_CATEGORIES.includes(category);
+  const controlRigAvailable = category === ActionCategory.RIGGING;
+  const params = createDialogParameters(actor, numDice);
+  const content = await renderTemplate(matrixActionTemplatePath(), {
+    ...params,
+    skillName: action,
+    hotSimAvailable,
+    hotSimChecked:
+      hotSimAvailable && effectiveSimMode(actor.system) === SimMode.HOT,
+    controlRigAvailable,
+    controlRigChecked: controlRigAvailable && isJumpedIn(actor),
+  });
+  await createRollDialog({
+    title: `${localize('sr4.roll.rolling')} ${localize(`sr4.action.${action}`)}`,
+    content,
+    dice: numDice,
+    onRoll: (dialog) => dialogActions(dialog, actor, action, numDice),
+  });
 }
 
 /**

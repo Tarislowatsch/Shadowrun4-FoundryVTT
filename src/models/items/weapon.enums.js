@@ -142,4 +142,12 @@ export const DamageTypes = Object.freeze({
   /** @type {string} */ BLAST: 'sr4.damage.blast',
   /** @type {string} */ LIGHT: 'sr4.damage.light',
   /** @type {string} */ STUN_HALF: 'sr4.damage.stun_half',
+  /** @type {string} */ ACID: 'sr4.damage.acid',
+  /** @type {string} */ RADIATION: 'sr4.damage.radiation',
+  /** @type {string} */ SOUND: 'sr4.damage.sound',
+  /** @type {string} */ ICE: 'sr4.damage.ice',
+  /** @type {string} */ METAL: 'sr4.damage.metal',
+  /** @type {string} */ SAND: 'sr4.damage.sand',
+  /** @type {string} */ SMOKE: 'sr4.damage.smoke',
+  /** @type {string} */ WATER: 'sr4.damage.water',
 });

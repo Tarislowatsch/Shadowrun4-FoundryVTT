@@ -14,6 +14,7 @@
         <th>{{localize 'sr4.spell.damagetype'}}</th>
         {{#if (eq system.combatType "INDIRECT")}}
         <th>{{localize 'sr4.spell.element'}}</th>
+        <th>{{localize 'sr4.spell.damageTypeOverride'}}</th>
         {{/if}}
         {{/if}}
         <th>{{localize 'sr4.spell.duration'}}</th>
@@ -47,15 +48,22 @@
         </td>
         {{#if (eq system.category "COMBAT")}}
         <td>
+          {{#if (or (ne system.combatType "INDIRECT") system.damageTypeOverride)}}
           <select name="system.damageType">
             {{selectOptions damagetypes selected=system.damageType localize=true}}
           </select>
+          {{else}}
+          <span class="spell-damagetype-output">{{localize (concat "sr4.damage." (spellDamageType system))}}</span>
+          {{/if}}
         </td>
         {{#if (eq system.combatType "INDIRECT")}}
         <td>
           <select name="system.element">
             {{selectOptions spellelements selected=system.element localize=true}}
           </select>
+        </td>
+        <td>
+          <input type="checkbox" class="sr4-checkbox" data-field="system.damageTypeOverride" {{#if system.damageTypeOverride}}checked{{/if}} />
         </td>
         {{/if}}
         {{/if}}

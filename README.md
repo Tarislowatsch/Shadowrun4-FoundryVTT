@@ -37,6 +37,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Spell casting & drain rolls
 * Free rolls and action rolls
 * Combat defense rolls with automatic soak
+* Reactive rolls (defense, soak, resist, dumpshock) resolvable via dialog or a public chat button, with timeout auto-resolution
 * Edge offered after a roll resolves; Edge on initiative
 
 ## Magic
@@ -72,17 +73,24 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Attack and defense modifiers via effects
 * Optional Foundry default effect sheet (GM setting)
 
-## Settings
+### Combat & Reaction Flows (menu)
 
-* Configurable NPC default skill list (GM menu)
-* Combat defense workflow toggle, with automatic soak sub-toggle
+All combat, magic, and matrix flow settings live in a dedicated **"Combat & Reaction Flows"** menu that groups them into automatic workflows, reactive decisions, timeouts, and personal (client) settings. World settings stay GM-only; players can still adjust their personal ones from the same menu.
+
+* Combat defense workflow toggle, with automatic soak sub-toggle (soak disables when defense is off)
 * Cybercombat workflow toggle
 * GM defender picker for untargeted attacks
 * Damage application workflow toggle
-* Edge decision timeout for interactive flows
+* **Reactive decision mode**: how reactive rolls (defense, soak, resist, dumpshock) are requested from the affected player — a **dialog** that opens immediately, or a public **chat button** that opens the same dialog when the responsible player clicks it. No click within the timeout auto-resolves with the dialog's standard pool.
+* **Custom mode**: pick the decision mode per category (Combat / Magic / Matrix) — these options appear only when the global mode is set to Custom.
+* Edge decision timeout and opposed-roll timeout for interactive flows
+* Spell workflow & automatic Sustain effect (client settings)
+
+### Other settings
+
+* Configurable NPC default skill list (GM menu)
 * Ammunition tracking toggle
 * Live initiative reduction from wound penalties
-* Spell workflow & automatic Sustain effect (client settings)
 * Optional Foundry default effect sheet for GMs
 * XML Importer (GM tool for bulk item import, *unstable*)
 * Source Books (GM menu): bind rulebook codes to PDF Pager PDF pages for the item-card source link

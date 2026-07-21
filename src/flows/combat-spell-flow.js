@@ -4,6 +4,7 @@ import {
   getValidTargetActorsOrWarn,
 } from '@utils/index.js';
 import { openDirectSpellAllocationDialog } from '@utils/dialog/magic/combat-spell.js';
+import { isPhysicalDamageType } from '@models/items/weapons.model.js';
 import { getSpellEffectData } from './apply-effects-flow';
 
 export class CombatSpellFlow {
@@ -98,7 +99,7 @@ export class CombatSpellFlow {
       target.name ?? ''
     );
 
-    const isPhysical = spell.system?.damageType !== 'STUN';
+    const isPhysical = isPhysicalDamageType(spell.system?.damageType);
     const effects = getSpellEffectData(spell);
     getGame().socket?.emit('system.shadowrun4e', {
       action: 'applyDirectSpellDamage',

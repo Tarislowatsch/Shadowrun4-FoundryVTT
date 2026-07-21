@@ -6,15 +6,25 @@ import {
 import { XmlImporterApp } from '../sheets/importer/importer-app.js';
 import { RiggerLookupMenu } from '../sheets/settings/rigger-lookup-menu.js';
 import { SourceBooksMenu } from '../sheets/settings/source-books-menu.js';
+import { FlowSettingsMenu } from '../sheets/settings/flow-settings-menu.js';
 
 export class SettingsHook {
   constructor() {
     Hooks.once('init', () => {
+      game.settings.registerMenu('shadowrun4e', 'flowSettingsMenu', {
+        name: 'sr4.settings.flowSettingsMenu.name',
+        label: 'sr4.settings.flowSettingsMenu.label',
+        hint: 'sr4.settings.flowSettingsMenu.hint',
+        icon: 'fas fa-diagram-project',
+        type: FlowSettingsMenu,
+        restricted: false,
+      });
+
       game.settings.register('shadowrun4e', 'combatDefenseWorkflow', {
         name: 'sr4.settings.combatDefenseWorkflow.name',
         hint: 'sr4.settings.combatDefenseWorkflow.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Boolean,
         default: true,
         onChange: (value) => {
@@ -27,7 +37,7 @@ export class SettingsHook {
         name: 'sr4.settings.combatSoakWorkflow.name',
         hint: 'sr4.settings.combatSoakWorkflow.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Boolean,
         default: true,
       });
@@ -36,7 +46,7 @@ export class SettingsHook {
         name: 'sr4.settings.cybercombatWorkflow.name',
         hint: 'sr4.settings.cybercombatWorkflow.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Boolean,
         default: true,
       });
@@ -45,7 +55,7 @@ export class SettingsHook {
         name: 'sr4.settings.gmDefenderPicker.name',
         hint: 'sr4.settings.gmDefenderPicker.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Boolean,
         default: false,
       });
@@ -54,7 +64,7 @@ export class SettingsHook {
         name: 'sr4.settings.applyDamageWorkflow.name',
         hint: 'sr4.settings.applyDamageWorkflow.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Boolean,
         default: true,
       });
@@ -63,7 +73,7 @@ export class SettingsHook {
         name: 'sr4.settings.flowEdgeTimeout.name',
         hint: 'sr4.settings.flowEdgeTimeout.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Number,
         default: 20,
         range: { min: 5, max: 120, step: 5 },
@@ -73,11 +83,40 @@ export class SettingsHook {
         name: 'sr4.settings.flowOpposedRollTimeout.name',
         hint: 'sr4.settings.flowOpposedRollTimeout.hint',
         scope: 'world',
-        config: true,
+        config: false,
         type: Number,
         default: 30,
         range: { min: 10, max: 120, step: 10 },
       });
+
+      game.settings.register('shadowrun4e', 'decisionMode', {
+        name: 'sr4.settings.decisionMode.name',
+        hint: 'sr4.settings.decisionMode.hint',
+        scope: 'world',
+        config: false,
+        type: String,
+        choices: {
+          dialog: 'sr4.settings.decisionMode.choices.dialog',
+          chat: 'sr4.settings.decisionMode.choices.chat',
+          custom: 'sr4.settings.decisionMode.choices.custom',
+        },
+        default: 'dialog',
+      });
+
+      for (const category of ['Combat', 'Magic', 'Matrix']) {
+        game.settings.register('shadowrun4e', `decisionMode${category}`, {
+          name: `sr4.settings.decisionMode${category}.name`,
+          hint: `sr4.settings.decisionMode${category}.hint`,
+          scope: 'world',
+          config: false,
+          type: String,
+          choices: {
+            dialog: 'sr4.settings.decisionMode.choices.dialog',
+            chat: 'sr4.settings.decisionMode.choices.chat',
+          },
+          default: 'dialog',
+        });
+      }
 
       game.settings.register('shadowrun4e', 'ammoTracking', {
         name: 'sr4.settings.ammoTracking.name',
@@ -101,7 +140,7 @@ export class SettingsHook {
         name: 'sr4.settings.spellWorkflow.name',
         hint: 'sr4.settings.spellWorkflow.hint',
         scope: 'client',
-        config: true,
+        config: false,
         type: Boolean,
         default: true,
       });
@@ -110,7 +149,7 @@ export class SettingsHook {
         name: 'sr4.settings.autoSustainEffect.name',
         hint: 'sr4.settings.autoSustainEffect.hint',
         scope: 'client',
-        config: true,
+        config: false,
         type: Boolean,
         default: true,
       });

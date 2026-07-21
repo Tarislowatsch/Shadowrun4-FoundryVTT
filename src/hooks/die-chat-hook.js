@@ -23,6 +23,10 @@ import {
   resolveMatrixDamageDecision,
 } from '@flows/matrix-damage-flow.js';
 import { isResponsibleForActor, isPrimaryGM } from '@utils/actor-ownership.js';
+import {
+  getPendingDialogEntry,
+  resolvePendingDialog,
+} from '@utils/rolls/decision-provider.js';
 import { BaseSocketHook } from './base-socket-hook.js';
 
 const EDGE_BUTTON_LIFETIME_MS = 1000 * 60 * 30;
@@ -50,6 +54,7 @@ export class DieChatHook extends BaseSocketHook {
       DieChatHook.renderDamageDecisionCard(chatMessage, html);
       DieChatHook.renderMatrixDamageDecisionCard(chatMessage, html);
       DieChatHook.renderEffectDecisionCard(chatMessage, html);
+      DieChatHook.renderPendingDialogCard(chatMessage, html);
     });
   }
 
@@ -395,6 +400,35 @@ export class DieChatHook extends BaseSocketHook {
         cleanup();
         await resolveEffectDecision(chatMessage.id);
         await applySpellEffects(entry.effectData, entry.target);
+      },
+    });
+
+    container.appendChild(btnWrap);
+  }
+
+  /**
+   * @param {ChatMessage} chatMessage
+   * @param {HTMLElement} html
+   */
+  static renderPendingDialogCard(chatMessage, html) {
+    const decision = chatMessage.flags?.sr4?.pendingDialog;
+    if (!decision) return;
+    if (decision.resolved) return;
+    if (!isResponsibleForActor(decision.actorId)) return;
+
+    const entry = getPendingDialogEntry(chatMessage.id);
+    if (!entry) return;
+
+    const container = html.querySelector('.pending-dialog-card') ?? html;
+    const btnWrap = document.createElement('div');
+    btnWrap.className = 'pending-dialog-buttons';
+
+    appendButton(btnWrap, {
+      className: 'open-dialog',
+      label: entry.i18nLabel,
+      onClick: async () => {
+        btnWrap.remove();
+        await resolvePendingDialog(chatMessage.id);
       },
     });
 

@@ -1,0 +1,9 @@
+{{#if hotSimAvailable}}
+<div class="form-group">
+  <label for="hotSim">
+    {{localize "sr4.matrix.hotSimBonus"}}
+    {{> tooltip text=(localize "sr4.tooltip.hotSim")}}
+  </label>
+  <input type="checkbox" class="sr4-checkbox" id="hotSim" name="hotSim" {{#if hotSimChecked}}checked{{/if}} />
+</div>
+{{/if}}

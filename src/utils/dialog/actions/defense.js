@@ -88,6 +88,41 @@ function buildSkillOptions(defender, skillKeys) {
 
 /**
  * @param {import('@documents/index').SR4Actor} defender
+ * @param {import('@models/index').SR4Weapon} weapon
+ * @param {number} [wideDefenseMalus]
+ * @returns {number}
+ */
+export function defaultDefensePool(defender, weapon, wideDefenseMalus = 0) {
+  const isMelee = isMeleeWeapon(weapon);
+  const reaction = defender.getAttribute('REACTION') ?? 0;
+  const params = createDialogParameters(defender);
+  const mods = defender.system.modifiers;
+  const defenseMod = baseDefenseModifier(mods, isMelee);
+  const { options: skillOptions } = buildSkillOptions(
+    defender,
+    isMelee ? MELEE_DEFENSE_KEYS : RANGED_DEFENSE_KEYS
+  );
+  const bestSkill = isMelee
+    ? skillOptions.reduce(
+        (best, o) => (o.rating > (best?.rating ?? -1) ? o : best),
+        null
+      )
+    : null;
+  const skillRating = bestSkill?.rating ?? 0;
+  const skillMod = bestSkill ? skillDefenseModifier(mods, bestSkill.value) : 0;
+  return Math.max(
+    0,
+    reaction +
+      skillRating +
+      defenseMod +
+      skillMod -
+      wideDefenseMalus -
+      params.malus
+  );
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} defender
  * @param {import('@documents/index').SR4Actor} attacker
  * @param {number} attackSuccesses
  * @param {import('@models/index').SR4Weapon} weapon

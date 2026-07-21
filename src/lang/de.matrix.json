@@ -21,9 +21,12 @@
       "toggleActive": "Als aktives Commlink setzen (für Matrix-Initiative genutzt)"
     },
     "matrix": {
+      "actions": "Matrix-Aktionen",
       "attribute": "Attribut",
       "biofeedbackFilter": "Biofeedback-Filter",
       "bonus": "Bonus",
+      "controlRigBonus": "Control Rig (+2)",
+      "hotSimBonus": "Hot Sim (+2)",
       "cybercombat": {
         "label": "Cyberkampf",
         "attack": "Matrix-Angriff",

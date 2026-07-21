@@ -1,0 +1,9 @@
+{{#if controlRigAvailable}}
+<div class="form-group">
+  <label for="controlRig">
+    {{localize "sr4.matrix.controlRigBonus"}}
+    {{> tooltip text=(localize "sr4.tooltip.controlRig")}}
+  </label>
+  <input type="checkbox" class="sr4-checkbox" id="controlRig" name="controlRig" {{#if controlRigChecked}}checked{{/if}} />
+</div>
+{{/if}}

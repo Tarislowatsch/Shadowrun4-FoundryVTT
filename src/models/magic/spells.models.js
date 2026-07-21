@@ -167,6 +167,7 @@ const fields = foundry.data.fields;
  * @property {string} duration
  * @property {number} dv
  * @property {string} damageType
+ * @property {boolean} damageTypeOverride
  * @property {boolean} opposed
  */
 
@@ -208,6 +209,7 @@ export class SR4SpellData extends foundry.abstract.TypeDataModel {
       duration: new fields.StringField({ initial: 'PERMANENT' }),
       dv: new fields.NumberField({ initial: 2, integer: true }),
       damageType: new fields.StringField({ initial: 'PHYSICAL' }),
+      damageTypeOverride: new fields.BooleanField({ initial: false }),
       opposed: new fields.BooleanField({ initial: false }),
       limited: new fields.BooleanField({ initial: false }),
     };

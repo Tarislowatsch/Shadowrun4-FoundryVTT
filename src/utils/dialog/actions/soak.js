@@ -10,6 +10,26 @@ import {
 
 /**
  * @param {import('@documents/index').SR4Actor} defender
+ * @param {number} effectiveArmor
+ * @param {number} [elementResistance]
+ * @returns {number}
+ */
+export function defaultSoakPool(
+  defender,
+  effectiveArmor,
+  elementResistance = 0
+) {
+  const sys = /** @type {any} */ (defender).system;
+  const body =
+    defender.type === 'vehicle'
+      ? (sys?.effectiveBody ?? sys?.body ?? 0)
+      : (defender.getAttribute('BODY') ?? 0);
+  const soakBonus = sys?.modifiers?.soakBonus ?? 0;
+  return Math.max(0, body + effectiveArmor + soakBonus + elementResistance);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} defender
  * @param {number} incomingDamage
  * @param {boolean} isPhysical
  * @param {number} effectiveArmor
@@ -30,7 +50,7 @@ export async function openSoakDialog(
       : (defender.getAttribute('BODY') ?? 0);
   const soakBonus =
     /** @type {any} */ (defender).system?.modifiers?.soakBonus ?? 0;
-  const soakPool = body + effectiveArmor + soakBonus + elementResistance;
+  const soakPool = defaultSoakPool(defender, effectiveArmor, elementResistance);
   // Wound modifiers do not apply to Damage Resistance tests (SR4 p.163)
   const params = createDialogParameters(defender, soakPool, undefined, {
     ignoreModifiers: true,

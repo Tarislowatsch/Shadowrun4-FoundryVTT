@@ -9,6 +9,11 @@ export async function registerUIPartials() {
     { path: `${basePath}/bonus-input.hbs`, name: 'bonus-input' },
     { path: `${basePath}/malus-input.hbs`, name: 'malus-input' },
     { path: `${basePath}/smartlink-checkbox.hbs`, name: 'smartlink-checkbox' },
+    { path: `${basePath}/hot-sim-checkbox.hbs`, name: 'hot-sim-checkbox' },
+    {
+      path: `${basePath}/control-rig-checkbox.hbs`,
+      name: 'control-rig-checkbox',
+    },
     { path: `${basePath}/tooltip.hbs`, name: 'tooltip' },
     { path: `${basePath}/fire-mode-selector.hbs`, name: 'fire-mode-selector' },
     { path: `${basePath}/skill-select.hbs`, name: 'skill-select' },
@@ -50,6 +55,8 @@ export async function registerUIPartials() {
       name: 'item-source-header',
     },
     { path: `${basePath}/item-source-cell.hbs`, name: 'item-source-cell' },
+    { path: `${basePath}/action-button.hbs`, name: 'action-button' },
+    { path: `${basePath}/action-button-bar.hbs`, name: 'action-button-bar' },
   ];
   await Promise.all(
     templatePaths.map(async ({ path, name }) => {

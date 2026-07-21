@@ -29,6 +29,8 @@
  * @property {number} malus
  * @property {boolean} specialization
  * @property {boolean} [smartlink]
+ * @property {boolean} [hotSim]
+ * @property {boolean} [controlRig]
  * @property {number} maxEdge
  * @property {boolean} explode
  * @property {boolean} edgeAvailable

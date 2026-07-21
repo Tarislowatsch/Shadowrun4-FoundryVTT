@@ -5,7 +5,13 @@ export const AP_HALF_TYPES = new Set([
   'STUN_HALF',
   'BLAST',
   'LIGHT',
+  'ACID',
+  'ICE',
+  'SAND',
+  'WATER',
 ]);
+
+export const IMPACT_ARMOR_TYPES = new Set([...AP_HALF_TYPES, 'METAL']);
 
 const EXTERNAL_MOUNTS = new Set(['top', 'barrel', 'under']);
 
@@ -79,7 +85,7 @@ export function computeRangedWeaponDerived(system, ammo, mods) {
   const effectiveDamageType =
     ammo?.system?.damageTypeOverride || system.damageType || '';
   const effectiveApHalf = AP_HALF_TYPES.has(effectiveDamageType);
-  const effectiveArmorType = effectiveApHalf
+  const effectiveArmorType = IMPACT_ARMOR_TYPES.has(effectiveDamageType)
     ? 'impact'
     : (system.armorType ?? 'ballistic');
 
@@ -126,7 +132,7 @@ export function computeMeleeWeaponDerived(
   const effectiveAP = (system.ap ?? 0) + sumModField(mods, 'apBonus');
   const effectiveDamageType = system.damageType || '';
   const effectiveApHalf = AP_HALF_TYPES.has(effectiveDamageType);
-  const effectiveArmorType = effectiveApHalf
+  const effectiveArmorType = IMPACT_ARMOR_TYPES.has(effectiveDamageType)
     ? 'impact'
     : (system.armorType ?? 'impact');
 

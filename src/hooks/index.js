@@ -9,6 +9,7 @@ import { ActorDirectoryHook } from './actor-directory-hook';
 import { CompendiumDirectoryHook } from './compendium-directory-hook';
 import { SummoningHook } from './summoning-hook';
 import { LinkedActorCleanupHook } from './linked-actor-cleanup-hook';
+import { SceneControlsHook } from './scene-controls-hook';
 
 export function registerHooks() {
   new SettingsHook();
@@ -22,4 +23,5 @@ export function registerHooks() {
   new ActorDirectoryHook();
   new CompendiumDirectoryHook();
   new LinkedActorCleanupHook();
+  new SceneControlsHook();
 }

@@ -16,7 +16,8 @@ const SPIRIT_RESIST_TEMPLATE =
  * @param {string} spiritType
  * @param {'spirit' | 'sprite'} entityType
  * @param {string} summonerId
- * @param {'summon' | 'bind'} [mode]
+ * @param {'summon' | 'bind' | 'dismiss'} [mode]
+ * @param {number} [ownerBonus]
  * @returns {Promise<void>}
  */
 export async function openSpiritResistDialog(
@@ -24,10 +25,10 @@ export async function openSpiritResistDialog(
   spiritType,
   entityType,
   summonerId,
-  mode = 'summon'
+  mode = 'summon',
+  ownerBonus = 0
 ) {
   const isSprite = entityType === 'sprite';
-  const isBind = mode === 'bind';
   const { titleKey, labelKey, resistedAction } = getResistConfig(
     mode,
     entityType
@@ -36,7 +37,9 @@ export async function openSpiritResistDialog(
     .localize(labelKey)
     .replace(isSprite ? '{rating}' : '{force}', String(force));
 
-  const dicePool = isBind ? force * 2 : force;
+  let dicePool = force;
+  if (mode === 'bind') dicePool = force * 2;
+  else if (mode === 'dismiss') dicePool = force + ownerBonus;
 
   const content = await renderTemplate(SPIRIT_RESIST_TEMPLATE, { resistLabel });
 

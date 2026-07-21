@@ -1,5 +1,8 @@
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
 import { getGame } from '@utils/game/game.js';
+import { awaitOpposedSocketResponse } from '@utils/game/opposed-socket-wait.js';
+import { DiceUtility } from '@utils/rolls/diceutility.js';
+import { standardAutoRollPool, localize } from '../dialogutility';
 
 const RESIST_CONFIG = {
   summon: {
@@ -30,15 +33,131 @@ const RESIST_CONFIG = {
       labelKey: 'sr4.magic.spriteBindResistLabel',
     },
   },
+  dismiss: {
+    spirit: {
+      triggerAction: 'triggerSpiritBanishResist',
+      resistedAction: 'spiritBanishResisted',
+      titleKey: 'sr4.magic.spiritBanishResist',
+      labelKey: 'sr4.magic.spiritBanishResistLabel',
+    },
+    sprite: {
+      triggerAction: 'triggerSpriteDecompileResist',
+      resistedAction: 'spriteDecompileResisted',
+      titleKey: 'sr4.magic.spriteDecompileResist',
+      labelKey: 'sr4.magic.spriteDecompileResistLabel',
+    },
+  },
 };
 
 /**
- * @param {'summon' | 'bind'} mode
+ * @param {'summon' | 'bind' | 'dismiss'} mode
  * @param {'spirit' | 'sprite'} entityType
  * @returns {{ triggerAction: string, resistedAction: string, titleKey: string, labelKey: string }}
  */
 export function getResistConfig(mode, entityType) {
   return RESIST_CONFIG[mode][entityType];
+}
+
+/**
+ * @param {{
+ *   mode: 'summon' | 'bind' | 'dismiss',
+ *   sourceActor: import('@documents/index').SR4Actor,
+ *   targetActor: import('@documents/index').SR4Actor,
+ *   forceOrRating: number,
+ *   entityType: 'spirit' | 'sprite',
+ *   ownerBonus?: number,
+ * }} opts
+ * @returns {Promise<number>}
+ */
+export async function awaitEntityResist({
+  mode,
+  sourceActor,
+  targetActor,
+  forceOrRating,
+  entityType,
+  ownerBonus = 0,
+}) {
+  const { triggerAction, resistedAction } = getResistConfig(mode, entityType);
+  return awaitOpposedSocketResponse({
+    triggerAction,
+    triggerPayload: {
+      summonerId: sourceActor.id,
+      force: forceOrRating,
+      spiritType: targetActor.name,
+      entityType,
+      ownerBonus,
+    },
+    matchAction: resistedAction,
+    matches: (payload) => payload?.summonerId === sourceActor.id,
+    onMatch: (payload) => payload.resistHits ?? 0,
+    fallback: 0,
+  });
+}
+
+/**
+ * @param {boolean} isMana
+ * @returns {'WILLPOWER' | 'BODY'}
+ */
+export function directSpellResistAttribute(isMana) {
+  return isMana ? 'WILLPOWER' : 'BODY';
+}
+
+/**
+ * @param {string} resistAttribute
+ * @returns {string}
+ */
+export function localizeResistAttribute(resistAttribute) {
+  return localize(`sr4.stats.${resistAttribute}`);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} defender
+ * @param {string} resistAttribute
+ * @returns {number}
+ */
+export function spellResistPool(defender, resistAttribute) {
+  const base = defender.getAttribute(resistAttribute) ?? 0;
+  const counterspelling =
+    defender.getSkill('counterspelling')?.system?.rating ?? 0;
+  return base + counterspelling;
+}
+
+/**
+ * @param {{
+ *   defender: import('@documents/index').SR4Actor,
+ *   resistAttribute: string,
+ *   label: string,
+ *   castingHits: number,
+ *   socketAction: string,
+ *   casterUuid: string,
+ * }} options
+ * @returns {Promise<void>}
+ */
+export async function autoResolveSpellResist({
+  defender,
+  resistAttribute,
+  label,
+  castingHits,
+  socketAction,
+  casterUuid,
+}) {
+  const resistPool = spellResistPool(defender, resistAttribute);
+  const numDice = standardAutoRollPool(defender, resistPool);
+  const { successes, isGlitch, messageId } = await DiceUtility.rollAndShow({
+    numDice,
+    explode: false,
+    edgeAvailable: false,
+    actor: defender,
+    skillName: label,
+  });
+  await resolveAndEmitSpellResist({
+    defender,
+    result: { successes, isGlitch, edgeUsed: false, messageId },
+    rolledDice: numDice,
+    castingHits,
+    socketAction,
+    casterUuid,
+  });
 }
 
 /**

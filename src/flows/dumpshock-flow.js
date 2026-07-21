@@ -1,8 +1,17 @@
 import { getGame } from '@utils/index';
+import {
+  requestReactiveDecision,
+  DecisionCategory,
+  DecisionKind,
+  DecisionRouting,
+} from '@utils/rolls/decision-provider.js';
 import { SR4 } from '../config.js';
 import { SR4ActiveEffect } from '@effects/index';
 import { getMatrixPersona } from '@utils/matrix/matrix-persona.js';
-import { openMatrixResistDialog } from '@utils/dialog/matrix/cybercombat.js';
+import {
+  openMatrixResistDialog,
+  defaultMatrixResistHits,
+} from '@utils/dialog/matrix/cybercombat.js';
 import { ApplyDamageFlow } from './apply-damage-flow.js';
 
 /**
@@ -34,10 +43,20 @@ export class DumpshockFlow {
     );
 
     const label = getGame().i18n.localize('sr4.matrix.dumpshock.resistTitle');
-    const resistHits = await openMatrixResistDialog(actor, {
-      dv,
-      label,
-      biofeedback: true,
+    const resistHits = await requestReactiveDecision({
+      actor,
+      category: DecisionCategory.MATRIX,
+      dialogKind: DecisionKind.DUMPSHOCK,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: true,
+      defaultResult: () =>
+        defaultMatrixResistHits(actor, { label, biofeedback: true }),
+      openDialog: () =>
+        openMatrixResistDialog(actor, {
+          dv,
+          label,
+          biofeedback: true,
+        }),
     });
 
     const unresisted = Math.max(dv - (resistHits ?? 0), 0);

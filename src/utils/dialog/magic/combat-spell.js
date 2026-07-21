@@ -7,15 +7,28 @@ import {
   localize,
   renderTemplate,
 } from '../dialogutility';
-import { openSoakDialog } from '../actions/soak';
+import { openSoakDialog, defaultSoakPool } from '../actions/soak';
 import { ApplyDamageFlow } from '@flows/apply-damage-flow';
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
-import { resolveAndEmitSpellResist } from './resist-actions.js';
+import {
+  requestReactiveDecision,
+  DecisionCategory,
+  DecisionKind,
+  DecisionRouting,
+} from '@utils/rolls/decision-provider.js';
+import {
+  resolveAndEmitSpellResist,
+  spellResistPool,
+  directSpellResistAttribute,
+  localizeResistAttribute,
+} from './resist-actions.js';
 import {
   computeElementArmorRules,
   getElementResistance,
   buildElementOnApply,
+  resolveIndirectSpellDamageType,
 } from '@models/index';
+import { isPhysicalDamageType } from '@models/items/weapons.model.js';
 import {
   getSpellEffectData,
   sendEffectDecisionMessage,
@@ -63,14 +76,12 @@ export async function openDirectSpellResistDialog(
   isMana,
   casterUuid
 ) {
-  const attr = isMana ? 'WILLPOWER' : 'BODY';
+  const attr = directSpellResistAttribute(isMana);
   const baseResist = defender.getAttribute(attr) ?? 0;
   const counterspelling =
     defender.getSkill('counterspelling')?.system?.rating ?? 0;
-  const resistPool = baseResist + counterspelling;
-  const resistAttrLabel = isMana
-    ? localize('sr4.stats.WILLPOWER')
-    : localize('sr4.stats.BODY');
+  const resistPool = spellResistPool(defender, attr);
+  const resistAttrLabel = localizeResistAttribute(attr);
   const params = createDialogParameters(defender, resistPool);
 
   const content = await renderTemplate(DIRECT_RESIST_TEMPLATE, {
@@ -87,7 +98,8 @@ export async function openDirectSpellResistDialog(
     title: `${localize('sr4.spell.combatTypes.direct')} — ${spellName}`,
     content,
     dice: resistPool,
-    onRoll: (dialog) => dialogActions(dialog, defender, attr, resistPool),
+    onRoll: (dialog) =>
+      dialogActions(dialog, defender, resistAttrLabel, resistPool),
     autoRoll: true,
   });
 
@@ -279,7 +291,7 @@ export async function openIndirectSpellDefenseDialog(
 
   const baseDamage = force + Math.min(force, netHits) + elementRules.dvBonus;
 
-  let isPhysical = spell.system?.damageType !== 'STUN';
+  let isPhysical = isPhysicalDamageType(resolveIndirectSpellDamageType(spell));
   if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
 
   const elementResistance = getElementResistance(defender, element);
@@ -297,17 +309,20 @@ export async function openIndirectSpellDefenseDialog(
     return;
   }
 
-  const soakResult = await openSoakDialog(
-    defender,
-    baseDamage,
-    isPhysical,
-    effectiveArmor,
-    {
-      rawArmor,
-      apHalf: elementRules.apHalf,
-      elementResistance,
-    }
-  );
+  const soakResult = await requestReactiveDecision({
+    actor: defender,
+    category: DecisionCategory.COMBAT,
+    dialogKind: DecisionKind.SOAK,
+    routing: DecisionRouting.OWNER,
+    chatModeSupported: true,
+    standardPool: defaultSoakPool(defender, effectiveArmor, elementResistance),
+    openDialog: () =>
+      openSoakDialog(defender, baseDamage, isPhysical, effectiveArmor, {
+        rawArmor,
+        apHalf: elementRules.apHalf,
+        elementResistance,
+      }),
+  });
   if (!soakResult) return;
 
   const soakHits = await resolveEdgeForRoll(

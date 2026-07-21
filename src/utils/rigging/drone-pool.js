@@ -1,11 +1,9 @@
 import { MELEE_DEFENSE_KEYS } from '../dialog/actions/defense';
+import { ControlModes } from './control-modes.js';
+import { effectiveSimMode } from '@documents/derivedStats.mapper.js';
+import { SimMode } from '@models/shared';
 
-/** @enum {string} */
-export const ControlModes = {
-  AUTONOMOUS: 'autonomous',
-  REMOTE: 'remote',
-  JUMPED: 'jumped',
-};
+export { ControlModes };
 
 /** @type {Record<string, string>} */
 export const DEFAULT_RIGGER_LOOKUP = {
@@ -325,8 +323,9 @@ function resolvePart(part, vehicle, rigger, action, options, warnings, lookup) {
       const value =
         typeof rigger.getInitiativeBase === 'function'
           ? rigger.getInitiativeBase()
-          : /** @type {any} */ ((rigger.system)?.derivedStats?.initiative
-              ?.physical ?? 0);
+          : /** @type {any} */ (
+              rigger.system?.derivedStats?.initiative?.physical ?? 0
+            );
       return { label: 'sr4.vehicle.rigger', value };
     }
     default:
@@ -374,6 +373,12 @@ export function resolveDronePool(vehicle, rigger, mode, action, options = {}) {
   const parts = specs.map((part) =>
     resolvePart(part, vehicle, rigger, baseAction, options, warnings, lookup)
   );
+  if (mode === ControlModes.JUMPED && rigger) {
+    parts.push({ label: 'sr4.matrix.controlRigBonus', value: 2 });
+    if (effectiveSimMode(rigger.system) === SimMode.HOT) {
+      parts.push({ label: 'sr4.matrix.hotSimBonus', value: 2 });
+    }
+  }
   const pool = Math.max(
     0,
     parts.reduce((sum, part) => sum + part.value, 0)

@@ -1,4 +1,4 @@
-import { awaitOpposedSocketResponse, getGame } from '@utils/index.js';
+import { getGame } from '@utils/index.js';
 import { localize, rollForcedSkill } from '@utils/dialog/dialogutility.js';
 import { offerEdgeRetry } from '@utils/rolls/roll-edge-decision.js';
 import { calculateSummoningDrain } from '@utils/dialog/magic/summoning-helpers.js';
@@ -6,7 +6,7 @@ import {
   resolveDrain,
   calculateSummonedEntityDrainPool,
 } from '@utils/dialog/magic/drain.js';
-import { getResistConfig } from '@utils/dialog/magic/resist-actions.js';
+import { awaitEntityResist } from '@utils/dialog/magic/resist-actions.js';
 
 export class BindingFlow {
   /**
@@ -86,6 +86,37 @@ export class BindingFlow {
 
   /**
    * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {Promise<void>}
+   */
+  static async startTargeted(summonerActor, entityType) {
+    const targetActor = BindingFlow._getOwnedTarget(summonerActor, entityType);
+    if (!targetActor) {
+      ui?.notifications?.warn(
+        getGame().i18n.localize('sr4.magic.noValidBindTarget')
+      );
+      return;
+    }
+    await BindingFlow.start(summonerActor, targetActor);
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {import('@documents/index').SR4Actor | null}
+   */
+  static _getOwnedTarget(summonerActor, entityType) {
+    const targets = [...(getGame().user?.targets ?? [])]
+      .map((t) => t.actor)
+      .filter(
+        (a) =>
+          a?.type === entityType && a?.system?.ownerUuid === summonerActor.uuid
+      );
+    return targets[0] ?? null;
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
    * @param {import('@documents/index').SR4Actor} targetActor
    * @param {number} forceOrRating
    * @param {'spirit' | 'sprite'} entityType
@@ -97,23 +128,12 @@ export class BindingFlow {
     forceOrRating,
     entityType
   ) {
-    const { triggerAction, resistedAction } = getResistConfig(
-      'bind',
-      entityType
-    );
-
-    return awaitOpposedSocketResponse({
-      triggerAction,
-      triggerPayload: {
-        summonerId: summonerActor.id,
-        force: forceOrRating,
-        spiritType: targetActor.name,
-        entityType,
-      },
-      matchAction: resistedAction,
-      matches: (payload) => payload?.summonerId === summonerActor.id,
-      onMatch: (payload) => payload.resistHits ?? 0,
-      fallback: 0,
+    return awaitEntityResist({
+      mode: 'bind',
+      sourceActor: summonerActor,
+      targetActor,
+      forceOrRating,
+      entityType,
     });
   }
 

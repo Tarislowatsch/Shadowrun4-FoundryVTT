@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const rollSkillDialogMock = vi.fn();
 const offerEdgeRetryMock = vi.fn();
-const awaitOpposedSocketResponseMock = vi.fn();
+const awaitEntityResistMock = vi.fn();
 const getSkillDicePoolMock = vi.fn();
 const resolveDrainMock = vi.fn();
 const calculateSummonedEntityDrainPoolMock = vi.fn();
@@ -27,8 +27,10 @@ vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
 vi.mock('@utils/index.js', () => ({
   getGame: () => globalThis.game,
   getSkillDicePool: (...args) => getSkillDicePoolMock(...args),
-  awaitOpposedSocketResponse: (...args) =>
-    awaitOpposedSocketResponseMock(...args),
+}));
+
+vi.mock('@utils/dialog/magic/resist-actions.js', () => ({
+  awaitEntityResist: (...args) => awaitEntityResistMock(...args),
 }));
 
 vi.mock('@utils/dialog/magic/drain.js', () => ({
@@ -79,13 +81,18 @@ function mockRoll({ successes, isGlitch = false, summonerHits, resistHits }) {
     messageId: null,
   });
   offerEdgeRetryMock.mockResolvedValue(summonerHits);
-  awaitOpposedSocketResponseMock.mockResolvedValue(resistHits);
+  awaitEntityResistMock.mockResolvedValue(resistHits);
+}
+
+function setTargets(actors) {
+  globalThis.game.user.targets = actors.map((actor) => ({ actor }));
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
   globalThis.ui = { notifications: { warn: vi.fn(), info: vi.fn() } };
   globalThis.game.actors = [];
+  globalThis.game.user = { targets: [] };
   getSkillDicePoolMock.mockReturnValue(6);
   calculateSummonedEntityDrainPoolMock.mockReturnValue(8);
 });
@@ -301,6 +308,57 @@ describe('BindingFlow.start — drain', () => {
     expect(calculateSummonedEntityDrainPoolMock).toHaveBeenCalledWith(
       summoner,
       'sprite'
+    );
+  });
+});
+
+describe('BindingFlow.startTargeted', () => {
+  it('warns and never rolls when no target is set', async () => {
+    const summoner = makeActor();
+
+    await BindingFlow.startTargeted(summoner, 'spirit');
+
+    expect(globalThis.ui.notifications.warn).toHaveBeenCalledWith(
+      'sr4.magic.noValidBindTarget'
+    );
+    expect(rollSkillDialogMock).not.toHaveBeenCalled();
+  });
+
+  it('warns and never rolls when the target is the wrong entity type', async () => {
+    const summoner = makeActor();
+    setTargets([makeTarget('sprite')]);
+
+    await BindingFlow.startTargeted(summoner, 'spirit');
+
+    expect(globalThis.ui.notifications.warn).toHaveBeenCalledWith(
+      'sr4.magic.noValidBindTarget'
+    );
+    expect(rollSkillDialogMock).not.toHaveBeenCalled();
+  });
+
+  it('warns and never rolls when the target is not owned by this actor', async () => {
+    const summoner = makeActor({ id: 'Actor.summoner1' });
+    setTargets([makeTarget('spirit', { ownerUuid: 'Actor.someoneElse' })]);
+
+    await BindingFlow.startTargeted(summoner, 'spirit');
+
+    expect(globalThis.ui.notifications.warn).toHaveBeenCalledWith(
+      'sr4.magic.noValidBindTarget'
+    );
+    expect(rollSkillDialogMock).not.toHaveBeenCalled();
+  });
+
+  it('binds the targeted, owned entity of the matching type', async () => {
+    mockRoll({ successes: 3, summonerHits: 3, resistHits: 0 });
+    const summoner = makeActor({ id: 'Actor.summoner1' });
+    const target = makeTarget('spirit', { ownerUuid: 'Actor.summoner1' });
+    setTargets([target]);
+
+    await BindingFlow.startTargeted(summoner, 'spirit');
+
+    expect(globalThis.ui.notifications.warn).not.toHaveBeenCalled();
+    expect(target.update).toHaveBeenCalledWith(
+      expect.objectContaining({ 'system.bound': true })
     );
   });
 });

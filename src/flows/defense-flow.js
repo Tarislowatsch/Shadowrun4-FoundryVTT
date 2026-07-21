@@ -2,8 +2,16 @@ import {
   getGame,
   getValidTargetActors,
   openDefenseDialog,
+  defaultDefensePool,
   openSoakDialog,
+  defaultSoakPool,
 } from '@utils/index';
+import {
+  requestReactiveDecision,
+  DecisionCategory,
+  DecisionKind,
+  DecisionRouting,
+} from '@utils/rolls/decision-provider.js';
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
 import { openDroneDefenseDialog } from '@utils/rigging/drone-defense.js';
 import {
@@ -209,22 +217,33 @@ export class DefenseFlow {
       return;
     }
 
-    const defenseResult =
-      defender.type === 'vehicle'
-        ? await openDroneDefenseDialog(
-            defender,
-            attacker,
-            successes,
-            weapon,
-            wideDefenseMalus
-          )
-        : await openDefenseDialog(
-            defender,
-            attacker,
-            successes,
-            weapon,
-            wideDefenseMalus
-          );
+    const isDrone = defender.type === 'vehicle';
+    const defenseResult = await requestReactiveDecision({
+      actor: defender,
+      category: DecisionCategory.COMBAT,
+      dialogKind: DecisionKind.DEFENSE,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: !isDrone,
+      standardPool: isDrone
+        ? undefined
+        : defaultDefensePool(defender, weapon, wideDefenseMalus),
+      openDialog: () =>
+        isDrone
+          ? openDroneDefenseDialog(
+              defender,
+              attacker,
+              successes,
+              weapon,
+              wideDefenseMalus
+            )
+          : openDefenseDialog(
+              defender,
+              attacker,
+              successes,
+              weapon,
+              wideDefenseMalus
+            ),
+    });
     if (defenseResult === null || defenseResult.successes === null) {
       await DefenseFlow._sendPotentialSummary(
         defender,
@@ -245,20 +264,29 @@ export class DefenseFlow {
     const netSuccesses = Math.max(successes - defenseHits, 0);
     if (netSuccesses === 0) return;
 
-    const baseDamage =
-      weapon.system.damage + (netSuccesses - 1) + burstDamageBonus;
     const {
       raw: rawArmor,
       ap,
       apHalf,
-      effective: effectiveArmor,
+      effective: apEffectiveArmor,
     } = getArmorBreakdown(defender, weapon);
     const dt = weapon.system.damageType;
+    const elementRules = computeElementArmorRules(dt, rawArmor);
+    const baseDamage =
+      weapon.system.damage +
+      (netSuccesses - 1) +
+      burstDamageBonus +
+      elementRules.dvBonus;
+    let effectiveArmor = apEffectiveArmor;
+    if (elementRules.noArmor) {
+      effectiveArmor = 0;
+    } else if (dt === 'METAL') {
+      effectiveArmor = elementRules.effectiveArmor;
+    }
     let isPhysical = isPhysicalDamageType(dt);
     if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;
 
     const elementResistance = getElementResistance(defender, dt);
-    const elementRules = computeElementArmorRules(dt, rawArmor);
     const hint = elementRules.hint;
     const onApply = buildElementOnApply(dt, defender, netSuccesses);
 
@@ -273,13 +301,25 @@ export class DefenseFlow {
       return;
     }
 
-    const soakResult = await openSoakDialog(
-      defender,
-      baseDamage,
-      isPhysical,
-      effectiveArmor,
-      { rawArmor, ap, apHalf, elementResistance }
-    );
+    const soakResult = await requestReactiveDecision({
+      actor: defender,
+      category: DecisionCategory.COMBAT,
+      dialogKind: DecisionKind.SOAK,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: true,
+      standardPool: defaultSoakPool(
+        defender,
+        effectiveArmor,
+        elementResistance
+      ),
+      openDialog: () =>
+        openSoakDialog(defender, baseDamage, isPhysical, effectiveArmor, {
+          rawArmor,
+          ap,
+          apHalf,
+          elementResistance,
+        }),
+    });
     if (!soakResult) return;
 
     const soakHits = await resolveEdgeForRoll(

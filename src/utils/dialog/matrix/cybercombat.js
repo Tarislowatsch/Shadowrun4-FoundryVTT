@@ -6,6 +6,7 @@ import {
   getInt,
   localize,
   renderTemplate,
+  standardAutoRollPool,
   standardTemplatePath,
 } from '../dialogutility';
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
@@ -113,6 +114,42 @@ export async function openMatrixDefenseDialog(
 
   if (!result) return null;
   return resolveEdgeForRoll(defender, result, attackHits);
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} defender
+ * @returns {Promise<number>}
+ */
+export async function defaultMatrixDefenseHits(defender) {
+  const pool = getMatrixDefensePool(defender, false);
+  const { successes } = await DiceUtility.rollAndShow({
+    numDice: standardAutoRollPool(defender, pool),
+    explode: false,
+    edgeAvailable: false,
+    actor: defender,
+    skillName: localize('sr4.matrix.cybercombat.defenseTitle'),
+  });
+  return successes;
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} defender
+ * @param {{ label: string, biofeedback?: boolean }} info
+ * @returns {Promise<number>}
+ */
+export async function defaultMatrixResistHits(
+  defender,
+  { label, biofeedback = false }
+) {
+  const pool = getMatrixResistPool(defender, { biofeedback });
+  const { successes } = await DiceUtility.rollAndShow({
+    numDice: standardAutoRollPool(defender, pool, { ignoreModifiers: true }),
+    explode: false,
+    edgeAvailable: false,
+    actor: defender,
+    skillName: label,
+  });
+  return successes;
 }
 
 /**

@@ -28,7 +28,7 @@
     max-width: 30%;
   }
 
-  .magic-section-subtitle {
+  .section-subtitle {
     flex: 1;
     font-weight: 600;
     color: var(--sr4-label);
@@ -134,7 +134,7 @@
     color: var(--sr4-text);
   }
 
-  .thread-button {
+  .action-button {
     display: flex;
     align-items: center;
     gap: 0.3rem;

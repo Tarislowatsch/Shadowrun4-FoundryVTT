@@ -26,6 +26,7 @@ import {
   handleSkillRoll,
   handleFreeRoll,
   openActionDialog,
+  openMatrixActionDialog,
   reloadWeapon,
   getGame,
   ControlModes,
@@ -42,6 +43,8 @@ import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
 import { ThreadingFlow } from '@flows/threading-flow.js';
 import { BindingFlow } from '@flows/binding-flow.js';
+import { DismissalFlow } from '@flows/dismissal-flow.js';
+import { ActionCategory } from '@models/actions/actions.model';
 import {
   REALMS,
   getAvailableRealms,
@@ -56,11 +59,14 @@ import {
  *   handleSkillRoll: Function,
  *   handleFreeRoll: Function,
  *   openActionDialog: Function,
+ *   openMatrixActionDialog: Function,
  * }} dialogUtility
  * @property {typeof SpellcastingFlow} SpellcastingFlow
  * @property {typeof SummoningFlow} SummoningFlow
  * @property {typeof ThreadingFlow} ThreadingFlow
  * @property {typeof BindingFlow} BindingFlow
+ * @property {typeof DismissalFlow} DismissalFlow
+ * @property {typeof ActionCategory} ActionCategory
  * @property {typeof reloadWeapon} reloadWeapon
  * @property {{
  *   ControlModes: typeof ControlModes,
@@ -85,11 +91,14 @@ globalThis.sr4 = {
     handleSkillRoll,
     handleFreeRoll,
     openActionDialog,
+    openMatrixActionDialog,
   },
   SpellcastingFlow,
   SummoningFlow,
   ThreadingFlow,
   BindingFlow,
+  DismissalFlow,
+  ActionCategory,
   reloadWeapon,
   rigging: {
     ControlModes,

@@ -1,23 +1,22 @@
+import { createAwaitableDecision } from './awaitable-decision.js';
+
 /**
- * @typedef {object} EdgeDecisionEntry
- * @property {{ successes: number, rolledDice: number, isGlitch: boolean, isCriticalGlitch?: boolean }} rollResult
- * @property {(finalSuccesses: number) => void} resolve
- * @property {ReturnType<typeof setTimeout>} timeoutId
+ * @typedef {{ successes: number, rolledDice: number, isGlitch: boolean, isCriticalGlitch?: boolean }} EdgeRollResult
  */
 
-/** @type {Map<string, EdgeDecisionEntry>} */
-const registry = new Map();
+/** @type {import('./awaitable-decision.js').AwaitableDecisionApi<number, { rollResult: EdgeRollResult }>} */
+const edgeDecisions = createAwaitableDecision();
 
 /**
  * @param {string} messageId
- * @returns {EdgeDecisionEntry | undefined}
+ * @returns {ReturnType<typeof edgeDecisions.get>}
  */
 export function getEdgeDecisionEntry(messageId) {
-  return registry.get(messageId);
+  return edgeDecisions.get(messageId);
 }
 
 /**
- * @param {{ messageId: string | null, actor: import('@documents/index').SR4Actor, rollResult: { successes: number, rolledDice: number, isGlitch: boolean, isCriticalGlitch?: boolean } }} options
+ * @param {{ messageId: string | null, actor: import('@documents/index').SR4Actor, rollResult: EdgeRollResult }} options
  * @returns {Promise<number>}
  */
 export async function awaitEdgeDecision({ messageId, actor, rollResult }) {
@@ -28,19 +27,15 @@ export async function awaitEdgeDecision({ messageId, actor, rollResult }) {
   const message = game.messages?.get(messageId);
   if (!message) return rollResult.successes;
 
-  /** @type {(value: number) => void} */
-  let resolve;
-  const promise = new Promise((r) => {
-    resolve = r;
-  });
-
   const timeoutSeconds =
     game.settings.get('shadowrun4e', 'flowEdgeTimeout') ?? 20;
-  const timeoutId = setTimeout(() => {
-    resolveEdgeDecision(messageId);
-  }, timeoutSeconds * 1000);
-
-  registry.set(messageId, { rollResult, resolve, timeoutId });
+  const promise = edgeDecisions.park({
+    messageId,
+    timeoutMs: timeoutSeconds * 1000,
+    getDefault: () => rollResult.successes,
+    onTimeout: () => resolveEdgeDecision(messageId),
+    extra: { rollResult },
+  });
 
   await message.update({
     'flags.sr4.edgeDecision': { pending: true, resolved: false },
@@ -120,12 +115,7 @@ export async function offerEdgeRetry(actor, rollResult, threshold = 0) {
  * @returns {Promise<void>}
  */
 export async function resolveEdgeDecision(messageId, finalSuccesses) {
-  const entry = registry.get(messageId);
-  if (entry) {
-    clearTimeout(entry.timeoutId);
-    entry.resolve(finalSuccesses ?? entry.rollResult.successes);
-    registry.delete(messageId);
-  }
+  edgeDecisions.settle(messageId, finalSuccesses);
   const message = game.messages?.get(messageId);
   if (
     message &&

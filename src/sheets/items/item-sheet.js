@@ -15,6 +15,7 @@ import {
   SpellDurations,
   SpellElements,
   ActionType,
+  ActionCategories,
   MentorCategories,
 } from '@models/index';
 import {
@@ -153,6 +154,7 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     context.meleeattackskills = MeleeAttackskill;
     context.shootingmodes = Shootingmodes;
     context.actiontypes = ActionType;
+    context.actioncategories = ActionCategories;
     context.spelltypes = SpellTypes;
     context.spellcategories = SpellCategories;
     context.spellcombattypes = SpellCombatTypes;

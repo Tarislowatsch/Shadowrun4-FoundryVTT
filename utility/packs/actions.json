@@ -6,6 +6,7 @@
         "actionPart1": "Computer",
         "actionPart2": "Analyze",
         "actionType": "SIMPLE",
+        "category": "MATRIX",
         "description": "",
         "label": "sr4.actions.analyze_iconnode",
         "source": "SR4, Page 228"
@@ -23,6 +24,7 @@
         "actionPart1": "Electronic Warfare",
         "actionPart2": "Sniffer",
         "actionType": "COMPLEX",
+        "category": "MATRIX",
         "description": "",
         "label": "sr4.actions.capture_wireless_signal",
         "source": "SR4, Page 229"
@@ -40,6 +42,7 @@
         "actionPart1": "Command",
         "actionPart2": "Control",
         "actionType": "COMPLEX",
+        "category": "MATRIX",
         "description": "",
         "label": "sr4.actions.control_device",
         "source": "SR4, Page 229"
@@ -57,6 +60,7 @@
         "actionPart1": "Hacking",
         "actionPart2": "Exploit",
         "actionType": "COMPLEX",
+        "category": "MATRIX",
         "description": "",
         "label": "sr4.actions.crash_node",
         "source": "SR4, Page 229"
@@ -74,6 +78,7 @@
         "actionPart1": "Hacking",
         "actionPart2": "Exploit",
         "actionType": "COMPLEX",
+        "category": "MATRIX",
         "description": "",
         "label": "sr4.actions.crash_program",
         "source": "SR4, Page 229"
@@ -91,6 +96,7 @@
         "actionPart1": "Data Search",
         "actionPart2": "Browse",
         "actionType": "COMPLEX",
+        "category": "MATRIX",
         "description": "",
         "label": "sr4.actions.data_search",
         "source": "SR4, Page 229"

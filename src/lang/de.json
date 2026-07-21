@@ -59,6 +59,12 @@
         "strength": "STR",
         "willpower": "WIL"
       },
+      "category": "Kategorie",
+      "categories": {
+        "none": "-",
+        "matrix": "Matrix",
+        "rigging": "Rigging"
+      },
       "composure": "Selbstbeherrschung",
       "delete": "Löschen",
       "edit": "Bearbeiten",

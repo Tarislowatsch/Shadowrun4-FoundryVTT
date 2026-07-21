@@ -12,6 +12,12 @@ const ELEMENT_HINT_KEYS = Object.freeze({
   ICE: 'sr4.damage.coldHint',
   FIRE: 'sr4.damage.fireHint',
   ELECTRICITY: 'sr4.damage.electricityHint',
+  ACID: 'sr4.damage.acidHint',
+  SAND: 'sr4.damage.sandHint',
+  WATER: 'sr4.damage.waterHint',
+  RADIATION: 'sr4.damage.radiationHint',
+  SMOKE: 'sr4.damage.smokeHint',
+  SOUND: 'sr4.damage.soundHint',
 });
 
 /**
@@ -59,7 +65,12 @@ export function computeElementArmorRules(element, impactArmor) {
     };
   }
 
-  if (element === 'TOXIN') {
+  if (
+    element === 'TOXIN' ||
+    element === 'RADIATION' ||
+    element === 'SMOKE' ||
+    element === 'SOUND'
+  ) {
     return {
       effectiveArmor: 0,
       apHalf: false,
@@ -86,6 +97,16 @@ export function computeElementArmorRules(element, impactArmor) {
     noArmor: false,
     hint,
   };
+}
+
+/**
+ * @param {import('@models/index').SR4Spell} spell
+ * @returns {string}
+ */
+export function resolveIndirectSpellDamageType(spell) {
+  const sys = spell.system ?? spell;
+  if (sys.damageTypeOverride) return sys.damageType || 'PHYSICAL';
+  return sys.element || 'PHYSICAL';
 }
 
 /**

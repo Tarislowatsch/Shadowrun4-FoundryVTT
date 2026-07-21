@@ -6,6 +6,9 @@ export const REALM_CHOICES = Object.freeze(['physical', 'matrix', 'astral']);
 /** @type {readonly string[]} */
 export const SIM_MODE_CHOICES = Object.freeze(['cold', 'hot']);
 
+/** @enum {string} */
+export const SimMode = Object.freeze({ COLD: 'cold', HOT: 'hot' });
+
 /** @returns {foundry.data.fields.StringField} */
 export function realmModeField() {
   return new fields.StringField({

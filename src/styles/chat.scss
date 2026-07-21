@@ -85,6 +85,39 @@
   }
 }
 
+.pending-dialog-card {
+  border-left: 3px solid var(--sr4-teal);
+  padding: 0.4rem 0.5rem;
+
+  p {
+    margin: 0 0 0.3rem;
+  }
+}
+
+.pending-dialog-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 0.3rem;
+
+  button {
+    border: 1px solid var(--sr4-border-dim);
+    background: transparent;
+    color: inherit;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
+
+    &:hover {
+      background: var(--sr4-teal-glow);
+      border-color: var(--sr4-teal);
+    }
+  }
+}
+
 .combat-summary-card {
   border-left: 3px solid var(--sr4-border-dim);
   padding: 0.4rem 0.5rem;

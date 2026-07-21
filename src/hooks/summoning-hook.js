@@ -1,5 +1,11 @@
 import { openSpiritResistDialog } from '@utils/dialog/magic/spirit-resist.js';
 import { isPrimaryGM } from '@utils/index';
+import {
+  requestReactiveDecision,
+  DecisionCategory,
+  DecisionKind,
+  DecisionRouting,
+} from '@utils/rolls/decision-provider.js';
 import { SummoningFlow } from '@flows/summoning-flow.js';
 import { BaseSocketHook } from './base-socket-hook.js';
 
@@ -24,7 +30,13 @@ export class SummoningHook extends BaseSocketHook {
       data.action === 'triggerSpriteResist'
     ) {
       const { summonerId, force, spiritType, entityType } = data.payload ?? {};
-      await openSpiritResistDialog(force, spiritType, entityType, summonerId);
+      await requestReactiveDecision({
+        category: DecisionCategory.MAGIC,
+        dialogKind: DecisionKind.SPIRIT_RESIST,
+        routing: DecisionRouting.GM,
+        openDialog: () =>
+          openSpiritResistDialog(force, spiritType, entityType, summonerId),
+      });
       return;
     }
 
@@ -33,13 +45,42 @@ export class SummoningHook extends BaseSocketHook {
       data.action === 'triggerSpriteBindResist'
     ) {
       const { summonerId, force, spiritType, entityType } = data.payload ?? {};
-      await openSpiritResistDialog(
-        force,
-        spiritType,
-        entityType,
-        summonerId,
-        'bind'
-      );
+      await requestReactiveDecision({
+        category: DecisionCategory.MAGIC,
+        dialogKind: DecisionKind.SPIRIT_BIND_RESIST,
+        routing: DecisionRouting.GM,
+        openDialog: () =>
+          openSpiritResistDialog(
+            force,
+            spiritType,
+            entityType,
+            summonerId,
+            'bind'
+          ),
+      });
+      return;
+    }
+
+    if (
+      data.action === 'triggerSpiritBanishResist' ||
+      data.action === 'triggerSpriteDecompileResist'
+    ) {
+      const { summonerId, force, spiritType, entityType, ownerBonus } =
+        data.payload ?? {};
+      await requestReactiveDecision({
+        category: DecisionCategory.MAGIC,
+        dialogKind: DecisionKind.SPIRIT_BIND_RESIST,
+        routing: DecisionRouting.GM,
+        openDialog: () =>
+          openSpiritResistDialog(
+            force,
+            spiritType,
+            entityType,
+            summonerId,
+            'dismiss',
+            ownerBonus
+          ),
+      });
       return;
     }
 

@@ -1,4 +1,5 @@
 import {
+  ActionCategory,
   FadingAttributes,
   StreamLabels,
   StreamSpriteTypes,
@@ -43,6 +44,9 @@ export async function buildMatrixContext(actorData, ownerUuid) {
     hasMatrixAccess: hasMatrixAccess(system, items),
     matrixJammed: !!system.matrix?.jammedBy,
     matrixMonitor: system.conditionMonitor?.matrix ?? { value: 0, max: 0 },
+    matrixActions: items.filter(
+      (i) => i.type === 'Action' && i.system.category === ActionCategory.MATRIX
+    ),
     matrixPersona: {
       response: computeMatrixResponse(system, items),
       firewall: computeMatrixFirewall(system, items),

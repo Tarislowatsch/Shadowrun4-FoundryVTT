@@ -1,4 +1,5 @@
 import { SR4 } from '../config.js';
+import { SimMode } from '@models/shared';
 
 function computeMonitorMax(stat) {
   return Math.ceil(SR4.rules.conditionMonitorBase + stat / 2);
@@ -17,8 +18,8 @@ function computeWoundModifier(monitor, woundModBonus = 0) {
  * @returns {'cold'|'hot'}
  */
 export function effectiveSimMode(system) {
-  if (system?.technomancy?.technomancer) return 'hot';
-  return system?.matrixSimMode === 'hot' ? 'hot' : 'cold';
+  if (system?.technomancy?.technomancer) return SimMode.HOT;
+  return system?.matrixSimMode === SimMode.HOT ? SimMode.HOT : SimMode.COLD;
 }
 
 /**
@@ -26,7 +27,7 @@ export function effectiveSimMode(system) {
  * @returns {number}
  */
 export function matrixSimPasses(system) {
-  return effectiveSimMode(system) === 'hot'
+  return effectiveSimMode(system) === SimMode.HOT
     ? SR4.rules.matrix.hotSimPasses
     : SR4.rules.matrix.coldSimPasses;
 }
@@ -36,7 +37,7 @@ export function matrixSimPasses(system) {
  * @returns {number}
  */
 export function matrixSimInitiativeBonus(system) {
-  return effectiveSimMode(system) === 'hot'
+  return effectiveSimMode(system) === SimMode.HOT
     ? SR4.rules.matrix.hotSimInitiativeBonus
     : 0;
 }

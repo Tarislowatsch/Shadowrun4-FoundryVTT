@@ -58,6 +58,12 @@
         "STRENGTH": "STR",
         "WILLPOWER": "WIL"
       },
+      "category": "Category",
+      "categories": {
+        "none": "-",
+        "matrix": "Matrix",
+        "rigging": "Rigging"
+      },
       "composure": "Composure",
       "delete": "Delete",
       "edit": "Edit",

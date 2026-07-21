@@ -8,7 +8,7 @@
     {{#*inline "card-buttons"}}
       <button class="spell-cast" data-action="castSpell"
         data-tooltip="{{localize 'sr4.spell.cast'}}">
-        <i class="fas fa-dice-d20"></i>
+        <i class="fas fa-dice-d6"></i>
       </button>
     {{/inline}}
   {{/item-card-header}}
@@ -33,7 +33,7 @@
     </span>
     <span class="item-property">
       <strong>{{localize "sr4.spell.damagetype"}}</strong>
-      {{localize (concat "sr4.damage." this.system.damageType)}}
+      {{localize (concat "sr4.damage." (spellDamageType this.system))}}
     </span>
     {{#if (eq this.system.combatType "INDIRECT")}}
     <span class="item-property">

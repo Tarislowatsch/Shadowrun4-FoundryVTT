@@ -20,6 +20,14 @@ describe('isPhysicalDamageType', () => {
     ['STUN', false],
     ['ELECTRICITY', false],
     ['STUN_HALF', false],
+    ['ACID', true],
+    ['ICE', true],
+    ['METAL', true],
+    ['SAND', true],
+    ['WATER', true],
+    ['RADIATION', true],
+    ['SOUND', false],
+    ['SMOKE', false],
     ['', false],
   ])('%s → %s', (dt, expected) => {
     expect(isPhysicalDamageType(dt)).toBe(expected);
@@ -55,12 +63,18 @@ describe('isMeleeWeapon', () => {
 });
 
 describe('AP_HALF_TYPES', () => {
-  it.each(['ELECTRICITY', 'FIRE', 'LASER', 'STUN_HALF'])(
-    'includes %s',
-    (type) => expect(AP_HALF_TYPES.has(type)).toBe(true)
-  );
+  it.each([
+    'ELECTRICITY',
+    'FIRE',
+    'LASER',
+    'STUN_HALF',
+    'ACID',
+    'ICE',
+    'SAND',
+    'WATER',
+  ])('includes %s', (type) => expect(AP_HALF_TYPES.has(type)).toBe(true));
 
-  it.each(['PHYSICAL', 'STUN', ''])('excludes %s', (type) =>
+  it.each(['PHYSICAL', 'STUN', 'METAL', ''])('excludes %s', (type) =>
     expect(AP_HALF_TYPES.has(type)).toBe(false)
   );
 });
@@ -121,6 +135,11 @@ describe('SR4RangedWeaponData.prepareDerivedData', () => {
       ['LASER', 'ballistic', true, 'impact'],
       ['ELECTRICITY', 'ballistic', true, 'impact'],
       ['STUN_HALF', 'ballistic', true, 'impact'],
+      ['ACID', 'ballistic', true, 'impact'],
+      ['ICE', 'ballistic', true, 'impact'],
+      ['SAND', 'ballistic', true, 'impact'],
+      ['WATER', 'ballistic', true, 'impact'],
+      ['METAL', 'ballistic', false, 'impact'],
     ])(
       'damageType=%s armorType=%s → apHalf=%s, armorType=%s',
       (damageType, armorType, expectedApHalf, expectedArmorType) => {
@@ -344,6 +363,16 @@ describe('SR4MeleeWeaponData.prepareDerivedData', () => {
     );
     expect(w.effectiveDamageType).toBe('ELECTRICITY');
     expect(w.effectiveApHalf).toBe(true);
+    expect(w.effectiveArmorType).toBe('impact');
+  });
+
+  it('METAL uses full impact armor without halving', () => {
+    const w = prepareMeleeWeapon(
+      { damage: 4, damageType: 'METAL', armorType: 'ballistic' },
+      { strength: 4 }
+    );
+    expect(w.effectiveDamageType).toBe('METAL');
+    expect(w.effectiveApHalf).toBe(false);
     expect(w.effectiveArmorType).toBe('impact');
   });
 });

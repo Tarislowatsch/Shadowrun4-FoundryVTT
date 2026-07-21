@@ -1,27 +1,19 @@
+{{!-- buttons: [{action, icon, label, tooltip?}] --}}
 <details class="inventory-section collapsible-section" open>
   <summary class="collapsible-header">
     <i class="fas fa-chevron-right collapse-icon"></i>
     <h3>{{localize sectionLabel}}</h3>
-    {{#if btn2Action}}
+    {{#each buttons as |btn|}}
     <button
       type="button"
-      class="thread-button"
-      data-action="{{btn2Action}}"
-      data-tooltip="{{localize btn2Label}}"
+      class="action-button"
+      data-action="{{btn.action}}"
+      {{#if btn.tooltip}}data-tooltip="{{localize btn.tooltip}}"{{/if}}
     >
-      <i class="{{btn2Icon}}"></i>
-      {{localize btn2Label}}
+      <i class="{{btn.icon}}"></i>
+      {{localize btn.label}}
     </button>
-    {{/if}}
-    <button
-      type="button"
-      class="thread-button"
-      data-action="{{btnAction}}"
-      data-tooltip="{{localize btnLabel}}"
-    >
-      <i class="fas fa-dice-d20"></i>
-      {{localize btnLabel}}
-    </button>
+    {{/each}}
   </summary>
   <table class="item-stats-table">
     <tbody>
@@ -51,7 +43,7 @@
           {{#if ../createAction}}{{#if @root.editMode}}
           <button
             type="button"
-            class="thread-button"
+            class="action-button"
             data-action="{{../createAction}}"
             data-type-key="{{cat.key}}"
             data-tooltip="{{localize 'sr4.ui.createTemplate'}}"

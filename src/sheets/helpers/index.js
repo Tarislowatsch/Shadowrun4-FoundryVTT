@@ -5,6 +5,9 @@ import { conditionHelper } from './condition.helper';
 import { includesHelper } from './includes.helper';
 import { andHelper } from './and.helper';
 import { orHelper } from './or.helper';
+import { spellDamageTypeHelper } from './spell-damage-type.helper';
+import { objectHelper } from './object.helper';
+import { arrayHelper } from './array.helper';
 
 /**
  * @returns {void}
@@ -18,4 +21,7 @@ export function registerHelpers() {
   includesHelper();
   andHelper();
   orHelper();
+  spellDamageTypeHelper();
+  objectHelper();
+  arrayHelper();
 }
