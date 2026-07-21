@@ -2,7 +2,13 @@ import { SR4 } from './config.js';
 import { SR4Actor } from './documents/actor.js';
 import { SR4Combat } from './documents/combat.js';
 import { createSR4CombatTracker } from './documents/combat-tracker.js';
-import { SR4ActiveEffect } from '@effects/index.js';
+import {
+  SR4ActiveEffect,
+  EFFECT_TEMPLATES,
+  getWorldEffectTemplates,
+  getAllEffectTemplates,
+  resolveEffectTemplate,
+} from '@effects/index.js';
 import {
   SR4CharacterSheet,
   registerCharacterPartials,
@@ -83,6 +89,12 @@ import {
  *   getAvailableRealms: Function,
  *   getCombatantRealm: Function,
  * }} initiative
+ * @property {{
+ *   EFFECT_TEMPLATES: object,
+ *   getWorldEffectTemplates: Function,
+ *   getAllEffectTemplates: Function,
+ *   resolveEffectTemplate: Function,
+ * }} effects
  */
 globalThis.sr4 = {
   config: SR4,
@@ -114,6 +126,12 @@ globalThis.sr4 = {
     REALMS,
     getAvailableRealms,
     getCombatantRealm,
+  },
+  effects: {
+    EFFECT_TEMPLATES,
+    getWorldEffectTemplates,
+    getAllEffectTemplates,
+    resolveEffectTemplate,
   },
 };
 

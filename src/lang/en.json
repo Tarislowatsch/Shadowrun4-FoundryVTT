@@ -153,6 +153,7 @@
       "duration": "Duration (Turns)",
       "edit": "Edit",
       "existing": "Existing Effects",
+      "isTemplate": "Available as Template",
       "mode": {
         "add": "Bonus / Malus",
         "label": "Mode",

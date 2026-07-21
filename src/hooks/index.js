@@ -10,6 +10,7 @@ import { CompendiumDirectoryHook } from './compendium-directory-hook';
 import { SummoningHook } from './summoning-hook';
 import { LinkedActorCleanupHook } from './linked-actor-cleanup-hook';
 import { SceneControlsHook } from './scene-controls-hook';
+import { EffectTemplateCacheHook } from './effect-template-cache-hook';
 
 export function registerHooks() {
   new SettingsHook();
@@ -24,4 +25,5 @@ export function registerHooks() {
   new CompendiumDirectoryHook();
   new LinkedActorCleanupHook();
   new SceneControlsHook();
+  new EffectTemplateCacheHook();
 }

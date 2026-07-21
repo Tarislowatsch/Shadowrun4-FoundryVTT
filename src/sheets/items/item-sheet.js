@@ -21,6 +21,8 @@ import {
 import {
   SR4EffectTargets,
   EFFECT_TEMPLATES,
+  getWorldEffectTemplates,
+  resolveEffectTemplate,
   buildMentorContext,
   selectMentorChoice,
 } from '@effects/index';
@@ -378,10 +380,14 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     context.effectTargets = SR4EffectTargets;
 
     const templates = Object.entries(EFFECT_TEMPLATES).map(([key, tpl]) => ({
-      key,
+      key: `builtin:${key}`,
       name: game.i18n.localize(tpl.name),
       type: 'template',
     }));
+    const worldTemplates = getWorldEffectTemplates()
+      .filter((e) => e.parent?.id !== this.item.id)
+      .map((e) => ({ key: `world:${e.id}`, name: e.name, type: 'template' }))
+      .sort((a, b) => a.name.localeCompare(b.name));
     const existing = [];
     const actor = this.item.parent;
     if (actor) {
@@ -403,7 +409,7 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
         }
       }
     }
-    context.effectTemplates = [...templates, ...existing];
+    context.effectTemplates = [...templates, ...worldTemplates, ...existing];
     context.hasExistingEffects = existing.length > 0;
   }
 
@@ -464,12 +470,9 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       effectData = source.toObject();
       delete effectData._id;
     } else {
-      const tpl = EFFECT_TEMPLATES[key];
-      if (!tpl) return;
-      effectData = {
-        ...foundry.utils.deepClone(tpl),
-        name: game.i18n.localize(tpl.name),
-      };
+      const template = resolveEffectTemplate(key);
+      if (!template) return;
+      effectData = template;
     }
 
     await this.item.createEmbeddedDocuments('ActiveEffect', [

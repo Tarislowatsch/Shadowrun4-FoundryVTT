@@ -68,6 +68,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
       active: !this.document.disabled,
       durationTurns: this.document.duration?.turns ?? 0,
       showOnToken: !!this.document.flags?.sr4?.showOnToken,
+      isTemplate: !!this.document.flags?.sr4?.isEffectTemplate,
       changes,
       multipleChanges: changes.length > 1,
       description: this.document.description ?? '',
@@ -157,6 +158,8 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
     );
     const showOnToken =
       form.querySelector('[name="showOnToken"]')?.checked ?? false;
+    const isTemplate =
+      form.querySelector('[name="isTemplate"]')?.checked ?? false;
     const description = form.querySelector('[name="description"]')?.value ?? '';
 
     const changeRows = form.querySelectorAll('.change-row');
@@ -173,6 +176,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
       img,
       disabled: !active,
       'flags.sr4.showOnToken': showOnToken,
+      'flags.sr4.isEffectTemplate': isTemplate,
       duration: { turns: durationTurns > 0 ? durationTurns : undefined },
       description,
       changes,
