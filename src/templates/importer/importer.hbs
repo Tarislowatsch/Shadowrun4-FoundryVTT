@@ -1,4 +1,4 @@
-<div class="sr4-xml-importer" style="display:flex; flex-direction:column; height:100%; padding:8px; box-sizing:border-box; gap:8px;">
+<div class="sr4-xml-importer scrollable" style="display:flex; flex-direction:column; padding:8px; box-sizing:border-box; gap:8px;">
   <p style="margin:0; opacity:0.8;">{{localize "sr4.importer.hint"}}</p>
 
   <label style="display:flex; flex-direction:column; gap:4px;">
@@ -6,13 +6,44 @@
     <input type="file" data-files multiple accept=".xml" />
   </label>
 
+  <label style="display:flex; flex-direction:column; gap:4px;">
+    <strong>{{localize "sr4.importer.translationUpload"}}</strong>
+    <input type="file" data-translation-file accept=".xml" />
+    <span style="opacity:0.7; font-size:0.85em;">{{localize "sr4.importer.translationHint"}}</span>
+  </label>
+  {{#if translationData}}
+    <label style="display:flex; align-items:center; gap:6px;">
+      <span>{{localize "sr4.importer.translationLangLabel"}}</span>
+      <input type="text" data-translation-lang maxlength="5" style="width:4em;" value="{{translationLang}}" />
+      <span style="opacity:0.7; font-size:0.85em;">{{localize "sr4.importer.translationLangHint"}}</span>
+    </label>
+  {{/if}}
+  {{#if translationCount}}
+    <p style="margin:0; opacity:0.7; font-size:0.85em;">
+      {{localize "sr4.importer.translationCount"}}: {{translationCount}}
+    </p>
+  {{/if}}
+
+  {{#if referencePacks.length}}
+    <label style="display:flex; flex-direction:column; gap:4px;">
+      <strong>{{localize "sr4.importer.referencePackLabel"}}</strong>
+      <select data-reference-pack>
+        <option value=""></option>
+        {{#each referencePacks}}
+          <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+        {{/each}}
+      </select>
+      <span style="opacity:0.7; font-size:0.85em;">{{localize "sr4.importer.referencePackHint"}}</span>
+    </label>
+  {{/if}}
+
   {{#if hasSources}}
     <fieldset style="margin:0; padding:6px 8px; border:1px solid var(--color-border-light-tertiary, #999); border-radius:4px;">
       <legend>{{localize "sr4.importer.sourceBooks"}}</legend>
       <p style="margin:0 0 4px; opacity:0.7; font-size:0.9em;">
         {{localize "sr4.importer.sourceBooksHint"}}
       </p>
-      <div style="display:flex; flex-wrap:wrap; gap:6px 12px;">
+      <div style="display:flex; flex-wrap:wrap; gap:6px 12px; max-height:110px; overflow-y:auto;">
         {{#each sources}}
           <label style="display:flex; align-items:center; gap:4px;">
             <input type="checkbox" data-source-filter="{{code}}" {{#if enabled}}checked{{/if}} />
@@ -23,7 +54,7 @@
     </fieldset>
   {{/if}}
 
-  <div class="preview" style="overflow-y:auto; flex:1; border:1px solid var(--color-border-light-tertiary, #999); border-radius:4px; padding:6px;">
+  <div class="preview" style="overflow-y:auto; min-height:150px; max-height:40vh; border:1px solid var(--color-border-light-tertiary, #999); border-radius:4px; padding:6px;">
     {{#if hasData}}
       <table style="width:100%; border-collapse:collapse;">
         <thead>
@@ -77,9 +108,18 @@
     <span>{{localize "sr4.importer.skipDuplicates"}}</span>
   </label>
 
+  <label style="display:flex; align-items:center; gap:6px;">
+    <input type="checkbox" data-update-existing />
+    <span>{{localize "sr4.importer.updateExisting"}}</span>
+  </label>
+  <span style="opacity:0.7; font-size:0.85em;">{{localize "sr4.importer.updateExistingHint"}}</span>
+
   <footer class="sheet-footer flexrow" style="flex-shrink:0;">
     <button type="button" data-action="import" {{#unless hasData}}disabled{{/unless}}>
       <i class="fas fa-file-import"></i> {{localize "sr4.importer.import"}}
+    </button>
+    <button type="button" data-action="translateExisting">
+      <i class="fas fa-language"></i> {{localize "sr4.importer.translatePackButton"}}
     </button>
   </footer>
 </div>

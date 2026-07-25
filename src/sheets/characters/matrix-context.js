@@ -4,7 +4,7 @@ import {
   StreamLabels,
   StreamSpriteTypes,
 } from '@models/index';
-import { getInitiativeBase } from '@documents/initiative.js';
+import { getInitiativeBase } from '@domains/combat/initiative.js';
 import {
   computeMatrixResponse,
   computeMatrixSystem,
@@ -12,9 +12,52 @@ import {
   computeBiofeedbackFilter,
   matrixSimPasses,
   hasMatrixAccess,
-} from '@documents/derivedStats.mapper.js';
+} from '@domains/matrix/derived-stats.js';
 import { buildAffinityCategories } from './affinity-context.js';
 import { getLinkedActors, buildStatRows } from './actor-context.js';
+
+function buildMatrixActionButtons(system, matrixActions) {
+  const matrixActionButtons = [
+    {
+      action: 'matrixAttack',
+      icon: 'fas fa-bolt',
+      label: game.i18n.localize('sr4.matrix.cybercombat.attack'),
+    },
+  ];
+
+  if (system.matrix?.jammedBy) {
+    matrixActionButtons.push({
+      action: 'matrixJackOut',
+      icon: 'fas fa-plug-circle-xmark',
+      label: game.i18n.localize('sr4.matrix.cybercombat.jackOut'),
+    });
+  }
+
+  const rollTooltip = game.i18n.localize('sr4.action.rollAction');
+  for (const item of matrixActions) {
+    const {
+      rating1,
+      rating2,
+      actionPart1: action1,
+      actionPart2: action2,
+      category,
+    } = item.system;
+    matrixActionButtons.push({
+      action: 'rollAction',
+      icon: 'fas fa-dice-d20',
+      label: item.name,
+      tooltip: rollTooltip,
+      itemId: item._id,
+      rating1,
+      rating2,
+      action1,
+      action2,
+      category,
+    });
+  }
+
+  return matrixActionButtons;
+}
 
 function buildSpriteStats(actor) {
   const sys = actor.system;
@@ -40,13 +83,16 @@ export async function buildMatrixContext(actorData, ownerUuid) {
   const items = actorData.items ?? [];
   const tn = system.technomancy;
 
+  const matrixActions = items.filter(
+    (i) => i.type === 'Action' && i.system.category === ActionCategory.MATRIX
+  );
+
   const base = {
     hasMatrixAccess: hasMatrixAccess(system, items),
     matrixJammed: !!system.matrix?.jammedBy,
     matrixMonitor: system.conditionMonitor?.matrix ?? { value: 0, max: 0 },
-    matrixActions: items.filter(
-      (i) => i.type === 'Action' && i.system.category === ActionCategory.MATRIX
-    ),
+    matrixActions,
+    matrixActionButtons: buildMatrixActionButtons(system, matrixActions),
     matrixPersona: {
       response: computeMatrixResponse(system, items),
       firewall: computeMatrixFirewall(system, items),

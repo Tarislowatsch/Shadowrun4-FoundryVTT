@@ -84,6 +84,17 @@ export function computeEssenceLoss(cyberEss, bioEss) {
 }
 
 /**
+ * Truncates (does not round) to two decimals. Float-safe via milli-units, since
+ * inputs are already rounded to three decimals upstream.
+ *
+ * @param {number} n
+ * @returns {number}
+ */
+export function truncate2(n) {
+  return Math.trunc(Math.round((n ?? 0) * 1000) / 10) / 100;
+}
+
+/**
  * @param {object} actorData
  * @param {object} derivedStats
  * @param {object} [sourceStats]
@@ -102,7 +113,7 @@ export function buildComputedStats(
     derivedStats?.essenceLossBio ?? 0
   );
   const baseEssence = actorData.system.sheetStats?.ESSENCE ?? 6;
-  const currentEssence = Math.round((baseEssence - essenceLoss) * 100) / 100;
+  const currentEssence = truncate2(baseEssence - essenceLoss);
 
   return {
     computedStats: {

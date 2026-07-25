@@ -6,7 +6,7 @@ import {
   getMatrixDefensePool,
   getMatrixResistPool,
   classifyMatrixProgram,
-} from '@utils/matrix/matrix-persona.js';
+} from '@domains/matrix/matrix-persona.js';
 
 /**
  * @param {object} [options]

@@ -1,6 +1,7 @@
-import { handleSkillRoll, openActionDialog } from '@utils/index';
+import { openActionDialog } from '@utils/index';
+import { handleSkillRoll } from '@domains/combat/dialogs/index.js';
 import SR4BaseActorSheet from '@sheets/characters/sr4-base-actor-sheet';
-import { buildCritterActorData } from '@importer/build-critter.js';
+import { buildCritterActorData } from '@importer/character/build-critter.js';
 
 export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
   static DEFAULT_OPTIONS = {

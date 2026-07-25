@@ -1,4 +1,4 @@
-import { CybercombatFlow } from '@flows/cybercombat-flow.js';
+import { CybercombatFlow } from '@domains/matrix/flow/cybercombat-flow.js';
 import { DEVICE_TYPES } from '@models/actor/device.model.js';
 import SR4BaseActorSheet from '@sheets/characters/sr4-base-actor-sheet';
 

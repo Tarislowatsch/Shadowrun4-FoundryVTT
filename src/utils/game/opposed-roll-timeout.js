@@ -1,4 +1,4 @@
-import { SR4 } from '../../config.js';
+import { SR4 } from '@config';
 
 /**
  * @param {number} timeoutSeconds

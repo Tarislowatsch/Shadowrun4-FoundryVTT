@@ -1,20 +1,30 @@
 // @ts-nocheck
-import { extractRecords } from '@importer/parse-xml.js';
-import { buildImportGroups, buildTypeTree } from '@importer/grouping.js';
+import { extractRecords } from '@importer/xml/parse-xml.js';
+import { buildImportGroups, buildTypeTree } from '@importer/pack/grouping.js';
+import { parseTranslationData } from '@importer/translation/parse-name-translations.js';
+import { buildGuidTranslationMap } from '@importer/translation/reference-pack-translation.js';
+import {
+  buildExistingItemIndex,
+  addToExistingItemIndex,
+} from '@importer/pack/existing-item-match.js';
+import { planGroupImport } from '@importer/pack/plan-group-import.js';
+import {
+  detectLanguageFromFilename,
+  normalizeLangCode,
+} from '@importer/translation/detect-language.js';
+import { openTranslatePackDialog } from '@sheets/importer/translate-pack-dialog.js';
+import {
+  mergeItemNameTranslationEntries,
+  registerItemNameTranslations,
+} from '@utils/item-name-translations.js';
 
-/**
- * Number of documents created per `createDocuments` call.
- * @type {number}
- */
+/** @type {number} */
 const CHUNK_SIZE = 100;
 
 export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
-  /**
-   * Import groups derived from parsed records, grouped by source × subcategory.
-   * @type {import('@importer/grouping.js').ImportGroup[]}
-   */
+  /** @type {import('@importer/pack/grouping.js').ImportGroup[]} */
   #groups = [];
 
   /** @type {string[]} */
@@ -26,6 +36,24 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
   /** @type {boolean} */
   #importing = false;
 
+  /** @type {import('@importer/translation/parse-name-translations.js').TranslationData | null} */
+  #translationData = null;
+
+  /** @type {File[]} */
+  #selectedFiles = [];
+
+  /** @type {File | null} */
+  #selectedTranslationFile = null;
+
+  /** @type {string | null} */
+  #translationLang = null;
+
+  /** @type {string} */
+  #referencePackId = '';
+
+  /** @type {Map<string, import('@importer/translation/reference-pack-translation.js').GuidTranslation> | null} */
+  #guidMap = null;
+
   static DEFAULT_OPTIONS = {
     id: 'sr4-xml-importer',
     window: {
@@ -33,15 +61,17 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
       icon: 'fas fa-file-import',
       resizable: true,
     },
-    position: { width: 580, height: 560 },
+    position: { width: 640, height: 720 },
     actions: {
       import: XmlImporterApp.#onImport,
+      translateExisting: XmlImporterApp.#onTranslateExisting,
     },
   };
 
   static PARTS = {
     form: {
       template: 'systems/shadowrun4e/templates/importer/importer.hbs',
+      scrollable: ['', '.preview'],
     },
   };
 
@@ -60,16 +90,65 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
 
     const hasData = filtered.some((g) => g.records.length > 0);
     const hasSources = this.#availableSources.length > 0;
-    return { types, hasData, sources, hasSources };
+    const translationCount = this.#translationData?.names.size ?? 0;
+    const translationLang = this.#translationLang ?? '';
+
+    const referencePacks = game.packs
+      .filter(
+        (p) => p.metadata.type === 'Item' && p.metadata.packageType === 'world'
+      )
+      .map((p) => ({
+        id: p.collection,
+        label: p.metadata.label,
+        selected: p.collection === this.#referencePackId,
+      }));
+
+    return {
+      types,
+      hasData,
+      sources,
+      hasSources,
+      translationData: Boolean(this.#translationData),
+      translationCount,
+      translationLang,
+      referencePacks,
+    };
   }
 
   /** @override */
   _onRender(context, options) {
     super._onRender?.(context, options);
 
-    this.element
-      .querySelector('[data-files]')
-      ?.addEventListener('change', this.#onFilesSelected.bind(this));
+    const filesInput = this.element.querySelector('[data-files]');
+    filesInput?.addEventListener('change', this.#onFilesSelected.bind(this));
+    this.#restoreSelectedFiles(filesInput, this.#selectedFiles);
+
+    const translationInput = this.element.querySelector(
+      '[data-translation-file]'
+    );
+    translationInput?.addEventListener(
+      'change',
+      this.#onTranslationFileSelected.bind(this)
+    );
+    this.#restoreSelectedFiles(
+      translationInput,
+      this.#selectedTranslationFile ? [this.#selectedTranslationFile] : []
+    );
+
+    const translationLangInput = this.element.querySelector(
+      '[data-translation-lang]'
+    );
+    translationLangInput?.addEventListener('change', (event) => {
+      this.#translationLang = normalizeLangCode(event.target.value);
+    });
+
+    const referencePackSelect = this.element.querySelector(
+      '[data-reference-pack]'
+    );
+    referencePackSelect?.addEventListener(
+      'change',
+      this.#onReferencePackSelected.bind(this)
+    );
 
     const el = this.element;
 
@@ -119,6 +198,18 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
     }
   }
 
+  // Workaround: browsers clear an <input type="file">'s files when it's re-created by render().
+  /**
+   * @param {HTMLInputElement | null | undefined} input
+   * @param {File[]} files
+   */
+  #restoreSelectedFiles(input, files) {
+    if (!input || files.length === 0) return;
+    const transfer = new DataTransfer();
+    for (const file of files) transfer.items.add(file);
+    input.files = transfer.files;
+  }
+
   /**
    * @param {string} subcatId
    */
@@ -140,11 +231,8 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
   }
 
   /**
-   * Syncs a parent toggle's checked/indeterminate state from its enabled
-   * descendant checkboxes.
-   *
-   * @param {string} toggleSelector - Selector for the parent toggle.
-   * @param {string} childSelector - Selector for the enabled descendants.
+   * @param {string} toggleSelector
+   * @param {string} childSelector
    */
   #refreshToggle(toggleSelector, childSelector) {
     const toggle = this.element.querySelector(toggleSelector);
@@ -156,14 +244,13 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
   }
 
   /**
-   * Reads and parses the selected XML files, then re-renders the preview.
-   *
    * @param {Event} event
    * @returns {Promise<void>}
    */
   async #onFilesSelected(event) {
     const files = [...(event.target.files ?? [])];
     if (files.length === 0) return;
+    this.#selectedFiles = files;
 
     /** @type {Record<string, Array<Record<string, unknown>>>} */
     const aggregated = {};
@@ -197,6 +284,92 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
     }
 
     await this.render();
+  }
+
+  /**
+   * @param {Event} event
+   * @returns {Promise<void>}
+   */
+  async #onTranslationFileSelected(event) {
+    const file = event.target.files?.[0];
+    this.#selectedTranslationFile = file ?? null;
+    if (!file) {
+      this.#translationData = null;
+      this.#translationLang = null;
+      await this.render();
+      return;
+    }
+
+    this.#translationLang = detectLanguageFromFilename(file.name);
+    if (!this.#translationLang) {
+      ui.notifications.warn(
+        game.i18n.format('sr4.importer.translationLangUnknown', {
+          file: file.name,
+        })
+      );
+    }
+
+    try {
+      this.#translationData = parseTranslationData(await file.text());
+      ui.notifications.info(
+        game.i18n.format('sr4.importer.translationLoaded', {
+          count: this.#translationData.names.size,
+          file: file.name,
+        })
+      );
+    } catch (err) {
+      ui.notifications.warn(
+        game.i18n.format('sr4.importer.translationParseError', {
+          file: file.name,
+          error: err.message,
+        })
+      );
+      this.#translationData = null;
+    }
+
+    await this.render();
+  }
+
+  /**
+   * @this {XmlImporterApp}
+   * @returns {Promise<void>}
+   */
+  static async #onTranslateExisting() {
+    await openTranslatePackDialog(
+      this.#translationData && this.#translationLang
+        ? {
+            file: this.#selectedTranslationFile,
+            translations: this.#translationData,
+            lang: this.#translationLang,
+          }
+        : undefined
+    );
+  }
+
+  /**
+   * @param {Event} event
+   * @returns {Promise<void>}
+   */
+  async #onReferencePackSelected(event) {
+    this.#referencePackId = event.target.value ?? '';
+    if (!this.#referencePackId) {
+      this.#guidMap = null;
+      return;
+    }
+
+    const pack = game.packs.get(this.#referencePackId);
+    if (!pack) {
+      this.#guidMap = null;
+      return;
+    }
+
+    this.#guidMap = await buildGuidTranslationMap(pack);
+    ui.notifications.info(
+      game.i18n.format('sr4.importer.referencePackLoaded', {
+        count: this.#guidMap.size,
+        pack: pack.metadata.label,
+      })
+    );
   }
 
   /**
@@ -238,13 +411,31 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
   }
 
   /**
-   * Imports all selected groups into their world compendia.
-   *
    * @this {XmlImporterApp}
    * @returns {Promise<void>}
    */
   static async #onImport() {
     if (this.#importing) return;
+
+    if (this.#translationData && !this.#translationLang) {
+      ui.notifications.error(
+        game.i18n.format('sr4.importer.translationLangUnknown', {
+          file: this.#selectedTranslationFile?.name ?? '',
+        })
+      );
+      return;
+    }
+
+    const updateExisting =
+      this.element.querySelector('[data-update-existing]')?.checked ?? false;
+    if (updateExisting) {
+      const confirmed = await foundry.applications.api.DialogV2.confirm({
+        window: { title: game.i18n.localize('sr4.importer.updateExisting') },
+        content: `<p>${game.i18n.localize('sr4.importer.updateExistingConfirm')}</p>`,
+      });
+      if (!confirmed) return;
+    }
+
     this.#importing = true;
 
     const button = this.element.querySelector('[data-action="import"]');
@@ -280,6 +471,7 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
       );
 
       let created = 0;
+      let updated = 0;
       let skipped = 0;
       let processed = 0;
       setProgress(0);
@@ -288,6 +480,10 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
       const folderCache = new Map();
       /** @type {Map<string, string>} */
       const parentFolderCache = new Map();
+      /** @type {Map<string, import('@importer/pack/existing-item-match.js').ExistingItemIndex>} */
+      const existingIndexCache = new Map();
+      /** @type {Record<string, import('@utils/item-name-translations.js').LabelTranslations>} */
+      let translationLabels = {};
 
       for (const group of selected) {
         let parentId = null;
@@ -321,29 +517,74 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
           known = new Set([...index].map((e) => e.name.toLowerCase()));
         }
 
-        const docs = [];
-        for (const record of group.records) {
-          const data = group.map(record);
-          if (skipDuplicates && known.has(data.name.toLowerCase())) {
-            skipped += 1;
-            continue;
+        let existingIndex = null;
+        if (updateExisting) {
+          if (!existingIndexCache.has(pack.collection)) {
+            const index = await pack.getIndex({
+              fields: ['system.chummerId', 'system.label', 'system.nameEn'],
+            });
+            existingIndexCache.set(
+              pack.collection,
+              buildExistingItemIndex([...index])
+            );
           }
-          known.add(data.name.toLowerCase());
-          docs.push(data);
+          existingIndex = existingIndexCache.get(pack.collection);
+        }
+
+        const {
+          docs,
+          updates,
+          translationEntries,
+          addedKnownNames,
+          skippedCount,
+        } = planGroupImport(group, {
+          translationData: this.#translationData,
+          lang: this.#translationLang,
+          guidMap: this.#guidMap,
+          existingIndex,
+          skipDuplicates,
+          known,
+        });
+        for (const name of addedKnownNames) known.add(name);
+        skipped += skippedCount;
+        if (translationEntries.length) {
+          translationLabels = mergeItemNameTranslationEntries(
+            translationLabels,
+            translationEntries
+          );
         }
 
         for (let i = 0; i < docs.length; i += CHUNK_SIZE) {
-          await Item.createDocuments(docs.slice(i, i + CHUNK_SIZE), {
+          const createdDocs = await Item.createDocuments(
+            docs.slice(i, i + CHUNK_SIZE),
+            { pack: pack.collection }
+          );
+          if (existingIndex) {
+            for (const doc of createdDocs) {
+              addToExistingItemIndex(existingIndex, doc);
+            }
+          }
+        }
+        for (let i = 0; i < updates.length; i += CHUNK_SIZE) {
+          await Item.updateDocuments(updates.slice(i, i + CHUNK_SIZE), {
             pack: pack.collection,
           });
         }
         created += docs.length;
+        updated += updates.length;
         processed += group.records.length;
         setProgress(total ? Math.round((processed / total) * 100) : 100);
       }
 
+      await registerItemNameTranslations(
+        Object.entries(translationLabels).map(([label, translations]) => ({
+          label,
+          translations,
+        }))
+      );
+
       ui.notifications.info(
-        game.i18n.format('sr4.importer.result', { created, skipped })
+        game.i18n.format('sr4.importer.result', { created, updated, skipped })
       );
     } catch (err) {
       ui.notifications.error(

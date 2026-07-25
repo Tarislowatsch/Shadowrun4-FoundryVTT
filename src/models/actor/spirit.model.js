@@ -1,6 +1,7 @@
 const fields = foundry.data.fields;
 import { summonedEntityFields } from '@models/shared';
-import { computeSpiritDerivedStats } from '@documents/derivedStats.mapper';
+import { computeSpiritDerivedStats } from '@domains/summoned-entity/derived-stats.js';
+import { applyDerivedStatsResult } from './derived-stats-helpers.js';
 
 export class SR4SpiritData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -16,6 +17,6 @@ export class SR4SpiritData extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     const self = /** @type {any} */ (this);
     if (!self.sheetStats) return;
-    Object.assign(self.derivedStats, computeSpiritDerivedStats(self));
+    applyDerivedStatsResult(self, computeSpiritDerivedStats(self));
   }
 }

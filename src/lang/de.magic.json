@@ -7,6 +7,7 @@
     "magic": {
       "adept": "Adept",
       "adjustDV": "Entzugswert anpassen",
+      "backgroundCountHint": "Durch Hintergrundstrahlung reduziert",
       "banish": "Bannen",
       "banishHint": "Einen anvisierten Geist bannen",
       "banishingDrain": "Bann-Entzug",
@@ -35,12 +36,16 @@
         "spellcasting": "Zauberei",
         "summoning": "Beschwörung"
       },
+      "effectiveSplit": "Effektiv (Zaubermagie / Kraftpunkte)",
+      "magicAllocated": "Verteilt",
       "magicStatZero": "MAGIE-Attribut ist 0 — Beschwörung nicht möglich",
       "magician": "Magier",
       "mentorspirit": "Mentor",
+      "mysticAdept": "Mystischer Adept",
       "noSpiritAffinities": "Keine Geist-Typen konfiguriert — zuerst im Magie-Tab zuordnen",
       "noSpriteAffinities": "Keine Sprite-Typen konfiguriert — zuerst im Matrix-Tab zuordnen",
       "noValidBindTarget": "Zuerst einen beschworenen Geist oder Sprite anvisieren",
+      "overAllocatedWarning": "Verteilung überschreitet MAGIE — überzählige Punkte werden ignoriert",
       "powerpoints": "Kraftpunkte",
       "powers": "Kräfte",
       "registeringFading": "Registrierungs-Schwund",
@@ -48,6 +53,7 @@
       "resonanceStatZero": "Dieser Charakter hat keine Resonanz und kann keine komplexen Formen threaden.",
       "selectSpiritType": "Geist-Typ auswählen",
       "selectSpriteType": "Sprite-Typ auswählen",
+      "spellpower": "Zaubermagie",
       "spells": "Zauber",
       "spiritAffinities": {
         "COMBAT": "Kampfgeist",
@@ -115,6 +121,7 @@
         "ZOROASTRIAN": "Zoroastrisch",
         "none": "Keine"
       },
+      "unallocatedHint": "Es sind noch Magiepunkte unverteilt",
       "watcherDrain": "Wächter-Entzug",
       "watcherSummoned": "Wächter beschworen mit {hours} Stunde(n) Lebensdauer"
     },
@@ -154,6 +161,9 @@
         "ratedNoCost": "Mit Stufe (kostenlos)"
       },
       "source": "Quelle",
+      "suppressed": "Ausgesetzt",
+      "suppressedHint": "Ausgefallen — kostet keine Kraftpunkte und gibt keine Boni",
+      "toggleSuppressed": "Kraft aussetzen oder zurückholen",
       "tooltip": {
         "cost": "Kraftpunktekosten. Bei gestuften Kräften Kosten pro Stufe.",
         "rating": "Investierte Kraftstufe.",

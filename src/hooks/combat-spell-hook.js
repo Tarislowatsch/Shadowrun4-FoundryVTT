@@ -1,16 +1,16 @@
+import { isResponsibleForActor } from '@utils/index';
 import {
   openDirectSpellResistDialog,
   openIndirectSpellDefenseDialog,
-} from '@utils/dialog/magic/combat-spell.js';
-import { openOpposedSpellResistDialog } from '@utils/dialog/magic/opposed-spell.js';
+  openOpposedSpellResistDialog,
+} from '@domains/magic/dialogs/index.js';
 import {
   autoResolveSpellResist,
   directSpellResistAttribute,
   localizeResistAttribute,
-} from '@utils/dialog/magic/resist-actions.js';
-import { ApplyDamageFlow } from '@flows/apply-damage-flow';
-import { sendEffectDecisionMessage } from '@flows/apply-effects-flow';
-import { isResponsibleForActor } from '@utils/index';
+} from '@domains/magic/dialogs/resist-actions.js';
+import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
+import { sendEffectDecisionMessage } from '@domains/magic/flow/apply-effects-flow.js';
 import {
   requestReactiveDecision,
   DecisionCategory,

@@ -12,6 +12,7 @@ class SchemaField extends NoopField {
 
 class TypeDataModel {}
 class ActiveEffect {}
+class Actor {}
 class FoundryGame {}
 
 globalThis.foundry = {
@@ -31,7 +32,7 @@ globalThis.foundry = {
     deepClone: (x) => JSON.parse(JSON.stringify(x)),
     getProperty: (obj, key) => key.split('.').reduce((o, k) => o?.[k], obj),
   },
-  documents: { ActiveEffect },
+  documents: { ActiveEffect, Actor },
   abstract: { TypeDataModel },
 };
 

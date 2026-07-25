@@ -311,6 +311,25 @@ a.item-toggle-equip {
   margin-bottom: 1rem;
 }
 
+.implant-essence-modifiers {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.essence-modifier-input {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+
+  select {
+    width: auto;
+  }
+}
+
 /* ---------------- METATYPE CARD ---------------- */
 
 .metatype-card .item-header img {
@@ -337,6 +356,22 @@ a.item-toggle-equip {
   &:hover {
     box-shadow: 0 0 8px rgba(29, 185, 84, 0.25);
   }
+}
+
+.suppressed-badge {
+  padding: 1px 6px;
+  border: 1px solid var(--sr4-red);
+  border-radius: 3px;
+  color: var(--sr4-red);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.power-card.suppressed {
+  opacity: 0.55;
 }
 
 .bound-badge {

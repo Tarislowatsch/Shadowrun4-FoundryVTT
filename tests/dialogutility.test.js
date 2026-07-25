@@ -7,11 +7,12 @@ vi.mock('@utils/rolls/diceutility.js', () => ({
 }));
 
 const {
+  rollSkillDialog,
   rollForcedSkill,
   getSkillDicePool,
   getSpellCategoryBonus,
   getSpellcastingDicePool,
-} = await import('@utils/dialog/dialogutility.js');
+} = await import('@utils/dialog/skill-dice.js');
 
 /**
  * @param {{ rating?: number, attribute?: string, attributes?: Record<string, number> }} [options]
@@ -131,10 +132,56 @@ describe('getSpellcastingDicePool', () => {
   });
 });
 
-describe('rollForcedSkill', () => {
-  it('returns null when the actor has no dice pool for the skill', async () => {
+describe('rollSkillDialog', () => {
+  it('returns undefined when dice is omitted and the actor lacks the skill', async () => {
     const actor = { getSkill: () => undefined };
-    expect(await rollForcedSkill(actor, 'binding', 4)).toBeNull();
+    expect(await rollSkillDialog(actor, 'binding')).toBeUndefined();
+    expect(rollAndShowMock).not.toHaveBeenCalled();
+  });
+
+  it('computes the dice pool automatically when options.dice is omitted', async () => {
+    rollAndShowMock.mockResolvedValue({
+      successes: 2,
+      isGlitch: false,
+      messageId: 'msg-2',
+    });
+    const actor = makeActor({
+      rating: 4,
+      attribute: 'CHARISMA',
+      attributes: { CHARISMA: 3, CURRENTEDGE: 0, EDGE: 0 },
+    });
+
+    await rollSkillDialog(actor, 'binding');
+
+    expect(rollAndShowMock).toHaveBeenCalledWith(
+      expect.objectContaining({ numDice: 7, skillName: 'binding' })
+    );
+  });
+
+  it('uses options.dice as an explicit override instead of the computed pool', async () => {
+    rollAndShowMock.mockResolvedValue({
+      successes: 1,
+      isGlitch: false,
+      messageId: 'msg-3',
+    });
+    const actor = makeActor({
+      rating: 4,
+      attribute: 'CHARISMA',
+      attributes: { CHARISMA: 3, CURRENTEDGE: 0, EDGE: 0 },
+    });
+
+    await rollSkillDialog(actor, 'binding', { dice: 12 });
+
+    expect(rollAndShowMock).toHaveBeenCalledWith(
+      expect.objectContaining({ numDice: 12, skillName: 'binding' })
+    );
+  });
+});
+
+describe('rollForcedSkill', () => {
+  it('returns undefined when the actor has no dice pool for the skill', async () => {
+    const actor = { getSkill: () => undefined };
+    expect(await rollForcedSkill(actor, 'binding', 4)).toBeUndefined();
     expect(rollAndShowMock).not.toHaveBeenCalled();
   });
 

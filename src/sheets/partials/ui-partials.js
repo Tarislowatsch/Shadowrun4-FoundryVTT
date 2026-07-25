@@ -50,6 +50,7 @@ export async function registerUIPartials() {
     { path: `${basePath}/mentor-section.hbs`, name: 'mentor-section' },
     { path: `${basePath}/textarea-field.hbs`, name: 'textarea-field' },
     { path: `${basePath}/item-source-btn.hbs`, name: 'item-source-btn' },
+    { path: `${basePath}/npc-item-list.hbs`, name: 'npc-item-list' },
     {
       path: `${basePath}/item-source-header.hbs`,
       name: 'item-source-header',
@@ -57,6 +58,10 @@ export async function registerUIPartials() {
     { path: `${basePath}/item-source-cell.hbs`, name: 'item-source-cell' },
     { path: `${basePath}/action-button.hbs`, name: 'action-button' },
     { path: `${basePath}/action-button-bar.hbs`, name: 'action-button-bar' },
+    {
+      path: `${basePath}/matrix-action-button.hbs`,
+      name: 'matrix-action-button',
+    },
   ];
   await Promise.all(
     templatePaths.map(async ({ path, name }) => {

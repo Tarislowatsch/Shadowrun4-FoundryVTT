@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 const bindingFlowStartMock = vi.fn();
 
-vi.mock('@flows/binding-flow.js', () => ({
+vi.mock('@domains/summoned-entity/flow/binding-flow.js', () => ({
   BindingFlow: { start: (...args) => bindingFlowStartMock(...args) },
 }));
 

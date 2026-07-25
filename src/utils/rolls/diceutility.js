@@ -1,4 +1,5 @@
-import { SR4 } from '../../config.js';
+import { SR4 } from '@config';
+import { watchDiceTotalPatch } from '@hooks/dice-total-patch-hook.js';
 
 /** @typedef {import('@models/index').SR4RollResult} SR4RollResult */
 /** @typedef {import('@models/index').SR4RollOptions} SR4RollOptions */
@@ -132,8 +133,10 @@ export class DiceUtility {
       skillName,
     };
 
-    let targetId = /** @type {string|null} */ (null);
-    let hookId = /** @type {number|undefined} */ (undefined);
+    let patch =
+      /** @type {ReturnType<typeof watchDiceTotalPatch> | undefined} */ (
+        undefined
+      );
 
     try {
       const content = await foundry.applications.handlebars.renderTemplate(
@@ -141,10 +144,7 @@ export class DiceUtility {
         templateData
       );
 
-      hookId = Hooks.once('renderChatMessageHTML', (chatMessage, html) => {
-        if (chatMessage.id !== targetId) return;
-        html.querySelector('.dice-total').textContent = String(successes);
-      });
+      patch = watchDiceTotalPatch(successes);
 
       const message = await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
@@ -165,13 +165,13 @@ export class DiceUtility {
       });
 
       if (!message) {
-        Hooks.off('renderChatMessageHTML', hookId);
+        patch.cancel();
         return null;
       }
-      targetId = message.id;
+      patch.resolve(message.id);
       return message.id;
     } catch (err) {
-      if (hookId !== undefined) Hooks.off('renderChatMessageHTML', hookId);
+      patch?.cancel();
       console.error('Roll rendering failed:', err);
       return null;
     }

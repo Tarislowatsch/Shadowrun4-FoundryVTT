@@ -17,7 +17,7 @@ vi.mock('@utils/game/game.js', () => ({
 }));
 
 const { spellResistPool, autoResolveSpellResist, directSpellResistAttribute } =
-  await import('@utils/dialog/magic/resist-actions.js');
+  await import('@domains/magic/dialogs/resist-actions.js');
 
 function makeDefender({ willpower = 5, counterspelling = 2, wound = -1 } = {}) {
   return {

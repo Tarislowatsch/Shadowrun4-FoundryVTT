@@ -7,6 +7,7 @@
     "magic": {
       "adept": "Adept",
       "adjustDV": "Adjust DV",
+      "backgroundCountHint": "Reduced by Background Count",
       "banish": "Banish",
       "banishHint": "Banish a targeted spirit",
       "banishingDrain": "Banishing Drain",
@@ -35,12 +36,16 @@
         "spellcasting": "Spellcasting",
         "summoning": "Summoning"
       },
+      "effectiveSplit": "Effective (Spellpower / Power Points)",
+      "magicAllocated": "Allocated",
       "magicStatZero": "MAGIC attribute is 0 — cannot summon",
       "magician": "Magician",
       "mentorspirit": "Mentor spirit",
+      "mysticAdept": "Mystic Adept",
       "noSpiritAffinities": "No spirit types configured — assign types in the Magic tab first",
       "noSpriteAffinities": "No sprite types configured — assign types in the Matrix tab first",
       "noValidBindTarget": "Target a spirit or sprite you have summoned first",
+      "overAllocatedWarning": "Allocation exceeds MAGIC — surplus points are ignored",
       "powerpoints": "Power Points",
       "powers": "Powers",
       "registeringFading": "Registering Fading",
@@ -48,6 +53,7 @@
       "resonanceStatZero": "This character has no Resonance and cannot thread complex forms.",
       "selectSpiritType": "Select spirit type",
       "selectSpriteType": "Select sprite type",
+      "spellpower": "Spellpower",
       "spells": "Spells",
       "spiritAffinities": {
         "COMBAT": "Combat Spirit",
@@ -115,6 +121,7 @@
         "ZOROASTRIAN": "Zoroastrian",
         "none": "None"
       },
+      "unallocatedHint": "Unallocated Magic points remain",
       "watcherDrain": "Watcher Drain",
       "watcherSummoned": "Watcher summoned with {hours} hour(s) life span"
     },
@@ -154,6 +161,9 @@
         "ratedNoCost": "Rated (No Cost)"
       },
       "source": "Source",
+      "suppressed": "Suppressed",
+      "suppressedHint": "Nullified — costs no Power Points and grants no bonuses",
+      "toggleSuppressed": "Suppress or restore this power",
       "tooltip": {
         "cost": "Power Point cost. When rated, this is the cost per level.",
         "rating": "Invested rating level.",

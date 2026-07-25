@@ -1,13 +1,12 @@
+import { localize, openActionDialog } from '@utils/index';
 import {
   ControlModes,
   DEFAULT_RIGGER_LOOKUP,
-  localize,
   mergeRiggerLookup,
-  openActionDialog,
   openDroneAttackDialog,
   openDroneRollDialog,
   resolveRiggerSync,
-} from '@utils/index';
+} from '@domains/rigging/index.js';
 import { SR4SummonedEntitySheet } from './sr4-summoned-entity-sheet.js';
 
 const RIGGER_CONFIG_ROLES = [
@@ -23,7 +22,6 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
     classes: ['shadowrun4e', 'sheet', 'actor', 'vehicle'],
     position: { width: 750, height: 700 },
     actions: {
-      monitorBox: SR4VehicleSheet.#onMonitorBox,
       rollAutonomous: SR4VehicleSheet.#onRollAutonomous,
       attackRoll: SR4VehicleSheet.#onAttackRoll,
       droneAction: SR4VehicleSheet.#onDroneAction,
@@ -283,14 +281,6 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
   // ---------------------------------------------------------------------------
   // Actions
   // ---------------------------------------------------------------------------
-
-  static async #onMonitorBox(event, target) {
-    const index = Number(target.dataset.index);
-    const path = 'system.conditionMonitor.physical.value';
-    const current = foundry.utils.getProperty(this.actor, path);
-    const newValue = index + 1 === current ? index : index + 1;
-    await this.actor.update({ [path]: newValue });
-  }
 
   static async #onRollAutonomous(event, target) {
     const itemId =

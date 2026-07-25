@@ -17,7 +17,7 @@
       {{#if @root.editMode}}
         <input
           type="number"
-          name="system.sheetStats.{{key}}"
+          {{#unless (includes @root.derivedKeys key)}}name="system.sheetStats.{{key}}"{{/unless}}
           value="{{#if (includes @root.derivedKeys key)}}{{lookup @root.derivedBaseValues key}}{{else}}{{lookup @root.sourceStats key}}{{/if}}"
           data-dtype="Number"
           {{#if (eq key "ESSENCE")}}step="0.01"{{/if}}

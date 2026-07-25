@@ -59,12 +59,12 @@
         "strength": "STR",
         "willpower": "WIL"
       },
-      "category": "Kategorie",
       "categories": {
-        "none": "-",
         "matrix": "Matrix",
+        "none": "-",
         "rigging": "Rigging"
       },
+      "category": "Kategorie",
       "composure": "Selbstbeherrschung",
       "delete": "Löschen",
       "edit": "Bearbeiten",
@@ -130,15 +130,18 @@
       "notes": "Notizen",
       "type": "Typ"
     },
+    "controls": {
+      "title": "Shadowrun-Werkzeuge"
+    },
     "device": {
       "attributes": "Attribute",
       "name": "Name",
       "pilot": "Pilot",
       "type": {
-        "label": "Gerätetyp",
         "agent": "Agent",
-        "ic": "IC",
         "blackIc": "Schwarzes IC",
+        "ic": "IC",
+        "label": "Gerätetyp",
         "node": "Knoten"
       }
     },
@@ -287,6 +290,10 @@
       "noFoci": "Keine Foki vorhanden"
     },
     "implant": {
+      "biocompatibility": {
+        "label": "Biokompatibilität",
+        "none": "Keine"
+      },
       "currentEssence": "Aktuelle Essenz",
       "essenceBio": "Bioware-Essenz",
       "essenceCyber": "Cyberware-Essenz",
@@ -300,6 +307,7 @@
         "standard": "Standard"
       },
       "noImplants": "Keine Implantate vorhanden",
+      "sensitiveSystem": "Empfindliches System",
       "type": {
         "bioware": "Bioware",
         "cyberware": "Cyberware",
@@ -338,9 +346,17 @@
       "equipped": "Angelegt",
       "essence": "Essenz",
       "essenceActual": "Tatsächliche Essenz",
+      "essenceActualHint": "Berücksichtigt nur den Grade-Modifikator. Charakter-Qualities (Biokompatibilität, Empfindliches System) werden erst auf dem Charakterbogen verrechnet.",
       "grade": "Grad",
       "legality": "Legalität",
       "name": "Name",
+      "nameOverrideCancel": "Abbrechen",
+      "nameOverrideConfirm": "Bestätigen",
+      "nameOverrideEdit": "Anzeigename überschreiben",
+      "nameOverrideEmpty": "Der Name darf nicht leer sein.",
+      "nameOverrideReset": "Auf übersetzten Namen zurücksetzen",
+      "nameOverrideResetIncomplete": "Für dieses Item ist kein kanonischer englischer Name hinterlegt; der Anzeigename wurde zurückgesetzt, der Rohname konnte aber nicht vollständig wiederhergestellt werden.",
+      "nameOverrideSaveFailed": "Der Item-Name konnte nicht gespeichert werden.",
       "noItems": "Hier würde ich meine Gegenstände aufbewahren, wenn ich welche hätte",
       "notes": "Notizen",
       "quantity": "Anzahl",
@@ -402,6 +418,30 @@
       "negative": "Negativ",
       "noQualities": "Keine Gaben & Handicaps",
       "positive": "Positiv"
+    },
+    "scene": {
+      "modifiers": {
+        "backgroundCount": {
+          "hint": "Positive Werte senken das effektive Magie-Attribut magischer Akteure (und erhöhen Entzug); negative Werte erhöhen es. Betrifft Würfelpools, Kraftstufen-Obergrenzen und beschworene Geister dieser Szene.",
+          "name": "Hintergrundstrahlung",
+          "section": "Hintergrundstrahlung"
+        },
+        "backgroundCountTradition": {
+          "hint": "Optionale Aspektierung. Akteure dieser Tradition werden begünstigt statt behindert; für eine neutrale Strahlung auf Keine lassen.",
+          "name": "Aspektierte Tradition"
+        },
+        "button": "Szenenmodifikatoren",
+        "hint": "Szenenweite Modifikatoren für alle Akteure dieser Szene.",
+        "mysticAdeptReduction": {
+          "hint": "Bei mystischen Adepten: von welcher Seite der Magie-Aufteilung die Hintergrundstrahlung zuerst abgezogen wird (SM S. 118).",
+          "name": "Mystische Adepten verlieren zuerst",
+          "powerPoints": "Kraftpunkte",
+          "spellpower": "Zaubermagie"
+        },
+        "noScene": "Keine aktive Szene — zuerst eine Szene öffnen oder anzeigen.",
+        "save": "Speichern",
+        "title": "Szenenmodifikatoren"
+      }
     },
     "skills": {
       "active": "Aktive Fertigkeiten",

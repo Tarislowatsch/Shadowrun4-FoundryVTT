@@ -2,7 +2,36 @@
   <img class="item-sheet-img" data-edit="img" src="{{ item.img }}" alt="{{ item.name }}" />
   <div class="item-sheet-name">
     <label>{{localize nameKey}}</label>
-    <input type="text" name="name" value="{{ item.name }}" />
+    <div class="item-sheet-name-row">
+      <span class="item-sheet-name-value">{{resolveItemName system.label item.name system.hasCustomName}}</span>
+      <input
+        type="text"
+        class="item-sheet-name-input hidden"
+        value="{{resolveItemName system.label item.name system.hasCustomName}}"
+      />
+      <button type="button" class="item-sheet-name-edit"
+        data-action="editItemName"
+        data-tooltip="{{localize 'sr4.item.nameOverrideEdit'}}">
+        <i class="fas fa-pen"></i>
+      </button>
+      <button type="button" class="item-sheet-name-confirm hidden"
+        data-action="confirmItemName"
+        data-tooltip="{{localize 'sr4.item.nameOverrideConfirm'}}">
+        <i class="fas fa-check"></i>
+      </button>
+      <button type="button" class="item-sheet-name-cancel hidden"
+        data-action="cancelItemName"
+        data-tooltip="{{localize 'sr4.item.nameOverrideCancel'}}">
+        <i class="fas fa-xmark"></i>
+      </button>
+      {{#if system.hasCustomName}}
+      <button type="button" class="item-sheet-name-reset"
+        data-action="resetItemName"
+        data-tooltip="{{localize 'sr4.item.nameOverrideReset'}}">
+        <i class="fas fa-rotate-left"></i>
+      </button>
+      {{/if}}
+    </div>
   </div>
   {{#if @partial-block}}
   <div class="item-sheet-header-extras">

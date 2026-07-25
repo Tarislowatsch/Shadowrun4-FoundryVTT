@@ -6,7 +6,7 @@ import {
   modifiersField,
   REALM_CHOICES,
 } from '@models/shared';
-import { computeMatrixMonitorMax } from '@documents/derivedStats.mapper';
+import { computeMatrixMonitorMax } from '@domains/matrix/derived-stats.js';
 
 /** @type {readonly string[]} */
 export const DEVICE_TYPES = Object.freeze(['agent', 'ic', 'blackIc', 'node']);

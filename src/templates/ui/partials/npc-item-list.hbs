@@ -1,0 +1,25 @@
+<div class="npc-section">
+  <h3>
+    {{localize titleKey}}
+    {{#if editMode}}{{> item-create-btn btnAction=createAction btnItemType=createItemType btnTooltip=titleKey}}{{/if}}
+  </h3>
+  {{#if items.length}}
+    {{#each items as |item|}}
+    <div class="item-card power-card" data-item-id="{{item._id}}">
+      <div class="item-row">
+        <span class="item-name">{{item.name}}</span>
+        {{#if showRating}}<span class="item-property">{{item.system.rating}}</span>{{/if}}
+        {{#if showSource}}
+          {{#if item.system.source}}<span class="item-source">{{item.system.source}}</span>{{/if}}
+          {{> item-source-btn source=item.system.source}}
+        {{/if}}
+        {{> item-edit-btn itemId=item._id}}
+        {{> item-delete-btn itemId=item._id}}
+      </div>
+      {{#if showEffects}}{{> item-card-actions-effects}}{{/if}}
+    </div>
+    {{/each}}
+  {{else}}
+    <p class="empty-list">{{localize emptyKey}}</p>
+  {{/if}}
+</div>

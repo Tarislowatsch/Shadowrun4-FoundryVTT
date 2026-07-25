@@ -24,6 +24,7 @@ export class SourceBooksMenu extends foundry.applications.api.HandlebarsApplicat
   static PARTS = {
     form: {
       template: 'systems/shadowrun4e/templates/settings/source-books-menu.hbs',
+      scrollable: ['.source-books-rows'],
     },
   };
 

@@ -319,10 +319,10 @@
       "ammoInsufficient": "Current ammo count. With Ammo Tracking enabled: burst fire bonuses are reduced for each missing round; an empty weapon blocks the attack and only offers a reload.",
       "burstNarrow": "+N damage based on rounds fired (3→+2, 6→+5, 10→+9).",
       "burstWide": "-N dice to the defender's defense roll based on rounds fired (3→−2, 6→−5, 10→−9).",
-      "edge": "Spend 1 Edge. Adds your maximum Edge rating to the dice pool; 6s are rerolled once.",
-      "loadedAmmo": "Drag ammo items from the compendium or item directory onto the character sheet to make them available here.",
       "controlRig": "+2 dice. Applies while jumped into a vehicle/drone via Control Rig.",
+      "edge": "Spend 1 Edge. Adds your maximum Edge rating to the dice pool; 6s are rerolled once.",
       "hotSim": "+2 dice on Matrix actions while running Hot Sim.",
+      "loadedAmmo": "Drag ammo items from the compendium or item directory onto the character sheet to make them available here.",
       "shots": "Number of rounds fired. Each shot beyond the first adds 1 recoil, reduced by the weapon's RC value.",
       "smartlink": "+2 dice. Requires an implanted smartlink and a smartlink-compatible weapon.",
       "specialization": "+2 dice when the skill specialization applies to this roll."

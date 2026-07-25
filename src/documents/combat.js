@@ -1,24 +1,9 @@
 // @ts-nocheck
-import { SR4 } from '../config.js';
+import { rollInitiativeForCombatant } from '@domains/combat/flow/roll-initiative-flow.js';
 import {
-  getPassCount,
-  getCombatantRealm,
-  getInitiativeBase,
-  edgeFirstInitiative,
-  glitchInitiative,
-  effectivePassCount,
-} from './initiative.js';
-
-/**
- * @param {import('@documents/index').SR4Combatant} combatant
- * @returns {number}
- */
-export function combatantPasses(combatant) {
-  return effectivePassCount(
-    combatant.getFlag('shadowrun4e', 'passLock'),
-    getPassCount(combatant)
-  );
-}
+  advanceTurn,
+  refreshPassLocks,
+} from '@domains/combat/flow/turn-order-flow.js';
 
 export class SR4Combat extends Combat {
   get initiativePass() {
@@ -36,16 +21,7 @@ export class SR4Combat extends Combat {
     await super._onUpdate(changed, options, userId);
     if (userId !== game.user?.id) return;
     if (!('round' in changed)) return;
-    await this.#refreshPassLocks();
-  }
-
-  async #refreshPassLocks() {
-    const updates = this.combatants.map((c) => ({
-      _id: c.id,
-      'flags.shadowrun4e.passLock': getPassCount(c),
-    }));
-    if (updates.length)
-      await this.updateEmbeddedDocuments('Combatant', updates);
+    await refreshPassLocks(this);
   }
 
   /** @override */
@@ -56,7 +32,7 @@ export class SR4Combat extends Combat {
     for (const id of idList) {
       const combatant = this.combatants.get(id);
       if (!combatant?.isOwner) continue;
-      await this.#rollInitiativeForCombatant(combatant);
+      await rollInitiativeForCombatant(this, combatant);
     }
 
     if (currentId) {
@@ -66,96 +42,8 @@ export class SR4Combat extends Combat {
     return this;
   }
 
-  async #rollInitiativeForCombatant(combatant) {
-    const actor = combatant.actor;
-    if (!actor) return;
-
-    const realm = getCombatantRealm(combatant);
-    const base = getInitiativeBase(actor, realm);
-    const hasEdge = (actor.getAttribute?.('CURRENTEDGE') ?? 0) > 0;
-
-    if (hasEdge && (await this.#promptEdgeFirst())) {
-      await actor.useEdge();
-      await combatant.update({ initiative: edgeFirstInitiative(base) });
-      return;
-    }
-
-    const malus = actor.getMalus?.() ?? 0;
-    const numDice = Math.max(1, base - malus);
-    const roll = await new Roll(
-      `${numDice}d6cs>=${SR4.rules.successThreshold}`
-    ).evaluate();
-
-    const results = (roll.dice[0]?.results ?? []).map((r) => r.result);
-    const successes = results.filter(
-      (v) => v >= SR4.rules.successThreshold
-    ).length;
-    const failures = results.filter((v) => v === 1).length;
-    const glitch = failures >= results.length / 2;
-
-    const score = base + successes;
-    const initiative = glitch ? glitchInitiative(score) : score;
-
-    await combatant.update({ initiative });
-
-    let flavor = `${game.i18n.localize('sr4.roll.rolling')} — ${game.i18n.localize(
-      `sr4.combat.realm.${realm}`
-    )}`;
-    if (glitch) flavor += ` (${game.i18n.localize('sr4.combat.glitch')})`;
-
-    const canEdge = hasEdge && !glitch;
-    await roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      flavor,
-      flags: {
-        sr4: {
-          actorId: actor.id,
-          initiativeEdge: canEdge
-            ? {
-                combatId: this.id,
-                combatantId: combatant.id,
-                base,
-                successes,
-              }
-            : undefined,
-        },
-      },
-    });
-  }
-
-  async #promptEdgeFirst() {
-    return foundry.applications.api.DialogV2.confirm({
-      window: { title: game.i18n.localize('sr4.combat.edgeFirst.title') },
-      content: `<p>${game.i18n.localize('sr4.combat.edgeFirst.prompt')}</p>`,
-      yes: { label: game.i18n.localize('sr4.combat.edgeFirst.yes') },
-      no: { label: game.i18n.localize('sr4.combat.edgeFirst.no') },
-      defaultYes: false,
-    });
-  }
-
+  /** @override */
   async nextTurn() {
-    const pass = this.initiativePass;
-    const turns = this.turns;
-    const currentTurn = this.turn ?? -1;
-
-    const nextIdx = turns.findIndex(
-      (c, i) => i > currentTurn && combatantPasses(c) >= pass
-    );
-    if (nextIdx !== -1) {
-      return this.update({ turn: nextIdx });
-    }
-
-    const nextPass = pass + 1;
-    const firstInNextPass = turns.findIndex(
-      (c) => combatantPasses(c) >= nextPass
-    );
-    if (firstInNextPass !== -1) {
-      return this.update({
-        turn: firstInNextPass,
-        [`flags.shadowrun4e.initiativePass`]: nextPass,
-      });
-    }
-
-    return this.nextRound();
+    return advanceTurn(this);
   }
 }

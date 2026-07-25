@@ -2,7 +2,7 @@
 import {
   DEFAULT_RIGGER_LOOKUP,
   mergeRiggerLookup,
-} from '@utils/rigging/drone-pool.js';
+} from '@domains/rigging/index.js';
 
 const SKILL_ROLES = [
   'attackSkill',
@@ -30,6 +30,7 @@ export class RiggerLookupMenu extends foundry.applications.api.HandlebarsApplica
   static PARTS = {
     form: {
       template: 'systems/shadowrun4e/templates/settings/rigger-lookup-menu.hbs',
+      scrollable: [''],
     },
   };
 

@@ -7,6 +7,7 @@ import { InitiativeHook } from './initiative-hook';
 import { SettingsHook } from './settings-hook';
 import { ActorDirectoryHook } from './actor-directory-hook';
 import { CompendiumDirectoryHook } from './compendium-directory-hook';
+import { CompendiumItemNameHook } from './compendium-item-name-hook';
 import { SummoningHook } from './summoning-hook';
 import { LinkedActorCleanupHook } from './linked-actor-cleanup-hook';
 import { SceneControlsHook } from './scene-controls-hook';
@@ -23,6 +24,7 @@ export function registerHooks() {
   new DieChatHook();
   new ActorDirectoryHook();
   new CompendiumDirectoryHook();
+  new CompendiumItemNameHook();
   new LinkedActorCleanupHook();
   new SceneControlsHook();
   new EffectTemplateCacheHook();

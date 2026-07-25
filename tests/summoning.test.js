@@ -4,7 +4,7 @@ import {
   clampForce,
   calculateSummoningDrain,
   SPIRIT_AFFINITY_CATEGORIES,
-} from '../src/utils/dialog/magic/summoning-helpers.js';
+} from '../src/domains/summoned-entity/dialogs/summoning-helpers.js';
 
 describe('SPIRIT_AFFINITY_CATEGORIES', () => {
   it('contains exactly the 5 spell categories', () => {
@@ -125,5 +125,13 @@ describe('calculateSummoningDrain', () => {
 
   it.each([0, 1])('has a minimum drain of 2 (hits=%i)', (hits) => {
     expect(calculateSummoningDrain(hits)).toBe(2);
+  });
+
+  it('adds a positive modifier term', () => {
+    expect(calculateSummoningDrain(3, 2)).toBe(8);
+  });
+
+  it('adds a negative modifier term', () => {
+    expect(calculateSummoningDrain(3, -2)).toBe(4);
   });
 });

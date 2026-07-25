@@ -4,11 +4,13 @@ const rollSkillDialogMock = vi.fn();
 const offerEdgeRetryMock = vi.fn();
 const awaitEntityResistMock = vi.fn();
 const getSkillDicePoolMock = vi.fn();
-const resolveDrainMock = vi.fn();
-const calculateSummonedEntityDrainPoolMock = vi.fn();
+const resolveSpiritDrainMock = vi.fn();
 
-vi.mock('@utils/dialog/dialogutility.js', () => ({
+vi.mock('@utils/dialog/roll-dialog-core.js', () => ({
   localize: (key) => key,
+}));
+
+vi.mock('@utils/dialog/skill-dice.js', () => ({
   rollSkillDialog: (...args) => rollSkillDialogMock(...args),
   rollForcedSkill: async (actor, skillName, force) => {
     const numDice = getSkillDicePoolMock(actor, skillName);
@@ -24,22 +26,34 @@ vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
   offerEdgeRetry: (...args) => offerEdgeRetryMock(...args),
 }));
 
-vi.mock('@utils/index.js', () => ({
-  getGame: () => globalThis.game,
-  getSkillDicePool: (...args) => getSkillDicePoolMock(...args),
-}));
+vi.mock('@utils/index.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    getGame: () => globalThis.game,
+    getSkillDicePool: (...args) => getSkillDicePoolMock(...args),
+  };
+});
 
-vi.mock('@utils/dialog/magic/resist-actions.js', () => ({
-  awaitEntityResist: (...args) => awaitEntityResistMock(...args),
-}));
+vi.mock('@domains/summoned-entity/dialogs/index.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    resolveSpiritDrain: (...args) => resolveSpiritDrainMock(...args),
+  };
+});
 
-vi.mock('@utils/dialog/magic/drain.js', () => ({
-  resolveDrain: (...args) => resolveDrainMock(...args),
-  calculateSummonedEntityDrainPool: (...args) =>
-    calculateSummonedEntityDrainPoolMock(...args),
-}));
+vi.mock('@domains/magic/dialogs/resist-actions.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    awaitEntityResist: (...args) => awaitEntityResistMock(...args),
+  };
+});
 
-const { BindingFlow } = await import('../src/flows/binding-flow.js');
+const { BindingFlow } = await import(
+  '../src/domains/summoned-entity/flow/binding-flow.js'
+);
 
 function makeActor({ id = 'Actor.summoner1', attributes = {} } = {}) {
   return {
@@ -50,6 +64,7 @@ function makeActor({ id = 'Actor.summoner1', attributes = {} } = {}) {
       technomancy: { fadingAttribute: 'WILLPOWER' },
     },
     getAttribute: (key) => attributes[key] ?? 6,
+    getSpellpower: () => attributes.MAGIC ?? 6,
   };
 }
 
@@ -94,7 +109,6 @@ beforeEach(() => {
   globalThis.game.actors = [];
   globalThis.game.user = { targets: [] };
   getSkillDicePoolMock.mockReturnValue(6);
-  calculateSummonedEntityDrainPoolMock.mockReturnValue(8);
 });
 
 describe('BindingFlow.start — first binding', () => {
@@ -194,7 +208,7 @@ describe('BindingFlow.start — first binding', () => {
 
     expect(offerEdgeRetryMock).not.toHaveBeenCalled();
     expect(target.update).not.toHaveBeenCalled();
-    expect(resolveDrainMock).not.toHaveBeenCalled();
+    expect(resolveSpiritDrainMock).not.toHaveBeenCalled();
   });
 
   it('blocks binding once the summoner has Charisma-many bound spirits already', async () => {
@@ -255,38 +269,21 @@ describe('BindingFlow.start — rebinding', () => {
 });
 
 describe('BindingFlow.start — drain', () => {
-  it.each([
-    [
-      'DV = 2x the spirit hits (min 2), Stun when Force <= Magic',
-      { successes: 4, summonerHits: 4, resistHits: 3 },
-      { drainValue: 6, isPhysical: false, force: 4 },
-    ],
-    [
-      'the minimum drain value of 2 when the spirit scored no hits',
-      { successes: 3, summonerHits: 3, resistHits: 0 },
-      { drainValue: 2 },
-    ],
-  ])('resolves drain with %s', async (_label, rollValues, expectedFields) => {
-    mockRoll(rollValues);
+  it('resolves spirit drain with the binding label keys and resist hits as the drain source', async () => {
+    mockRoll({ successes: 4, summonerHits: 4, resistHits: 3 });
     const summoner = makeActor({ attributes: { MAGIC: 5, CHARISMA: 6 } });
 
-    await BindingFlow.start(summoner, makeTarget('spirit'));
+    await BindingFlow.start(summoner, makeTarget('spirit', { force: 4 }));
 
-    expect(resolveDrainMock).toHaveBeenCalledWith(
+    expect(resolveSpiritDrainMock).toHaveBeenCalledWith(
       summoner,
-      expect.objectContaining(expectedFields)
-    );
-  });
-
-  it('is Physical drain when Force exceeds the magician Magic', async () => {
-    mockRoll({ successes: 4, summonerHits: 4, resistHits: 1 });
-    const summoner = makeActor({ attributes: { MAGIC: 3, CHARISMA: 6 } });
-
-    await BindingFlow.start(summoner, makeTarget('spirit', { force: 5 }));
-
-    expect(resolveDrainMock).toHaveBeenCalledWith(
-      summoner,
-      expect.objectContaining({ isPhysical: true })
+      4,
+      3,
+      'spirit',
+      {
+        spiritLabelKey: 'sr4.magic.bindingDrain',
+        spriteLabelKey: 'sr4.magic.registeringFading',
+      }
     );
   });
 
@@ -296,19 +293,7 @@ describe('BindingFlow.start — drain', () => {
 
     await BindingFlow.start(summoner, makeTarget('spirit'));
 
-    expect(resolveDrainMock).toHaveBeenCalled();
-  });
-
-  it('calculates the drain pool for the entity type being bound', async () => {
-    mockRoll({ successes: 4, summonerHits: 4, resistHits: 1 });
-    const summoner = makeActor({ attributes: { RESONANCE: 5, CHARISMA: 6 } });
-
-    await BindingFlow.start(summoner, makeTarget('sprite'));
-
-    expect(calculateSummonedEntityDrainPoolMock).toHaveBeenCalledWith(
-      summoner,
-      'sprite'
-    );
+    expect(resolveSpiritDrainMock).toHaveBeenCalled();
   });
 });
 

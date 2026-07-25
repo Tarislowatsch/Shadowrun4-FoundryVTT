@@ -109,6 +109,8 @@ export const ATTRIBUTE_ABBR_TO_KEY = {
   ESS: attr.ESSENCE,
   MAG: attr.MAGIC,
   RES: attr.RESONANCE,
+  KON: attr.BODY,
+  GES: attr.AGILITY,
 };
 
 /** @type {Array<[string, string]>} [xmlPrefix, attrKey] */

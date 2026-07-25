@@ -10,6 +10,7 @@ const fields = foundry.data.fields;
  * @property {number}   rating
  * @property {number}   cost
  * @property {boolean}  geas
+ * @property {boolean}  suppressed
  * @property {string}   description
  * @property {string}   notes
  * @property {string}   source
@@ -33,6 +34,7 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
       }),
       cost: new fields.NumberField({ initial: 0.5, min: 0, nullable: false }),
       geas: new fields.BooleanField({ initial: false }),
+      suppressed: new fields.BooleanField({ initial: false }),
       ...descriptionFields({ description: 'string' }),
       affects: new fields.ArrayField(new fields.StringField({ blank: false }), {
         initial: [],
@@ -44,6 +46,20 @@ export class SR4PowerData extends foundry.abstract.TypeDataModel {
     const self = /** @type {SR4Power} */ (/** @type {unknown} */ (this));
     return self.ratingMode === 'rated' ? self.cost * self.rating : self.cost;
   }
+}
+
+/**
+ * Power Points a power actually ties up. Works on live models and on the plain
+ * item data the sheets hand around, where the totalCost getter is not carried
+ * over.
+ * @param {Partial<SR4Power> & { totalCost?: number }} [system]
+ * @returns {number}
+ */
+export function powerPointCost(system) {
+  if (!system || system.suppressed === true) return 0;
+  if (typeof system.totalCost === 'number') return system.totalCost;
+  const cost = system.cost ?? 0;
+  return system.ratingMode === 'rated' ? cost * (system.rating ?? 1) : cost;
 }
 
 /**

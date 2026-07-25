@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ApplyDamageFlow } from '../src/flows/apply-damage-flow.js';
+import { ApplyDamageFlow } from '../src/domains/combat/flow/apply-damage-flow.js';
 
 // setup.js installs a foundry.Game stub and a matching `game` instance so
 // getGame() succeeds; i18n methods return the key unchanged.

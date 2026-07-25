@@ -3,6 +3,11 @@ import { buildWeaponContext } from './weapon-context.js';
 import { buildArmorContext } from './armor-context.js';
 import { buildComputedStats, sortSkillsByLabel } from './actor-context.js';
 import SR4BaseActorSheet from './sr4-base-actor-sheet.js';
+import {
+  buildResistanceElements,
+  buildRealmOptions,
+  buildSimModeOptions,
+} from './resistance-actions.js';
 
 export default class SR4NpcSheet extends SR4BaseActorSheet {
   static DEFAULT_OPTIONS = {
@@ -76,9 +81,9 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
       armor: buildArmorContext(items),
       critterPowers: this._enrichItemContext(items, 'CritterPower'),
       isTechnomancer: actorData.system.technomancer,
-      resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
-      realmOptions: SR4BaseActorSheet._buildRealmOptions(this.actor),
-      simModeOptions: SR4BaseActorSheet._buildSimModeOptions(),
+      resistanceElements: buildResistanceElements(),
+      realmOptions: buildRealmOptions(this.actor),
+      simModeOptions: buildSimModeOptions(),
       ...buildComputedStats(actorData, derived, sourceStats, sourceModifiers),
     };
   }

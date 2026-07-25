@@ -14,10 +14,20 @@ const applyAndSendMock = vi.fn();
 vi.mock('@utils/index', () => ({
   getGame: () => globalThis.game,
   getValidTargetActors: vi.fn(),
+}));
+
+vi.mock('@domains/combat/dialogs/defense.js', () => ({
   openDefenseDialog: (...args) => openDefenseDialogMock(...args),
   defaultDefensePool: (...args) => defaultDefensePoolMock(...args),
+}));
+
+vi.mock('@domains/combat/dialogs/soak.js', () => ({
   openSoakDialog: (...args) => openSoakDialogMock(...args),
   defaultSoakPool: (...args) => defaultSoakPoolMock(...args),
+}));
+
+vi.mock('@domains/rigging/index.js', () => ({
+  openDroneDefenseDialog: (...args) => openDroneDefenseDialogMock(...args),
 }));
 
 vi.mock('@utils/rolls/decision-provider.js', () => ({
@@ -31,10 +41,6 @@ vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
   resolveEdgeForRoll: (...args) => resolveEdgeForRollMock(...args),
 }));
 
-vi.mock('@utils/rigging/drone-defense.js', () => ({
-  openDroneDefenseDialog: (...args) => openDroneDefenseDialogMock(...args),
-}));
-
 vi.mock('./apply-damage-flow', () => ({
   ApplyDamageFlow: {
     sendDecisionMessage: (...args) => sendDecisionMessageMock(...args),
@@ -43,7 +49,9 @@ vi.mock('./apply-damage-flow', () => ({
   },
 }));
 
-const { DefenseFlow } = await import('../src/flows/defense-flow.js');
+const { DefenseFlow } = await import(
+  '../src/domains/combat/flow/defense-flow.js'
+);
 
 function makeDefender({ impact = 5, ballistic = 3 } = {}) {
   return {
@@ -76,7 +84,6 @@ beforeEach(() => {
     uuid: 'Actor.attacker1',
     name: 'Attacker',
   }));
-  globalThis.fromUuid = globalThis.fromUuid;
   // successes=3, defenseHits=0 -> netSuccesses=3
   requestReactiveDecisionMock.mockImplementation(async (opts) => {
     if (opts.dialogKind === 'DEFENSE') return { successes: 3 };

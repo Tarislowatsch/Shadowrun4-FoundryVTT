@@ -3,7 +3,7 @@ import {
   evaluateForceFormula,
   resolveAttribute,
   isForceFormula,
-} from '@utils/force-formula.js';
+} from '@domains/magic/force-formula.js';
 
 describe('isForceFormula', () => {
   it.each([

@@ -30,11 +30,19 @@ import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
 import {
   buildModPoolFromCollection,
   resolveModsAndAvailability,
-} from '@sheets/shared/mod-resolution';
+  wireFocusSelectListeners,
+  wireImageEditListener,
+} from '@sheets/shared';
+import {
+  buildCustomNamePayload,
+  buildResetNamePayload,
+} from './item-name-override.js';
 
 export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ItemSheetV2
 ) {
+  _listenerAbort = new AbortController();
+
   static DEFAULT_OPTIONS = {
     classes: ['shadowrun4e', 'sheet', 'item', 'sheet-container'],
     position: { width: 1200, height: 600 },
@@ -57,6 +65,10 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
       addMod: SR4ItemSheet.#onAddMod,
       removeMod: SR4ItemSheet.#onRemoveMod,
       createMod: SR4ItemSheet.#onCreateMod,
+      editItemName: SR4ItemSheet.#onEditItemName,
+      confirmItemName: SR4ItemSheet.#onConfirmItemName,
+      cancelItemName: SR4ItemSheet.#onCancelItemName,
+      resetItemName: SR4ItemSheet.#onResetItemName,
     },
   };
 
@@ -166,89 +178,120 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     context.weaponcategories = WeaponCategory;
     context.ammocategories = AmmoCategory;
 
-    if (this.item.type === 'Ranged Weapon' && this.item.parent) {
-      const cat = this.item.system.category ?? '';
-      context.availableAmmo = this.item.parent.items
-        .filter(
-          (i) =>
-            i.type === 'Ammo' &&
-            (!i.system.category || !cat || i.system.category === cat)
-        )
-        .map((i) => ({ id: i.id, name: i.name }));
-    } else {
-      context.availableAmmo = [];
-    }
-
-    if (
-      this.item.type === 'Ranged Weapon' ||
-      this.item.type === 'Melee Weapon'
-    ) {
-      /** @type {any} */
-      const live = this.document.system;
-      context.system.effectiveDamage = live.effectiveDamage;
-      context.system.effectiveAP = live.effectiveAP;
-      context.system.effectiveArmorType = live.effectiveArmorType;
-      context.system.loadedAmmoName = live.loadedAmmoName;
-      context.system.effectiveRC = live.effectiveRC;
-      context.system.effectiveSmartlink = live.effectiveSmartlink;
-      context.system.usedModSlots = live.usedModSlots;
-      context.system.modSlotWarning = live.modSlotWarning;
-      context.system.totalCost = live.totalCost;
-
-      const { installedMods, availableMods } = this._resolveItemMods(
-        'Weapon Mod',
-        live.installedModIds
-      );
-      context.availableWeaponMods = availableMods;
-      context.installedMods = installedMods;
-    }
-
-    if (this.item.type === 'Armor') {
-      /** @type {any} */
-      const live = this.document.system;
-      context.system.effectiveBallistic = live.effectiveBallistic;
-      context.system.effectiveImpact = live.effectiveImpact;
-      context.system.maxCapacity = live.maxCapacity;
-      context.system.usedCapacity = live.usedCapacity;
-      context.system.capacityWarning = live.capacityWarning;
-      context.system.totalCost = live.totalCost;
-
-      const { installedMods, availableMods } = this._resolveItemMods(
-        'Armor Mod',
-        live.installedModIds
-      );
-      context.availableArmorMods = availableMods;
-      context.installedMods = installedMods;
-    }
-
-    if (this.item.type === 'Power') {
-      /** @type {any} */
-      const live = this.document.system;
-      context.system.totalCost = live.totalCost;
-    }
-
-    if (this.item.type === 'Weapon Mod') {
-      context.mountpoints = WeaponMountPoints;
-    }
-
-    if (this.item.type === 'Metatype') {
-      context.attributeRows = SR4ItemSheet.#buildAttributeRows(context.system);
-    }
-
-    if (this.item.type === 'CritterTemplate') {
-      context.critterAttributeRows = SR4ItemSheet.#buildCritterAttributeRows(
-        context.system
-      );
-    }
-
-    if (this.item.type === 'Mentor') {
-      context.mentorcategories = MentorCategories;
-      context.mentorContext = buildMentorContext(this.document);
+    context.availableAmmo = [];
+    for (const builder of SR4ItemSheet.#TYPE_CONTEXT_BUILDERS[this.item.type] ??
+      []) {
+      this[builder](context);
     }
 
     this._prepareActionsEffectsContext(context);
 
     return context;
+  }
+
+  /** @type {Record<string, string[]>} */
+  static #TYPE_CONTEXT_BUILDERS = {
+    'Ranged Weapon': [
+      '_buildWeaponTypeContext',
+      '_buildRangedWeaponAmmoContext',
+    ],
+    'Melee Weapon': ['_buildWeaponTypeContext'],
+    Armor: ['_buildArmorTypeContext'],
+    Implant: ['_buildImplantTypeContext'],
+    Power: ['_buildPowerTypeContext'],
+    'Weapon Mod': ['_buildWeaponModTypeContext'],
+    Metatype: ['_buildMetatypeTypeContext'],
+    CritterTemplate: ['_buildCritterTemplateTypeContext'],
+    Mentor: ['_buildMentorTypeContext'],
+  };
+
+  /** @param {object} context */
+  _buildRangedWeaponAmmoContext(context) {
+    if (!this.item.parent) return;
+    const cat = this.item.system.category ?? '';
+    context.availableAmmo = this.item.parent.items
+      .filter(
+        (i) =>
+          i.type === 'Ammo' &&
+          (!i.system.category || !cat || i.system.category === cat)
+      )
+      .map((i) => ({ id: i.id, name: i.name }));
+  }
+
+  /** @param {object} context */
+  _buildWeaponTypeContext(context) {
+    /** @type {any} */
+    const live = this.document.system;
+    context.system.effectiveDamage = live.effectiveDamage;
+    context.system.effectiveAP = live.effectiveAP;
+    context.system.effectiveArmorType = live.effectiveArmorType;
+    context.system.loadedAmmoName = live.loadedAmmoName;
+    context.system.effectiveRC = live.effectiveRC;
+    context.system.effectiveSmartlink = live.effectiveSmartlink;
+    context.system.usedModSlots = live.usedModSlots;
+    context.system.modSlotWarning = live.modSlotWarning;
+    context.system.totalCost = live.totalCost;
+
+    const { installedMods, availableMods } = this._resolveItemMods(
+      'Weapon Mod',
+      live.installedModIds
+    );
+    context.availableWeaponMods = availableMods;
+    context.installedMods = installedMods;
+  }
+
+  /** @param {object} context */
+  _buildArmorTypeContext(context) {
+    /** @type {any} */
+    const live = this.document.system;
+    context.system.effectiveBallistic = live.effectiveBallistic;
+    context.system.effectiveImpact = live.effectiveImpact;
+    context.system.maxCapacity = live.maxCapacity;
+    context.system.usedCapacity = live.usedCapacity;
+    context.system.capacityWarning = live.capacityWarning;
+    context.system.totalCost = live.totalCost;
+
+    const { installedMods, availableMods } = this._resolveItemMods(
+      'Armor Mod',
+      live.installedModIds
+    );
+    context.availableArmorMods = availableMods;
+    context.installedMods = installedMods;
+  }
+
+  /** @param {object} context */
+  _buildImplantTypeContext(context) {
+    context.system.essenceActual = this.document.system.essenceActual;
+  }
+
+  /** @param {object} context */
+  _buildPowerTypeContext(context) {
+    /** @type {any} */
+    const live = this.document.system;
+    context.system.totalCost = live.totalCost;
+  }
+
+  /** @param {object} context */
+  _buildWeaponModTypeContext(context) {
+    context.mountpoints = WeaponMountPoints;
+  }
+
+  /** @param {object} context */
+  _buildMetatypeTypeContext(context) {
+    context.attributeRows = SR4ItemSheet.#buildAttributeRows(context.system);
+  }
+
+  /** @param {object} context */
+  _buildCritterTemplateTypeContext(context) {
+    context.critterAttributeRows = SR4ItemSheet.#buildCritterAttributeRows(
+      context.system
+    );
+  }
+
+  /** @param {object} context */
+  _buildMentorTypeContext(context) {
+    context.mentorcategories = MentorCategories;
+    context.mentorContext = buildMentorContext(this.document);
   }
 
   static #ATTRIBUTE_ROW_KEYS = [
@@ -316,41 +359,85 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
   _onRender(context, options) {
     super._onRender?.(context, options);
 
-    this.element
-      .querySelectorAll('input[type="number"], input[type="text"]')
-      .forEach((input) => {
-        input.addEventListener('focus', () => input.select());
-      });
+    this._listenerAbort.abort();
+    this._listenerAbort = new AbortController();
+    const { signal } = this._listenerAbort;
+
+    wireFocusSelectListeners(this.element, { signal });
 
     this.element
       .querySelectorAll('select[data-mentor-choice]')
       .forEach((select) => {
-        select.addEventListener('change', async (event) => {
-          const set = event.currentTarget.dataset.set;
-          if (!set) return;
-          await selectMentorChoice(this.item, set, event.currentTarget.value);
-        });
+        select.addEventListener(
+          'change',
+          async (event) => {
+            const set = event.currentTarget.dataset.set;
+            if (!set) return;
+            await selectMentorChoice(this.item, set, event.currentTarget.value);
+          },
+          { signal }
+        );
       });
 
     this.element
       .querySelectorAll('input.sr4-checkbox[type="checkbox"]')
       .forEach((checkbox) => {
-        checkbox.addEventListener('change', async (e) => {
-          const field = e.currentTarget.dataset.field;
-          if (!field) return;
-          await this.item.update({ [field]: e.currentTarget.checked });
-        });
+        checkbox.addEventListener(
+          'change',
+          async (e) => {
+            const field = e.currentTarget.dataset.field;
+            if (!field) return;
+            await this.item.update({ [field]: e.currentTarget.checked });
+          },
+          { signal }
+        );
       });
 
-    this.element
-      .querySelector('[data-edit="img"]')
-      ?.addEventListener('click', () => {
-        new foundry.applications.apps.FilePicker.implementation({
-          type: 'image',
-          current: this.item.img,
-          callback: (path) => this.item.update({ img: path }),
-        }).browse();
-      });
+    wireImageEditListener(this.element, this.item, { signal });
+
+    this.element.querySelectorAll('.item-sheet-name-input').forEach((input) => {
+      input.addEventListener(
+        'keydown',
+        (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            input
+              .closest('.item-sheet-name-row')
+              ?.querySelector('.item-sheet-name-confirm')
+              ?.click();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            input
+              .closest('.item-sheet-name-row')
+              ?.querySelector('.item-sheet-name-cancel')
+              ?.click();
+          }
+        },
+        { signal }
+      );
+    });
+  }
+
+  /**
+   * @param {HTMLElement} row
+   * @param {boolean} editing
+   */
+  _setNameEditMode(row, editing) {
+    row
+      .querySelector('.item-sheet-name-value')
+      ?.classList.toggle('hidden', editing);
+    row
+      .querySelector('.item-sheet-name-edit')
+      ?.classList.toggle('hidden', editing);
+    row
+      .querySelector('.item-sheet-name-input')
+      ?.classList.toggle('hidden', !editing);
+    row
+      .querySelector('.item-sheet-name-confirm')
+      ?.classList.toggle('hidden', !editing);
+    row
+      .querySelector('.item-sheet-name-cancel')
+      ?.classList.toggle('hidden', !editing);
   }
 
   _prepareActionsEffectsContext(context) {
@@ -439,6 +526,61 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     ]);
     if (created[0]) created[0].sheet.render(true);
     this.render();
+  }
+
+  static #onEditItemName(event, target) {
+    const row = target.closest('.item-sheet-name-row');
+    const input = row?.querySelector('.item-sheet-name-input');
+    if (!row || !input) return;
+    input.dataset.originalValue = input.value;
+    this._setNameEditMode(row, true);
+    input.focus();
+    input.select();
+  }
+
+  static async #onConfirmItemName(event, target) {
+    const row = target.closest('.item-sheet-name-row');
+    const input = row?.querySelector('.item-sheet-name-input');
+    if (!row || !input) return;
+    const payload = buildCustomNamePayload(input.value);
+    if (!payload) {
+      ui.notifications.warn(game.i18n.localize('sr4.item.nameOverrideEmpty'));
+      return;
+    }
+    try {
+      await this.item.update(payload);
+    } catch (err) {
+      console.error(err);
+      ui.notifications.error(
+        game.i18n.localize('sr4.item.nameOverrideSaveFailed')
+      );
+    }
+  }
+
+  static #onCancelItemName(event, target) {
+    const row = target.closest('.item-sheet-name-row');
+    const input = row?.querySelector('.item-sheet-name-input');
+    if (!row || !input) return;
+    input.value = input.dataset.originalValue ?? input.value;
+    this._setNameEditMode(row, false);
+  }
+
+  static async #onResetItemName() {
+    const { payload, restoredCanonicalName } = buildResetNamePayload(this.item);
+    try {
+      await this.item.update(payload);
+    } catch (err) {
+      console.error(err);
+      ui.notifications.error(
+        game.i18n.localize('sr4.item.nameOverrideSaveFailed')
+      );
+      return;
+    }
+    if (!restoredCanonicalName) {
+      ui.notifications.warn(
+        game.i18n.localize('sr4.item.nameOverrideResetIncomplete')
+      );
+    }
   }
 
   // -- Effects (embedded on this item) ---------------------------------------

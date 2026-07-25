@@ -1,5 +1,6 @@
 import { englishOr, parseNumber, sourceOf, upper } from './helpers.js';
 import { ATTRIBUTE_ABBR_TO_KEY } from './constants.js';
+import { resolveMagicSplit } from '@domains/magic/split.js';
 
 /** @type {Array<[string, string]>} [xmlAbbr, metatypeModelKey] */
 const LIMIT_ATTR_MAP = [
@@ -19,27 +20,33 @@ const LIMIT_ATTR_MAP = [
 ];
 
 /**
- * @type {Record<string, string>}
+ * @type {Array<[string, string]>}
  */
-const TRADITION_MAP = {
-  hermetic: 'HERMETIC',
-  shamanic: 'SHAMAN',
-  shaman: 'SHAMAN',
-  wicca: 'WICCA',
-  wiccan: 'WICCA',
-  chaos: 'CHAOS',
-};
+const TRADITION_PREFIXES = [
+  ['hermet', 'HERMETIC'],
+  ['scham', 'SHAMAN'],
+  ['shaman', 'SHAMAN'],
+  ['wicca', 'WICCA'],
+  ['chaos', 'CHAOS'],
+];
 
 /**
  * @type {Record<string, string>}
  */
-const KNOWLEDGE_CATEGORY_MAP = {
+const SKILL_CATEGORY_MAP = {
   academic: 'academic',
   professional: 'academic',
   interest: 'hobby',
   hobby: 'hobby',
   street: 'street',
   language: 'language',
+  combat: 'combat',
+  physical: 'physical',
+  social: 'social',
+  technical: 'technical',
+  vehicle: 'vehicle',
+  magical: 'magic',
+  resonance: 'resonance',
 };
 
 /**
@@ -55,13 +62,13 @@ function parseBool(value) {
  * @returns {string}
  */
 function resolveTradition(raw) {
-  return (
-    TRADITION_MAP[
-      String(raw ?? '')
-        .trim()
-        .toLowerCase()
-    ] ?? 'NONE'
+  const normalized = String(raw ?? '')
+    .trim()
+    .toLowerCase();
+  const match = TRADITION_PREFIXES.find(([prefix]) =>
+    normalized.startsWith(prefix)
   );
+  return match?.[1] ?? 'NONE';
 }
 
 /**
@@ -137,12 +144,58 @@ export function mapConnections(contacts) {
  */
 
 /**
+ * @param {Array<Record<string, unknown>>} [qualities]
+ * @returns {{ biocompatibility: string, sensitiveSystem: boolean }}
+ */
+export function resolveEssenceModifiers(qualities) {
+  let biocompatibility = '';
+  let sensitiveSystem = false;
+  for (const quality of qualities ?? []) {
+    const name = String(quality?.name ?? '');
+    if (/biocompat|biokompat/i.test(name)) {
+      const paren = name.match(/\(([^)]+)\)/)?.[1] ?? '';
+      if (/cyber/i.test(paren)) biocompatibility = 'CYBERWARE';
+      else if (/bio/i.test(paren)) biocompatibility = 'BIOWARE';
+    }
+    if (/sensitive system|empfindliches system/i.test(name)) {
+      sensitiveSystem = true;
+    }
+  }
+  return { biocompatibility, sensitiveSystem };
+}
+
+/**
  * @param {Record<string, any>} character
+ * @param {number} magicAttribute
+ * @returns {{ spellpower: number, powerPoints: number }}
+ */
+function mapMagicSplit(character, magicAttribute) {
+  const magician = parseBool(character.magician);
+  const adept = parseBool(character.adept);
+  const raw =
+    character.powerpoints ?? character.totalpowerpoints ?? character.magadept;
+  const powerPoints = raw === undefined ? 0 : parseNumber(raw, 0);
+  const { spellpower, powerPoints: clamped } = resolveMagicSplit(
+    {
+      magician,
+      adept,
+      spellpower: magicAttribute - powerPoints,
+      powerPoints,
+    },
+    magicAttribute
+  );
+  return { spellpower, powerPoints: clamped };
+}
+
+/**
+ * @param {Record<string, any>} character
+ * @param {{ biocompatibility?: string, sensitiveSystem?: boolean }} [essenceModifiers]
  * @returns {{ name: string, img: string|null, system: object }}
  */
-export function mapCharacterSystem(character) {
+export function mapCharacterSystem(character, essenceModifiers = {}) {
   const tradition = resolveTradition(character.tradition);
   const mugshot = String(character.mugshotbase64 ?? '').trim();
+  const sheetStats = mapSheetStats(character.attributes ?? {});
 
   return {
     name:
@@ -151,7 +204,7 @@ export function mapCharacterSystem(character) {
       'Imported Character',
     img: mugshot ? `data:image/jpeg;base64,${mugshot}` : null,
     system: {
-      sheetStats: mapSheetStats(character.attributes ?? {}),
+      sheetStats,
       metaData: {
         nuyen: parseNumber(character.nuyen, 0),
         karma: parseNumber(character.karma, 0),
@@ -177,8 +230,11 @@ export function mapCharacterSystem(character) {
         adept: parseBool(character.adept),
         tradition,
         drainAttribute: resolveDrainAttribute(character.drain, tradition),
+        ...mapMagicSplit(character, sheetStats.MAGIC ?? 0),
       },
       technomancer: parseBool(character.technomancer),
+      biocompatibility: essenceModifiers.biocompatibility ?? '',
+      sensitiveSystem: essenceModifiers.sensitiveSystem ?? false,
       connections: mapConnections(character.contacts),
       conditionMonitor: {
         physical: { value: parseNumber(character.physicalcmfilled, 0) },
@@ -194,13 +250,15 @@ export function mapCharacterSystem(character) {
  */
 export function mapCharacterSkill(record) {
   const knowledge = parseBool(record.knowledge);
-  const rawCategory = englishOr(record, 'skillcategory').toLowerCase();
+  const rawCategory = englishOr(record, 'skillcategory')
+    .replace(/\s*Active\s*$/i, '')
+    .toLowerCase();
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Skill',
     type: 'Skill',
     system: {
       attribute: ATTRIBUTE_ABBR_TO_KEY[upper(record.attribute)] ?? '',
-      category: KNOWLEDGE_CATEGORY_MAP[rawCategory] ?? 'misc',
+      category: SKILL_CATEGORY_MAP[rawCategory] ?? 'misc',
       group: String(record.skillgroup ?? '').trim(),
       type: knowledge ? 'knowledge' : 'active',
       rating: parseNumber(record.rating, 0),

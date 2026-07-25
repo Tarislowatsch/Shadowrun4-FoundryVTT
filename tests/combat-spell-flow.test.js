@@ -5,24 +5,34 @@ const awaitOpposedSocketResponseMock = vi.fn();
 const openDirectSpellAllocationDialogMock = vi.fn();
 const getSpellEffectDataMock = vi.fn();
 
-vi.mock('@utils/index.js', () => ({
-  getGame: () => globalThis.game,
-  getValidTargetActorsOrWarn: (...args) =>
-    getValidTargetActorsOrWarnMock(...args),
-  awaitOpposedSocketResponse: (...args) =>
-    awaitOpposedSocketResponseMock(...args),
-}));
+vi.mock('@utils/index.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    getGame: () => globalThis.game,
+    getValidTargetActorsOrWarn: (...args) =>
+      getValidTargetActorsOrWarnMock(...args),
+    awaitOpposedSocketResponse: (...args) =>
+      awaitOpposedSocketResponseMock(...args),
+  };
+});
 
-vi.mock('@utils/dialog/magic/combat-spell.js', () => ({
-  openDirectSpellAllocationDialog: (...args) =>
-    openDirectSpellAllocationDialogMock(...args),
-}));
+vi.mock('@domains/magic/dialogs/combat-spell.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    openDirectSpellAllocationDialog: (...args) =>
+      openDirectSpellAllocationDialogMock(...args),
+  };
+});
 
 vi.mock('./apply-effects-flow', () => ({
   getSpellEffectData: (...args) => getSpellEffectDataMock(...args),
 }));
 
-const { CombatSpellFlow } = await import('../src/flows/combat-spell-flow.js');
+const { CombatSpellFlow } = await import(
+  '../src/domains/magic/flow/combat-spell-flow.js'
+);
 
 function makeCaster(uuid = 'Actor.caster1') {
   return { uuid };

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getOpposedRollFallbackTimeoutMs } from '../src/utils/game/opposed-roll-timeout.js';
-import { SR4 } from '../src/config.js';
+import { SR4 } from '@config';
 
 describe('getOpposedRollFallbackTimeoutMs', () => {
   it('adds the workflow buffer to the configured timeout, in milliseconds', () => {

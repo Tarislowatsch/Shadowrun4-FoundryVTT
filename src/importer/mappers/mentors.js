@@ -6,7 +6,14 @@ import {
 } from '@models/items/mentor.model.js';
 
 /** @type {Readonly<Record<string, string>>} */
-const CATEGORY_ALIASES = Object.freeze({ dissonance: 'Disonance' });
+const CATEGORY_ALIASES = Object.freeze({
+  dissonance: 'Disonance',
+  tier: 'Animal',
+  andere: 'Other',
+  toxisch: 'Toxic',
+  resonanz: 'Resonance',
+  dissonanz: 'Disonance',
+});
 
 /**
  * @param {unknown} raw

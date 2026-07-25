@@ -1,14 +1,17 @@
-import { handleSkillRoll, rollComplexFormDialog } from '@utils/index';
-import { SummoningFlow } from '@flows/summoning-flow.js';
-import { DismissalFlow } from '@flows/dismissal-flow.js';
-import { BindingFlow } from '@flows/binding-flow.js';
-import { ThreadingFlow } from '@flows/threading-flow.js';
-import { CybercombatFlow } from '@flows/cybercombat-flow.js';
+import { rollComplexFormDialog } from '@utils/index';
+import { handleSkillRoll } from '@domains/combat/dialogs/index.js';
+import { SummoningFlow } from '@domains/summoned-entity/flow/summoning-flow.js';
+import { DismissalFlow } from '@domains/summoned-entity/flow/dismissal-flow.js';
+import { BindingFlow } from '@domains/summoned-entity/flow/binding-flow.js';
+import { ThreadingFlow } from '@domains/resonance/threading-flow.js';
+import { CybercombatFlow } from '@domains/matrix/flow/cybercombat-flow.js';
 import {
   ActionType,
   Attackskill,
+  BiocompatibilityTypes,
   DamageTypes,
   DrainAttributes,
+  powerPointCost,
   Shootingmodes,
   SR4Attributes,
   TraditionLabels,
@@ -17,6 +20,7 @@ import {
   SR4EffectTargets,
   buildMentorContext,
   selectMentorChoice,
+  setPowerSuppressed,
 } from '@effects/index';
 import { buildWeaponContext } from './weapon-context.js';
 import { buildArmorContext } from './armor-context.js';
@@ -26,6 +30,7 @@ import {
   sortSkillsByLabel,
 } from './actor-context.js';
 import { buildImplantContext } from './implant-context.js';
+import { buildInventoryContext } from './inventory-context.js';
 import { buildMagicContext } from './magic-context.js';
 import { buildMatrixContext } from './matrix-context.js';
 import { buildEffectsContext } from './effects-context.js';
@@ -46,6 +51,11 @@ import {
 } from './linked-actor-actions.js';
 import { CharacterImporterApp } from '@sheets/importer/character-importer-app.js';
 import SR4BaseActorSheet from './sr4-base-actor-sheet.js';
+import {
+  buildResistanceElements,
+  buildRealmOptions,
+  buildSimModeOptions,
+} from './resistance-actions.js';
 
 export default class SR4CharacterSheet extends SR4BaseActorSheet {
   static DEFAULT_OPTIONS = {
@@ -80,6 +90,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       createSpriteTemplate: SR4CharacterSheet.#onCreateSpriteTemplate,
       createSpiritTemplate: SR4CharacterSheet.#onCreateSpiritTemplate,
       createMentor: SR4CharacterSheet.#onCreateMentor,
+      togglePowerSuppressed: SR4CharacterSheet.#onTogglePowerSuppressed,
     },
   };
 
@@ -230,6 +241,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       ...this._getBaseActorContext(actorData),
       traditions: TraditionLabels,
       drainAttributes: DrainAttributes,
+      biocompatibilityOptions: BiocompatibilityTypes,
       attributes: SR4Attributes,
       shootingmodes: Shootingmodes,
       actiontypes: ActionType,
@@ -238,9 +250,9 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       textFields: { lifestyle: true },
       isTechnomancer: actorData.system.technomancy?.technomancer ?? false,
       effectTargets: SR4EffectTargets,
-      resistanceElements: SR4BaseActorSheet._buildResistanceElements(),
-      realmOptions: SR4BaseActorSheet._buildRealmOptions(this.actor),
-      simModeOptions: SR4BaseActorSheet._buildSimModeOptions(),
+      resistanceElements: buildResistanceElements(),
+      realmOptions: buildRealmOptions(this.actor),
+      simModeOptions: buildSimModeOptions(),
     };
   }
 
@@ -266,35 +278,19 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         unarmedDamageModifier: sys.modifiers?.unarmedDamageModifier ?? 0,
       }),
       skills: sortSkillsByLabel(items),
-      items: items.filter((i) => i.type === 'Item'),
       ...buildImplantContext(implants, sys),
       spells: this._enrichItemContext(items, 'Spell'),
       powers,
       totalPowerCost: powers.reduce(
-        (sum, p) => sum + (p.system.totalCost ?? 0),
+        (sum, p) => sum + powerPointCost(p.system),
         0
       ),
       armor: buildArmorContext(items),
-      positiveQualities: items.filter(
-        (i) => i.type === 'Quality' && i.system.category !== 'Negative'
-      ),
-      negativeQualities: items.filter(
-        (i) => i.type === 'Quality' && i.system.category === 'Negative'
-      ),
       ammo: buildAmmoContext(items),
       riggedVehicles: buildVehicleContext(this.document.uuid),
-      actions: items.filter((i) => i.type === 'Action'),
-      foci: items.filter((i) => i.type === 'Focus' || i.type === 'Fetish'),
-      commlinks: items.filter((i) => i.type === 'Commlink'),
-      complexForms: items
-        .filter((i) => i.type === 'Program' && i.system.complexform)
-        .sort((a, b) => a.name.localeCompare(b.name)),
-      programs: items.filter(
-        (i) =>
-          i.type === 'Program' &&
-          !(this.actor.system.technomancy?.technomancer && i.system.complexform)
-      ),
-      metatypeItem: items.find((i) => i.type === 'Metatype') ?? null,
+      ...buildInventoryContext(items, {
+        technomancer: this.actor.system.technomancy?.technomancer,
+      }),
     };
   }
 
@@ -307,7 +303,11 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   }
 
   async _getMagicContext(actorData) {
-    return buildMagicContext(actorData, this.document.uuid);
+    return buildMagicContext(
+      actorData,
+      this.document.uuid,
+      this.actor.getEffectiveMagicSplit()
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -366,6 +366,19 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         );
       });
 
+    this.element.querySelectorAll('input[data-split]').forEach((input) => {
+      input.addEventListener(
+        'change',
+        async (event) => {
+          const target = event.currentTarget;
+          await this.actor.setMagicSplit({
+            [target.dataset.split]: Number(target.value),
+          });
+        },
+        { signal }
+      );
+    });
+
     this.element
       .querySelectorAll('input[type="number"], input[type="text"]')
       .forEach((input) => {
@@ -404,6 +417,14 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
   static #onEditToggle(_event, _target) {
     this.editMode = !this.editMode;
     this.render();
+  }
+
+  static async #onTogglePowerSuppressed(_event, target) {
+    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
+    if (!itemId) return;
+    const power = this.actor.items.get(itemId);
+    if (!power) return;
+    await setPowerSuppressed(power, !power.system.suppressed);
   }
 
   static #onCastSpell(event, target) {

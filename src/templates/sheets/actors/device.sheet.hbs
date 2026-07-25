@@ -67,26 +67,13 @@
 
   <hr />
 
-  <div class="npc-section">
-    <h3>
-      {{localize 'sr4.matrix.software'}}
-      {{#if editMode}}{{> item-create-btn btnAction="createProgram" btnTooltip="sr4.matrix.software"}}{{/if}}
-    </h3>
-    {{#if programs.length}}
-      {{#each programs as |prog|}}
-      <div class="item-card power-card item" data-item-id="{{prog._id}}">
-        <div class="item-row">
-          <span class="item-name">{{prog.name}}</span>
-          <span class="item-property">{{prog.system.rating}}</span>
-          {{> item-edit-btn itemId=prog._id}}
-          {{> item-delete-btn itemId=prog._id}}
-        </div>
-      </div>
-      {{/each}}
-    {{else}}
-      <p class="empty-list">{{localize 'sr4.matrix.noSoftware'}}</p>
-    {{/if}}
-  </div>
+  {{> npc-item-list
+      items=programs
+      editMode=editMode
+      titleKey="sr4.matrix.software"
+      emptyKey="sr4.matrix.noSoftware"
+      createAction="createProgram"
+      showRating=true}}
 
   {{> action-button action="matrixAttack" icon="fas fa-bolt" label="sr4.matrix.cybercombat.attack"}}
 

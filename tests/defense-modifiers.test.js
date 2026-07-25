@@ -3,8 +3,8 @@ import {
   rangeDefenseModifier,
   baseDefenseModifier,
   skillDefenseModifier,
-} from '../src/utils/dialog/actions/defense.js';
-import { computeFinalPool } from '../src/utils/dialog/dialogutility.js';
+} from '../src/domains/combat/dialogs/defense.js';
+import { computeFinalPool } from '../src/utils/dialog/pool-math.js';
 
 /** @param {Record<string, number>} [overrides] */
 function makeMods(overrides = {}) {

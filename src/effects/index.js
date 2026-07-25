@@ -12,3 +12,7 @@ export {
   selectMentorChoice,
   buildMentorContext,
 } from './mentor-choices.js';
+export {
+  planPowerEffectStates,
+  setPowerSuppressed,
+} from './power-suppression.js';

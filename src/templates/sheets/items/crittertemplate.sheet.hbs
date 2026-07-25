@@ -92,7 +92,7 @@
         {{#each system.skills as |s|}}
         <tr>
           <td>{{s.name}}</td>
-          <td>{{#if s.ratingFormula}}{{s.ratingFormula}}{{else}}{{s.rating}}{{/if}}</td>
+          <td>{{firstOf s.ratingFormula s.rating}}</td>
           <td>{{s.spec}}</td>
         </tr>
         {{/each}}

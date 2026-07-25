@@ -1,0 +1,151 @@
+import { getGame } from '@utils/index.js';
+import { awaitEntityResist } from '@domains/magic/dialogs/resist-actions.js';
+import {
+  resolveSpiritDrain,
+  resolveSpiritServiceRoll,
+} from '../dialogs/index.js';
+
+export class BindingFlow {
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {import('@documents/index').SR4Actor} targetActor
+   * @returns {Promise<void>}
+   */
+  static async start(summonerActor, targetActor) {
+    const entityType = targetActor.type;
+    const isSprite = entityType === 'sprite';
+    const isRebind = targetActor.system.bound === true;
+
+    if (
+      !isRebind &&
+      BindingFlow._boundCount(summonerActor, entityType) >=
+        (summonerActor.getAttribute('CHARISMA') ?? 0)
+    ) {
+      ui?.notifications?.warn(
+        getGame().i18n.localize('sr4.magic.bindLimitReached')
+      );
+      return;
+    }
+
+    const forceOrRating = isSprite
+      ? targetActor.system.rating
+      : targetActor.system.force;
+    const skillName = isSprite ? 'registering' : 'binding';
+
+    const result = await resolveSpiritServiceRoll(
+      summonerActor,
+      skillName,
+      forceOrRating,
+      () =>
+        BindingFlow._awaitTargetResist(
+          summonerActor,
+          targetActor,
+          forceOrRating,
+          entityType
+        )
+    );
+    if (!result) return;
+    const { resistHits, netHits } = result;
+
+    if (netHits > 0) {
+      const serviceKey = isSprite ? 'tasks' : 'services';
+      const currentServices = targetActor.system[serviceKey] ?? 0;
+      // The first net hit forms the bond itself and only counts toward
+      // services on a rebind, where the bond already exists.
+      const servicesGained = isRebind ? netHits : netHits - 1;
+      await targetActor.update({
+        'system.bound': true,
+        [`system.${serviceKey}`]: currentServices + servicesGained,
+      });
+      const msgKey = isSprite
+        ? 'sr4.magic.spriteRegistered'
+        : 'sr4.magic.spiritBound';
+      ui?.notifications?.info(getGame().i18n.localize(msgKey));
+    } else {
+      const failKey = isSprite
+        ? 'sr4.magic.registeringFailed'
+        : 'sr4.magic.bindingFailed';
+      ui?.notifications?.info(getGame().i18n.localize(failKey));
+    }
+
+    await resolveSpiritDrain(
+      summonerActor,
+      forceOrRating,
+      resistHits,
+      entityType,
+      {
+        spiritLabelKey: 'sr4.magic.bindingDrain',
+        spriteLabelKey: 'sr4.magic.registeringFading',
+      }
+    );
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {Promise<void>}
+   */
+  static async startTargeted(summonerActor, entityType) {
+    const targetActor = BindingFlow._getOwnedTarget(summonerActor, entityType);
+    if (!targetActor) {
+      ui?.notifications?.warn(
+        getGame().i18n.localize('sr4.magic.noValidBindTarget')
+      );
+      return;
+    }
+    await BindingFlow.start(summonerActor, targetActor);
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {import('@documents/index').SR4Actor | null}
+   */
+  static _getOwnedTarget(summonerActor, entityType) {
+    const targets = [...(getGame().user?.targets ?? [])]
+      .map((t) => t.actor)
+      .filter(
+        (a) =>
+          a?.type === entityType && a?.system?.ownerUuid === summonerActor.uuid
+      );
+    return targets[0] ?? null;
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {import('@documents/index').SR4Actor} targetActor
+   * @param {number} forceOrRating
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {Promise<number>}
+   */
+  static async _awaitTargetResist(
+    summonerActor,
+    targetActor,
+    forceOrRating,
+    entityType
+  ) {
+    return awaitEntityResist({
+      mode: 'bind',
+      sourceActor: summonerActor,
+      targetActor,
+      forceOrRating,
+      entityType,
+    });
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} summonerActor
+   * @param {'spirit' | 'sprite'} entityType
+   * @returns {number}
+   */
+  static _boundCount(summonerActor, entityType) {
+    return (
+      getGame().actors?.filter(
+        (a) =>
+          a.type === entityType &&
+          a.system?.ownerUuid === summonerActor.uuid &&
+          a.system?.bound === true
+      ).length ?? 0
+    );
+  }
+}

@@ -78,6 +78,41 @@
   }
 }
 
+.item-sheet-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  .item-sheet-name-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .item-sheet-name-input {
+    flex: 1;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .item-sheet-name-edit,
+  .item-sheet-name-confirm,
+  .item-sheet-name-cancel,
+  .item-sheet-name-reset {
+    background: transparent;
+    border: none;
+    color: var(--sr4-text-muted);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+
+    &:hover {
+      color: var(--sr4-teal);
+    }
+  }
+}
+
 .item-sheet-header-extras {
   display: flex;
   align-items: center;
@@ -135,9 +170,21 @@
     @include sr4-input-focus;
   }
 
+  input[type='number'] {
+    text-align: right;
+  }
+
   select {
     text-align: left;
     cursor: pointer;
+  }
+
+  .computed-value {
+    display: block;
+    width: 100%;
+    text-align: right;
+    font-weight: 700;
+    color: var(--sr4-text);
   }
 }
 

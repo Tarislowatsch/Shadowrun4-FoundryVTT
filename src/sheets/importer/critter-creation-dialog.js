@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { buildCritterActorData } from '@importer/build-critter.js';
-import { resolveAttribute } from '@utils/force-formula.js';
+import { buildCritterActorData } from '@importer/character/build-critter.js';
+import { resolveAttribute } from '@domains/magic/force-formula.js';
 import { ATTRIBUTE_MAP } from '@importer/mappers/constants.js';
 
 const PREVIEW_ATTRIBUTES = ATTRIBUTE_MAP.filter(

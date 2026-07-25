@@ -40,6 +40,14 @@
     border-top: 1px solid var(--sr4-border-dim);
   }
 
+  .action-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
   .magic-input {
     display: flex;
     align-items: center;
@@ -122,12 +130,29 @@
       &.over-limit {
         color: var(--sr4-red);
       }
+
+      &.magic-reduced {
+        color: var(--sr4-red);
+      }
     }
   }
 
   p {
     color: var(--sr4-text-muted);
     font-size: 0.8rem;
+  }
+
+  .magic-warning {
+    font-size: 0.72rem;
+
+    &.over-limit {
+      color: var(--sr4-red);
+    }
+  }
+
+  .magic-hint {
+    font-size: 0.72rem;
+    font-style: italic;
   }
 
   td {

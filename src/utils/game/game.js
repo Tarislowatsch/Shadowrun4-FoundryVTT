@@ -12,7 +12,14 @@ export function getValidTargetActors() {
   return /** @type {import('@documents/index').SR4Actor[]} */ (
     [...(getGame().user?.targets ?? [])]
       .map((t) => t.actor)
-      .filter((a) => !!(a && (a.type === 'character' || a.type === 'npc')))
+      .filter(
+        (a) =>
+          !!a &&
+          (a.type === 'character' ||
+            a.type === 'npc' ||
+            a.type === 'vehicle' ||
+            a.type === 'spirit')
+      )
   );
 }
 

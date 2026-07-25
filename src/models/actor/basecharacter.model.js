@@ -9,7 +9,18 @@ import {
   realmModeField,
   SIM_MODE_CHOICES,
 } from '@models/shared';
-import { computeDerivedStats } from '@documents/derivedStats.mapper';
+import { Traditions } from '@models/magic';
+import { computeDerivedStats } from './character-derived-stats.js';
+import { applyDerivedStatsResult } from './derived-stats-helpers.js';
+import { computeArmorStacking } from './armor-stacking';
+import { applyMetatypeLimits } from './metatype-limits';
+import { computeImplantEssenceLoss } from './essence';
+
+export { computeArmorStacking } from './armor-stacking';
+export { implantEssenceMultiplier, computeImplantEssenceLoss } from './essence';
+
+/** @type {string[]} */
+const TRADITION_CHOICES = Object.values(Traditions);
 
 /**
  * @typedef {import('@models/shared').SR4ConditionMonitor} SharedSR4ConditionMonitor
@@ -48,6 +59,9 @@ export const armorField = () =>
  *   attributeMaximum: object,
  *   attributeMinimum: object,
  *   finalStats: SR4SheetStats,
+ *   spellpower: number,
+ *   powerPoints: number,
+ *   magicOverAllocated: boolean,
  * }} SR4DerivedStats
  */
 
@@ -66,6 +80,9 @@ export const derivedStatsField = () =>
     attributeMaximum: new fields.ObjectField({ initial: {} }),
     attributeMinimum: new fields.ObjectField({ initial: {} }),
     finalStats: new SR4SheetStatsData(),
+    spellpower: new fields.NumberField({ initial: 0, integer: true }),
+    powerPoints: new fields.NumberField({ initial: 0, integer: true }),
+    magicOverAllocated: new fields.BooleanField({ initial: false }),
   });
 
 /**
@@ -141,6 +158,8 @@ export const characterMetaDataField = () =>
  * @property {number} traditionBonus
  * @property {boolean} adept
  * @property {boolean} magician
+ * @property {number} spellpower
+ * @property {number} powerPoints
  */
 export const magicField = () =>
   new fields.SchemaField({
@@ -156,39 +175,14 @@ export const magicField = () =>
 
     tradition: new fields.StringField({
       initial: '',
-      choices: [
-        '',
-        'ABORIGINAL',
-        'AZTEC',
-        'BLACK_MAGIC',
-        'BUDDHIST',
-        'CHAOS_MAGIC',
-        'CHRISTIAN_THEURGY',
-        'DRUIDIC',
-        'EGYPTIAN',
-        'GARDNERIAN_WICCA',
-        'GODDESS_WICCA',
-        'HERMETIC',
-        'HINDU',
-        'INSECT',
-        'ISLAMIC',
-        'NORSE',
-        'PATH_OF_THE_WHEEL',
-        'POISONER',
-        'PSIONIC',
-        'QABBALISTIC',
-        'RASTAFARIAN',
-        'SHAMANIC',
-        'SHINTO',
-        'VOODOO',
-        'WITCHCRAFT',
-        'WUXING',
-        'ZOROASTRIAN',
-      ],
+      choices: TRADITION_CHOICES,
       blank: true,
     }),
     adept: new fields.BooleanField({ initial: false }),
     magician: new fields.BooleanField({ initial: false }),
+
+    spellpower: new fields.NumberField({ initial: 0, integer: true }),
+    powerPoints: new fields.NumberField({ initial: 0, integer: true }),
 
     traditionBonus: new fields.NumberField({ initial: 0, integer: true }),
 
@@ -295,140 +289,6 @@ export const connectionsField = () =>
     })
   );
 
-// Armor Stacking & Encumbrance (SR4 p.161, Form-Fitting: Arsenal p.48)
-
-/**
- * @param {any} item
- * @param {'effectiveBallistic'|'effectiveImpact'} key
- */
-function armorValue(item, key) {
-  return (
-    item.system?.[key] ??
-    item.system?.[
-      key === 'effectiveBallistic' ? 'ballisticarmor' : 'impactarmor'
-    ] ??
-    0
-  );
-}
-
-/**
- * @param {any[]} equipped
- * @param {{ ballistic: number, impact: number }} bonus
- * @param {number} body
- * @returns {{ ballistic: number, impact: number, encumbrance: number }}
- */
-export function computeArmorStacking(equipped, bonus, body) {
-  const standard = [];
-  const accessories = [];
-  const formFitting = [];
-  for (const item of equipped) {
-    const type = item.system?.stackingType ?? 'standard';
-    if (type === 'accessory') accessories.push(item);
-    else if (type === 'formFitting') formFitting.push(item);
-    else standard.push(item);
-  }
-
-  const sum = (arr, key) => arr.reduce((s, i) => s + armorValue(i, key), 0);
-
-  const bestBallistic = standard.reduce(
-    (m, i) => Math.max(m, armorValue(i, 'effectiveBallistic')),
-    0
-  );
-  const bestImpact = standard.reduce(
-    (m, i) => Math.max(m, armorValue(i, 'effectiveImpact')),
-    0
-  );
-
-  const ballistic =
-    bestBallistic +
-    sum(formFitting, 'effectiveBallistic') +
-    sum(accessories, 'effectiveBallistic') +
-    bonus.ballistic;
-  const impact =
-    bestImpact +
-    sum(formFitting, 'effectiveImpact') +
-    sum(accessories, 'effectiveImpact') +
-    bonus.impact;
-
-  const encumbranceBallistic =
-    sum(standard, 'effectiveBallistic') +
-    sum(accessories, 'effectiveBallistic') +
-    formFitting.reduce(
-      (s, i) => s + Math.floor(armorValue(i, 'effectiveBallistic') / 2),
-      0
-    ) +
-    bonus.ballistic;
-  const encumbranceImpact =
-    sum(standard, 'effectiveImpact') +
-    sum(accessories, 'effectiveImpact') +
-    formFitting.reduce(
-      (s, i) => s + Math.floor(armorValue(i, 'effectiveImpact') / 2),
-      0
-    ) +
-    bonus.impact;
-
-  const maxAllowed = body * 2;
-  const excess = Math.max(
-    0,
-    Math.max(encumbranceBallistic, encumbranceImpact) - maxAllowed
-  );
-  const encumbrance = excess > 0 ? Math.ceil(excess / 2) : 0;
-
-  return { ballistic, impact, encumbrance };
-}
-
-/** @type {Array<[string, string]>} */
-const METATYPE_STAT_MAP = [
-  ['body', 'BODY'],
-  ['agility', 'AGILITY'],
-  ['reaction', 'REACTION'],
-  ['strength', 'STRENGTH'],
-  ['charisma', 'CHARISMA'],
-  ['intuition', 'INTUITION'],
-  ['logic', 'LOGIC'],
-  ['willpower', 'WILLPOWER'],
-  ['edge', 'EDGE'],
-  ['magic', 'MAGIC'],
-  ['resonance', 'RESONANCE'],
-  ['essence', 'ESSENCE'],
-];
-
-/**
- * @param {any} self
- * @param {Record<string, { min: number, max: number, aug: number }>} attrs
- */
-function applyMetatypeLimits(self, attrs) {
-  /** @type {Record<string, number>} */
-  const attributeMaximum = {};
-  /** @type {Record<string, number>} */
-  const augmentedMaximum = {};
-  /** @type {Record<string, number>} */
-  const attributeMinimum = {};
-
-  const sourceStats = self._source?.sheetStats ?? {};
-
-  for (const [mtKey, ssKey] of METATYPE_STAT_MAP) {
-    const limit = attrs[mtKey];
-    if (!limit) continue;
-    attributeMinimum[ssKey] = limit.min;
-    attributeMaximum[ssKey] = limit.max;
-    augmentedMaximum[ssKey] = limit.aug;
-
-    if (self.sheetStats[ssKey] === undefined) continue;
-    const base = sourceStats[ssKey] ?? self.sheetStats[ssKey];
-    const effectBonus = self.sheetStats[ssKey] - base;
-    const clampedBase = Math.min(base, limit.max);
-    self.sheetStats[ssKey] = Math.max(
-      limit.min,
-      Math.min(clampedBase + effectBonus, limit.aug)
-    );
-  }
-
-  self.derivedStats.attributeMinimum = attributeMinimum;
-  self.derivedStats.attributeMaximum = attributeMaximum;
-  self.derivedStats.augmentedMaximum = augmentedMaximum;
-}
-
 /**
  * @typedef {object} SR4BaseCharacterSystem
  * @property {SR4SheetStats}          sheetStats
@@ -442,6 +302,8 @@ function applyMetatypeLimits(self, attrs) {
  * @property {SR4MagicData}           magic
  * @property {SR4TechnomancyData}     technomancy
  * @property {boolean}                simpleHp
+ * @property {string}                 biocompatibility
+ * @property {boolean}                sensitiveSystem
  * @property {{ firewallBonus: number, responseBonus: number, signalBonus: number, systemBonus: number, biofeedbackFilterBonus: number }} livingPersona
  */
 
@@ -492,6 +354,12 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
         jammedBy: new fields.StringField({ initial: '', blank: true }),
       }),
       simpleHp: new fields.BooleanField({ initial: false }),
+      biocompatibility: new fields.StringField({
+        initial: '',
+        choices: ['', 'CYBERWARE', 'BIOWARE'],
+        blank: true,
+      }),
+      sensitiveSystem: new fields.BooleanField({ initial: false }),
       livingPersona: new fields.SchemaField({
         firewallBonus: new fields.NumberField({ initial: 0, integer: true }),
         responseBonus: new fields.NumberField({ initial: 0, integer: true }),
@@ -546,14 +414,14 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
     }
 
     const implants = actor.items.filter((i) => i.type === 'Implant');
-    self.derivedStats.essenceLossCyber = implants
-      .filter((i) => i.system.type !== 'BIOWARE')
-      .reduce((sum, i) => sum + (i.system.essenceActual ?? 0), 0);
-    self.derivedStats.essenceLossBio = implants
-      .filter((i) => i.system.type === 'BIOWARE')
-      .reduce((sum, i) => sum + (i.system.essenceActual ?? 0), 0);
+    const essenceLoss = computeImplantEssenceLoss(implants, {
+      biocompatibility: self.biocompatibility,
+      sensitiveSystem: self.sensitiveSystem,
+    });
+    self.derivedStats.essenceLossCyber = essenceLoss.cyber;
+    self.derivedStats.essenceLossBio = essenceLoss.bio;
 
-    Object.assign(self.derivedStats, computeDerivedStats(self));
+    applyDerivedStatsResult(self, computeDerivedStats(self));
   }
 }
 

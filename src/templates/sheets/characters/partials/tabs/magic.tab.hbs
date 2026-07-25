@@ -104,11 +104,63 @@
       <div class="magic-stat">
         <label>{{localize "sr4.magic.powerpoints"}}:</label>
         <span
-          class="{{#if (gt totalPowerCost system.sheetStats.MAGIC)}}over-limit{{/if}}"
+          class="{{#if (gt totalPowerCost effectivePowerPoints)}}over-limit{{/if}}"
         >
-          {{ totalPowerCost }} / {{ system.sheetStats.MAGIC }}
+          {{ totalPowerCost }} / {{ effectivePowerPoints }}
         </span>
       </div>
+      {{#if isMysticAdept}}
+      <div class="section-subtitle">
+        {{localize "sr4.magic.mysticAdept"}}
+      </div>
+      <div class="magic-input">
+        <label for="spellpower">{{localize "sr4.magic.spellpower"}}</label>
+        <input
+          type="number"
+          id="spellpower"
+          data-split="spellpower"
+          min="0"
+          value="{{ spellpower }}"
+        />
+      </div>
+      <div class="magic-input">
+        <label
+          for="adeptPowerPoints"
+          >{{localize "sr4.magic.powerpoints"}}</label
+        >
+        <input
+          type="number"
+          id="adeptPowerPoints"
+          data-split="powerPoints"
+          min="0"
+          value="{{ powerPointsMax }}"
+        />
+      </div>
+      <div class="magic-stat">
+        <label>{{localize "sr4.magic.magicAllocated"}}:</label>
+        <span class="{{#if overAllocated}}over-limit{{/if}}">
+          {{ magicAllocated }} / {{ system.sheetStats.MAGIC }}
+        </span>
+      </div>
+      {{#if magicReduced}}
+      <div class="magic-stat">
+        <label>{{localize "sr4.magic.effectiveSplit"}}:</label>
+        <span class="magic-reduced">
+          {{ effectiveSpellpower }} / {{ effectivePowerPoints }}
+        </span>
+      </div>
+      {{/if}}
+      {{#if overAllocated}}
+      <p class="magic-warning over-limit">
+        {{localize "sr4.magic.overAllocatedWarning"}}
+      </p>
+      {{else if magicUnallocated}}
+      <p class="magic-hint">{{localize "sr4.magic.unallocatedHint"}}</p>
+      {{/if}}
+      {{/if}}
+      {{#if magicReduced}}
+      <p class="magic-hint">{{localize "sr4.magic.backgroundCountHint"}}</p>
+      {{/if}}
     </div>
     {{/if}}
   </div>

@@ -1,27 +1,5 @@
 // @ts-nocheck
-export const DEFAULT_NPC_SKILLS = [
-  'archery',
-  'automatics',
-  'blades',
-  'clubs',
-  'gunnery',
-  'heavy-weapons',
-  'longarms',
-  'pistols',
-  'throwing-weapons',
-  'unarmed-combat',
-  'counterspelling',
-  'spellcasting',
-  'summoning',
-  'gymnastics',
-  'infiltration',
-  'intimidation',
-  'perception',
-  'running',
-  'swimming',
-];
-
-export const DEFAULT_NPC_SKILLS_JSON = JSON.stringify(DEFAULT_NPC_SKILLS);
+import { parseNpcDefaultSkills } from './npc-default-skills.js';
 
 export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
@@ -42,6 +20,7 @@ export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicatio
   static PARTS = {
     form: {
       template: 'systems/shadowrun4e/templates/settings/npc-skills-menu.hbs',
+      scrollable: ['.skill-list'],
     },
   };
 
@@ -51,7 +30,7 @@ export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicatio
 
     const index = await compendium.getIndex({ fields: ['system.category'] });
     const savedJson = game.settings.get('shadowrun4e', 'npcDefaultSkills');
-    const saved = new Set(JSON.parse(savedJson || DEFAULT_NPC_SKILLS_JSON));
+    const saved = new Set(parseNpcDefaultSkills(savedJson));
 
     const categoryMap = new Map();
     for (const entry of index) {

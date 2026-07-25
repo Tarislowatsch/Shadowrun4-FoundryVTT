@@ -3,8 +3,8 @@ import {
   clampRating,
   calculateFadingValue,
   calculateThreadingCap,
-} from '../src/utils/dialog/magic/threading-helpers.js';
-import { loadAvailableComplexForms } from '../src/utils/dialog/magic/threading.js';
+} from '../src/domains/resonance/dialogs/threading-helpers.js';
+import { loadAvailableComplexForms } from '../src/domains/resonance/dialogs/threading.js';
 
 // ─── threading-helpers ───────────────────────────────────────────────────────
 

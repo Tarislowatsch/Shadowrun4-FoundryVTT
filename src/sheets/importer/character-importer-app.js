@@ -1,14 +1,18 @@
 // @ts-nocheck
-import { extractCharacter } from '@importer/parse-character.js';
-import { buildActorData } from '@importer/build-character.js';
-import { buildSummonedActorData } from '@importer/build-summoned.js';
-import { buildVehicleActorData } from '@importer/build-vehicle.js';
-import { createIsolated } from '@importer/create-isolated.js';
+import { extractCharacter } from '@importer/character/parse-character.js';
+import { buildActorData } from '@importer/character/build-character.js';
+import { buildSummonedActorData } from '@importer/character/build-summoned.js';
+import { buildVehicleActorData } from '@importer/character/build-vehicle.js';
+import { createIsolated } from '@importer/character/create-isolated.js';
 import {
   planGenericItemSync,
   planSkillSync,
-} from '@importer/sync-character.js';
+} from '@importer/character/sync-character.js';
 import { SR4Actor } from '@documents/actor.js';
+import { setButtonBusy } from '@sheets/shared/busy-state.js';
+
+const MOD_LINK_WEAPON_TYPES = ['Ranged Weapon', 'Melee Weapon'];
+const AMMO_LINK_WEAPON_TYPES = ['Ranged Weapon'];
 
 /**
  * GM-facing tool that reads a single Chummer character XML export and either
@@ -22,7 +26,7 @@ import { SR4Actor } from '@documents/actor.js';
 export class CharacterImporterApp extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
-  /** @type {import('@importer/parse-character.js').ParsedCharacter | null} */
+  /** @type {import('@importer/character/parse-character.js').ParsedCharacter | null} */
   #parsed = null;
 
   /** @type {Actor | null} */
@@ -33,7 +37,7 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
 
   /**
    * @param {object} [options]
-   * @param {Actor} [options.actor] - When set, import updates this actor instead of creating a new one.
+   * @param {Actor} [options.actor]
    */
   constructor(options = {}) {
     super(options);
@@ -141,7 +145,7 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
   static async #onImport(event, target) {
     if (!this.#parsed || this.#busy) return;
     this.#busy = true;
-    CharacterImporterApp.#setBusyState(target, true);
+    setButtonBusy(target, true);
 
     try {
       if (this.#targetActor) {
@@ -204,20 +208,8 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
       this.close();
     } finally {
       this.#busy = false;
-      CharacterImporterApp.#setBusyState(target, false);
+      setButtonBusy(target, false);
     }
-  }
-
-  /**
-   * @param {HTMLElement|undefined} target
-   * @param {boolean} busy
-   */
-  static #setBusyState(target, busy) {
-    if (!target) return;
-    target.disabled = busy;
-    target.classList.toggle('processing', busy);
-    const icon = target.querySelector('i');
-    if (icon) icon.classList.toggle('fa-spin', busy);
   }
 
   /**
@@ -320,7 +312,7 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
 
   /**
    * @param {Actor} actor
-   * @param {import('@importer/parse-character.js').ParsedCharacter} parsed
+   * @param {import('@importer/character/parse-character.js').ParsedCharacter} parsed
    * @returns {Promise<void>}
    */
   static async #importLinkedActors(actor, parsed) {
@@ -338,6 +330,14 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
     const { failures } = await createIsolated(toCreate, (data) =>
       CharacterImporterApp.#createLinkedActor(data)
     );
+    CharacterImporterApp.#notifyLinkedActorFailures(actor, failures);
+  }
+
+  /**
+   * @param {Actor} actor
+   * @param {Array<{ error: unknown }>} failures
+   */
+  static #notifyLinkedActorFailures(actor, failures) {
     for (const failure of failures) {
       ui.notifications.warn(
         game.i18n.format('sr4.characterImporter.linkedActorError', {
@@ -379,7 +379,7 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
    * ones are left untouched.
    *
    * @param {Actor} actor
-   * @param {import('@importer/parse-character.js').ParsedCharacter} parsed
+   * @param {import('@importer/character/parse-character.js').ParsedCharacter} parsed
    * @returns {Promise<void>}
    */
   static async #syncLinkedActors(actor, parsed) {
@@ -435,20 +435,36 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
     const { failures } = await createIsolated(toCreate, (data) =>
       CharacterImporterApp.#createLinkedActor(data)
     );
-    for (const failure of failures) {
-      ui.notifications.warn(
-        game.i18n.format('sr4.characterImporter.linkedActorError', {
-          name: actor.name,
-          error: failure.error?.message ?? String(failure.error),
-        })
-      );
-    }
+    CharacterImporterApp.#notifyLinkedActorFailures(actor, failures);
+  }
+
+  /**
+   * @param {Actor} actor
+   * @param {string} weaponName
+   * @param {object} options
+   * @param {string[]} options.weaponTypes
+   * @param {Set<string>} options.matchedWeaponIds
+   * @param {Set<string>} [options.restrictToWeaponIds]
+   * @returns {Item|undefined}
+   */
+  static #findUnmatchedWeapon(
+    actor,
+    weaponName,
+    { weaponTypes, matchedWeaponIds, restrictToWeaponIds }
+  ) {
+    return actor.items.find(
+      (i) =>
+        weaponTypes.includes(i.type) &&
+        i.name === weaponName &&
+        !matchedWeaponIds.has(i.id) &&
+        (!restrictToWeaponIds || restrictToWeaponIds.has(i.id))
+    );
   }
 
   /**
    * @param {Actor} actor
    * @param {Array<{weaponName: string, modName: string}>} modLinks
-   * @param {Set<string>} [restrictToWeaponIds] - When set, only weapons whose id is in this set are eligible for (re-)linking.
+   * @param {Set<string>} [restrictToWeaponIds]
    * @returns {Promise<void>}
    */
   static async #linkWeaponMods(actor, modLinks, restrictToWeaponIds) {
@@ -479,12 +495,14 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
     const matchedWeaponIds = new Set();
     const updates = [];
     for (const [weaponName, ids] of weaponMods) {
-      const weapon = actor.items.find(
-        (i) =>
-          (i.type === 'Ranged Weapon' || i.type === 'Melee Weapon') &&
-          i.name === weaponName &&
-          !matchedWeaponIds.has(i.id) &&
-          (!restrictToWeaponIds || restrictToWeaponIds.has(i.id))
+      const weapon = CharacterImporterApp.#findUnmatchedWeapon(
+        actor,
+        weaponName,
+        {
+          weaponTypes: MOD_LINK_WEAPON_TYPES,
+          matchedWeaponIds,
+          restrictToWeaponIds,
+        }
       );
       if (weapon) {
         matchedWeaponIds.add(weapon.id);
@@ -502,19 +520,21 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
   /**
    * @param {Actor} actor
    * @param {Array<{weaponName: string, ammoName: string, currentAmmo: number}>} ammoLinks
-   * @param {Set<string>} [restrictToWeaponIds] - When set, only weapons whose id is in this set are eligible for (re-)linking.
+   * @param {Set<string>} [restrictToWeaponIds]
    * @returns {Promise<void>}
    */
   static async #linkAmmo(actor, ammoLinks, restrictToWeaponIds) {
     const matchedWeaponIds = new Set();
     const updates = [];
     for (const link of ammoLinks) {
-      const weapon = actor.items.find(
-        (i) =>
-          i.type === 'Ranged Weapon' &&
-          i.name === link.weaponName &&
-          !matchedWeaponIds.has(i.id) &&
-          (!restrictToWeaponIds || restrictToWeaponIds.has(i.id))
+      const weapon = CharacterImporterApp.#findUnmatchedWeapon(
+        actor,
+        link.weaponName,
+        {
+          weaponTypes: AMMO_LINK_WEAPON_TYPES,
+          matchedWeaponIds,
+          restrictToWeaponIds,
+        }
       );
       const ammo = actor.items.find(
         (i) => i.type === 'Ammo' && i.name === link.ammoName

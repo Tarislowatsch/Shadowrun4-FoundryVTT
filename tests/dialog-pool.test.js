@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   determineBoni,
   computeFinalPool,
-} from '../src/utils/dialog/dialogutility.js';
+} from '../src/utils/dialog/pool-math.js';
 
 function makeParams(overrides = {}) {
   return {

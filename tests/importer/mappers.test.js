@@ -17,6 +17,7 @@ import {
   parseMount,
   isAmmunition,
   isCommlink,
+  resolveEssenceModifiers,
   XML_CATEGORY_TO_ENUM,
   CATEGORY_TO_ATTACKSKILL,
   ATTRIBUTE_ABBR_TO_KEY,
@@ -63,7 +64,6 @@ describe('simple mappers', () => {
       type: 'Implant',
       system: {
         essence: 0.3,
-        essenceActual: 0.3,
         grade: 'STANDARD',
         type: 'CYBERWARE',
         rating: 3,
@@ -544,6 +544,35 @@ describe('commlink mapper', () => {
   });
 });
 
+describe('mapGear resolves records that match more than one gear kind', () => {
+  it('ammo weaponbonus fields take precedence over the iscommlink flag', () => {
+    const item = mapGear({
+      name: 'Weird Hybrid Record',
+      iscommlink: 'True',
+      weaponbonus: { damage: '2', ap: '-1' },
+    });
+    expect(item.type).toBe('Ammo');
+  });
+
+  it('the iscommlink flag takes precedence over the isprogram flag', () => {
+    const item = mapGear({
+      name: 'Weird Hybrid Record',
+      iscommlink: 'True',
+      isprogram: 'True',
+    });
+    expect(item.type).toBe('Commlink');
+  });
+
+  it('the isprogram flag takes precedence over Foci category', () => {
+    const item = mapGear({
+      name: 'Weird Hybrid Record',
+      isprogram: 'True',
+      category: 'Foci',
+    });
+    expect(item.type).toBe('Program');
+  });
+});
+
 describe('isCommlink', () => {
   it('returns true for iscommlink True', () => {
     expect(isCommlink({ iscommlink: 'True' })).toBe(true);
@@ -858,5 +887,81 @@ describe('critter skills', () => {
     expect(critter.system.skills).toEqual([
       { name: 'Dodge', rating: 2, ratingFormula: '', spec: '' },
     ]);
+  });
+});
+
+describe('implant essence reverse-calc', () => {
+  it('reverses grade and quality to recover the base essence', () => {
+    const item = mapCyberware(
+      { name: 'Wired Reflexes', ess: '1.8', grade: 'Standard' },
+      undefined,
+      { biocompatibility: 'CYBERWARE' }
+    );
+    expect(item.system.essence).toBe(2);
+    expect(item.system.grade).toBe('STANDARD');
+  });
+
+  it('recognizes the Chummer "…ware" grade suffix and reverses it', () => {
+    const item = mapCyberware(
+      { name: 'Smartlink', ess: '0.072', grade: 'Alphaware' },
+      undefined,
+      { biocompatibility: 'CYBERWARE' }
+    );
+    expect(item.system.grade).toBe('ALPHA');
+    // 0.072 / (0.8 * 0.9) = 0.1
+    expect(item.system.essence).toBe(0.1);
+  });
+
+  it('does not reverse the quality for a non-matching implant type', () => {
+    const item = mapBioware(
+      { name: 'Enhanced Articulation', ess: '0.24', grade: 'Alphaware' },
+      undefined,
+      { biocompatibility: 'CYBERWARE' }
+    );
+    // bioware unaffected by cyberware biocompatibility: 0.24 / 0.8 = 0.3
+    expect(item.system.essence).toBe(0.3);
+  });
+
+  it('stays a no-op without modifiers', () => {
+    const item = mapCyberware({ name: 'X', ess: '0.3', grade: 'Standard' });
+    expect(item.system.essence).toBe(0.3);
+  });
+});
+
+describe('resolveEssenceModifiers', () => {
+  it('detects English and German biocompatibility with the type from parens', () => {
+    expect(
+      resolveEssenceModifiers([{ name: 'Biocompatability (Cyberware)' }])
+    ).toEqual({ biocompatibility: 'CYBERWARE', sensitiveSystem: false });
+    expect(
+      resolveEssenceModifiers([{ name: 'Biokompatibilität (Cyberware)' }])
+    ).toEqual({ biocompatibility: 'CYBERWARE', sensitiveSystem: false });
+    expect(
+      resolveEssenceModifiers([{ name: 'Biocompatibility (Bioware)' }])
+    ).toEqual({ biocompatibility: 'BIOWARE', sensitiveSystem: false });
+  });
+
+  it('detects sensitive system in both languages', () => {
+    expect(resolveEssenceModifiers([{ name: 'Sensitive System' }])).toEqual({
+      biocompatibility: '',
+      sensitiveSystem: true,
+    });
+    expect(resolveEssenceModifiers([{ name: 'Empfindliches System' }])).toEqual(
+      { biocompatibility: '', sensitiveSystem: true }
+    );
+  });
+
+  it('does not false-positive on unrelated qualities', () => {
+    expect(
+      resolveEssenceModifiers([
+        { name: 'Weak Immune System' },
+        { name: 'Schwaches Immunsystem' },
+        { name: 'Restlichtverstärkung' },
+      ])
+    ).toEqual({ biocompatibility: '', sensitiveSystem: false });
+    expect(resolveEssenceModifiers()).toEqual({
+      biocompatibility: '',
+      sensitiveSystem: false,
+    });
   });
 });

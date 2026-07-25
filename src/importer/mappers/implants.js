@@ -1,4 +1,8 @@
 import {
+  GradeEssenceMultipliers,
+  implantEssenceMultiplier,
+} from '@models/index';
+import {
   commerceFields,
   englishOr,
   parseDecimal,
@@ -24,8 +28,17 @@ const CHUMMER_GRADE_MAP = {
 function normalizeGrade(raw) {
   const str = String(raw ?? '')
     .trim()
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/ware$/, '');
   return CHUMMER_GRADE_MAP[str] ?? 'STANDARD';
+}
+
+/**
+ * @param {number} n
+ * @returns {number}
+ */
+function round3(n) {
+  return Math.round(n * 1000) / 1000;
 }
 
 /**
@@ -48,21 +61,30 @@ function resolveEssence(raw, rating) {
 }
 
 /**
+ * Chummer exports the final per-item essence (base × grade × quality). Reverse
+ * the grade and character-quality multipliers so the stored base `essence`
+ * feeds our own pipeline (which re-derives grade and re-applies the quality)
+ * without double-counting.
+ *
  * @param {Record<string, unknown>} record
  * @param {string} implantType
+ * @param {{ biocompatibility?: string, sensitiveSystem?: boolean }} [essenceModifiers]
  * @returns {{ name: string, type: string, system: object }}
  */
-function mapImplant(record, implantType) {
+function mapImplant(record, implantType, essenceModifiers = {}) {
   const rating = parseNumber(record.rating, 0);
-  const essence = resolveEssence(record.ess, rating);
+  const grade = normalizeGrade(englishOr(record, 'grade'));
+  const finalEssence = resolveEssence(record.ess, rating);
+  const gradeMult = GradeEssenceMultipliers[grade] ?? 1;
+  const qualityMult = implantEssenceMultiplier(implantType, essenceModifiers);
+  const essence = round3(finalEssence / (gradeMult * qualityMult));
   return {
     name: /** @type {string} */ (record.name) ?? 'Unnamed Implant',
     type: 'Implant',
     system: {
       essence,
-      essenceActual: essence,
       capacity: parseNumber(record.capacity, 0),
-      grade: normalizeGrade(englishOr(record, 'grade')),
+      grade,
       type: implantType,
       rating,
       ...commerceFields(record),
@@ -73,16 +95,20 @@ function mapImplant(record, implantType) {
 
 /**
  * @param {Record<string, unknown>} record
+ * @param {*} [_translations]
+ * @param {{ biocompatibility?: string, sensitiveSystem?: boolean }} [essenceModifiers]
  * @returns {{ name: string, type: string, system: object }}
  */
-export function mapCyberware(record) {
-  return mapImplant(record, 'CYBERWARE');
+export function mapCyberware(record, _translations, essenceModifiers) {
+  return mapImplant(record, 'CYBERWARE', essenceModifiers);
 }
 
 /**
  * @param {Record<string, unknown>} record
+ * @param {*} [_translations]
+ * @param {{ biocompatibility?: string, sensitiveSystem?: boolean }} [essenceModifiers]
  * @returns {{ name: string, type: string, system: object }}
  */
-export function mapBioware(record) {
-  return mapImplant(record, 'BIOWARE');
+export function mapBioware(record, _translations, essenceModifiers) {
+  return mapImplant(record, 'BIOWARE', essenceModifiers);
 }

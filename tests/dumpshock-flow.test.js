@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { computeDumpshockParams } from '@flows/dumpshock-flow.js';
-import { SR4 } from '../src/config.js';
+import { computeDumpshockParams } from '@domains/matrix/flow/dumpshock-flow.js';
+import { SR4 } from '@config';
 
 describe('computeDumpshockParams', () => {
   it('uses the configured dumpshock DV', () => {

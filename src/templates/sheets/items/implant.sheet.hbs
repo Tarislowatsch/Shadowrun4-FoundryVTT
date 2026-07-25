@@ -42,12 +42,10 @@
           />
         </td>
         <td>
-          <input
-            type="number"
-            step="0.01"
-            name="system.essenceActual"
-            value="{{ system.essenceActual }}"
-          />
+          <span
+            class="computed-value"
+            data-tooltip="{{localize 'sr4.item.essenceActualHint'}}"
+          >{{ system.essenceActual }}</span>
         </td>
         <td>
           <input

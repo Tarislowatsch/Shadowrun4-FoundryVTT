@@ -1,4 +1,4 @@
-import { localize } from './dialogutility';
+import { localize } from './roll-dialog-core.js';
 
 const SPLIT_TEMPLATE = 'systems/shadowrun4e/templates/dice-pool-split.hbs';
 

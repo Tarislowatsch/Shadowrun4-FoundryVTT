@@ -8,6 +8,9 @@ import {
   sourceOf,
   commerceFields,
   upper,
+  normalizeSkillName,
+  normalizeItemLabel,
+  canonicalItemName,
 } from '@importer/mappers/helpers.js';
 
 describe('parseNumber', () => {
@@ -103,6 +106,67 @@ describe('commerceFields', () => {
       avail: 0,
       availability: '',
     });
+  });
+});
+
+describe('normalizeSkillName', () => {
+  it.each([
+    ['Automatics', 'automatics'],
+    ['Pilot-Ground-Craft', 'pilot ground craft'],
+    ['  Blades  ', 'blades'],
+    [undefined, ''],
+  ])('normalizeSkillName(%j) -> %j', (input, expected) => {
+    expect(normalizeSkillName(input)).toBe(expected);
+  });
+
+  it('normalizes precomposed and decomposed Unicode umlauts to the same key', () => {
+    const precomposed = 'Knüppel';
+    const decomposed = 'Knüppel';
+    expect(normalizeSkillName(precomposed)).toBe(
+      normalizeSkillName(decomposed)
+    );
+  });
+});
+
+describe('normalizeItemLabel', () => {
+  it.each([
+    ['Ares Predator IV', 'ares_predator_iv'],
+    ['Clothing', 'clothing'],
+    ['  Full-Body Armor  ', 'full_body_armor'],
+    ["Y'know, a Katana", 'y_know_a_katana'],
+    [undefined, ''],
+    ['', ''],
+  ])('normalizeItemLabel(%j) -> %j', (input, expected) => {
+    expect(normalizeItemLabel(input)).toBe(expected);
+  });
+
+  it('normalizes precomposed and decomposed Unicode umlauts to the same slug', () => {
+    expect(normalizeItemLabel('Knüppel')).toBe(normalizeItemLabel('Knüppel'));
+  });
+
+  it('trims stray underscores produced by leading/trailing punctuation', () => {
+    expect(normalizeItemLabel('(Special) Item!')).toBe('special_item');
+  });
+});
+
+describe('canonicalItemName', () => {
+  it('prefers system.nameEn when present', () => {
+    expect(
+      canonicalItemName({ name: 'Kleidung', system: { nameEn: 'Clothing' } })
+    ).toBe('Clothing');
+  });
+
+  it('falls back to name when nameEn is absent or blank', () => {
+    expect(canonicalItemName({ name: 'Clothing', system: {} })).toBe(
+      'Clothing'
+    );
+    expect(
+      canonicalItemName({ name: 'Clothing', system: { nameEn: '' } })
+    ).toBe('Clothing');
+  });
+
+  it('falls back to name when system is absent', () => {
+    expect(canonicalItemName({ name: 'Clothing' })).toBe('Clothing');
   });
 });
 

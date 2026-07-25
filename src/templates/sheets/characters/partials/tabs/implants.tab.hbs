@@ -33,6 +33,38 @@
     </span>
   </div>
 
+  <div class="implant-essence-modifiers">
+    {{#if editMode}}
+      <label class="essence-modifier-input">
+        <span>{{localize "sr4.implant.biocompatibility.label"}}</span>
+        <select name="system.biocompatibility" data-dtype="String">
+          {{selectOptions biocompatibilityOptions selected=system.biocompatibility localize=true}}
+        </select>
+      </label>
+      <label class="essence-modifier-input">
+        <span>{{localize "sr4.implant.sensitiveSystem"}}</span>
+        <input
+          type="checkbox"
+          class="sr4-checkbox"
+          name="system.sensitiveSystem"
+          {{checked system.sensitiveSystem}}
+        />
+      </label>
+    {{else}}
+      {{#if system.biocompatibility}}
+        <span class="item-property">
+          <strong>{{localize "sr4.implant.biocompatibility.label"}}</strong>
+          {{localize (lookup biocompatibilityOptions system.biocompatibility)}}
+        </span>
+      {{/if}}
+      {{#if system.sensitiveSystem}}
+        <span class="item-active-badge">
+          {{localize "sr4.implant.sensitiveSystem"}}
+        </span>
+      {{/if}}
+    {{/if}}
+  </div>
+
   {{#if implantsByType.length}}
     {{#each implantsByType as |group|}}
       {{#> collapsible-section title=group.label}}

@@ -6,7 +6,8 @@ import {
   sumModField,
   descriptionFields,
 } from '@models/shared';
-import { computeVehicleDerivedStats } from '@documents/derivedStats.mapper';
+import { computeVehicleDerivedStats } from '@domains/summoned-entity/derived-stats.js';
+import { applyDerivedStatsResult } from './derived-stats-helpers.js';
 
 /**
  * @typedef {import('@models/shared').SR4BaseDerivedStats} SR4VehicleDerivedStats
@@ -100,6 +101,6 @@ export class SR4VehicleData extends foundry.abstract.TypeDataModel {
     self.slotWarning = self.usedSlots > self.body;
     self.totalModCost = sumModField(mods, 'cost');
 
-    Object.assign(self.derivedStats, computeVehicleDerivedStats(self));
+    applyDerivedStatsResult(self, computeVehicleDerivedStats(self));
   }
 }

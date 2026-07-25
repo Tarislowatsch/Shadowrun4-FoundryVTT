@@ -19,7 +19,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Ranged & melee weapons, with weapon mods
 * Armor, with armor mods
 * Ammunition
-* Cyberware / bioware (implants)
+* Cyberware / bioware (implants), with essence scaled by Biocompatibility and Sensitive System qualities
 * Commlinks, programs, and autosofts
 * Spells, adept/critter powers, foci, and fetishes
 * Qualities
@@ -27,6 +27,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Vehicle mods
 * Generic gear / item fallback for system automation
 * Rulebook source link on item cards, opening the page via the optional [PDF Pager](https://github.com/farling42/fvtt-pdf-pager) module
+* Players can override an item's displayed name on its sheet, with a one-click revert to the canonical/localized name
 
 ## Roll System
 
@@ -43,9 +44,13 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 ## Magic
 
 * Guided spellcasting flow with force selection and drain resistance
-* Direct and indirect combat spells with networked defender resolution
+* Direct and indirect combat spells with networked defender resolution, elemental damage type derived from the spell's element (with override)
 * Automatic Sustain effect creation for sustained spells (client setting)
 * Adept and critter powers
+* Summon/Compile, Bind (targeted), and Decompile/Banish actions for spirits and sprites
+* Mystic adept Magic split: allocate Magic between magician abilities and adept powers on the sheet; spellcasting/conjuring rolls and Force caps use the magician share, imported from Chummer's power point field
+* Adepts can suppress powers to free up Power Points lost to a reduced Magic attribute
+* Background Count: GM-set scene modifier lowers effective Magic, spell/summoning dice pools and Force caps, and raises Drain resistance targets; GM picks which side of a mystic adept split it reduces
 
 ## Matrix
 
@@ -55,6 +60,11 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Black IC: biofeedback damage (VR only), connection jamming, and jack-out opposed test
 * Device actor type for IC, Agents, and Nodes with matrix initiative and passes
 * Matrix realm integration in combat tracker (hot/cold sim initiative and passes)
+* Matrix Actions section on the character sheet's Matrix tab for Matrix/Rigging-categorized Action items, branching to a dedicated roll dialog with Hot Sim / Control Rig bonus checkboxes
+* Jumped-in rigging: Control Rig and Hot Sim bonuses stack into the drone dice pool
+* `openMatrixActionDialog` and the `ActionCategory` enum are exposed on `game.sr4` for external modules to replicate the Matrix/Rigging action branching
+* Dynamic quick-action buttons for every Matrix Action item, alongside Attack/Jack Out, so rolls don't require opening the action list
+* `CybercombatFlow` exposed on `game.sr4` so external modules can trigger Matrix Attack/Jack Out
 
 ## Combat
 
@@ -62,14 +72,18 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * SR4CombatTracker: pass display and inactive-combatant dimming
 * Initiative formula with wound-penalty reduction
 * GM defender picker for untargeted attacks
+* Vehicles and spirits count as valid targets for physical attacks, alongside characters and NPCs
 * Ammunition tracking on weapon attacks
 * Combat spell defense (direct mana/physical resist, indirect dodge & soak)
 * Configurable damage application workflow (world setting)
+* Full SR4 elemental damage type set (Acid, Radiation, Sound, Ice, Metal, Sand, Smoke, Water) with matching armor/AP rules
+* "Shadowrun" scene controls group with Free Roll and GM Scene Modifiers (Background Count) toolbar buttons
 
 ## Active Effects
 
 * Native Foundry ActiveEffect integration
 * Predefined effect templates: Sustain, Disoriented, Blind, Blind Flare Compensation, Knocked Down, Dumpshocked
+* World-item effects can be flagged as reusable templates and are offered in the item effect picker alongside the built-in ones; exposed on `game.sr4.effects` for other modules (e.g. Token Action HUD)
 * Attack and defense modifiers via effects
 * Optional Foundry default effect sheet (GM setting)
 
@@ -101,20 +115,41 @@ All combat, magic, and matrix flow settings live in a dedicated **"Combat & Reac
 
 A GM tool, reachable from the button in the **Actor Directory**. Point it at a single character XML export — the kind any decent *chummer* keeps on hand — and it creates a full `character` actor: attributes, skills (with ratings), magic, qualities, gear, weapons, armor, spells, powers, implants, and portrait. Also imports the character's summoned spirits/sprites and rigged vehicles as their own linked actors.
 
-**Supported export languages:** English and German are verified. Category/type fields (weapon, gear, armor, quality, knowledge-skill category, implant grade, ammo sub-type) are resolved via Chummer's English (`_english`) sibling field when the export provides one, so non-English exports work correctly for those regardless of language. Spells are a special case — Chummer's data files don't emit an English sibling for spell category/duration/range at all — so spell import has a dedicated German fallback and will only resolve correctly for English or German exports; other languages may import spells with an incorrect category or duration. Display-only text (character name, metatype, vehicle type) always keeps the exported language as-is.
+> **Only the XML export from Chummer's print screen works.** Open the character in Chummer, go to the **Print** view and export it as **XML** — this is the format the importer expects. Neither the regular `.chum` save file nor the Squad Manager export is supported.
+
+**Supported export languages:** English and German are verified. Category/type fields (weapon, gear, armor, quality, knowledge-skill category, implant grade, ammo sub-type) are resolved via Chummer's English (`_english`) sibling field when the export provides one, so non-English exports work correctly for those regardless of language. Spells are a special case — Chummer's data files don't emit an English sibling for spell category/duration/range at all — so spell import has a dedicated German fallback and will only resolve correctly for English or German exports; other languages may import spells with an incorrect category or duration. Display-only text (character name, metatype, vehicle type) always keeps the exported language as-is. Item names in the export are in English; you can optionally upload Chummer's matching language file (e.g. `de_data.xml` for German) alongside the export to have imported items named in that language instead of English.
 
 ## XML Importer
 
 > **Unstable.** Results are not perfect yet — expect to clean up after an import.
 
-A GM tool for bulk item import, found under **System Settings → "XML Data Importer"**. Point it at a statblock XML and it imports weapons, armor, gear, ammo, cyberware, bioware, spells, powers, programs and skills into tidy per-category world compendia.
+A GM tool for bulk item import, found under **System Settings → "XML Data Importer"**. Point it at a statblock XML and it imports into tidy per-category world compendia, grouped by source book so you can filter which books to pull in.
+
+Supported record types:
+
+* Ranged & melee weapons
+* Weapon accessories and weapon / armor / vehicle mods
+* Armor
+* Gear, with automatic detection of ammunition and commlinks
+* Cyberware and bioware
+* Spells and adept powers
+* Programs
+* Qualities
+* Mentor spirits and paragons
+* Skills
+* Metatypes and metavariants
+* Critters and critter variants
 
 No data is shipped with the system; bring your own.
+
+Re-importing into a compendium you've already populated can update matching items in place instead of duplicating them (opt-in checkbox) — matches are found by Chummer GUID first, falling back to item name. A separate "Translate" action lets you apply a translation file to an already-imported compendium (or all of them at once) after the fact; the file's language is auto-detected from its filename but can be overridden.
 
 ## Localization
 
 * English and German
 * Full localization of all actor and item types
+* World-shared item name translation dictionary, built up as compendia are imported or translated, keyed to each item's stable internal label rather than its display name
+* Item cards and sheets automatically show the name in the viewing client's language via that dictionary; the compendium browser window localizes and searches item names the same way
 
 ## Token Action HUD
 
@@ -275,15 +310,20 @@ Builds:
 src/
 ├── assets/
 ├── documents/
+├── domains/       # combat, magic, matrix, resonance, rigging, summoned-entity flows
 ├── effects/
-├── flows/
 ├── hooks/
+├── importer/      # XML/Chummer import logic
 ├── lang/
 ├── models/
 ├── sheets/
 ├── styles/
 ├── templates/
-└── utils/
+├── utils/
+├── config.js
+├── index.js
+├── shadowrun4e.js
+└── globals.d.ts
 
 utility/
 ├── build-db.js

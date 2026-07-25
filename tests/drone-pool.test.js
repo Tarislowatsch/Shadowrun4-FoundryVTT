@@ -9,7 +9,7 @@ import {
   getVehicleStat,
   mergeRiggerLookup,
   resolveDronePool,
-} from '@utils/rigging/drone-pool.js';
+} from '@domains/rigging/drone-pool.js';
 
 /**
  * @param {{ pilot?: number, response?: number, sensor?: number, body?: number, armor?: number, autosofts?: { type: string, rating: number, name?: string }[] }} [options]

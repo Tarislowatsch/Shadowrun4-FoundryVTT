@@ -56,6 +56,7 @@ export class FlowSettingsMenu extends foundry.applications.api.HandlebarsApplica
   static PARTS = {
     form: {
       template: 'systems/shadowrun4e/templates/settings/flow-settings-menu.hbs',
+      scrollable: [''],
     },
   };
 

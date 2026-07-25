@@ -1,15 +1,30 @@
 import {
-  handleAttackRoll,
-  openActionDialog,
-  openAttributeRollDialog,
-  openDerivedStatDialog,
-  openMatrixActionDialog,
-  reloadWeapon,
-} from '@utils/index';
-import { RESISTANCE_ELEMENTS } from '@models/actor/basecharacter.model';
-import { REALM_CHOICES, SIM_MODE_CHOICES } from '@models/shared';
-import { ActionCategory } from '@models/actions/actions.model';
-import { getAvailableRealms } from '@documents/initiative.js';
+  wireFocusSelectListeners,
+  wireImageEditListener,
+} from '@sheets/shared';
+import {
+  onOpenCreateItemDialog,
+  onCreateItem,
+  onDeleteItem,
+  onEditItem,
+  onToggleEquip,
+  onMonitorBox,
+  onEditAmmo,
+  onCreateMod,
+  onRemoveMod,
+  onToggleItemEffect,
+} from './item-crud-actions.js';
+import {
+  onAttackRoll,
+  onReloadWeapon,
+  onRollAction,
+  onRollDerivedStat,
+  onRollAttribute,
+} from './roll-actions.js';
+import {
+  onCreateElementResistance,
+  onDeleteElementResistance,
+} from './resistance-actions.js';
 
 export default class SR4BaseActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ActorSheetV2
@@ -25,23 +40,23 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       closeOnSubmit: false,
     },
     actions: {
-      openCreateItemDialog: SR4BaseActorSheet._onOpenCreateItemDialog,
-      createItem: SR4BaseActorSheet._onCreateItem,
-      deleteItem: SR4BaseActorSheet._onDeleteItem,
-      editItem: SR4BaseActorSheet._onEditItem,
-      toggleEquip: SR4BaseActorSheet._onToggleEquip,
-      monitorBox: SR4BaseActorSheet._onMonitorBox,
-      attackRoll: SR4BaseActorSheet._onAttackRoll,
-      reloadWeapon: SR4BaseActorSheet._onReloadWeapon,
-      editAmmo: SR4BaseActorSheet._onEditAmmo,
-      removeMod: SR4BaseActorSheet._onRemoveMod,
-      createMod: SR4BaseActorSheet._onCreateMod,
-      toggleItemEffect: SR4BaseActorSheet._onToggleItemEffect,
-      rollAction: SR4BaseActorSheet._onRollAction,
-      rollDerivedStat: SR4BaseActorSheet._onRollDerivedStat,
-      rollAttribute: SR4BaseActorSheet._onRollAttribute,
-      createElementResistance: SR4BaseActorSheet._onCreateElementResistance,
-      deleteElementResistance: SR4BaseActorSheet._onDeleteElementResistance,
+      openCreateItemDialog: onOpenCreateItemDialog,
+      createItem: onCreateItem,
+      deleteItem: onDeleteItem,
+      editItem: onEditItem,
+      toggleEquip: onToggleEquip,
+      monitorBox: onMonitorBox,
+      attackRoll: onAttackRoll,
+      reloadWeapon: onReloadWeapon,
+      editAmmo: onEditAmmo,
+      removeMod: onRemoveMod,
+      createMod: onCreateMod,
+      toggleItemEffect: onToggleItemEffect,
+      rollAction: onRollAction,
+      rollDerivedStat: onRollDerivedStat,
+      rollAttribute: onRollAttribute,
+      createElementResistance: onCreateElementResistance,
+      deleteElementResistance: onDeleteElementResistance,
     },
   };
 
@@ -93,11 +108,7 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
     this._listenerAbort = new AbortController();
     const { signal } = this._listenerAbort;
 
-    this.element
-      .querySelectorAll('input[type="number"], input[type="text"]')
-      .forEach((input) => {
-        input.addEventListener('focus', () => input.select(), { signal });
-      });
+    wireFocusSelectListeners(this.element, { signal });
 
     this.element
       .querySelectorAll(
@@ -153,17 +164,7 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       );
     });
 
-    this.element.querySelector('[data-edit="img"]')?.addEventListener(
-      'click',
-      () => {
-        new foundry.applications.apps.FilePicker.implementation({
-          type: 'image',
-          current: this.actor.img,
-          callback: (path) => this.actor.update({ img: path }),
-        }).browse();
-      },
-      { signal }
-    );
+    wireImageEditListener(this.element, this.actor, { signal });
   }
 
   // ---------------------------------------------------------------------------
@@ -203,237 +204,5 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
         }));
         return item;
       });
-  }
-
-  // ---------------------------------------------------------------------------
-  // Actions
-  // ---------------------------------------------------------------------------
-
-  static async _onOpenCreateItemDialog(_event, _target) {
-    const types = [
-      'Ranged Weapon',
-      'Melee Weapon',
-      'Armor',
-      'Implant',
-      'Commlink',
-      'Gear',
-      'Ammo',
-      'Weapon Mod',
-      'Armor Mod',
-      'Action',
-    ];
-    const options = types
-      .map(
-        (t) =>
-          `<option value="${t}">${game.i18n.localize(`TYPES.Item.${t}`)}</option>`
-      )
-      .join('');
-    const result = await foundry.applications.api.DialogV2.prompt({
-      window: { title: game.i18n.localize('sr4.item.create') },
-      content: `<fieldset><select name="type" style="width:100%">${options}</select></fieldset>`,
-      ok: {
-        label: game.i18n.localize('sr4.item.create'),
-        callback: (event, button) => button.form.elements.type.value,
-      },
-    });
-    if (!result) return;
-    const [item] = await this.actor.createEmbeddedDocuments('Item', [
-      { name: game.i18n.localize(`TYPES.Item.${result}`), type: result },
-    ]);
-    item?.sheet?.render(true);
-  }
-
-  static async _onCreateItem(event, target) {
-    const type = target.dataset.itemType;
-    if (!type) return;
-    const system = target.dataset.itemSubtype
-      ? { type: target.dataset.itemSubtype }
-      : {};
-    const [item] = await this.actor.createEmbeddedDocuments('Item', [
-      { name: game.i18n.localize(`TYPES.Item.${type}`), type, system },
-    ]);
-    item?.sheet?.render(true);
-  }
-
-  static async _onDeleteItem(event, target) {
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    if (!itemId) return;
-    await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
-  }
-
-  static async _onEditItem(event, target) {
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    if (!itemId) return;
-    this.actor.items.get(itemId)?.sheet?.render(true);
-  }
-
-  static async _onToggleEquip(event, target) {
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    if (!itemId) return;
-    const item = this.actor.items.get(itemId);
-    if (!item) return;
-    const equipped = !item.system.equipped;
-    await item.update({ 'system.equipped': equipped });
-    if (equipped && item.type === 'Commlink') {
-      const others = this.actor.items.filter(
-        (i) => i.type === 'Commlink' && i.id !== item.id && i.system?.equipped
-      );
-      if (others.length) {
-        await this.actor.updateEmbeddedDocuments(
-          'Item',
-          others.map((i) => ({ _id: i.id, 'system.equipped': false }))
-        );
-      }
-    }
-  }
-
-  static async _onMonitorBox(event, target) {
-    const index = Number(target.dataset.index);
-    const type =
-      target.dataset.type ?? target.closest('.monitor-track')?.dataset.type;
-    if (!type) return;
-    const path = `system.conditionMonitor.${type}.value`;
-    const current = foundry.utils.getProperty(this.actor, path);
-    const newValue = index + 1 === current ? index : index + 1;
-    await this.actor.update({ [path]: newValue });
-  }
-
-  static async _onAttackRoll(event, target) {
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    const skillKey = target.dataset.attackSkill;
-    if (!itemId || !skillKey) return;
-    const weapon = this.actor.items.get(itemId);
-    const skillName = this.actor.findByAttackSkill(skillKey)?.name;
-    if (!skillName || !weapon) return;
-    await handleAttackRoll(this.actor, skillName, weapon);
-  }
-
-  static async _onReloadWeapon(event, target) {
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    if (!itemId) return;
-    await reloadWeapon(this.actor, itemId);
-  }
-
-  static async _onEditAmmo(event, target) {
-    const ammoId = target.dataset.ammoId;
-    if (!ammoId) return;
-    this.actor.items.get(ammoId)?.sheet?.render(true);
-  }
-
-  static async _onRollAction(event, target) {
-    const rating1 = Number(target.dataset.rating1) || 0;
-    const rating2 = Number(target.dataset.rating2) || 0;
-    const action1 = target.dataset.action1;
-    const action2 = target.dataset.action2;
-    const category = target.dataset.category;
-    const itemId = target.closest('[data-item-id]')?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    const numDice = rating1 + rating2;
-
-    if (!item || numDice < 1) {
-      ui?.notifications?.error(
-        game.i18n.localize('sr4.action.noRatingForAction')
-      );
-      return;
-    }
-
-    const actionName = `${item.name} (${action1}${action2 ? ` + ${action2}` : ''})`;
-
-    if (
-      category === ActionCategory.MATRIX ||
-      category === ActionCategory.RIGGING
-    ) {
-      return openMatrixActionDialog(this.actor, actionName, numDice, category);
-    }
-
-    return openActionDialog(this.actor, actionName, numDice);
-  }
-
-  static async _onRollDerivedStat(event, target) {
-    const stat = target.dataset.stat;
-    if (stat) await openDerivedStatDialog(this.actor, stat);
-  }
-
-  static async _onRollAttribute(event, target) {
-    const attribute = target.dataset.attribute;
-    if (attribute) await openAttributeRollDialog(this.actor, attribute);
-  }
-
-  static async _onCreateMod(event, target) {
-    const hostId = target.closest('[data-item-id]')?.dataset.itemId;
-    const modType = target.dataset.itemType;
-    if (!hostId || !modType) return;
-    const host = this.actor.items.get(hostId);
-    if (!host) return;
-    const [mod] = await this.actor.createEmbeddedDocuments('Item', [
-      { name: game.i18n.localize(`TYPES.Item.${modType}`), type: modType },
-    ]);
-    if (!mod) return;
-    const current = host.system.installedModIds ?? [];
-    await host.update({ 'system.installedModIds': [...current, mod.id] });
-    mod.sheet?.render(true);
-  }
-
-  static async _onRemoveMod(event, target) {
-    const modId =
-      target.dataset.modId ?? target.closest('[data-mod-id]')?.dataset.modId;
-    const hostId = target.closest('[data-item-id]')?.dataset.itemId;
-    if (!modId || !hostId) return;
-    const host = this.actor.items.get(hostId);
-    if (!host) return;
-    const current = host.system.installedModIds ?? [];
-    await host.update({
-      'system.installedModIds': current.filter((id) => id !== modId),
-    });
-  }
-
-  static async _onToggleItemEffect(event, target) {
-    const itemId = target.dataset.itemId;
-    const effectId = target.dataset.effectId;
-    if (!itemId || !effectId) return;
-    const item = this.actor.items.get(itemId);
-    const effect = item?.effects.get(effectId);
-    if (!effect) return;
-    await effect.update({ disabled: !effect.disabled });
-  }
-
-  // ── Element Resistance actions ────────────────────────────────────────────
-
-  static async _onCreateElementResistance(_event, _target) {
-    await this.actor.update({
-      [`system.elementResistances.${foundry.utils.randomID()}`]: {},
-    });
-  }
-
-  static async _onDeleteElementResistance(event, target) {
-    const key =
-      target.dataset.resistanceKey ??
-      target.closest('[data-resistance-key]')?.dataset.resistanceKey;
-    if (!key) return;
-    await this.actor.update({ [`system.elementResistances.-=${key}`]: null });
-  }
-
-  static _buildResistanceElements() {
-    return RESISTANCE_ELEMENTS.map((el) => ({
-      value: el,
-      label: game.i18n.localize(`sr4.resistance.${el}`),
-    }));
-  }
-
-  static _buildRealmOptions(actor) {
-    const available = getAvailableRealms(actor);
-    return REALM_CHOICES.filter((realm) => available.includes(realm)).map(
-      (realm) => ({
-        value: realm,
-        label: game.i18n.localize(`sr4.combat.realm.${realm}`),
-      })
-    );
-  }
-
-  static _buildSimModeOptions() {
-    return SIM_MODE_CHOICES.map((mode) => ({
-      value: mode,
-      label: game.i18n.localize(`sr4.matrix.simMode.${mode}`),
-    }));
   }
 }

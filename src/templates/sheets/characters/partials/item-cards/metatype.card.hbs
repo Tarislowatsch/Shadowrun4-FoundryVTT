@@ -5,7 +5,7 @@
 >
   <div class="item-header item-row">
     <img src="{{ this.img }}" />
-    <span class="item-name">{{ this.name }}</span>
+    <span class="item-name">{{resolveItemName this.system.label this.name this.system.hasCustomName}}</span>
     {{#if this.system.baseMetatype}}
       <span class="item-property metatype-variant-tag">{{ this.system.baseMetatype }}</span>
     {{/if}}

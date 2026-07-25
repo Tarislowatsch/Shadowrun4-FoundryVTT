@@ -1,5 +1,5 @@
 <div class="item-header item-row">
-  <span class="item-name">{{ this.name }}</span>
+  <span class="item-name">{{resolveItemName this.system.label this.name this.system.hasCustomName}}</span>
   {{#if badgeShow}}
   <span class="badge {{badgeClass}}" data-tooltip="{{localize badgeTooltip}}">{{localize badgeLabel}}</span>
   {{/if}}

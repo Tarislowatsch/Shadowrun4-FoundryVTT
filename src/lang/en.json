@@ -58,12 +58,12 @@
         "STRENGTH": "STR",
         "WILLPOWER": "WIL"
       },
-      "category": "Category",
       "categories": {
-        "none": "-",
         "matrix": "Matrix",
+        "none": "-",
         "rigging": "Rigging"
       },
+      "category": "Category",
       "composure": "Composure",
       "delete": "Delete",
       "edit": "Edit",
@@ -129,15 +129,18 @@
       "notes": "Notes",
       "type": "Type"
     },
+    "controls": {
+      "title": "Shadowrun Controls"
+    },
     "device": {
       "attributes": "Attributes",
       "name": "Name",
       "pilot": "Pilot",
       "type": {
-        "label": "Device Type",
         "agent": "Agent",
-        "ic": "IC",
         "blackIc": "Black IC",
+        "ic": "IC",
+        "label": "Device Type",
         "node": "Node"
       }
     },
@@ -286,6 +289,10 @@
       "noFoci": "No foci"
     },
     "implant": {
+      "biocompatibility": {
+        "label": "Biocompatibility",
+        "none": "None"
+      },
       "currentEssence": "Current Essence",
       "essenceBio": "Bioware Essence",
       "essenceCyber": "Cyberware Essence",
@@ -299,6 +306,7 @@
         "standard": "Standard"
       },
       "noImplants": "No implants installed",
+      "sensitiveSystem": "Sensitive System",
       "type": {
         "bioware": "Bioware",
         "cyberware": "Cyberware",
@@ -337,9 +345,17 @@
       "equipped": "Equipped",
       "essence": "Essence",
       "essenceActual": "Actual Essence",
+      "essenceActualHint": "Reflects the grade modifier only. Character qualities (Biocompatibility, Sensitive System) are applied on the character sheet.",
       "grade": "Grade",
       "legality": "Legality",
       "name": "Name",
+      "nameOverrideCancel": "Cancel",
+      "nameOverrideConfirm": "Confirm",
+      "nameOverrideEdit": "Override display name",
+      "nameOverrideEmpty": "The name cannot be empty.",
+      "nameOverrideReset": "Reset to translated name",
+      "nameOverrideResetIncomplete": "No canonical English name is on record for this item; the display name was reset, but the raw name could not be fully restored.",
+      "nameOverrideSaveFailed": "Could not save the item name.",
       "noItems": "This is where I keep my items, if I had any",
       "notes": "Notes",
       "quantity": "Quantity",
@@ -401,6 +417,30 @@
       "negative": "Negative",
       "noQualities": "No qualities",
       "positive": "Positive"
+    },
+    "scene": {
+      "modifiers": {
+        "backgroundCount": {
+          "hint": "Positive values reduce magic-using actors' effective Magic (and raise Drain); negative values increase it. Affects dice pools, Force caps, and summoned spirits on this scene.",
+          "name": "Background Count",
+          "section": "Background Count"
+        },
+        "backgroundCountTradition": {
+          "hint": "Optional aspected tradition. Actors of this tradition are aided instead of hindered; leave as None for a neutral count.",
+          "name": "Aspected Tradition"
+        },
+        "button": "Scene Modifiers",
+        "hint": "Scene-wide modifiers applied to all actors on this scene.",
+        "mysticAdeptReduction": {
+          "hint": "For mystic adepts: which side of the Magic split the Background Count is deducted from first (SM p. 118).",
+          "name": "Mystic Adepts Lose First",
+          "powerPoints": "Power Points",
+          "spellpower": "Spellpower"
+        },
+        "noScene": "No active scene — open or view a scene first.",
+        "save": "Save",
+        "title": "Scene Modifiers"
+      }
     },
     "skills": {
       "active": "Active",

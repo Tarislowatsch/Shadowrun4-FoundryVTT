@@ -1,4 +1,4 @@
-import { BindingFlow } from '@flows/binding-flow.js';
+import { BindingFlow } from '@domains/summoned-entity/flow/binding-flow.js';
 
 export async function onOpenLinkedActor(_event, target) {
   const uuid = target.dataset.uuid;

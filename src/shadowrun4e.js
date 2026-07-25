@@ -1,7 +1,6 @@
 import { SR4 } from './config.js';
-import { SR4Actor } from './documents/actor.js';
-import { SR4Combat } from './documents/combat.js';
-import { createSR4CombatTracker } from './documents/combat-tracker.js';
+import { SR4Actor, SR4Combat } from './documents/index.js';
+import { createSR4CombatTracker } from '@sheets/combat/sr4-combat-tracker.js';
 import {
   SR4ActiveEffect,
   EFFECT_TEMPLATES,
@@ -28,13 +27,18 @@ import {
 } from '@sheets/index.js';
 import { registerHooks } from '@hooks/index.js';
 import {
-  handleAttackRoll,
-  handleSkillRoll,
   handleFreeRoll,
   openActionDialog,
   openMatrixActionDialog,
-  reloadWeapon,
   getGame,
+  openSourceReference,
+} from '@utils/index.js';
+import {
+  handleAttackRoll,
+  handleSkillRoll,
+} from '@domains/combat/dialogs/index.js';
+import { reloadWeapon } from '@domains/combat/weapons.js';
+import {
   ControlModes,
   DroneActions,
   getRiggerLookup,
@@ -43,19 +47,19 @@ import {
   openDroneRollDialog,
   resolveDronePool,
   resolveRigger,
-  openSourceReference,
-} from '@utils/index.js';
-import { SpellcastingFlow } from '@flows/spellcasting-flow.js';
-import { SummoningFlow } from '@flows/summoning-flow.js';
-import { ThreadingFlow } from '@flows/threading-flow.js';
-import { BindingFlow } from '@flows/binding-flow.js';
-import { DismissalFlow } from '@flows/dismissal-flow.js';
+} from '@domains/rigging/index.js';
+import { SpellcastingFlow } from '@domains/magic/flow/spellcasting-flow.js';
+import { SummoningFlow } from '@domains/summoned-entity/flow/summoning-flow.js';
+import { ThreadingFlow } from '@domains/resonance/threading-flow.js';
+import { BindingFlow } from '@domains/summoned-entity/flow/binding-flow.js';
+import { DismissalFlow } from '@domains/summoned-entity/flow/dismissal-flow.js';
+import { CybercombatFlow } from '@domains/matrix/flow/cybercombat-flow.js';
 import { ActionCategory } from '@models/actions/actions.model';
 import {
   REALMS,
   getAvailableRealms,
   getCombatantRealm,
-} from './documents/initiative.js';
+} from '@domains/combat/initiative.js';
 
 /**
  * @typedef {object} SR4Global
@@ -72,6 +76,7 @@ import {
  * @property {typeof ThreadingFlow} ThreadingFlow
  * @property {typeof BindingFlow} BindingFlow
  * @property {typeof DismissalFlow} DismissalFlow
+ * @property {typeof CybercombatFlow} CybercombatFlow
  * @property {typeof ActionCategory} ActionCategory
  * @property {typeof reloadWeapon} reloadWeapon
  * @property {{
@@ -110,6 +115,7 @@ globalThis.sr4 = {
   ThreadingFlow,
   BindingFlow,
   DismissalFlow,
+  CybercombatFlow,
   ActionCategory,
   reloadWeapon,
   rigging: {

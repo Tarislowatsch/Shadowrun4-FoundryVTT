@@ -29,12 +29,11 @@
   </div>
 
   {{#if hasMatrixAccess}}
-  {{#> action-button-bar title="sr4.matrix.cybercombat.label"}}
+  {{#> action-button-bar title="sr4.matrix.actions"}}
     {{#*inline "buttons"}}
-      {{> action-button action="matrixAttack" icon="fas fa-bolt" label="sr4.matrix.cybercombat.attack"}}
-      {{#if matrixJammed}}
-      {{> action-button action="matrixJackOut" icon="fas fa-plug-circle-xmark" label="sr4.matrix.cybercombat.jackOut"}}
-      {{/if}}
+      {{#each matrixActionButtons as |btn|}}
+      {{> "matrix-action-button" btn}}
+      {{/each}}
     {{/inline}}
   {{/action-button-bar}}
   <table class="item-stats-table">

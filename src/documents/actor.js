@@ -1,10 +1,23 @@
-import { SpellcastingFlow } from '@flows/index';
+import { SpellcastingFlow } from '@domains/magic/flow/spellcasting-flow.js';
 import { Attackskill } from '@models/index';
-import { getGame, isJammedMatrixEscape } from '@utils/index';
-import { resolveRiggerSync } from '@utils/rigging/drone-pool.js';
+import {
+  getGame,
+  getBackgroundCountMagicModifier,
+  getMysticAdeptReduction,
+} from '@utils/index';
+import { resolveRiggerSync } from '@domains/rigging/index.js';
 import { SR4ActiveEffect } from '@effects/index';
-import { SR4 } from '../config.js';
-import { getInitiativeBase, getCombatantRealm } from './initiative.js';
+import { resolveMagicSplit, applyMagicModifier } from '@domains/magic/split.js';
+import {
+  handleDescendantItemPreCreate,
+  shouldBlockJammedMatrixUpdate,
+  captureLiveInitiativeScores,
+  applyLiveInitiativeUpdate,
+} from './actor-lifecycle.js';
+import {
+  addSkillsFromCompendium,
+  buildCompendiumSkillData as buildCompendiumSkillDataFromSeed,
+} from './actor-skill-seed.js';
 
 /** @type {import('@models/index').SR4SheetStats} */
 const DEFAULT_STATS = {
@@ -67,6 +80,82 @@ export class SR4Actor extends foundry.documents.Actor {
    */
   getAttribute(attribute) {
     return this.sheetStats[attribute] ?? 0;
+  }
+
+  /** @returns {string} */
+  getMagicTradition() {
+    /** @type {any} */
+    const self = this;
+    return self.system?.magic?.tradition ?? '';
+  }
+
+  /** @returns {number} */
+  getSpellpower() {
+    /** @type {any} */
+    const self = this;
+    return (
+      self.system?.derivedStats?.spellpower ?? this.getAttribute('MAGIC') ?? 0
+    );
+  }
+
+  /** @returns {number} */
+  getPowerPoints() {
+    /** @type {any} */
+    const self = this;
+    const derived = self.system?.derivedStats?.powerPoints;
+    if (derived !== undefined) return derived;
+    if (!self.system?.magic) return 0;
+    return resolveMagicSplit(self.system.magic, this.getAttribute('MAGIC'))
+      .powerPoints;
+  }
+
+  /**
+   * @param {{ spellpower?: number, powerPoints?: number }} split
+   * @returns {Promise<void>}
+   */
+  async setMagicSplit(split) {
+    /** @type {any} */
+    const self = this;
+    const magic = { ...(self.system?.magic ?? {}), ...split };
+    const { spellpower, powerPoints } = resolveMagicSplit(
+      magic,
+      this.getAttribute('MAGIC')
+    );
+    await self.update({ system: { magic: { spellpower, powerPoints } } });
+  }
+
+  /**
+   * @param {object} [scene]
+   * @returns {{ spellpower: number, powerPoints: number }}
+   */
+  getEffectiveMagicSplit(scene = canvas?.scene) {
+    // Modifier is signed: a positive Background Count is subtracted (malus),
+    // while an aspected-match returns a negative value that raises Magic (bonus).
+    const modifier = getBackgroundCountMagicModifier(
+      scene,
+      this.getMagicTradition()
+    );
+    return applyMagicModifier(
+      { spellpower: this.getSpellpower(), powerPoints: this.getPowerPoints() },
+      modifier,
+      getMysticAdeptReduction(scene)
+    );
+  }
+
+  /**
+   * @param {object} [scene]
+   * @returns {number}
+   */
+  getEffectiveMagic(scene = canvas?.scene) {
+    return this.getEffectiveMagicSplit(scene).spellpower;
+  }
+
+  /**
+   * @param {object} [scene]
+   * @returns {number}
+   */
+  getEffectivePowerPoints(scene = canvas?.scene) {
+    return this.getEffectiveMagicSplit(scene).powerPoints;
   }
 
   async useEdge() {
@@ -198,99 +287,20 @@ export class SR4Actor extends foundry.documents.Actor {
       userId
     );
     if (collection !== 'items') return;
-
-    const critterTemplates = data.filter((d) => d.type === 'CritterTemplate');
-    if (critterTemplates.length > 0) {
-      for (let i = data.length - 1; i >= 0; i--) {
-        if (data[i].type === 'CritterTemplate') data.splice(i, 1);
-      }
-      const tpl = critterTemplates[0];
-      const { CritterCreationDialog } = await import(
-        '@sheets/importer/critter-creation-dialog.js'
-      );
-      CritterCreationDialog.createFromTemplate(tpl.system, tpl.name);
-    }
-
-    const hasMetatype = this.items.some((i) => i.type === 'Metatype');
-    const incomingMetatypes = data.filter((d) => d.type === 'Metatype');
-    if (hasMetatype && incomingMetatypes.length > 0) {
-      ui.notifications?.warn(game.i18n.localize('sr4.metatype.onlyOneAllowed'));
-      for (let i = data.length - 1; i >= 0; i--) {
-        if (data[i].type === 'Metatype') data.splice(i, 1);
-      }
-    } else if (incomingMetatypes.length > 1) {
-      ui.notifications?.warn(game.i18n.localize('sr4.metatype.onlyOneAllowed'));
-      const firstIdx = data.findIndex((d) => d.type === 'Metatype');
-      for (let i = data.length - 1; i > firstIdx; i--) {
-        if (data[i].type === 'Metatype') data.splice(i, 1);
-      }
-    }
+    await handleDescendantItemPreCreate(this, data);
   }
 
   async _preUpdate(changed, options, userId) {
-    /** @type {any} */
-    const self = this;
-    const jammedBy = self.system?.matrix?.jammedBy;
-    if (jammedBy) {
-      const matrixChange = changed.system?.matrix;
-      const clearingJam =
-        matrixChange && 'jammedBy' in matrixChange && !matrixChange.jammedBy;
-      if (
-        isJammedMatrixEscape(jammedBy, {
-          changedRealm: changed.system?.realm,
-          changedSimMode: changed.system?.matrixSimMode,
-          clearingJam,
-        })
-      ) {
-        ui?.notifications?.warn(
-          game.i18n.localize('sr4.matrix.cybercombat.jammedBlock')
-        );
-        return false;
-      }
-    }
+    if (shouldBlockJammedMatrixUpdate(this, changed)) return false;
     await super._preUpdate(changed, options, userId);
     if (game.settings.get('shadowrun4e', 'liveInitiativeReduction'))
-      options._sr4IniScores = this.#activeInitiativeScores();
+      options._sr4IniScores = captureLiveInitiativeScores(this);
   }
 
   async _onUpdate(changed, options, userId) {
     await super._onUpdate(changed, options, userId);
     if (!game.settings.get('shadowrun4e', 'liveInitiativeReduction')) return;
-
-    const oldScores = options._sr4IniScores;
-    if (!oldScores) return;
-
-    const newScores = this.#activeInitiativeScores();
-    for (const [combatantId, { combatant, score }] of newScores) {
-      const previous = oldScores.get(combatantId);
-      if (!previous) continue;
-      const delta = score - previous.score;
-      if (delta === 0) continue;
-      await combatant.update({
-        initiative: Math.max(0, combatant.initiative + delta),
-      });
-    }
-  }
-
-  /**
-   * @returns {Map<string, { combatant: object, score: number }>}
-   */
-  #activeInitiativeScores() {
-    /** @type {any} */
-    const self = this;
-    const map = new Map();
-    for (const combat of game?.combats ?? []) {
-      const combatants = combat.combatants.filter(
-        (c) => c.actor?.id === self.id
-      );
-      for (const combatant of combatants) {
-        if (combatant.initiative === null) continue;
-        if (combatant.initiative >= SR4.rules.edgeInitiativeSentinel) continue;
-        const base = getInitiativeBase(self, getCombatantRealm(combatant));
-        map.set(combatant.id, { combatant, score: base - this.getMalus() });
-      }
-    }
-    return map;
+    await applyLiveInitiativeUpdate(this, options._sr4IniScores);
   }
 
   async _onCreate(data, options, userId) {
@@ -314,15 +324,8 @@ export class SR4Actor extends foundry.documents.Actor {
       await self.update(updates);
     }
     if (self.type === 'character' || self.type === 'npc') {
-      await SR4Actor.#addSkillsFromCompendium(self, self.type === 'npc');
+      await addSkillsFromCompendium(self, self.type === 'npc');
     }
-  }
-
-  static async #addSkillsFromCompendium(actor, npcOnly) {
-    if (actor.items.some((i) => i.type === 'Skill')) return;
-    const skillData = await SR4Actor.buildCompendiumSkillData(npcOnly);
-    if (skillData.length > 0)
-      await actor.createEmbeddedDocuments('Item', skillData);
   }
 
   /**
@@ -330,39 +333,7 @@ export class SR4Actor extends foundry.documents.Actor {
    * @returns {Promise<Array<{ name: string, type: string, img: string|null, system: object, effects: [] }>>}
    */
   static async buildCompendiumSkillData(npcOnly = false) {
-    const compendium = game?.packs?.get('shadowrun4e.skills');
-    if (!compendium) {
-      ui.notifications?.error(
-        'SR4 | Skill compendium "shadowrun4e.skills" not found.'
-      );
-      return [];
-    }
-    const index = await compendium.getIndex();
-    let skillEntries = index.filter((e) => e?.type === 'Skill');
-    if (npcOnly) {
-      const allowlist = new Set(
-        JSON.parse(game.settings.get('shadowrun4e', 'npcDefaultSkills'))
-      );
-      skillEntries = skillEntries.filter((e) =>
-        allowlist.has(e.name?.toLowerCase())
-      );
-    }
-    const skills = await Promise.all(
-      skillEntries.map((e) => compendium.getDocument(e._id))
-    );
-    return skills
-      .filter(Boolean)
-      .map((s) => {
-        const obj = s.toObject();
-        return {
-          name: obj.name ?? s.name,
-          type: obj.type ?? s.type,
-          img: obj.img ?? null,
-          system: obj.system ?? {},
-          effects: [],
-        };
-      })
-      .filter((s) => s.name && s.type);
+    return buildCompendiumSkillDataFromSeed(npcOnly);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { evaluateForceFormula } from '@utils/force-formula.js';
+import { evaluateForceFormula } from '@domains/magic/force-formula.js';
 
 const fields = foundry.data.fields;
 

@@ -3,60 +3,52 @@ import {
   applyMatrixDamage,
   computeBiofeedbackDamage,
   isJammedMatrixEscape,
-} from '@utils/matrix/matrix-rules.js';
+} from '@domains/matrix/matrix-rules.js';
 
 describe('isJammedMatrixEscape', () => {
-  it('blocks leaving matrix while jammed', () => {
-    expect(isJammedMatrixEscape('Actor.ic', { changedRealm: 'physical' })).toBe(
-      true
-    );
-  });
-
-  it('blocks sim mode switches while jammed', () => {
-    expect(isJammedMatrixEscape('Actor.ic', { changedSimMode: 'cold' })).toBe(
-      true
-    );
-  });
-
-  it('allows the combined jack-out update that clears the jam', () => {
-    expect(
-      isJammedMatrixEscape('Actor.ic', {
-        changedRealm: 'physical',
-        clearingJam: true,
-      })
-    ).toBe(false);
-  });
-
-  it('allows staying in matrix', () => {
-    expect(isJammedMatrixEscape('Actor.ic', { changedRealm: 'matrix' })).toBe(
-      false
-    );
-  });
-
-  it('does nothing when not jammed', () => {
-    expect(isJammedMatrixEscape('', { changedRealm: 'physical' })).toBe(false);
-  });
-
-  it('ignores updates that touch neither realm nor sim mode', () => {
-    expect(isJammedMatrixEscape('Actor.ic', {})).toBe(false);
+  it.each([
+    [
+      'blocks leaving matrix while jammed',
+      'Actor.ic',
+      { changedRealm: 'physical' },
+      true,
+    ],
+    [
+      'blocks sim mode switches while jammed',
+      'Actor.ic',
+      { changedSimMode: 'cold' },
+      true,
+    ],
+    [
+      'allows the combined jack-out update that clears the jam',
+      'Actor.ic',
+      { changedRealm: 'physical', clearingJam: true },
+      false,
+    ],
+    ['allows staying in matrix', 'Actor.ic', { changedRealm: 'matrix' }, false],
+    ['does nothing when not jammed', '', { changedRealm: 'physical' }, false],
+    [
+      'ignores updates that touch neither realm nor sim mode',
+      'Actor.ic',
+      {},
+      false,
+    ],
+  ])('%s', (label, jammedById, update, expected) => {
+    expect(isJammedMatrixEscape(jammedById, update)).toBe(expected);
   });
 });
 
 describe('applyMatrixDamage', () => {
-  it('adds damage below the cap', () => {
-    expect(applyMatrixDamage(2, 10, 3)).toEqual({ value: 5, crashed: false });
-  });
-
-  it('caps at max', () => {
-    expect(applyMatrixDamage(8, 10, 20)).toEqual({ value: 10, crashed: true });
-  });
-
-  it('crashes at exactly max', () => {
-    expect(applyMatrixDamage(6, 10, 4)).toEqual({ value: 10, crashed: true });
-  });
-
-  it('ignores negative amounts', () => {
-    expect(applyMatrixDamage(3, 10, -5)).toEqual({ value: 3, crashed: false });
+  it.each([
+    ['adds damage below the cap', 2, 10, 3, 5, false],
+    ['caps at max', 8, 10, 20, 10, true],
+    ['crashes at exactly max', 6, 10, 4, 10, true],
+    ['ignores negative amounts', 3, 10, -5, 3, false],
+  ])('%s', (label, value, max, amount, expectedValue, expectedCrashed) => {
+    expect(applyMatrixDamage(value, max, amount)).toEqual({
+      value: expectedValue,
+      crashed: expectedCrashed,
+    });
   });
 });
 

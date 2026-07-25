@@ -18,6 +18,28 @@ const LEGACY_GRADE_MAP = {
   'second-hand': 'SECOND_HAND',
 };
 
+/**
+ * @enum {number}
+ * @readonly
+ */
+export const GradeEssenceMultipliers = Object.freeze({
+  /** @type {number} */ SECOND_HAND: 1.25,
+  /** @type {number} */ STANDARD: 1,
+  /** @type {number} */ ALPHA: 0.8,
+  /** @type {number} */ BETA: 0.7,
+  /** @type {number} */ DELTA: 0.5,
+});
+
+/**
+ * @param {number} essence
+ * @param {string} grade
+ * @returns {number}
+ */
+export function essenceAfterGrade(essence, grade) {
+  const mult = GradeEssenceMultipliers[grade] ?? 1;
+  return Math.round((essence ?? 0) * mult * 1000) / 1000;
+}
+
 export class SR4ImplantData extends foundry.abstract.TypeDataModel {
   static migrateData(source) {
     migrateLegacyValue(source, 'type', LEGACY_TYPE_MAP);
@@ -34,6 +56,10 @@ export class SR4ImplantData extends foundry.abstract.TypeDataModel {
       grade: new fields.StringField({ initial: 'STANDARD' }),
       type: new fields.StringField({ initial: 'CYBERWARE' }),
     };
+  }
+
+  prepareDerivedData() {
+    this.essenceActual = essenceAfterGrade(this.essence, this.grade);
   }
 }
 
@@ -58,4 +84,14 @@ export const ImplantTypes = Object.freeze({
   /** @type {string} */ BIOWARE: 'sr4.implant.type.bioware',
   /** @type {string} */ NANOWARE: 'sr4.implant.type.nanoware',
   /** @type {string} */ GENEWARE: 'sr4.implant.type.geneware',
+});
+
+/**
+ * @enum {string}
+ * @readonly
+ */
+export const BiocompatibilityTypes = Object.freeze({
+  /** @type {string} */ '': 'sr4.implant.biocompatibility.none',
+  /** @type {string} */ CYBERWARE: 'sr4.implant.type.cyberware',
+  /** @type {string} */ BIOWARE: 'sr4.implant.type.bioware',
 });

@@ -1,10 +1,28 @@
 <div
-  class="item-card power-card"
+  class="item-card power-card{{#if this.system.suppressed}} suppressed{{/if}}"
   id="{{ this._id }}"
   data-item-id="{{ this._id }}"
   title="{{ this.system.description }}"
 >
-  {{> item-card-header}}
+  {{#> item-card-header
+      badgeShow=this.system.suppressed
+      badgeClass="suppressed-badge"
+      badgeLabel="sr4.power.suppressed"
+      badgeTooltip="sr4.power.suppressedHint"}}
+    {{#*inline "card-buttons"}}
+      <a
+        class="item-toggle-equip"
+        data-action="togglePowerSuppressed"
+        data-tooltip="{{localize 'sr4.power.toggleSuppressed'}}"
+      >
+        {{#if this.system.suppressed}}
+        <i class="fas fa-bolt-slash"></i>
+        {{else}}
+        <i class="fas fa-bolt"></i>
+        {{/if}}
+      </a>
+    {{/inline}}
+  {{/item-card-header}}
   <div class="item-body">
     <span class="item-property">
       <strong>{{localize "sr4.power.totalCost"}}</strong>

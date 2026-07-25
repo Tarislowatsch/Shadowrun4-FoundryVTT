@@ -74,6 +74,39 @@ export function commerceFields(record) {
 }
 
 /**
+ * @param {string} name
+ * @returns {string}
+ */
+export function normalizeSkillName(name) {
+  return String(name ?? '')
+    .trim()
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/-/g, ' ');
+}
+
+/**
+ * @param {string} name
+ * @returns {string}
+ */
+export function normalizeItemLabel(name) {
+  return String(name ?? '')
+    .trim()
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+/**
+ * @param {{ name: string, system?: { nameEn?: string } }} entry
+ * @returns {string}
+ */
+export function canonicalItemName(entry) {
+  return entry.system?.nameEn || entry.name;
+}
+
+/**
  * @param {unknown} value
  * @returns {string}
  */
@@ -231,6 +264,58 @@ export function parseBonus(record) {
     armorImpact = parseNumber(a.i, 0);
   }
   return { reach: parseNumber(b.reach, 0), armorBallistic, armorImpact };
+}
+
+/**
+ * @param {Record<string, unknown>} variant
+ * @param {Record<string, unknown>} parent
+ * @param {(record: Record<string, unknown>) => { name: string, type: string, system: object }} baseMapper
+ * @param {{ unnamedFallback: string, baseNameField: string, extraFields?: (variant: Record<string, unknown>, base: { name: string, type: string, system: object }) => object }} options
+ * @returns {{ name: string, type: string, system: object }}
+ */
+export function mergeVariantOverBase(
+  variant,
+  parent,
+  baseMapper,
+  { unnamedFallback, baseNameField, extraFields }
+) {
+  const base = baseMapper(parent);
+  const variantQualities = parseQualities(variant);
+  const variantBonus = parseBonus(variant);
+  const hasOwnBonus = variant.bonus && typeof variant.bonus === 'object';
+  const variantPowers = parsePowerList(variant, 'powers');
+  const variantOptPowers = parsePowerList(variant, 'optionalpowers');
+
+  return {
+    name: String(variant.name ?? '').trim() || unnamedFallback,
+    type: base.type,
+    system: {
+      ...base.system,
+      bp: parseNumber(variant.bp, base.system.bp),
+      [baseNameField]: base.name,
+      qualities: {
+        positive: variantQualities.positive.length
+          ? variantQualities.positive
+          : base.system.qualities.positive,
+        negative: variantQualities.negative.length
+          ? variantQualities.negative
+          : base.system.qualities.negative,
+      },
+      reach: hasOwnBonus ? variantBonus.reach : base.system.reach,
+      armorBallistic: hasOwnBonus
+        ? variantBonus.armorBallistic
+        : base.system.armorBallistic,
+      armorImpact: hasOwnBonus
+        ? variantBonus.armorImpact
+        : base.system.armorImpact,
+      powers: variantPowers.length ? variantPowers : base.system.powers,
+      optionalPowers: variantOptPowers.length
+        ? variantOptPowers
+        : base.system.optionalPowers,
+      ...(extraFields ? extraFields(variant, base) : {}),
+      source: sourceOf(variant),
+    },
+  };
 }
 
 /**

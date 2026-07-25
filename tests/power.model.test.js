@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { SR4PowerData } from '../src/models/magic/power.models.js';
+import {
+  SR4PowerData,
+  powerPointCost,
+} from '../src/models/magic/power.models.js';
 
 function makePower(overrides = {}) {
   return Object.assign(Object.create(SR4PowerData.prototype), {
@@ -26,4 +29,28 @@ describe('SR4PowerData.totalCost', () => {
       expect(p.totalCost).toBe(expected);
     }
   );
+});
+
+describe('powerPointCost', () => {
+  it('uses a precomputed totalCost when the sheet data carries one', () => {
+    expect(powerPointCost({ totalCost: 1.5, cost: 0.5 })).toBe(1.5);
+  });
+
+  it('falls back to the rating formula for plain item data', () => {
+    expect(powerPointCost({ ratingMode: 'rated', rating: 3, cost: 0.5 })).toBe(
+      1.5
+    );
+    expect(powerPointCost({ ratingMode: 'none', rating: 3, cost: 0.5 })).toBe(
+      0.5
+    );
+  });
+
+  it('costs nothing while the power is suppressed', () => {
+    expect(powerPointCost({ totalCost: 1.5, suppressed: true })).toBe(0);
+  });
+
+  it('treats missing data as free', () => {
+    expect(powerPointCost(undefined)).toBe(0);
+    expect(powerPointCost({})).toBe(0);
+  });
 });

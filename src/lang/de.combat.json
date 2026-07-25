@@ -318,10 +318,10 @@
       "ammoInsufficient": "Aktueller Munitionsstand. Bei aktiver Munitionsverfolgung: Burst-Feuer-Boni werden für jede fehlende Patrone reduziert; eine leere Waffe blockiert den Angriff und bietet nur das Nachladen an.",
       "burstNarrow": "+N Schaden, abhängig von der Schussanzahl (3→+2, 6→+5, 10→+9).",
       "burstWide": "-N Würfel auf den Verteidigungswurf des Verteidigers, abhängig von der Schussanzahl (3→−2, 6→−5, 10→−9).",
-      "edge": "1 Edge ausgeben. Fügt den maximalen Edge-Wert zum Würfelpool hinzu; 6er werden einmal neu gewürfelt.",
-      "loadedAmmo": "Munitions-Items aus dem Kompendium oder dem Item-Verzeichnis auf das Charaktersheet ziehen, um sie hier auswählen zu können.",
       "controlRig": "+2 Würfel. Gilt, solange über den Control Rig in ein Fahrzeug/eine Drohne eingeloggt (jumped in) ist.",
+      "edge": "1 Edge ausgeben. Fügt den maximalen Edge-Wert zum Würfelpool hinzu; 6er werden einmal neu gewürfelt.",
       "hotSim": "+2 Würfel auf Matrix-Actions bei aktivem Hot Sim.",
+      "loadedAmmo": "Munitions-Items aus dem Kompendium oder dem Item-Verzeichnis auf das Charaktersheet ziehen, um sie hier auswählen zu können.",
       "shots": "Anzahl der verschossenen Patronen. Jede Patrone nach der ersten erhöht den Rückstoß um 1, reduziert durch den RC-Wert der Waffe.",
       "smartlink": "+2 Würfel. Erfordert ein implantiertes Smartlink-System und eine kompatible Waffe.",
       "specialization": "+2 Würfel, wenn die Fertigkeitsspezialisierung auf diesen Wurf zutrifft."

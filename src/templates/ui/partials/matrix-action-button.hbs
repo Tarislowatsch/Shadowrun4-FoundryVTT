@@ -1,0 +1,17 @@
+<button
+  type="button"
+  class="action-button"
+  data-action="{{ action }}"
+  {{#if itemId}}
+  data-item-id="{{ itemId }}"
+  data-rating1="{{ rating1 }}"
+  data-rating2="{{ rating2 }}"
+  data-action1="{{ action1 }}"
+  data-action2="{{ action2 }}"
+  data-category="{{ category }}"
+  {{/if}}
+  {{#if tooltip}}data-tooltip="{{ tooltip }}"{{/if}}
+>
+  <i class="{{ icon }}"></i>
+  {{ label }}
+</button>

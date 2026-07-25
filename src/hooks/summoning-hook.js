@@ -1,12 +1,12 @@
-import { openSpiritResistDialog } from '@utils/dialog/magic/spirit-resist.js';
 import { isPrimaryGM } from '@utils/index';
+import { openSpiritResistDialog } from '@domains/summoned-entity/dialogs/index.js';
 import {
   requestReactiveDecision,
   DecisionCategory,
   DecisionKind,
   DecisionRouting,
 } from '@utils/rolls/decision-provider.js';
-import { SummoningFlow } from '@flows/summoning-flow.js';
+import { SummoningFlow } from '@domains/summoned-entity/flow/summoning-flow.js';
 import { BaseSocketHook } from './base-socket-hook.js';
 
 /**

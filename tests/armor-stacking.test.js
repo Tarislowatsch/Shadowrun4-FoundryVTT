@@ -127,35 +127,22 @@ describe('computeArmorStacking', () => {
       expect(result.encumbrance).toBe(0);
     });
 
-    it('calculates penalty for 1 point over (ceil(1/2) = 1)', () => {
-      const equipped = [makeItem({ ballistic: 11, impact: 6 })];
-      const result = computeArmorStacking(
-        equipped,
-        { ballistic: 0, impact: 0 },
-        5
-      );
-      expect(result.encumbrance).toBe(1);
-    });
-
-    it('calculates penalty for 2 points over (ceil(2/2) = 1)', () => {
-      const equipped = [makeItem({ ballistic: 12, impact: 6 })];
-      const result = computeArmorStacking(
-        equipped,
-        { ballistic: 0, impact: 0 },
-        5
-      );
-      expect(result.encumbrance).toBe(1);
-    });
-
-    it('calculates penalty for 3 points over (ceil(3/2) = 2)', () => {
-      const equipped = [makeItem({ ballistic: 13, impact: 6 })];
-      const result = computeArmorStacking(
-        equipped,
-        { ballistic: 0, impact: 0 },
-        5
-      );
-      expect(result.encumbrance).toBe(2);
-    });
+    it.each([
+      [1, 11, 1],
+      [2, 12, 1],
+      [3, 13, 2],
+    ])(
+      'calculates penalty for %i point(s) over (ballistic=%i -> %i)',
+      (pointsOver, ballistic, expectedEncumbrance) => {
+        const equipped = [makeItem({ ballistic, impact: 6 })];
+        const result = computeArmorStacking(
+          equipped,
+          { ballistic: 0, impact: 0 },
+          5
+        );
+        expect(result.encumbrance).toBe(expectedEncumbrance);
+      }
+    );
 
     it('sums ALL standard armors for encumbrance (not just highest)', () => {
       const equipped = [

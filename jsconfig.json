@@ -10,9 +10,10 @@
       "@client/*": ["./foundry/client/*"],
       "@common/*": ["./foundry/common/*"],
 
+      "@config": ["./src/config.js"],
       "@documents/*": ["./src/documents/*"],
+      "@domains/*": ["./src/domains/*"],
       "@effects/*": ["./src/effects/*"],
-      "@flows/*": ["./src/flows/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@importer/*": ["./src/importer/*"],
       "@models/*": ["./src/models/*"],

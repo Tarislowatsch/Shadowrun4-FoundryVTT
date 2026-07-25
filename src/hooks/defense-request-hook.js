@@ -1,4 +1,5 @@
-import { DefenseFlow, startDefenderPickerFlow } from '@flows/index';
+import { DefenseFlow } from '@domains/combat/flow/defense-flow.js';
+import { startDefenderPickerFlow } from '@domains/combat/flow/defender-picker-flow.js';
 import { isResponsibleForActor, isPrimaryGM } from '@utils/index';
 import { BaseSocketHook } from './base-socket-hook.js';
 

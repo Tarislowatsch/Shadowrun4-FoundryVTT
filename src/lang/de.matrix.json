@@ -25,49 +25,55 @@
       "attribute": "Attribut",
       "biofeedbackFilter": "Biofeedback-Filter",
       "bonus": "Bonus",
+      "commlinks": "Commlinks",
+      "compendium": "Kompendium",
+      "compiledSprites": "Kompilierte Sprites",
+      "complexForms": "Komplexe Formen",
       "controlRigBonus": "Control Rig (+2)",
-      "hotSimBonus": "Hot Sim (+2)",
       "cybercombat": {
-        "label": "Cyberkampf",
         "attack": "Matrix-Angriff",
         "attackTitle": "Cyberkampf-Angriff",
-        "program": "Programm",
-        "noPrograms": "Keine Angriffsprogramme (Angriff/Schwarzer Hammer/Blackout) verfügbar.",
         "attackedBy": "Angegriffen von",
+        "biofeedbackResistTitle": "Biofeedback-Widerstand",
         "defenseTitle": "Matrix-Verteidigung",
         "fullDefense": "Volle Matrix-Verteidigung",
         "fullDefenseHint": "Volle Verteidigung addiert Hacking (oder Stufe), kostet aber eine komplexe Handlung.",
-        "resistTitle": "Matrix-Schadenswiderstand",
-        "biofeedbackResistTitle": "Biofeedback-Widerstand",
+        "jackOut": "Ausklinken",
+        "jackOutFail": "{name} kann sich nicht ausklinken und bleibt blockiert.",
+        "jackOutIc": "Schwarzes IC (Stufe + Reaktion)",
+        "jackOutSuccess": "{name} klinkt sich aus — erleidet aber Dumpshock!",
+        "jackOutTitle": "Ausklinken (Willenskraft + Biofeedback-Filter)",
+        "jammed": "{name}s Verbindung wird von Schwarzem IC blockiert!",
+        "jammedBlock": "Verbindung von Schwarzem IC blockiert — du kannst die Matrix nicht verlassen. Klink dich zuerst aus.",
+        "label": "Cyberkampf",
         "miss": "{attacker} → {defender}: Angriff verfehlt.",
         "noEffect": "{defender}: keine Wirkung (Gerät/Agent/IC).",
         "noEffectAr": "{defender}: Schwarzes IC wirkt in AR nicht (nicht in VR).",
-        "jammed": "{name}s Verbindung wird von Schwarzem IC blockiert!",
-        "jammedBlock": "Verbindung von Schwarzem IC blockiert — du kannst die Matrix nicht verlassen. Klink dich zuerst aus.",
-        "jackOut": "Ausklinken",
-        "jackOutTitle": "Ausklinken (Willenskraft + Biofeedback-Filter)",
-        "jackOutIc": "Schwarzes IC (Stufe + Reaktion)",
-        "jackOutSuccess": "{name} klinkt sich aus — erleidet aber Dumpshock!",
-        "jackOutFail": "{name} kann sich nicht ausklinken und bleibt blockiert."
+        "noPrograms": "Keine Angriffsprogramme (Angriff/Schwarzer Hammer/Blackout) verfügbar.",
+        "program": "Programm",
+        "resistTitle": "Matrix-Schadenswiderstand"
       },
       "damage": {
-        "summary": "{name} erleidet {amount} Matrix-Schaden durch {reason}.",
-        "resisted": "{name} hat allen Matrix-Schaden widerstanden.",
         "crashed": "{name}s Icon ist abgestürzt!",
         "pendingChat": "{name}: {amount} Matrix-Schaden ausstehend.",
         "pendingStunChat": "{name}: {amount} Matrix-Schaden ausstehend (wird als geistiger Schaden angewendet).",
         "reason": {
           "cybercombat": "Cyberkampf"
-        }
+        },
+        "resisted": "{name} hat allen Matrix-Schaden widerstanden.",
+        "summary": "{name} erleidet {amount} Matrix-Schaden durch {reason}."
       },
       "dumpshock": {
         "resistTitle": "Dumpshock-Widerstand (Willenskraft + Biofeedback-Filter)"
       },
-      "commlinks": "Commlinks",
-      "compendium": "Kompendium",
-      "compiledSprites": "Kompilierte Sprites",
-      "complexForms": "Komplexe Formen",
+      "fadingAttribute": "Schwund-Attribut",
+      "fadingPool": "Schwundpool",
+      "fadingboni": {
+        "compiling": "Kompilierung",
+        "label": "Schwundbonus"
+      },
       "firewall": "Firewall",
+      "hotSimBonus": "Hot Sim (+2)",
       "livingPersona": "Living Persona",
       "noComplexForms": "Keine komplexen Formen vorhanden",
       "noComplexFormsAvailable": "Keine komplexen Formen gefunden - weder auf diesem Charakter, noch in der Welt oder in einem Kompendium.",
@@ -76,14 +82,12 @@
       "response": "Reaktion",
       "selectComplexForm": "Komplexe Form wählen",
       "signal": "Signal",
-      "software": "Software",
-      "system": "System",
-      "fadingAttribute": "Schwund-Attribut",
-      "fadingPool": "Schwundpool",
-      "fadingboni": {
-        "label": "Schwundbonus",
-        "compiling": "Kompilierung"
+      "simMode": {
+        "cold": "Cold Sim",
+        "hot": "Hot Sim",
+        "label": "Sim-Modus"
       },
+      "software": "Software",
       "spriteTypes": {
         "CODE": "Code-Sprite",
         "COURIER": "Kurier-Sprite",
@@ -108,6 +112,7 @@
         "SOURCERORS": "Quellenmagier",
         "TECHNOSHAMANS": "Techno-Schamanen"
       },
+      "system": "System",
       "technomancer": "Technomancer",
       "threaded": "Geträdet",
       "threadedHint": "Diese komplexe Form ist aktuell geträdet/aufrechterhalten",
@@ -121,11 +126,6 @@
       "useComplexFormHint": "Komplexe-Form-Stufe + Resonanz würfeln",
       "vrMatrixInitiative": "VR Matrix-Initiative",
       "vrMatrixInitiativePasses": "VR Matrix-Ini-Pässe",
-      "simMode": {
-        "label": "Sim-Modus",
-        "cold": "Cold Sim",
-        "hot": "Hot Sim"
-      },
       "world": "Welt"
     },
     "program": {

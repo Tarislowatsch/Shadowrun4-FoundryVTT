@@ -1,12 +1,11 @@
 // @ts-nocheck
-import {
-  NpcSkillsMenu,
-  DEFAULT_NPC_SKILLS_JSON,
-} from '../sheets/settings/npc-skills-menu.js';
+import { NpcSkillsMenu } from '../sheets/settings/npc-skills-menu.js';
+import { DEFAULT_NPC_SKILLS_JSON } from '../sheets/settings/npc-default-skills.js';
 import { XmlImporterApp } from '../sheets/importer/importer-app.js';
 import { RiggerLookupMenu } from '../sheets/settings/rigger-lookup-menu.js';
 import { SourceBooksMenu } from '../sheets/settings/source-books-menu.js';
 import { FlowSettingsMenu } from '../sheets/settings/flow-settings-menu.js';
+import { invalidateItemNameTranslationsCache } from '../utils/item-name-translations.js';
 
 export class SettingsHook {
   constructor() {
@@ -265,6 +264,19 @@ export class SettingsHook {
         type: String,
         default: '{}',
       });
+
+      game.settings.register('shadowrun4e', 'itemNameTranslations', {
+        scope: 'world',
+        config: false,
+        type: String,
+        default: '{}',
+      });
+    });
+
+    Hooks.on('updateSetting', (setting) => {
+      if (setting.key === 'shadowrun4e.itemNameTranslations') {
+        invalidateItemNameTranslationsCache();
+      }
     });
   }
 }

@@ -8,12 +8,12 @@ import {
   edgeFirstInitiative,
   glitchInitiative,
   effectivePassCount,
-} from '@documents/initiative.js';
+} from '@domains/combat/initiative.js';
 import {
   computeMatrixResponse,
   hasMatrixAccess,
-} from '@documents/derivedStats.mapper.js';
-import { SR4 } from '../src/config.js';
+} from '@domains/matrix/derived-stats.js';
+import { SR4 } from '@config';
 
 /**
  * @param {object} [options]

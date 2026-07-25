@@ -56,4 +56,38 @@ describe('buildImplantContext', () => {
     const ctx = buildImplantContext([], sys);
     expect(ctx.currentEssence).toBe('6.00');
   });
+
+  it('applies biocompatibility to the affected item essenceActualEffective', () => {
+    const implants = [
+      makeImplant('i1', { type: 'CYBERWARE', essenceActual: 2 }),
+      makeImplant('i2', { type: 'GENEWARE', essenceActual: 1 }),
+    ];
+    buildImplantContext(implants, {
+      derivedStats: {},
+      sheetStats: {},
+      biocompatibility: 'CYBERWARE',
+    });
+    expect(implants[0].essenceActualEffective).toBe('1.80');
+    expect(implants[1].essenceActualEffective).toBe('1.00');
+  });
+
+  it('doubles cyberware essenceActualEffective for sensitive system', () => {
+    const implants = [
+      makeImplant('i1', { type: 'CYBERWARE', essenceActual: 2 }),
+    ];
+    buildImplantContext(implants, {
+      derivedStats: {},
+      sheetStats: {},
+      sensitiveSystem: true,
+    });
+    expect(implants[0].essenceActualEffective).toBe('4.00');
+  });
+
+  it('leaves essenceActualEffective unchanged without modifiers', () => {
+    const implants = [
+      makeImplant('i1', { type: 'CYBERWARE', essenceActual: 0.3 }),
+    ];
+    buildImplantContext(implants, { derivedStats: {}, sheetStats: {} });
+    expect(implants[0].essenceActualEffective).toBe('0.30');
+  });
 });
