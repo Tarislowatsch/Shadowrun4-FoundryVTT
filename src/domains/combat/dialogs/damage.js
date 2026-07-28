@@ -1,10 +1,6 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { getGame } from '@utils/game/game';
-import { renderTemplate } from '@utils/dialog';
 
-/** @returns {string} */
-function modifyDamageTemplatePath() {
-  return 'systems/shadowrun4e/templates/modify-damage-dialog.hbs';
-}
 /**
  * Opens a dialog allowing the user to adjust the damage amount before applying.
  *
@@ -18,7 +14,7 @@ export async function openModifyDamageDialog(actor, amount, isPhysical) {
     ? getGame().i18n.localize('sr4.damage.physical')
     : getGame().i18n.localize('sr4.damage.stun');
 
-  const content = await renderTemplate(modifyDamageTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.combat.modifyDamageDialog, {
     name: actor.name,
     amount,
     damageType,

@@ -1,0 +1,25 @@
+<div
+  class="effects tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="effects"
+>
+  <div class="inventory-section">
+    <h3>
+      {{localize "sr4.tab.effects"}}
+      <button
+        type="button"
+        class="add-effect-btn"
+        data-action="createEffect"
+        data-tooltip="{{localize 'sr4.effect.add'}}"
+      >
+        <i class="fas fa-plus"></i>
+      </button>
+    </h3>
+
+    {{#if effects}}
+    {{> effect-table effects=effects}}
+    {{else}}
+    <p class="empty-list">{{localize "sr4.effect.none"}}</p>
+    {{/if}}
+  </div>
+</div>

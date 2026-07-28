@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -15,9 +15,7 @@
             {{selectOptions mentorcategories selected=system.category localize=true}}
           </select>
         </td>
-        <td>
-          <input type="text" name="system.source" value="{{ system.source }}" />
-        </td>
+        {{> stat-cell name="system.source" value=system.source type="text"}}
       </tr>
     </tbody>
   </table>
@@ -50,6 +48,6 @@
   </div>
   {{/if}}
 
-  {{> "item-textareas"}}
-  {{> "item-actions-effects"}}
+  {{> item-textareas}}
+  {{> item-actions-effects}}
 </div>

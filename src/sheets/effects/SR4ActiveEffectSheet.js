@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import { SR4EffectTargets } from '@effects/index.js';
 
 /**
@@ -36,8 +37,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
 
   static PARTS = {
     form: {
-      template:
-        'systems/shadowrun4e/templates/sheets/effects/effect-config.hbs',
+      template: TEMPLATES.sheets.effects.config,
     },
   };
 

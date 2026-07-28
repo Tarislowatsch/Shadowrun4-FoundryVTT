@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -18,18 +18,14 @@
             <option value="Negative" {{#if (eq system.category "Negative")}}selected{{/if}}>{{localize 'sr4.quality.negative'}}</option>
           </select>
         </td>
-        <td>
-          <input type="number" name="system.bp" value="{{ system.bp }}" />
-        </td>
-        <td>
-          <input type="number" name="system.limit" value="{{ system.limit }}" />
-        </td>
-        <td>
-          <input type="text" name="system.source" value="{{ system.source }}" />
-        </td>
+        {{> stat-cell name="system.bp" value=system.bp}}
+        {{> stat-cell name="system.limit" value=system.limit}}
+        {{> stat-cell name="system.source" value=system.source type="text"}}
       </tr>
     </tbody>
   </table>
 
-  {{> "item-textareas"}}
+  {{> item-actions-effects}}
+
+  {{> item-textareas}}
 </div>

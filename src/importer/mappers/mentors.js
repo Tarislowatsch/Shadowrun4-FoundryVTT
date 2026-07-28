@@ -1,4 +1,4 @@
-import { parseNumber, sourceOf } from './helpers.js';
+import { lower, mappedName, parseNumber, sourceOf } from './helpers.js';
 import { SKILL_KEYS } from '@effects/SR4EffectTargets.js';
 import {
   MENTOR_CATEGORIES,
@@ -20,12 +20,10 @@ const CATEGORY_ALIASES = Object.freeze({
  * @returns {string}
  */
 function normalizeMentorCategory(raw) {
-  const lower = String(raw ?? '')
-    .trim()
-    .toLowerCase();
+  const normalized = lower(raw);
   return (
-    MENTOR_CATEGORIES.find((c) => c.toLowerCase() === lower) ??
-    CATEGORY_ALIASES[lower] ??
+    MENTOR_CATEGORIES.find((c) => c.toLowerCase() === normalized) ??
+    CATEGORY_ALIASES[normalized] ??
     'Other'
   );
 }
@@ -147,10 +145,7 @@ export function parseMentorBonusEntries(bonusElement) {
  * @returns {string}
  */
 function normalizeSkillKey(name) {
-  return String(name ?? '')
-    .trim()
-    .toLowerCase()
-    .replace(/[\s-]/g, '');
+  return lower(name).replace(/[\s-]/g, '');
 }
 
 /**
@@ -260,7 +255,7 @@ export function isParagonRecord(record) {
  * @returns {{ name: string, type: string, system: object, effects: object[] }}
  */
 export function mapMentor(record) {
-  const name = String(record.name ?? '').trim() || 'Unnamed Mentor Spirit';
+  const name = mappedName(record, 'Unnamed Mentor Spirit');
   const category = normalizeMentorCategory(record.category);
   const bonusEntries = /** @type {MentorBonusEntry[]} */ (record._bonus ?? []);
   const choiceEntries = /** @type {MentorChoiceRecord[]} */ (

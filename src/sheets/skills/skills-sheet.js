@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import {
   ActiveSkillCategories,
   KnowledgeSkillCategories,
@@ -21,7 +22,7 @@ export default class SR4SkillsSheet extends foundry.applications.api.HandlebarsA
 
   static PARTS = {
     main: {
-      template: 'systems/shadowrun4e/templates/sheets/skills/skill.sheet.hbs',
+      template: TEMPLATES.sheets.skills.skill,
     },
   };
 

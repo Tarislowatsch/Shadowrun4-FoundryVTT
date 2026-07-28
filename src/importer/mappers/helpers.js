@@ -14,6 +14,15 @@ export function englishOr(record, field) {
 }
 
 /**
+ * @param {Record<string, unknown>} record
+ * @param {string} fallback
+ * @returns {string}
+ */
+export function mappedName(record, fallback) {
+  return String(record.name ?? '').trim() || fallback;
+}
+
+/**
  * @param {unknown} value
  * @param {number} [fallback=0]
  * @returns {number}
@@ -114,6 +123,32 @@ export function upper(value) {
   return String(value ?? '')
     .trim()
     .toUpperCase();
+}
+
+/**
+ * @param {unknown} value
+ * @returns {string}
+ */
+export function lower(value) {
+  return String(value ?? '')
+    .trim()
+    .toLowerCase();
+}
+
+/**
+ * @param {unknown} value
+ * @returns {boolean}
+ */
+export function isTrue(value) {
+  return upper(value) === 'TRUE';
+}
+
+/**
+ * @param {unknown} value
+ * @returns {boolean}
+ */
+export function isYes(value) {
+  return upper(value) === 'YES';
 }
 
 /**

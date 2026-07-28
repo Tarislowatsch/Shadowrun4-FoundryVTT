@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import { ActionType, Shootingmodes, SR4Attributes } from '@models/index';
 import { buildWeaponContext } from './weapon-context.js';
 import { buildArmorContext } from './armor-context.js';
@@ -23,17 +24,15 @@ export default class SR4NpcSheet extends SR4BaseActorSheet {
       template: 'templates/generic/tab-navigation.hbs',
     },
     main: {
-      template: 'systems/shadowrun4e/templates/sheets/characters/npc.sheet.hbs',
+      template: TEMPLATES.sheets.characters.npc,
       scrollable: [''],
     },
     defense: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/defense.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.defense,
       scrollable: [''],
     },
     modifiers: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/modifiers.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.modifiers,
     },
   };
 

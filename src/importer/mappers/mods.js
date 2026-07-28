@@ -1,4 +1,9 @@
-import { commerceFields, parseNumber, sourceOf } from './helpers.js';
+import {
+  commerceFields,
+  mappedName,
+  parseNumber,
+  sourceOf,
+} from './helpers.js';
 
 const WEAPON_MOD_CATEGORIES = new Set(['Weapon Mod', 'Special Mod']);
 
@@ -54,7 +59,7 @@ export function modKind(record) {
  */
 export function mapWeaponMod(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Weapon Mod',
+    name: mappedName(record, 'Unnamed Weapon Mod'),
     type: 'Weapon Mod',
     system: {
       ...commerceFields(record),
@@ -77,7 +82,7 @@ export function mapWeaponMod(record) {
  */
 export function mapArmorMod(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Armor Mod',
+    name: mappedName(record, 'Unnamed Armor Mod'),
     type: 'Armor Mod',
     system: {
       ...commerceFields(record),
@@ -100,7 +105,7 @@ export function mapVehicleMod(record) {
     record.bonus && typeof record.bonus === 'object' ? record.bonus : {}
   );
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Vehicle Mod',
+    name: mappedName(record, 'Unnamed Vehicle Mod'),
     type: 'Vehicle Mod',
     system: {
       ...commerceFields(record),

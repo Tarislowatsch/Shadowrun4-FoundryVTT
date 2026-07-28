@@ -8,6 +8,10 @@ import {
   sourceOf,
   commerceFields,
   upper,
+  lower,
+  isTrue,
+  isYes,
+  mappedName,
   normalizeSkillName,
   normalizeItemLabel,
   canonicalItemName,
@@ -178,5 +182,63 @@ describe('upper', () => {
     [null, ''],
   ])('upper(%j) -> %j', (input, expected) => {
     expect(upper(input)).toBe(expected);
+  });
+});
+
+describe('lower', () => {
+  it.each([
+    ['YES', 'yes'],
+    ['  Combat  ', 'combat'],
+    [undefined, ''],
+    [null, ''],
+  ])('lower(%j) -> %j', (input, expected) => {
+    expect(lower(input)).toBe(expected);
+  });
+});
+
+describe('isTrue', () => {
+  it.each([
+    ['TRUE', true],
+    ['true', true],
+    ['  True  ', true],
+    ['False', false],
+    ['yes', false],
+    ['', false],
+    [undefined, false],
+    [null, false],
+  ])('isTrue(%j) -> %j', (input, expected) => {
+    expect(isTrue(input)).toBe(expected);
+  });
+});
+
+describe('isYes', () => {
+  it.each([
+    ['YES', true],
+    ['yes', true],
+    ['  Yes  ', true],
+    ['No', false],
+    ['true', false],
+    ['', false],
+    [undefined, false],
+    [null, false],
+  ])('isYes(%j) -> %j', (input, expected) => {
+    expect(isYes(input)).toBe(expected);
+  });
+});
+
+describe('mappedName', () => {
+  it('uses the trimmed record name when present', () => {
+    expect(mappedName({ name: '  Ares Predator  ' }, 'Unnamed')).toBe(
+      'Ares Predator'
+    );
+  });
+
+  it.each([
+    ['empty string', ''],
+    ['whitespace only', '   '],
+    ['undefined', undefined],
+    ['null', null],
+  ])('falls back for a %s name', (_label, name) => {
+    expect(mappedName({ name }, 'Unnamed Item')).toBe('Unnamed Item');
   });
 });

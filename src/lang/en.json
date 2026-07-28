@@ -184,6 +184,20 @@
     },
     "effectTarget": {
       "attackModifier": "Attack Dice Pool Modifier",
+      "attributeMaximum": {
+        "AGILITY": "Attribute Maximum: Agility",
+        "BODY": "Attribute Maximum: Body",
+        "CHARISMA": "Attribute Maximum: Charisma",
+        "EDGE": "Attribute Maximum: Edge",
+        "ESSENCE": "Attribute Maximum: Essence",
+        "INTUITION": "Attribute Maximum: Intuition",
+        "LOGIC": "Attribute Maximum: Logic",
+        "MAGIC": "Attribute Maximum: Magic",
+        "REACTION": "Attribute Maximum: Reaction",
+        "RESONANCE": "Attribute Maximum: Resonance",
+        "STRENGTH": "Attribute Maximum: Strength",
+        "WILLPOWER": "Attribute Maximum: Willpower"
+      },
       "defenseModifier": "Defense Dice Pool Modifier",
       "generalModifier": "General Dice Pool Modifier",
       "skill": {
@@ -462,6 +476,7 @@
       },
       "category": "Category",
       "complexForm": "Complex Form",
+      "filterNoRating": "Hide skills without rating",
       "group": "Skillgroup",
       "knowledge": "Knowledge",
       "knowledgeAndComplexForms": "Knowledge",

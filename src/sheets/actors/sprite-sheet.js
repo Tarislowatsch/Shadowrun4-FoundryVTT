@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import { SR4SummonedEntitySheet } from './sr4-summoned-entity-sheet.js';
 
 export default class SR4SpriteSheet extends SR4SummonedEntitySheet {
@@ -11,7 +12,7 @@ export default class SR4SpriteSheet extends SR4SummonedEntitySheet {
 
   static PARTS = {
     sheet: {
-      template: 'systems/shadowrun4e/templates/sheets/actors/sprite.sheet.hbs',
+      template: TEMPLATES.sheets.actors.sprite,
       scrollable: [''],
     },
   };

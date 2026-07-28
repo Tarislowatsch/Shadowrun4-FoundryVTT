@@ -1,6 +1,6 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getChecked,
@@ -17,11 +17,6 @@ import {
   resolveDialogPool,
   wireDroneDialog,
 } from './drone-roll-dialog';
-
-/** @returns {string} */
-export function droneDefenseTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/drone-defense-dialog.hbs';
-}
 
 /**
  * @param {import('@documents/index').SR4Actor} defender
@@ -49,7 +44,7 @@ export async function openDroneDefenseDialog(
     : [];
   const params = createDialogParameters(rigger ?? defender);
 
-  const content = await renderTemplate(droneDefenseTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.rigging.droneDefenseDialog, {
     ...params,
     attackSuccesses,
     attackerName: attacker.name,

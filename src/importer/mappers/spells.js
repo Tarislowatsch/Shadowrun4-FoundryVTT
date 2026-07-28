@@ -1,4 +1,4 @@
-import { sourceOf, upper } from './helpers.js';
+import { mappedName, sourceOf, upper } from './helpers.js';
 
 /** @type {Record<string, string>} */
 const TYPE_MAP = { P: 'PHYSICAL', M: 'MANA' };
@@ -110,7 +110,7 @@ function inferOpposed(category, descriptor) {
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapSpell(record) {
-  const rawName = /** @type {string} */ (record.name) ?? 'Unnamed Spell';
+  const rawName = mappedName(record, 'Unnamed Spell');
   const limited = /\(Limited\)\s*$/i.test(rawName);
   const name = limited
     ? rawName.replace(/\s*\(Limited\)\s*$/i, '').trim()

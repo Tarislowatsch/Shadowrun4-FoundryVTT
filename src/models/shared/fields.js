@@ -154,6 +154,7 @@ export class SR4SheetStatsData extends fields.SchemaField {
  * @property {number} unarmedDamageModifier
  * @property {Record<string, number>} skillGroupBonuses
  * @property {Record<string, number>} skillBonuses
+ * @property {Record<string, number>} attributeMaximum
  */
 export const modifiersField = () =>
   new fields.SchemaField({
@@ -183,6 +184,7 @@ export const modifiersField = () =>
     skillGroupBonuses: new fields.ObjectField({ initial: {} }),
     skillBonuses: new fields.ObjectField({ initial: {} }),
     spellCategoryBonuses: new fields.ObjectField({ initial: {} }),
+    attributeMaximum: new fields.ObjectField({ initial: {} }),
   });
 
 /**

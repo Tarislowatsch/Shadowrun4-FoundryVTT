@@ -1,8 +1,7 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   createRollDialog,
   localize,
-  renderTemplate,
-  standardTemplatePath,
   createDialogParameters,
   dialogActions,
 } from '@utils/dialog';
@@ -16,10 +15,11 @@ export async function askSpellForce(spell, actor) {
   const magic = actor.getEffectiveMagic();
   const max = magic * 2;
 
-  const content = await foundry.applications.handlebars.renderTemplate(
-    'systems/shadowrun4e/templates/magic/spell-force.hbs',
-    { spell, magic, max }
-  );
+  const content = await renderTemplate(TEMPLATES.magic.spellForce, {
+    spell,
+    magic,
+    max,
+  });
 
   return foundry.applications.api.DialogV2.prompt({
     window: { title: localize('sr4.spell.forcedialogtitle') },
@@ -60,7 +60,7 @@ export async function openSpellcastingDialog(
 ) {
   const effectiveDice = Math.max(1, numDice + poolModifier);
   const params = createDialogParameters(actor, effectiveDice);
-  let content = await renderTemplate(standardTemplatePath(), {
+  let content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     spell,
     force,
     ...params,

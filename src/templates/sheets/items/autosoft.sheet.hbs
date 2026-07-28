@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -26,30 +26,21 @@
             <option value="clearsoft" {{#if (eq system.autosoftType 'clearsoft')}}selected{{/if}}>{{localize 'sr4.autosoft.clearsoft'}}</option>
           </select>
         </td>
-        <td>
-          <input type="number" name="system.rating" value="{{ system.rating }}" />
-        </td>
-        <td>
-          <input type="text" name="system.target" value="{{ system.target }}" placeholder="e.g. Pistols" />
-        </td>
-        <td>
-          <input type="number" name="system.cost" value="{{ system.cost }}" />
-        </td>
-        <td>
-          <input type="text" name="system.legality" value="{{ system.legality }}" />
-        </td>
-        <td>
-          <input type="text" name="system.availability" value="{{ system.availability }}" />
-        </td>
+        {{> stat-cell name="system.rating" value=system.rating}}
+        {{> stat-cell
+            name="system.target"
+            value=system.target
+            type="text"
+            placeholder="e.g. Pistols"}}
+        {{> stat-cell name="system.cost" value=system.cost}}
+        {{> stat-cell name="system.legality" value=system.legality type="text"}}
+        {{> stat-cell name="system.availability" value=system.availability type="text"}}
         {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
   </table>
 
   <div class="item-textareas">
-    <div>
-      <label>{{localize 'sr4.item.notes'}}</label>
-      <textarea name="system.notes">{{ system.notes }}</textarea>
-    </div>
+    {{> textarea-field label='sr4.item.notes' name='system.notes' value=system.notes}}
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { parseNumber } from '../mappers/helpers.js';
+import { lower, parseNumber } from '../mappers/helpers.js';
 import { resolveCritterTemplate } from '@domains/summoned-entity/dialogs/index.js';
 import {
   buildCritterActorData,
@@ -11,10 +11,7 @@ import {
  * @returns {Promise<{ name: string, type: 'spirit'|'sprite', system: object, items?: Array<object> }>}
  */
 export async function buildSummonedActorData(record, ownerUuid) {
-  const isSprite =
-    String(record.type ?? '')
-      .trim()
-      .toLowerCase() === 'sprite';
+  const isSprite = lower(record.type) === 'sprite';
   const entityType = isSprite ? 'sprite' : 'spirit';
   const force = parseNumber(record.force, 1);
   const name =

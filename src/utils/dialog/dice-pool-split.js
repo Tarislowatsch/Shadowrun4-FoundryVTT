@@ -1,6 +1,5 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { localize } from './roll-dialog-core.js';
-
-const SPLIT_TEMPLATE = 'systems/shadowrun4e/templates/dice-pool-split.hbs';
 
 /**
  * @typedef {object} SplitTarget
@@ -33,10 +32,11 @@ export async function openDicePoolSplitDialog(totalDice, targets, label) {
   }));
   const remaining = totalDice - entries.reduce((sum, e) => sum + e.initial, 0);
 
-  const content = await foundry.applications.handlebars.renderTemplate(
-    SPLIT_TEMPLATE,
-    { totalDice, remaining, targets: entries }
-  );
+  const content = await renderTemplate(TEMPLATES.ui.dialogs.dicePoolSplit, {
+    totalDice,
+    remaining,
+    targets: entries,
+  });
 
   return foundry.applications.api.DialogV2.prompt({
     window: { title: `${localize('sr4.roll.splitPool')} — ${label}` },

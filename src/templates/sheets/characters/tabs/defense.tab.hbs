@@ -1,0 +1,34 @@
+<div
+  class="defense-card tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="defense"
+>
+  <div class="defense-grid">
+    <div class="defense-section">
+      <div class="defense-field">
+        <label>{{localize "sr4.armor.ballisticarmor"}}</label>
+        <span>{{ system.armor.ballistic }}</span>
+      </div>
+      <div class="defense-field">
+        <label>{{localize "sr4.armor.impactarmor"}}</label>
+        <span>{{ system.armor.impact }}</span>
+      </div>
+      {{#if system.armor.encumbrance}}
+      <div class="defense-field encumbrance-warning">
+        <i class="fas fa-weight-hanging warning"></i>
+        <span data-tooltip="{{localize 'sr4.armor.encumbranceWarning'}}">
+          {{localize "sr4.armor.encumbrance"}}: −{{ system.armor.encumbrance }}
+        </span>
+      </div>
+      {{/if}}
+    </div>
+
+    {{> condition-monitor system=system showSimpleHpToggle=showSimpleHpToggle}}
+  </div>
+
+  {{> item-list-block
+      items=armor
+      card="armor-card"
+      listClass="armor-list"
+      emptyKey="sr4.armor.noarmors"}}
+</div>

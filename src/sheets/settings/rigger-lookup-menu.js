@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import {
   DEFAULT_RIGGER_LOOKUP,
   mergeRiggerLookup,
@@ -29,7 +30,7 @@ export class RiggerLookupMenu extends foundry.applications.api.HandlebarsApplica
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/settings/rigger-lookup-menu.hbs',
+      template: TEMPLATES.sheets.settings.riggerLookup,
       scrollable: [''],
     },
   };

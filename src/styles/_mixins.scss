@@ -3,7 +3,7 @@
   border: 1px solid var(--sr4-border-dim);
   border-radius: 3px;
   color: var(--sr4-text);
-  font-family: 'Orbitron', sans-serif;
+  font-family: sans-serif;
   font-size: 0.75rem;
   padding: 2px 4px;
 }
@@ -73,7 +73,7 @@
 @mixin sr4-data-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: 'Orbitron', sans-serif;
+  font-family: sans-serif;
   font-size: 0.72rem;
 
   thead tr {
@@ -107,7 +107,7 @@
     color: var(--sr4-text);
     border-radius: 3px;
     padding: 2px 4px;
-    font-family: 'Orbitron', sans-serif;
+    font-family: sans-serif;
     font-size: 0.72rem;
 
     &:focus {

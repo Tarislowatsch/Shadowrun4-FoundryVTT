@@ -1,11 +1,9 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { SR4 } from '@config';
 import { watchDiceTotalPatch } from '@hooks/dice-total-patch-hook.js';
 
 /** @typedef {import('@models/index').SR4RollResult} SR4RollResult */
 /** @typedef {import('@models/index').SR4RollOptions} SR4RollOptions */
-
-const ROLL_RESULTS_TEMPLATE =
-  'systems/shadowrun4e/templates/dicerolls/roll-results.hbs';
 
 // ---------------------------------------------------------------------------
 // Pure evaluation helpers (no Foundry side-effects)
@@ -139,8 +137,8 @@ export class DiceUtility {
       );
 
     try {
-      const content = await foundry.applications.handlebars.renderTemplate(
-        ROLL_RESULTS_TEMPLATE,
+      const content = await renderTemplate(
+        TEMPLATES.ui.dialogs.rollResults,
         templateData
       );
 

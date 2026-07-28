@@ -1,7 +1,7 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { isRangedWeapon } from '@models/index';
 import {
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getInt,
@@ -25,11 +25,6 @@ import {
   resolveDialogPool,
   wireDroneDialog,
 } from './drone-roll-dialog';
-
-/** @returns {string} */
-export function droneAttackTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/drone-attack-dialog.hbs';
-}
 
 /**
  * @param {import('@documents/index').SR4Actor} vehicle
@@ -82,7 +77,7 @@ export async function openDroneAttackDialog(vehicle, weapon) {
         }
       : {};
 
-  const content = await renderTemplate(droneAttackTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.rigging.droneAttackDialog, {
     ...params,
     ...fireModeParams,
     ...rangedAmmo,

@@ -1,7 +1,5 @@
-import { localize, renderTemplate } from '@utils/dialog';
-
-const TEMPLATE_PATH =
-  'systems/shadowrun4e/templates/dicerolls/defender-picker-dialog.hbs';
+import { TEMPLATES, renderTemplate } from '@utils/templates';
+import { localize } from '@utils/dialog';
 
 /**
  * @typedef {object} DefenderPickerActor
@@ -23,7 +21,7 @@ export async function openDefenderPickerDialog(
   successes,
   actors
 ) {
-  const content = await renderTemplate(TEMPLATE_PATH, {
+  const content = await renderTemplate(TEMPLATES.combat.defenderPickerDialog, {
     attackerName,
     successes,
     actors,

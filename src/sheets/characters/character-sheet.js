@@ -1,3 +1,4 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { rollComplexFormDialog } from '@utils/index';
 import { handleSkillRoll } from '@domains/combat/dialogs/index.js';
 import { SummoningFlow } from '@domains/summoned-entity/flow/summoning-flow.js';
@@ -58,6 +59,9 @@ import {
 } from './resistance-actions.js';
 
 export default class SR4CharacterSheet extends SR4BaseActorSheet {
+  /** @type {boolean} */
+  hideNoRatingSkills = false;
+
   static DEFAULT_OPTIONS = {
     classes: ['shadowrun4e', 'sheet', 'actor', 'character', 'sheet-container'],
     position: { width: 1400, height: 800 },
@@ -99,57 +103,46 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       template: 'templates/generic/tab-navigation.hbs',
     },
     main: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/main.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.main,
       scrollable: [''],
     },
     bio: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/bio.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.bio,
       scrollable: [''],
     },
     weapons: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/weapons.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.weapons,
       scrollable: [''],
     },
     defense: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/defense.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.defense,
       scrollable: [''],
     },
     inventory: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/inventory.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.inventory,
       scrollable: [''],
     },
     implants: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/implants.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.implants,
       scrollable: [''],
     },
     magic: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/magic.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.magic,
       scrollable: [''],
     },
     matrix: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/matrix.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.matrix,
       scrollable: [''],
     },
     actions: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/actions.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.actions,
       scrollable: [''],
     },
     modifiers: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/modifiers.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.modifiers,
     },
     effects: {
-      template:
-        'systems/shadowrun4e/templates/sheets/characters/partials/tabs/effects.tab.hbs',
+      template: TEMPLATES.sheets.characters.tabs.effects,
       scrollable: [''],
     },
   };
@@ -199,6 +192,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     const items = actorData.items || [];
     return {
       editMode: this.editMode,
+      hideNoRatingSkills: this.hideNoRatingSkills,
       tabs: this._prepareTabs('primary'),
       sourceStats,
       sourceModifiers,
@@ -260,6 +254,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
     const powers = this._enrichItemContext(items, 'Power');
     const sys = this.document.system;
     const implants = this._enrichItemContext(items, 'Implant');
+    this._enrichItemContext(items, 'Quality');
     const mentorItem =
       this.actor.items.find(
         (i) => i.type === 'Mentor' && !i.system.isParagon
@@ -321,10 +316,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       '.window-header .header-control'
     );
 
-    const html = await foundry.applications.handlebars.renderTemplate(
-      'systems/shadowrun4e/templates/ui/import-update-button.hbs',
-      {}
-    );
+    const html = await renderTemplate(TEMPLATES.ui.importUpdateButton, {});
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
     const button = /** @type {HTMLElement} */ (wrapper.firstElementChild);
@@ -394,17 +386,36 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
         );
       });
 
-    this.element.querySelector('#skill-search')?.addEventListener(
-      'input',
-      (event) => {
-        const query = event.currentTarget.value.toLowerCase().trim();
-        this.element.querySelectorAll('.skill').forEach((el) => {
-          const name = (el.dataset.skillName || '').toLowerCase();
-          el.classList.toggle(
-            'hidden',
-            query.length > 0 && !name.includes(query)
-          );
-        });
+    const skillSearchInput = this.element.querySelector('#skill-search');
+    const skillFilterNoRatingBtn = this.element.querySelector(
+      '#skill-filter-no-rating'
+    );
+
+    const applySkillFilters = () => {
+      const query = (skillSearchInput?.value || '').toLowerCase().trim();
+      const hideNoRating =
+        skillFilterNoRatingBtn?.getAttribute('aria-pressed') === 'true';
+      this.element.querySelectorAll('.skill').forEach((el) => {
+        const name = (el.dataset.skillName || '').toLowerCase();
+        const rating = Number(el.dataset.rating) || 0;
+        const matchesSearch = query.length === 0 || name.includes(query);
+        const matchesRating = !hideNoRating || rating > 0;
+        el.classList.toggle('hidden', !(matchesSearch && matchesRating));
+      });
+    };
+
+    skillSearchInput?.addEventListener('input', applySkillFilters, {
+      signal,
+    });
+    skillFilterNoRatingBtn?.addEventListener(
+      'click',
+      () => {
+        this.hideNoRatingSkills = !this.hideNoRatingSkills;
+        skillFilterNoRatingBtn.setAttribute(
+          'aria-pressed',
+          String(this.hideNoRatingSkills)
+        );
+        applySkillFilters();
       },
       { signal }
     );

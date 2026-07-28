@@ -83,18 +83,30 @@ function extractMetatypeRecords(root) {
 }
 
 /**
+ * Converts a `<mentor>`/`<mentorspirit>` element to a record, enriched with the
+ * parsed `_bonus` (MentorBonusEntry[]) and `_choices` (MentorChoiceRecord[])
+ * fields that `mapMentor` consumes. Detaches the bonus/choices subtrees before
+ * `elementToRecord` so they are not flattened into the record.
+ *
+ * @param {Element} el
+ * @returns {Record<string, unknown>}
+ */
+export function toMentorRecord(el) {
+  const { bonus, choices } = detachMentorBonusAndChoices(el);
+  const record = elementToRecord(el);
+  record._bonus = bonus;
+  record._choices = choices;
+  return record;
+}
+
+/**
  * @param {Element} root
  * @returns {Array<Record<string, unknown>>}
  */
 function extractMentorRecords(root) {
-  const elements = [...root.querySelectorAll(':scope > mentors > mentor')];
-  return elements.map((el) => {
-    const { bonus, choices } = detachMentorBonusAndChoices(el);
-    const record = elementToRecord(el);
-    record._bonus = bonus;
-    record._choices = choices;
-    return record;
-  });
+  return [...root.querySelectorAll(':scope > mentors > mentor')].map(
+    toMentorRecord
+  );
 }
 
 /**

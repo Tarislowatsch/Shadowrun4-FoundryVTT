@@ -13,6 +13,7 @@ import { firstOfHelper } from './first-of.helper';
 import { spellDamageTypeHelper } from './spell-damage-type.helper';
 import { objectHelper } from './object.helper';
 import { arrayHelper } from './array.helper';
+import { moduleActiveHelper } from './module-active.helper';
 
 /**
  * @returns {void}
@@ -31,4 +32,5 @@ export function registerHelpers() {
   spellDamageTypeHelper();
   objectHelper();
   arrayHelper();
+  moduleActiveHelper();
 }

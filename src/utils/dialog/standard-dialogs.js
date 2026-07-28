@@ -1,16 +1,10 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { ActionCategory } from '@models/index';
 import { SimMode } from '@models/shared';
 import { effectiveSimMode } from '@domains/matrix/derived-stats.js';
 import { isJumpedIn } from '@domains/rigging/rigger-state.js';
 import { DiceUtility } from '../rolls/diceutility.js';
-import {
-  localize,
-  renderTemplate,
-  standardTemplatePath,
-  matrixActionTemplatePath,
-  freeRollTemplatePath,
-  createRollDialog,
-} from './roll-dialog-core.js';
+import { localize, createRollDialog } from './roll-dialog-core.js';
 import {
   createDialogParameters,
   dialogActions,
@@ -30,7 +24,7 @@ const MATRIX_ACTION_CATEGORIES = Object.freeze(Object.values(ActionCategory));
  */
 async function _openRollDialog(actor, { numDice, label, title }) {
   const params = createDialogParameters(actor, numDice);
-  const content = await renderTemplate(standardTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     ...params,
     skillName: label,
   });
@@ -69,7 +63,7 @@ export async function openMatrixActionDialog(actor, action, numDice, category) {
   const hotSimAvailable = MATRIX_ACTION_CATEGORIES.includes(category);
   const controlRigAvailable = category === ActionCategory.RIGGING;
   const params = createDialogParameters(actor, numDice);
-  const content = await renderTemplate(matrixActionTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.matrix.actionRollDialog, {
     ...params,
     skillName: action,
     hotSimAvailable,
@@ -125,7 +119,7 @@ export async function rollComplexFormDialog(actor, complexForm) {
  * @returns {Promise<void>}
  */
 export async function handleFreeRoll() {
-  const content = await renderTemplate(freeRollTemplatePath(), {});
+  const content = await renderTemplate(TEMPLATES.ui.dialogs.rollButton, {});
   await createRollDialog({
     title: localize('sr4.roll.dialogTitle'),
     content,

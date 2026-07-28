@@ -1,0 +1,216 @@
+<div
+  class="matrix-card tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="matrix"
+>
+  <div class="magic-grid">
+    <div class="magic-column">
+      <div class="magic-input">
+        <label for="technomancer">{{localize "sr4.matrix.technomancer"}}</label>
+        <input
+          type="checkbox"
+          class="sr4-checkbox"
+          id="technomancer"
+          name="system.technomancy.technomancer"
+          {{checked system.technomancy.technomancer}}
+        />
+      </div>
+      {{#unless system.technomancy.technomancer}}
+      <div class="magic-input">
+        <label for="matrixSimMode">{{localize "sr4.matrix.simMode.label"}}</label>
+        <select id="matrixSimMode" name="system.matrixSimMode" data-dtype="String">
+          {{#each simModeOptions as |opt|}}
+          <option value="{{opt.value}}" {{#if (eq opt.value @root.system.matrixSimMode)}}selected{{/if}}>{{opt.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{/unless}}
+    </div>
+  </div>
+
+  {{#if hasMatrixAccess}}
+  {{#> action-button-bar title="sr4.matrix.actions"}}
+    {{#*inline "buttons"}}
+      {{#each matrixActionButtons as |btn|}}
+      {{> matrix-action-button btn}}
+      {{/each}}
+    {{/inline}}
+  {{/action-button-bar}}
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize "sr4.matrix.system"}}</th>
+        <th>{{localize "sr4.matrix.firewall"}}</th>
+        <th>{{localize "sr4.matrix.biofeedbackFilter"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ matrixPersona.system }}</td>
+        <td>{{ matrixPersona.firewall }}</td>
+        <td>{{ matrixPersona.biofeedbackFilter }}</td>
+      </tr>
+    </tbody>
+  </table>
+  {{#if matrixMonitor.max}}
+  <div class="monitor-tracks">
+    {{> status-track-card
+        title="sr4.conditionMonitor.matrix"
+        type="matrix"
+        max=matrixMonitor.max
+        current=matrixMonitor.value}}
+  </div>
+  {{/if}}
+  {{/if}}
+
+  {{#> collapsible-section title=(localize "sr4.matrix.actions") btnAction="createItem" btnItemType="Action" btnTooltip="sr4.item.create"}}
+    {{#if matrixActions.length}}
+    <ul class="action-list">
+      {{#each matrixActions as |action|}}
+      {{> action-card action actiontypes=@root.actiontypes}}
+      {{/each}}
+    </ul>
+    {{else}}
+    <p>{{localize "sr4.action.noActions"}}</p>
+    {{/if}}
+  {{/collapsible-section}}
+
+  {{#if isTechnomancer}}
+
+  <div class="magic-grid">
+    <div class="magic-column">
+      <div class="magic-input">
+        <label for="stream">{{localize "sr4.matrix.stream"}}</label>
+        <select id="stream" name="system.technomancy.stream" data-dtype="String">
+          {{selectOptions streams selected=system.technomancy.stream localize=true}}
+        </select>
+      </div>
+      <div class="magic-input">
+        <label for="fadingAttribute">{{localize "sr4.matrix.fadingAttribute"}}</label>
+        <select id="fadingAttribute" name="system.technomancy.fadingAttribute" data-dtype="String">
+          {{selectOptions fadingAttributes selected=system.technomancy.fadingAttribute localize=true}}
+        </select>
+      </div>
+      {{> mentor-section context=paragonContext itemId=paragonItemId labelKey="sr4.mentor.paragon" category="Resonance"}}
+    </div>
+    <div class="magic-column">
+      <div class="magic-stat">
+        <label>{{localize "sr4.matrix.fadingPool"}}:</label>
+        <span>{{ fadingPool }}</span>
+      </div>
+      <div class="magic-input">
+        <label for="compilingFadingBonus">{{localize "sr4.matrix.fadingboni.compiling"}}</label>
+        <input
+          type="number"
+          id="compilingFadingBonus"
+          name="system.technomancy.compilingFadingBonus"
+          data-dtype="Number"
+          value="{{ system.technomancy.compilingFadingBonus }}"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h3>{{localize "sr4.matrix.livingPersona"}}</h3>
+  <table class="item-stats-table">
+    <thead>
+      <tr>
+        <th>{{localize "sr4.matrix.attribute"}}</th>
+        <th>{{localize "sr4.skills.rating"}}</th>
+        <th>{{localize "sr4.matrix.bonus"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{localize "sr4.matrix.response"}}</td>
+        <td>{{ livingPersona.response }}</td>
+        {{> stat-cell
+            name="system.livingPersona.responseBonus"
+            value=system.livingPersona.responseBonus}}
+      </tr>
+      <tr>
+        <td>{{localize "sr4.matrix.signal"}}</td>
+        <td>{{ livingPersona.signal }}</td>
+        {{> stat-cell
+            name="system.livingPersona.signalBonus"
+            value=system.livingPersona.signalBonus}}
+      </tr>
+      <tr>
+        <td>{{localize "sr4.matrix.firewall"}}</td>
+        <td>{{ livingPersona.firewall }}</td>
+        {{> stat-cell
+            name="system.livingPersona.firewallBonus"
+            value=system.livingPersona.firewallBonus}}
+      </tr>
+      <tr>
+        <td>{{localize "sr4.matrix.system"}}</td>
+        <td>{{ livingPersona.system }}</td>
+        {{> stat-cell
+            name="system.livingPersona.systemBonus"
+            value=system.livingPersona.systemBonus}}
+      </tr>
+      <tr>
+        <td>{{localize "sr4.matrix.biofeedbackFilter"}}</td>
+        <td>{{ livingPersona.biofeedbackFilter }}</td>
+        {{> stat-cell
+            name="system.livingPersona.biofeedbackFilterBonus"
+            value=system.livingPersona.biofeedbackFilterBonus}}
+      </tr>
+      <tr>
+        <td>{{localize "sr4.matrix.vrMatrixInitiative"}}</td>
+        <td>{{ livingPersona.vrMatrixInitiative }}</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>{{localize "sr4.matrix.vrMatrixInitiativePasses"}}</td>
+        <td>{{ livingPersona.vrMatrixInitiativePasses }}</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {{> entity-affinities
+    sectionLabel="sr4.magic.spriteAffinities.label"
+    categories=spriteAffinityCategories
+    idPrefix="spriteAffinity"
+    namePrefix="system.technomancy.spriteAffinities"
+    buttons=(array
+      (object action="compileSprite" icon="fas fa-microchip" label="sr4.magic.compile" tooltip="sr4.magic.compile")
+      (object action="decompileSprite" icon="fas fa-eraser" label="sr4.magic.decompile" tooltip="sr4.magic.decompileHint")
+      (object action="bindSprite" icon="fas fa-link" label="sr4.ui.bindActor" tooltip="sr4.magic.bindSpriteHint")
+    )
+    createAction="createSpriteTemplate"
+  }}
+
+  {{#> collapsible-section title=(localize "sr4.matrix.compiledSprites")}}
+    {{> item-list-block
+        items=summonedSprites
+        card="linked-actor-card"
+        listClass="item-list linked-actor-list"
+        emptyKey="sr4.sprite.noSprites"}}
+  {{/collapsible-section}}
+
+  {{#> action-button-bar title="sr4.matrix.complexForms"}}
+    {{#*inline "buttons"}}
+      {{> action-button action="threadComplexForm" icon="fas fa-dice-d20" label="sr4.matrix.threading" tooltip="sr4.matrix.threadingHint"}}
+    {{/inline}}
+  {{/action-button-bar}}
+  {{> item-list-block
+      items=complexForms
+      card="program-card"
+      emptyKey="sr4.matrix.noComplexForms"}}
+
+  {{/if}}
+
+  <h3>{{localize "sr4.matrix.commlinks"}}</h3>
+  {{> item-list-block
+      items=commlinks
+      card="commlink-card"
+      emptyKey="sr4.commlink.noCommlinks"}}
+
+  <h3>{{localize "sr4.matrix.software"}}</h3>
+  {{> item-list-block
+      items=programs
+      card="program-card"
+      emptyKey="sr4.matrix.noSoftware"}}
+</div>

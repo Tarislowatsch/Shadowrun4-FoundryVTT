@@ -1,9 +1,10 @@
 import {
   commerceFields,
   englishOr,
+  isTrue,
+  mappedName,
   parseNumber,
   sourceOf,
-  upper,
 } from './helpers.js';
 import { mapProgram } from './programs.js';
 import { isAmmunition, mapAmmo } from './ammo.js';
@@ -29,7 +30,7 @@ export function isFetish(record) {
  * @returns {boolean}
  */
 export function isCommlink(record) {
-  return upper(record.iscommlink) === 'TRUE';
+  return isTrue(record.iscommlink);
 }
 
 /**
@@ -37,7 +38,7 @@ export function isCommlink(record) {
  * @returns {boolean}
  */
 export function isProgram(record) {
-  return upper(record.isprogram) === 'TRUE' || upper(record.isos) === 'TRUE';
+  return isTrue(record.isprogram) || isTrue(record.isos);
 }
 
 /**
@@ -59,7 +60,7 @@ function gearBase(record) {
  */
 function mapCommlinkGear(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Commlink',
+    name: mappedName(record, 'Unnamed Commlink'),
     type: 'Commlink',
     system: {
       ...gearBase(record),
@@ -77,11 +78,11 @@ function mapCommlinkGear(record) {
  */
 function mapFocusGear(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Focus',
+    name: mappedName(record, 'Unnamed Focus'),
     type: 'Focus',
     system: {
       ...gearBase(record),
-      equipped: upper(record.equipped) === 'TRUE',
+      equipped: isTrue(record.equipped),
     },
   };
 }
@@ -92,7 +93,7 @@ function mapFocusGear(record) {
  */
 function mapFetishGear(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Fetish',
+    name: mappedName(record, 'Unnamed Fetish'),
     type: 'Fetish',
     system: gearBase(record),
   };
@@ -104,7 +105,7 @@ function mapFetishGear(record) {
  */
 function mapDefaultGear(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Item',
+    name: mappedName(record, 'Unnamed Item'),
     type: 'Item',
     system: gearBase(record),
   };

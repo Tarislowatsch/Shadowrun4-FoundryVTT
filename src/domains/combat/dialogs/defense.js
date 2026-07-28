@@ -1,7 +1,6 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
-  defenseTemplatePath,
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getChecked,
@@ -147,7 +146,7 @@ export async function openDefenseDialog(
     isMelee ? MELEE_DEFENSE_KEYS : RANGED_DEFENSE_KEYS
   );
 
-  const content = await renderTemplate(defenseTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.combat.defenseDialog, {
     ...params,
     isMelee,
     reaction,

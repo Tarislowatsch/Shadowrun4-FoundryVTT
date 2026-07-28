@@ -191,11 +191,25 @@ form.shadowrun4e {
 }
 
 .skill-search-bar {
+  display: flex;
+  gap: 4px;
   margin-bottom: 0.5rem;
 }
 #skill-search {
-  width: 100%;
+  flex: 1;
   padding: 4px 8px;
+}
+.skill-filter-toggle {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    background: var(--sr4-teal);
+    border-color: #fff;
+    color: #fff;
+  }
 }
 .skill.hidden {
   display: none;

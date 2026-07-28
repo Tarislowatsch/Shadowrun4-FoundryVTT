@@ -1,9 +1,8 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { DiceUtility } from '@utils/rolls';
 import {
   createRollDialog,
   localize,
-  renderTemplate,
-  standardTemplatePath,
   createDialogParameters,
   getChecked,
   getInt,
@@ -114,7 +113,7 @@ export async function openGenericDrainDialog(
   const params = createDialogParameters(actor, drainPool, undefined, {
     ignoreModifiers: true,
   });
-  const content = await renderTemplate(standardTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     force,
     drainValue,
     ...params,

@@ -89,6 +89,12 @@ export const SR4EffectTargets = Object.freeze({
       i18nKey,
     ])
   ),
+  ...Object.fromEntries(
+    Object.keys(SR4Attributes).map((key) => [
+      `system.modifiers.attributeMaximum.${key}`,
+      `sr4.effectTarget.attributeMaximum.${key}`,
+    ])
+  ),
   'system.modifiers.generalModifier': 'sr4.effectTarget.generalModifier',
   'system.modifiers.attackModifier': 'sr4.effectTarget.attackModifier',
   'system.modifiers.defenseModifier': 'sr4.effectTarget.defenseModifier',

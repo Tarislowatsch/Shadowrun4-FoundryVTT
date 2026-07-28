@@ -19,7 +19,7 @@
 
   color: var(--sr4-text);
 
-  font-family: 'Orbitron', sans-serif;
+  font-family: sans-serif;
 
   transition:
     background 0.15s,
@@ -102,7 +102,7 @@
   border: 1px solid var(--sr4-border-dim);
   border-radius: 3px;
   color: var(--sr4-text);
-  font-family: 'Orbitron', sans-serif;
+  font-family: sans-serif;
   font-size: 0.72rem;
   text-align: center;
   padding: 1px 2px;
@@ -440,7 +440,7 @@ a.item-toggle-equip {
     width: 100%;
     min-height: 32px;
 
-    font-family: 'Orbitron', sans-serif;
+    font-family: sans-serif;
     font-size: 0.72rem;
 
     background: transparent;
@@ -575,7 +575,7 @@ a.item-toggle-equip {
   }
 
   .mod-add-select {
-    font-family: 'Orbitron', sans-serif;
+    font-family: sans-serif;
     font-size: 0.65rem;
     background: transparent;
     border: 1px solid var(--sr4-border-dim);

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import { buildCritterActorData } from '@importer/character/build-critter.js';
 import { resolveAttribute } from '@domains/magic/force-formula.js';
 import { ATTRIBUTE_MAP } from '@importer/mappers/constants.js';
@@ -59,8 +60,7 @@ export class CritterCreationDialog extends foundry.applications.api.HandlebarsAp
 
   static PARTS = {
     form: {
-      template:
-        'systems/shadowrun4e/templates/importer/critter-creation-dialog.hbs',
+      template: TEMPLATES.sheets.importer.critterCreationDialog,
     },
   };
 

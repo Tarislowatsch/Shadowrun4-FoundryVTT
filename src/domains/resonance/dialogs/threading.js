@@ -1,3 +1,4 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { localize, mapDocumentsByName } from '@utils/dialog';
 
 /**
@@ -140,10 +141,9 @@ export async function openThreadingSelectionDialog(actor, formsMap) {
     sourceLabel: sourceLabel(entry.source),
   }));
 
-  const content = await foundry.applications.handlebars.renderTemplate(
-    'systems/shadowrun4e/templates/magic/threading-dialog.hbs',
-    { options }
-  );
+  const content = await renderTemplate(TEMPLATES.resonance.threadingDialog, {
+    options,
+  });
 
   return foundry.applications.api.DialogV2.prompt({
     window: { title: localize('sr4.matrix.threadingDialogTitle') },

@@ -1,4 +1,5 @@
 import {
+  mappedName,
   parseNumber,
   sourceOf,
   parseQualities,
@@ -47,7 +48,7 @@ export function mapMetatype(record) {
   const qualities = parseQualities(record);
 
   return {
-    name: String(record.name ?? '').trim() || 'Unnamed Metatype',
+    name: mappedName(record, 'Unnamed Metatype'),
     type: 'Metatype',
     system: {
       category: String(record.category ?? '').trim() || 'Metahuman',
@@ -157,7 +158,7 @@ export function mapCritter(record) {
   const { reach, armorBallistic, armorImpact } = parseBonus(record);
 
   return {
-    name: String(record.name ?? '').trim() || 'Unnamed Critter',
+    name: mappedName(record, 'Unnamed Critter'),
     type: 'CritterTemplate',
     system: {
       category,

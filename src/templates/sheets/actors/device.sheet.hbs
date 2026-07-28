@@ -1,7 +1,7 @@
 <div class="sheet-container">
 
   <div class="npc-header">
-    {{> "actor-image"}}
+    {{> actor-image}}
     <div class="npc-header-info">
       <div class="meta-field">
         <label>{{localize 'sr4.device.name'}}</label>
@@ -58,7 +58,7 @@
   <hr />
 
   <div class="monitor-tracks">
-    {{> "status-track-card"
+    {{> status-track-card
         title="sr4.conditionMonitor.matrix"
         type="matrix"
         max=system.conditionMonitor.matrix.max
@@ -77,6 +77,6 @@
 
   {{> action-button action="matrixAttack" icon="fas fa-bolt" label="sr4.matrix.cybercombat.attack"}}
 
-  {{> "npc-notes"}}
+  {{> npc-notes}}
 
 </div>

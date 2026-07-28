@@ -140,7 +140,7 @@ Supported record types:
 * Metatypes and metavariants
 * Critters and critter variants
 
-No data is shipped with the system; bring your own.
+No data is shipped with the system; bring your own. The importer reads a statblock XML in the shape the character generator's own data files use — see [utility/examples/](utility/examples/) for the fields each record type ends up in. Which file you feed it, and whether you are entitled to the content in it, is your call: this project neither hosts, bundles, nor links to game data.
 
 Re-importing into a compendium you've already populated can update matching items in place instead of duplicating them (opt-in checkbox) — matches are found by Chummer GUID first, falling back to item name. A separate "Translate" action lets you apply a translation file to an already-imported compendium (or all of them at once) after the fact; the file's language is auto-detected from its filename but can be overridden.
 
@@ -150,6 +150,7 @@ Re-importing into a compendium you've already populated can update matching item
 * Full localization of all actor and item types
 * World-shared item name translation dictionary, built up as compendia are imported or translated, keyed to each item's stable internal label rather than its display name
 * Item cards and sheets automatically show the name in the viewing client's language via that dictionary; the compendium browser window localizes and searches item names the same way
+* Skill names are translated in two places: `src/lang/*.labels.json` supplies the display name per language, and `src/importer/mappers/skill-translations/` maps a skill name from a non-English character export back onto the system's internal skill key so such exports can be parsed at all. Both are lists of individual skill terms — no rules text, no descriptions
 
 ## Token Action HUD
 
@@ -308,7 +309,6 @@ Builds:
 
 ```text
 src/
-├── assets/
 ├── documents/
 ├── domains/       # combat, magic, matrix, resonance, rigging, summoned-entity flows
 ├── effects/
@@ -403,10 +403,18 @@ This allows:
 
 ## License
 
-MIT
+The system code, styles, templates, and interface text in this repository are licensed under the [MIT License](LICENSE), Copyright (c) 2026 Tarislowatsch.
+
+The MIT grant covers original work only. It does not — and cannot — extend to Shadowrun game content:
+
+* **Game terms** — skill names, action names, and category labels, in English as well as in the translated forms used by the German localization (`src/lang/*.labels.json`) and by the importer's skill lookup table (`src/importer/mappers/skill-translations/`) — remain the property of their rights holders. They appear here as identifiers and labels, which is what makes the software usable with the game, and are not relicensed under MIT.
+* **Rulebook references** such as `SR4, Page 228` in `utility/packs/` and `utility/examples/` are citations pointing into books the user owns, not reproductions of their content.
+* **Character and item data you import** stays yours (or its rights holders'). The system stores it in your world; nothing is contributed back to this repository.
+
+No third-party fonts or artwork are bundled; the system renders with Foundry's own fonts and CSS variables.
 
 # Disclaimer
 
 Shadowrun is a registered trademark of The Topps Company, Inc. This project is an unofficial fan-made game system for Foundry Virtual Tabletop and is not affiliated with, endorsed by, or connected to The Topps Company, Inc. or Catalyst Game Labs.
 
-This repository contains system code and limited example data only. No Shadowrun rulebook content, sourcebook text, artwork, or official game data is distributed with this project.
+This repository contains system code and limited example data only. No rulebook or sourcebook text, no item and creature descriptions, no stat blocks, and no artwork are distributed with it. What it does contain of the game itself are names and terms — skill and action names, category labels, and page citations — which the software needs in order to refer to the rules at all. The shipped compendium packs are checked against prose creeping back in by [tests/shipped-data-no-rules-text.test.js](tests/shipped-data-no-rules-text.test.js).

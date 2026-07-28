@@ -1,9 +1,8 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { isRangedWeapon } from '@models/index';
 import {
-  attackTemplatePath,
   createRollDialog,
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getInt,
@@ -173,7 +172,7 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
     for (const { target, targetUuid, allocatedDice } of allocations) {
       await rollRangedAttack(actor, skillName, allocatedDice, weapon, {
         titleSuffix: ` → ${target?.name ?? ''}`,
-        templatePath: 'systems/shadowrun4e/templates/dicerolls/roll-dialog.hbs',
+        templatePath: TEMPLATES.ui.dialogs.roll,
         targetUuid,
         modifiers: {
           wideDefenseMalus: fireMode.wideDefenseMalus,
@@ -199,7 +198,7 @@ async function openRangedAttackDialog(actor, skillName, weapon) {
 
   await rollRangedAttack(actor, skillName, dice, weapon, {
     titleSuffix: ` ${skill.system.specialization ?? ''}`,
-    templatePath: attackTemplatePath(),
+    templatePath: TEMPLATES.combat.attackRollDialog,
     templateContext: { ...fireModeParams, ...rangedAmmo },
     onRender: fireModeParams.showFireModeUI
       ? (html, updateLabel) =>

@@ -1,3 +1,4 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   wireFocusSelectListeners,
   wireImageEditListener,
@@ -71,10 +72,9 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       '.window-header .header-control'
     );
 
-    const html = await foundry.applications.handlebars.renderTemplate(
-      'systems/shadowrun4e/templates/ui/edit-mode-toggle.hbs',
-      { editMode: this.editMode }
-    );
+    const html = await renderTemplate(TEMPLATES.ui.editModeToggle, {
+      editMode: this.editMode,
+    });
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
     const toggle = /** @type {HTMLElement} */ (wrapper.firstElementChild);

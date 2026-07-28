@@ -1,0 +1,58 @@
+<div
+  class="inventory tab {{ tab.cssClass }}"
+  data-group="primary"
+  data-tab="inventory"
+>
+  <div class="tab-header">
+    <h2>{{localize 'sr4.tab.inventory'}}</h2>
+    {{#if editMode}}
+      {{> item-create-btn btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+    {{/if}}
+  </div>
+
+  {{#> collapsible-section title=(localize 'sr4.inventory.weapons') btnAction="openCreateItemDialog" btnTooltip="sr4.item.create"}}
+    {{> item-list-block
+        items=weapons
+        card="weapon-card"
+        listClass="weapon-list"
+        emptyKey="sr4.weapon.noWeapons"}}
+  {{/collapsible-section}}
+
+  <hr />
+
+  {{#> collapsible-section title=(localize 'sr4.inventory.armor') btnAction="createItem" btnItemType="Armor" btnTooltip="sr4.item.create"}}
+    {{> item-list-block
+        items=armor
+        card="armor-card"
+        listClass="armor-list"
+        emptyKey="sr4.armor.noarmors"}}
+  {{/collapsible-section}}
+
+  <hr />
+
+  {{#> collapsible-section title=(localize 'sr4.inventory.commlinks') btnAction="createItem" btnItemType="Commlink" btnTooltip="sr4.item.create"}}
+    {{> item-list-block
+        items=commlinks
+        card="commlink-card"
+        emptyKey="sr4.commlink.noCommlinks"}}
+  {{/collapsible-section}}
+
+  <hr />
+
+  {{#> collapsible-section title=(localize 'sr4.inventory.items') btnAction="createItem" btnItemType="Gear" btnTooltip="sr4.item.create"}}
+    {{> item-list-block
+        items=items
+        card="item-card"
+        emptyKey="sr4.item.noItems"}}
+  {{/collapsible-section}}
+
+  <hr />
+
+  {{#> collapsible-section title=(localize 'sr4.inventory.vehicles')}}
+    {{> item-list-block
+        items=riggedVehicles
+        card="linked-actor-card"
+        listClass="item-list linked-actor-list"
+        emptyKey="sr4.vehicle.noVehicles"}}
+  {{/collapsible-section}}
+</div>

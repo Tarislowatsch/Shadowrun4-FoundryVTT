@@ -14,6 +14,7 @@ import {
   mapSpell,
   mapWeapon,
   mapWeaponMod,
+  isTrue,
   normalizeSkillName,
   resolveEssenceModifiers,
   translateSkillNameToEnglish,
@@ -111,7 +112,7 @@ function buildSkillRatingMap(skills) {
   /** @type {Map<string, { localizedName?: string, rating: number, specialization: string }>} */
   const map = new Map();
   for (const skill of skills) {
-    if (String(skill.knowledge ?? '').toUpperCase() === 'TRUE') continue;
+    if (isTrue(skill.knowledge)) continue;
     const rating = parseInt(String(skill.rating ?? '0'), 10) || 0;
     const specialization = String(skill.spec ?? '').trim();
     if (rating <= 0 && !specialization) continue;
@@ -262,7 +263,7 @@ export function buildActorData(parsed, canonicalSkills) {
   const ratings = buildSkillRatingMap(parsed.skills ?? []);
   const activeSkills = mergeSkillRatings(canonicalSkills ?? [], ratings);
   const knowledgeSkills = (parsed.skills ?? [])
-    .filter((s) => String(s.knowledge ?? '').toUpperCase() === 'TRUE')
+    .filter((s) => isTrue(s.knowledge))
     .map(mapCharacterSkill);
 
   const metatypeItem = mapCharacterMetatype(parsed.character);

@@ -1,8 +1,28 @@
+import { lower } from '../mappers/helpers.js';
+
 /**
  * @typedef {object} ExistingItemIndex
  * @property {Map<string, string>} byGuid
  * @property {Map<string, string>} byName
  */
+
+/**
+ * @param {Map<string, string>} map
+ * @param {string} key
+ * @param {string} id
+ * @param {string} kind - Human label for the duplicate warning ("item name", "chummerId").
+ * @param {string} [display=key] - Value shown in the warning, when it differs from the key.
+ */
+function setFirst(map, key, id, kind, display = key) {
+  if (!key) return;
+  if (map.has(key)) {
+    console.warn(
+      `SR4 | Importer: duplicate ${kind} "${display}" in pack, using first match for update-matching.`
+    );
+    return;
+  }
+  map.set(key, id);
+}
 
 /**
  * @param {Array<{ _id: string, name: string, system?: object }>} indexEntries
@@ -14,28 +34,8 @@ export function buildExistingItemIndex(indexEntries) {
   /** @type {Map<string, string>} */
   const byName = new Map();
   for (const entry of indexEntries) {
-    const nameKey = String(entry.name ?? '')
-      .trim()
-      .toLowerCase();
-    if (nameKey) {
-      if (byName.has(nameKey)) {
-        console.warn(
-          `SR4 | Importer: duplicate item name "${entry.name}" in pack, using first match for update-matching.`
-        );
-      } else {
-        byName.set(nameKey, entry._id);
-      }
-    }
-    const guid = entry.system?.chummerId;
-    if (guid) {
-      if (byGuid.has(guid)) {
-        console.warn(
-          `SR4 | Importer: duplicate chummerId "${guid}" in pack, using first match for update-matching.`
-        );
-      } else {
-        byGuid.set(guid, entry._id);
-      }
-    }
+    setFirst(byName, lower(entry.name), entry._id, 'item name', entry.name);
+    setFirst(byGuid, entry.system?.chummerId, entry._id, 'chummerId');
   }
   return { byGuid, byName };
 }
@@ -49,7 +49,7 @@ export function buildExistingItemIndex(indexEntries) {
 export function resolveExistingItemId(record, mappedName, index) {
   const guid = String(record?.id ?? '').trim();
   if (guid && index.byGuid.has(guid)) return index.byGuid.get(guid);
-  return index.byName.get(mappedName.trim().toLowerCase()) ?? null;
+  return index.byName.get(lower(mappedName)) ?? null;
 }
 
 /**
@@ -59,9 +59,7 @@ export function resolveExistingItemId(record, mappedName, index) {
 export function addToExistingItemIndex(index, doc) {
   const id = doc.id ?? doc._id;
   if (!id) return;
-  const nameKey = String(doc.name ?? '')
-    .trim()
-    .toLowerCase();
+  const nameKey = lower(doc.name);
   if (nameKey && !index.byName.has(nameKey)) index.byName.set(nameKey, id);
   const guid = doc.system?.chummerId;
   if (guid && !index.byGuid.has(guid)) index.byGuid.set(guid, id);

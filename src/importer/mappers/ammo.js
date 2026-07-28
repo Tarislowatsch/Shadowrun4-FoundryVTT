@@ -1,4 +1,11 @@
-import { commerceFields, englishOr, parseNumber, sourceOf } from './helpers.js';
+import {
+  commerceFields,
+  englishOr,
+  lower,
+  mappedName,
+  parseNumber,
+  sourceOf,
+} from './helpers.js';
 import { XML_CATEGORY_TO_ENUM, dt } from './constants.js';
 
 /**
@@ -69,11 +76,7 @@ const AMMO_ACCESSORY_NAMES = new Set(['spare clip', 'speed loader']);
  * @returns {boolean}
  */
 function isAmmoAccessoryName(record) {
-  return AMMO_ACCESSORY_NAMES.has(
-    String(record.name ?? '')
-      .trim()
-      .toLowerCase()
-  );
+  return AMMO_ACCESSORY_NAMES.has(lower(record.name));
 }
 
 /**
@@ -133,7 +136,7 @@ export function mapAmmo(record, weaponCategoryTranslations) {
       ? mapWeaponBonus(flat)
       : EMPTY_WEAPON_BONUS;
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Ammo',
+    name: mappedName(record, 'Unnamed Ammo'),
     type: 'Ammo',
     system: {
       ...commerceFields(record),

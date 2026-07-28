@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -12,27 +12,17 @@
     </thead>
     <tbody>
       <tr>
-        <td>
-          <input
-            type="number"
-            name="system.rating"
-            value="{{ system.rating }}"
-          />
-        </td>
-        <td>
-          <input
-            type="text"
+        {{> stat-cell name="system.rating" value=system.rating dtype="Number"}}
+        {{> stat-cell
             name="system.legality"
-            value="{{ system.legality }}"
-          />
-        </td>
-        <td>
-          <input type="number" name="system.cost" value="{{ system.cost }}" />
-        </td>
+            value=system.legality
+            type="text"
+            dtype="String"}}
+        {{> stat-cell name="system.cost" value=system.cost dtype="Number"}}
         {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
   </table>
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

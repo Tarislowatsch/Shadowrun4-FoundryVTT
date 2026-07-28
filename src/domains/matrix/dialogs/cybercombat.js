@@ -1,9 +1,8 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { DiceUtility } from '@utils/rolls';
 import {
   createRollDialog,
   localize,
-  renderTemplate,
-  standardTemplatePath,
   createDialogParameters,
   getChecked,
   getInt,
@@ -15,11 +14,6 @@ import {
   getMatrixDefensePool,
   getMatrixResistPool,
 } from '../matrix-persona.js';
-
-const ATTACK_TEMPLATE =
-  'systems/shadowrun4e/templates/dicerolls/cybercombat-attack.hbs';
-const DEFENSE_TEMPLATE =
-  'systems/shadowrun4e/templates/dicerolls/matrix-defense.hbs';
 
 /**
  * @param {HTMLElement} dialog
@@ -56,7 +50,7 @@ export async function openCybercombatAttackDialog(attacker, programs) {
   const firstRating = programs[0]?.rating ?? 0;
   const basePool = getMatrixAttackPool(attacker, firstRating);
   const params = createDialogParameters(attacker, basePool);
-  const content = await renderTemplate(ATTACK_TEMPLATE, {
+  const content = await renderTemplate(TEMPLATES.matrix.cybercombatAttack, {
     ...params,
     programs,
   });
@@ -93,7 +87,7 @@ export async function openMatrixDefenseDialog(
   const label = localize('sr4.matrix.cybercombat.defenseTitle');
   const basePool = getMatrixDefensePool(defender, false);
   const params = createDialogParameters(defender, basePool);
-  const content = await renderTemplate(DEFENSE_TEMPLATE, {
+  const content = await renderTemplate(TEMPLATES.matrix.cybercombatDefense, {
     ...params,
     attackerName,
     programName,
@@ -165,7 +159,7 @@ export async function openMatrixResistDialog(
   const params = createDialogParameters(defender, pool, undefined, {
     ignoreModifiers: true,
   });
-  const content = await renderTemplate(standardTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     ...params,
     skillName: label,
   });

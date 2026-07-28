@@ -1,4 +1,10 @@
-import { commerceFields, englishOr, parseNumber, sourceOf } from './helpers.js';
+import {
+  commerceFields,
+  englishOr,
+  mappedName,
+  parseNumber,
+  sourceOf,
+} from './helpers.js';
 
 const ACCESSORY_CATEGORIES = new Set(['Helmets', 'Shields']);
 
@@ -20,7 +26,7 @@ function resolveStackingType(record) {
  */
 export function mapArmor(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Armor',
+    name: mappedName(record, 'Unnamed Armor'),
     type: 'Armor',
     system: {
       ballisticarmor: parseNumber(record.b, 0),

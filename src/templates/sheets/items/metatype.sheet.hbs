@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -22,11 +22,11 @@
             <option value="Special" {{#if (eq system.category "Special")}}selected{{/if}}>Special</option>
           </select>
         </td>
-        <td><input type="number" name="system.bp" value="{{ system.bp }}" /></td>
-        <td><input type="text" name="system.baseMetatype" value="{{ system.baseMetatype }}" /></td>
-        <td><input type="text" name="system.movement" value="{{ system.movement }}" /></td>
-        <td><input type="number" name="system.reach" value="{{ system.reach }}" /></td>
-        <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
+        {{> stat-cell name="system.bp" value=system.bp}}
+        {{> stat-cell name="system.baseMetatype" value=system.baseMetatype type="text"}}
+        {{> stat-cell name="system.movement" value=system.movement type="text"}}
+        {{> stat-cell name="system.reach" value=system.reach}}
+        {{> stat-cell name="system.source" value=system.source type="text"}}
       </tr>
     </tbody>
   </table>
@@ -72,8 +72,8 @@
       </thead>
       <tbody>
         <tr>
-          <td><input type="number" name="system.armorBallistic" value="{{ system.armorBallistic }}" /></td>
-          <td><input type="number" name="system.armorImpact" value="{{ system.armorImpact }}" /></td>
+          {{> stat-cell name="system.armorBallistic" value=system.armorBallistic}}
+          {{> stat-cell name="system.armorImpact" value=system.armorImpact}}
         </tr>
       </tbody>
     </table>
@@ -135,5 +135,5 @@
   </details>
   {{/if}}
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

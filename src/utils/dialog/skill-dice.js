@@ -1,10 +1,6 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { SR4SkillGroupByName } from '@models/index';
-import {
-  localize,
-  renderTemplate,
-  standardTemplatePath,
-  createRollDialog,
-} from './roll-dialog-core.js';
+import { localize, createRollDialog } from './roll-dialog-core.js';
 import { createDialogParameters, dialogActions } from './pool-math.js';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
@@ -37,7 +33,7 @@ export async function rollSkillDialog(
 
   const skill = actor.getSkill(skillName);
   const params = createDialogParameters(actor, resolvedDice, weapon);
-  const content = await renderTemplate(standardTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     ...params,
     skillName,
     weapon,

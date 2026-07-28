@@ -1,7 +1,7 @@
 <div class="sheet-container">
 
   <div class="npc-header">
-    {{> "actor-image"}}
+    {{> actor-image}}
     <div class="npc-header-info">
       {{> meta-field label="sr4.spirit.name" name="name" value=actor.name editMode=editMode}}
       {{> meta-field label="sr4.spirit.type" name="system.spiritType" value=system.spiritType editMode=editMode}}
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  {{> "actor-link-row"
+  {{> actor-link-row
       linkLabel="sr4.spirit.summoner"
       dropType="ownerUuid"
       linkedName=ownerName
@@ -26,20 +26,20 @@
   <h3>{{localize 'sr4.spirit.attributes'}}</h3>
   <div class="grid">
     {{#each sheetStats as |stat|}}
-      {{> "attribute-cell" label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue rollLabel=stat.rollLabel}}
+      {{> attribute-cell label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue rollLabel=stat.rollLabel}}
     {{/each}}
   </div>
 
   <hr />
 
-  {{> "monitor-tracks"}}
+  {{> monitor-tracks}}
 
   <hr />
 
-  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
+  {{> critter-powers critterPowers=critterPowers editMode=editMode}}
 
-  {{> "npc-skills-section" skills=skills emptyKey="sr4.spirit.noSkills"}}
+  {{> npc-skills-section skills=skills emptyKey="sr4.spirit.noSkills"}}
 
-  {{> "npc-notes"}}
+  {{> npc-notes}}
 
 </div>

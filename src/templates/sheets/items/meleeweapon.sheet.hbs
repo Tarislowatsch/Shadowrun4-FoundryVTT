@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{#> "item-sheet-header" nameKey="sr4.weapon.name"}}
+  {{#> item-sheet-header nameKey="sr4.weapon.name"}}
     <label>
       <span>{{localize 'sr4.weapon.noStrengthBonus'}}</span>
       <input type="checkbox" class="sr4-checkbox" data-field="system.noStrengthBonus" {{#if system.noStrengthBonus}}checked{{/if}} />
@@ -29,54 +29,32 @@
             {{selectOptions meleeattackskills selected=system.attackSkill localize=true}}
           </select>
         </td>
-        <td>
-          <input
-            type="number"
-            name="system.damage"
-            value="{{ system.damage }}"
-          />
-        </td>
+        {{> stat-cell name="system.damage" value=system.damage}}
         <td>
           <select name="system.damageType">
             {{selectOptions damagetypes selected=system.damageType localize=true}}
           </select>
         </td>
+        {{> stat-cell name="system.ap" value=system.ap}}
         <td>
-          <input type="number" name="system.ap" value="{{ system.ap }}" />
+          {{> armor-type-select}}
         </td>
-        <td>
-          {{> "armor-type-select"}}
-        </td>
-        <td>
-          <input type="number" name="system.reach" value="{{ system.reach }}" />
-        </td>
+        {{> stat-cell name="system.reach" value=system.reach}}
         <td>
           <select name="system.category">
             <option value="" {{#unless system.category}}selected{{/unless}}>—</option>
             {{selectOptions weaponcategories selected=system.category localize=true}}
           </select>
         </td>
-        <td>
-          <input type="number" name="system.avail" value="{{ system.avail }}" />
-        </td>
-        <td>
-          <input
-            type="text"
-            name="system.legality"
-            value="{{ system.legality }}"
-          />
-        </td>
-        <td>
-          <input type="text" name="system.source" value="{{ system.source }}" />
-        </td>
-        <td>
-          <input type="number" name="system.cost" value="{{ system.cost }}" />
-        </td>
+        {{> stat-cell name="system.avail" value=system.avail}}
+        {{> stat-cell name="system.legality" value=system.legality type="text"}}
+        {{> stat-cell name="system.source" value=system.source type="text"}}
+        {{> stat-cell name="system.cost" value=system.cost}}
       </tr>
     </tbody>
   </table>
 
-  {{> "mods-section"
+  {{> mods-section
     installedKey="sr4.weaponmod.installed"
     warning=system.modSlotWarning
     warningKey="sr4.weaponmod.slotWarning"
@@ -88,5 +66,5 @@
     createType="Weapon Mod"
   }}
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

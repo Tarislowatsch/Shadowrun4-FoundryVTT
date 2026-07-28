@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import { extractRecords } from '@importer/xml/parse-xml.js';
 import { buildImportGroups, buildTypeTree } from '@importer/pack/grouping.js';
 import { parseTranslationData } from '@importer/translation/parse-name-translations.js';
@@ -70,7 +71,7 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/importer/importer.hbs',
+      template: TEMPLATES.sheets.importer.importer,
       scrollable: ['', '.preview'],
     },
   };

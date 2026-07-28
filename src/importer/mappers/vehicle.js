@@ -1,4 +1,9 @@
-import { commerceFields, parseNumber, sourceOf } from './helpers.js';
+import {
+  commerceFields,
+  mappedName,
+  parseNumber,
+  sourceOf,
+} from './helpers.js';
 
 /**
  * @param {Record<string, unknown>} record
@@ -6,7 +11,7 @@ import { commerceFields, parseNumber, sourceOf } from './helpers.js';
  */
 export function mapVehicle(record) {
   return {
-    name: String(record.name ?? '').trim() || 'Unnamed Vehicle',
+    name: mappedName(record, 'Unnamed Vehicle'),
     type: 'vehicle',
     system: {
       vehicleType: String(record.category ?? '').trim(),
@@ -34,7 +39,7 @@ export function mapVehicle(record) {
  */
 export function mapVehicleModFromCharacter(record) {
   return {
-    name: String(record.name ?? '').trim() || 'Unnamed Vehicle Mod',
+    name: mappedName(record, 'Unnamed Vehicle Mod'),
     type: 'Vehicle Mod',
     system: {
       ...commerceFields(record),

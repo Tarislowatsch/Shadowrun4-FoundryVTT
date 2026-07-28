@@ -1,5 +1,6 @@
 import { applyTranslation } from '../translation/parse-name-translations.js';
 import { applyGuidFallback } from '../translation/reference-pack-translation.js';
+import { lower } from '../mappers/helpers.js';
 import {
   resolveExistingItemId,
   buildUpdatePayload,
@@ -56,7 +57,7 @@ export function planGroupImport(
       }
     }
 
-    const nameKey = data.name.toLowerCase();
+    const nameKey = lower(data.name);
     if (skipDuplicates && seen.has(nameKey)) {
       skippedCount += 1;
       continue;

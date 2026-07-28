@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -16,31 +16,17 @@
     </thead>
     <tbody>
       <tr>
-        <td>
-          <input type="number" name="system.response" value="{{ system.response }}" />
-        </td>
-        <td>
-          <input type="number" name="system.signal" value="{{ system.signal }}" />
-        </td>
-        <td>
-          <input type="number" name="system.firewall" value="{{ system.firewall }}" />
-        </td>
-        <td>
-          <input type="number" name="system.os" value="{{ system.os }}" />
-        </td>
-        <td>
-          <input type="text" name="system.avail" value="{{ system.avail }}" />
-        </td>
-        <td>
-          <input type="text" name="system.legality" value="{{ system.legality }}" />
-        </td>
-        <td>
-          <input type="number" name="system.cost" value="{{ system.cost }}" />
-        </td>
+        {{> stat-cell name="system.response" value=system.response}}
+        {{> stat-cell name="system.signal" value=system.signal}}
+        {{> stat-cell name="system.firewall" value=system.firewall}}
+        {{> stat-cell name="system.os" value=system.os}}
+        {{> stat-cell name="system.avail" value=system.avail type="text"}}
+        {{> stat-cell name="system.legality" value=system.legality type="text"}}
+        {{> stat-cell name="system.cost" value=system.cost}}
         {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
   </table>
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

@@ -1,4 +1,14 @@
 <div class="skill-search-bar">
+  <button
+    type="button"
+    id="skill-filter-no-rating"
+    class="skill-filter-toggle"
+    data-tooltip="{{localize 'sr4.skills.filterNoRating'}}"
+    aria-label="{{localize 'sr4.skills.filterNoRating'}}"
+    aria-pressed="{{#if hideNoRatingSkills}}true{{else}}false{{/if}}"
+  >
+    <i class="fa-solid fa-filter"></i>
+  </button>
   <input
     type="text"
     id="skill-search"
@@ -40,6 +50,7 @@
           class="cell3 item skill active-skill"
           data-item-id="{{this._id}}"
           data-skill-name="{{localizeOr this.system.label this.name}}"
+          data-rating="{{this.system.rating}}"
         >
           <label class="roll-skill" data-action="rollSkill" data-skill="{{this.name}}">
             {{localizeOr this.system.label this.name}}
@@ -58,6 +69,7 @@
           class="cell3 item skill {{#if (eq this.system.type 'complexForm')}}complex-form-skill{{else}}knowledge-skill{{/if}}"
           data-item-id="{{this._id}}"
           data-skill-name="{{this.name}}"
+          data-rating="{{this.system.rating}}"
         >
           <label>{{this.name}}</label>
           {{> skill-row-fields editMode=../editMode attributes=../attributes}}

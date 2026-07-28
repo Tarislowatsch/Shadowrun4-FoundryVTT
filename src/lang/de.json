@@ -185,6 +185,20 @@
     },
     "effectTarget": {
       "attackModifier": "Angriffs-Würfelpool-Modifikator",
+      "attributeMaximum": {
+        "AGILITY": "Attributmaximum: Geschicklichkeit",
+        "BODY": "Attributmaximum: Konstitution",
+        "CHARISMA": "Attributmaximum: Charisma",
+        "EDGE": "Attributmaximum: Edge",
+        "ESSENCE": "Attributmaximum: Essenz",
+        "INTUITION": "Attributmaximum: Intuition",
+        "LOGIC": "Attributmaximum: Logik",
+        "MAGIC": "Attributmaximum: Magie",
+        "REACTION": "Attributmaximum: Reaktion",
+        "RESONANCE": "Attributmaximum: Resonanz",
+        "STRENGTH": "Attributmaximum: Stärke",
+        "WILLPOWER": "Attributmaximum: Willenskraft"
+      },
       "defenseModifier": "Verteidigungs-Würfelpool-Modifikator",
       "generalModifier": "Allgemeiner Würfelpool-Modifikator",
       "skill": {
@@ -464,6 +478,7 @@
       },
       "category": "Kategorie",
       "complexForm": "Komplexe Form",
+      "filterNoRating": "Fertigkeiten ohne Stufe ausblenden",
       "group": "Fertigkeitsgruppe",
       "knowledge": "Wissensfertigkeit",
       "knowledgeAndComplexForms": "Wissen",

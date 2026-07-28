@@ -1,6 +1,6 @@
 <div class="npc-main-tab tab {{ tab.cssClass }}" data-group="primary" data-tab="main">
   <div class="npc-header">
-    {{> "actor-image"}}
+    {{> actor-image}}
     <div class="npc-header-info">
       <div class="meta-field">
         <label>{{localize 'sr4.metadata.characterName'}}</label>
@@ -14,30 +14,26 @@
   </div>
 
   <hr />
-  {{> "derived-stat-actions"}}
+  {{> derived-stat-actions}}
   <hr />
-  {{> "statblock-sheet" computedStats=computedStats editMode=editMode derivedKeys=derivedKeys}}
+  {{> statblock-sheet computedStats=computedStats editMode=editMode derivedKeys=derivedKeys}}
 
   <hr />
 
-  {{> "skills-grid"}}
+  {{> skills-grid}}
 
   <hr />
 
   <div class="npc-section">
     <h3>{{localize 'sr4.tab.weapons'}}</h3>
-    {{#if weapons}}
-      <ul class="weapon-list">
-        {{#each weapons as |weapon|}}
-          {{> "weapon-card"}}
-        {{/each}}
-      </ul>
-    {{else}}
-      <p>{{localize 'sr4.weapon.noWeapons'}}</p>
-    {{/if}}
+    {{> item-list-block
+        items=weapons
+        card="weapon-card"
+        listClass="weapon-list"
+        emptyKey="sr4.weapon.noWeapons"}}
   </div>
 
   <hr />
 
-  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
+  {{> critter-powers critterPowers=critterPowers editMode=editMode}}
 </div>

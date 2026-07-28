@@ -1,7 +1,7 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   createRollDialog,
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getChecked,
@@ -36,13 +36,6 @@ import {
   getSpellEffectData,
   sendEffectDecisionMessage,
 } from '../flow/apply-effects-flow.js';
-
-const DIRECT_RESIST_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/spell-resist.hbs';
-const DIRECT_ALLOCATION_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/direct-spell-allocation.hbs';
-const INDIRECT_DEFENSE_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/indirect-spell-defense.hbs';
 
 const SPELL_DODGE_SKILLS = ['dodge', 'gymnastics'];
 
@@ -87,7 +80,7 @@ export async function openDirectSpellResistDialog(
   const resistAttrLabel = localizeResistAttribute(attr);
   const params = createDialogParameters(defender, resistPool);
 
-  const content = await renderTemplate(DIRECT_RESIST_TEMPLATE, {
+  const content = await renderTemplate(TEMPLATES.magic.spellResist, {
     ...params,
     spellName,
     castingHits,
@@ -131,7 +124,7 @@ export async function openDirectSpellAllocationDialog(
 ) {
   const bonusHits = Math.min(force, Math.max(0, netHits - 1));
 
-  const content = await renderTemplate(DIRECT_ALLOCATION_TEMPLATE, {
+  const content = await renderTemplate(TEMPLATES.magic.directSpellAllocation, {
     spellName,
     force,
     netHits,
@@ -189,7 +182,7 @@ export async function openIndirectSpellDefenseDialog(
     ? localize(`sr4.spell.elements.${spell.system.element}`)
     : '';
 
-  const content = await renderTemplate(INDIRECT_DEFENSE_TEMPLATE, {
+  const content = await renderTemplate(TEMPLATES.magic.indirectSpellDefense, {
     ...params,
     spellName: spell.name,
     force,

@@ -61,9 +61,7 @@
               {{selectOptions @root.changeModes selected=change.mode localize=true}}
             </select>
           </td>
-          <td>
-            <input type="number" name="changeValue" value="{{change.value}}" />
-          </td>
+          {{> stat-cell name="changeValue" value=change.value}}
           <td class="change-controls">
             <a class="remove-change-btn" data-action="removeChange"
               data-tooltip="{{localize 'sr4.effect.removeChange'}}"

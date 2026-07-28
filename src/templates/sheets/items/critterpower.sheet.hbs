@@ -1,7 +1,7 @@
 
   <div class="item-sheet-body">
 
-    {{> "item-sheet-header" nameKey="sr4.item.name"}}
+    {{> item-sheet-header nameKey="sr4.item.name"}}
 
     <table class="item-stats-table">
       <thead>
@@ -11,13 +11,13 @@
       </thead>
       <tbody>
         <tr>
-          <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
+          {{> stat-cell name="system.source" value=system.source type="text"}}
         </tr>
       </tbody>
     </table>
 
-    {{> "item-actions-effects"}}
+    {{> item-actions-effects}}
 
-    {{> "item-textareas"}}
+    {{> item-textareas}}
 
   </div>

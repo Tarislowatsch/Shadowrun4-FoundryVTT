@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import { localize, openActionDialog } from '@utils/index';
 import {
   ControlModes,
@@ -32,20 +33,17 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
 
   static PARTS = {
     header: {
-      template:
-        'systems/shadowrun4e/templates/sheets/actors/vehicle-header.hbs',
+      template: TEMPLATES.sheets.actors.vehicleHeader,
     },
     tabs: {
       template: 'templates/generic/tab-navigation.hbs',
     },
     main: {
-      template:
-        'systems/shadowrun4e/templates/sheets/actors/vehicle-main.tab.hbs',
+      template: TEMPLATES.sheets.actors.vehicleMain,
       scrollable: [''],
     },
     config: {
-      template:
-        'systems/shadowrun4e/templates/sheets/actors/vehicle-config.tab.hbs',
+      template: TEMPLATES.sheets.actors.vehicleConfig,
       scrollable: [''],
     },
   };

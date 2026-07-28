@@ -1,8 +1,7 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   createRollDialog,
   localize,
-  renderTemplate,
-  soakTemplatePath,
   createDialogParameters,
   dialogActions,
   getChecked,
@@ -59,7 +58,7 @@ export async function openSoakDialog(
     ? localize('sr4.damage.physical')
     : localize('sr4.damage.stun');
 
-  const content = await renderTemplate(soakTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.combat.soakDialog, {
     ...params,
     incomingDamage,
     damageType,

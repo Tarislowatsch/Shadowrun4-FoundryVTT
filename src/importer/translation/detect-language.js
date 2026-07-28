@@ -1,13 +1,11 @@
+import { lower } from '../mappers/helpers.js';
+
 /**
  * @param {unknown} input
  * @returns {string | null}
  */
 export function normalizeLangCode(input) {
-  return (
-    String(input ?? '')
-      .trim()
-      .toLowerCase() || null
-  );
+  return lower(input) || null;
 }
 
 /**

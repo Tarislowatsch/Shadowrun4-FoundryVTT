@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -72,10 +72,8 @@
             {{selectOptions spelldurations selected=system.duration localize=true}}
           </select>
         </td>
-        <td><input type="text" name="system.dv" value="{{ system.dv }}" /></td>
-        <td>
-          <input type="text" name="system.source" value="{{ system.source }}" />
-        </td>
+        {{> stat-cell name="system.dv" value=system.dv type="text"}}
+        {{> stat-cell name="system.source" value=system.source type="text"}}
       </tr>
     </tbody>
   </table>
@@ -92,7 +90,7 @@
     <input type="checkbox" name="system.limited" {{checked system.limited}} />
   </div>
 
-  {{> "item-actions-effects"}}
+  {{> item-actions-effects}}
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

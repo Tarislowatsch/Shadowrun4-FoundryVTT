@@ -1,6 +1,6 @@
 <div class="item-sheet-body">
 
-  {{> "item-sheet-header" nameKey="sr4.skills.name"}}
+  {{> item-sheet-header nameKey="sr4.skills.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -44,34 +44,25 @@
             </select>
           {{/if}}
         </td>
-        <td>
-          <input
-            type="text"
+        {{> stat-cell
             name="system.specialization"
-            value="{{system.specialization}}"
-            placeholder="{{localize 'sr4.skills.specialization'}}"
-          />
-        </td>
-        <td>
-          <input
+            value=system.specialization
             type="text"
+            placeholder=(localize 'sr4.skills.specialization')}}
+        {{> stat-cell
             name="system.source"
-            value="{{system.source}}"
-            placeholder="{{localize 'sr4.skills.source'}}"
-          />
-        </td>
-        <td>
-          <input
+            value=system.source
             type="text"
+            placeholder=(localize 'sr4.skills.source')}}
+        {{> stat-cell
             name="system.group"
-            value="{{system.group}}"
-            placeholder="{{localize 'sr4.skills.group'}}"
-          />
-        </td>
+            value=system.group
+            type="text"
+            placeholder=(localize 'sr4.skills.group')}}
       </tr>
     </tbody>
   </table>
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 
 </div>

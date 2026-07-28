@@ -1,5 +1,6 @@
 import {
   englishOr,
+  mappedName,
   normalizeMode,
   parseAmmo,
   parseDamage,
@@ -37,7 +38,7 @@ export function mapMeleeWeapon(record) {
   );
   const category = englishOr(record, 'category');
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Weapon',
+    name: mappedName(record, 'Unnamed Weapon'),
     type: 'Melee Weapon',
     system: {
       damage,
@@ -63,7 +64,7 @@ export function mapRangedWeapon(record) {
   const { capacity, feed } = parseAmmo(/** @type {string} */ (record.ammo));
   const category = englishOr(record, 'category');
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Weapon',
+    name: mappedName(record, 'Unnamed Weapon'),
     type: 'Ranged Weapon',
     system: {
       damage,

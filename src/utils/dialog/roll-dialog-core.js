@@ -11,11 +11,6 @@ export function localize(key, suffix) {
   return suffix ? `${base} ${suffix}` : base;
 }
 
-/** @returns {string} */
-export function standardTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/roll-dialog.hbs';
-}
-
 /**
  * @param {object[]} docs
  * @returns {Map<string, object> | null}
@@ -26,45 +21,6 @@ export function mapDocumentsByName(docs) {
     if (doc.name) map.set(doc.name, doc);
   }
   return map.size > 0 ? map : null;
-}
-
-/** @returns {string} */
-export function attackTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/attack-roll-dialog.hbs';
-}
-
-/** @returns {string} */
-export function matrixActionTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/matrix-action-roll-dialog.hbs';
-}
-
-/** @returns {string} */
-export function meleeAttackTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/melee-attack-dialog.hbs';
-}
-
-/** @returns {string} */
-export function defenseTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/defense-dialog.hbs';
-}
-
-/** @returns {string} */
-export function soakTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/soak-dialog.hbs';
-}
-
-/** @returns {string} */
-export function freeRollTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/roll-button.hbs';
-}
-
-/**
- * @param {string} path
- * @param {object} data
- * @returns {Promise<string>}
- */
-export async function renderTemplate(path, data) {
-  return foundry.applications.handlebars.renderTemplate(path, data);
 }
 
 /**

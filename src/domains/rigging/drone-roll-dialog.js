@@ -1,6 +1,6 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getChecked,
@@ -14,11 +14,6 @@ import {
   resolveDronePool,
   resolveRigger,
 } from './drone-pool';
-
-/** @returns {string} */
-export function droneRollTemplatePath() {
-  return 'systems/shadowrun4e/templates/dicerolls/drone-roll-dialog.hbs';
-}
 
 /**
  * @param {import('@documents/index').SR4Actor} vehicle
@@ -162,7 +157,7 @@ export async function openDroneRollDialog(vehicle, action) {
   const paramsActor = rigger ?? vehicle;
   const params = createDialogParameters(paramsActor);
 
-  const content = await renderTemplate(droneRollTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.rigging.droneRollDialog, {
     ...params,
     controlModes: buildControlModeOptions(vehicle, rigger),
     riggerSkills,

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { renderTemplate } from '@utils/templates';
 import { resolveItemNameTranslation } from '@utils/item-name-translations.js';
 
 const REVEAL_DELAY_MS = 220;
@@ -225,7 +226,7 @@ export class CompendiumItemNameHook {
    */
   async #getMatchTemplate() {
     if (this.#matchTemplate) return this.#matchTemplate;
-    const html = await foundry.applications.handlebars.renderTemplate(
+    const html = await renderTemplate(
       'templates/sidebar/partials/document-match.hbs'
     );
     const template = document.createElement('template');

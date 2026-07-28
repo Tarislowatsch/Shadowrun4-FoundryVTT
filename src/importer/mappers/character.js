@@ -1,4 +1,12 @@
-import { englishOr, parseNumber, sourceOf, upper } from './helpers.js';
+import {
+  englishOr,
+  isTrue,
+  lower,
+  mappedName,
+  parseNumber,
+  sourceOf,
+  upper,
+} from './helpers.js';
 import { ATTRIBUTE_ABBR_TO_KEY } from './constants.js';
 import { resolveMagicSplit } from '@domains/magic/split.js';
 
@@ -50,21 +58,11 @@ const SKILL_CATEGORY_MAP = {
 };
 
 /**
- * @param {unknown} value
- * @returns {boolean}
- */
-function parseBool(value) {
-  return upper(value) === 'TRUE';
-}
-
-/**
  * @param {unknown} raw
  * @returns {string}
  */
 function resolveTradition(raw) {
-  const normalized = String(raw ?? '')
-    .trim()
-    .toLowerCase();
+  const normalized = lower(raw);
   const match = TRADITION_PREFIXES.find(([prefix]) =>
     normalized.startsWith(prefix)
   );
@@ -170,8 +168,8 @@ export function resolveEssenceModifiers(qualities) {
  * @returns {{ spellpower: number, powerPoints: number }}
  */
 function mapMagicSplit(character, magicAttribute) {
-  const magician = parseBool(character.magician);
-  const adept = parseBool(character.adept);
+  const magician = isTrue(character.magician);
+  const adept = isTrue(character.adept);
   const raw =
     character.powerpoints ?? character.totalpowerpoints ?? character.magadept;
   const powerPoints = raw === undefined ? 0 : parseNumber(raw, 0);
@@ -226,13 +224,13 @@ export function mapCharacterSystem(character, essenceModifiers = {}) {
         notes: String(character.gamenotes ?? '').trim(),
       },
       magic: {
-        magician: parseBool(character.magician),
-        adept: parseBool(character.adept),
+        magician: isTrue(character.magician),
+        adept: isTrue(character.adept),
         tradition,
         drainAttribute: resolveDrainAttribute(character.drain, tradition),
         ...mapMagicSplit(character, sheetStats.MAGIC ?? 0),
       },
-      technomancer: parseBool(character.technomancer),
+      technomancer: isTrue(character.technomancer),
       biocompatibility: essenceModifiers.biocompatibility ?? '',
       sensitiveSystem: essenceModifiers.sensitiveSystem ?? false,
       connections: mapConnections(character.contacts),
@@ -249,12 +247,12 @@ export function mapCharacterSystem(character, essenceModifiers = {}) {
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapCharacterSkill(record) {
-  const knowledge = parseBool(record.knowledge);
+  const knowledge = isTrue(record.knowledge);
   const rawCategory = englishOr(record, 'skillcategory')
     .replace(/\s*Active\s*$/i, '')
     .toLowerCase();
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Skill',
+    name: mappedName(record, 'Unnamed Skill'),
     type: 'Skill',
     system: {
       attribute: ATTRIBUTE_ABBR_TO_KEY[upper(record.attribute)] ?? '',

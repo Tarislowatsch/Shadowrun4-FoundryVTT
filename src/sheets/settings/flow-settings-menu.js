@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 
 const SECTIONS = [
   {
@@ -55,7 +56,7 @@ export class FlowSettingsMenu extends foundry.applications.api.HandlebarsApplica
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/settings/flow-settings-menu.hbs',
+      template: TEMPLATES.sheets.settings.flow,
       scrollable: [''],
     },
   };

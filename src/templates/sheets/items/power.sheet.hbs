@@ -1,7 +1,7 @@
 
   <div class="item-sheet-body">
 
-    {{#> "item-sheet-header" nameKey="sr4.item.name"}}
+    {{#> item-sheet-header nameKey="sr4.item.name"}}
       <label>
         <span>{{localize 'sr4.power.geas'}}</span>
         <input type="checkbox" class="sr4-checkbox" data-field="system.geas" {{#if system.geas}}checked{{/if}} />
@@ -36,13 +36,13 @@
           {{/if}}
           <td><input type="number" name="system.cost" value="{{ system.cost }}" min="0" step="0.25" /></td>
           <td class="computed">{{ system.totalCost }}</td>
-          <td><input type="text" name="system.source" value="{{ system.source }}" /></td>
+          {{> stat-cell name="system.source" value=system.source type="text"}}
         </tr>
       </tbody>
     </table>
 
-    {{> "item-actions-effects"}}
+    {{> item-actions-effects}}
 
-    {{> "item-textareas"}}
+    {{> item-textareas}}
 
   </div>

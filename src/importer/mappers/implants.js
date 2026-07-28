@@ -5,6 +5,8 @@ import {
 import {
   commerceFields,
   englishOr,
+  lower,
+  mappedName,
   parseDecimal,
   parseNumber,
   sourceOf,
@@ -26,10 +28,7 @@ const CHUMMER_GRADE_MAP = {
  * @returns {string}
  */
 function normalizeGrade(raw) {
-  const str = String(raw ?? '')
-    .trim()
-    .toLowerCase()
-    .replace(/ware$/, '');
+  const str = lower(raw).replace(/ware$/, '');
   return CHUMMER_GRADE_MAP[str] ?? 'STANDARD';
 }
 
@@ -79,7 +78,7 @@ function mapImplant(record, implantType, essenceModifiers = {}) {
   const qualityMult = implantEssenceMultiplier(implantType, essenceModifiers);
   const essence = round3(finalEssence / (gradeMult * qualityMult));
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Implant',
+    name: mappedName(record, 'Unnamed Implant'),
     type: 'Implant',
     system: {
       essence,

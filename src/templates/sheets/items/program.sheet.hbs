@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -15,9 +15,7 @@
     </thead>
     <tbody>
       <tr>
-        <td>
-          <input type="text" name="system.category" value="{{ system.category }}" />
-        </td>
+        {{> stat-cell name="system.category" value=system.category type="text"}}
         <td>
           <input
             type="checkbox"
@@ -26,22 +24,14 @@
             {{#if system.complexform}}checked{{/if}}
           />
         </td>
-        <td>
-          <input type="number" name="system.maxrating" value="{{ system.maxrating }}" />
-        </td>
-        <td>
-          <input type="text" name="system.avail" value="{{ system.avail }}" />
-        </td>
-        <td>
-          <input type="text" name="system.legality" value="{{ system.legality }}" />
-        </td>
-        <td>
-          <input type="number" name="system.cost" value="{{ system.cost }}" />
-        </td>
+        {{> stat-cell name="system.maxrating" value=system.maxrating}}
+        {{> stat-cell name="system.avail" value=system.avail type="text"}}
+        {{> stat-cell name="system.legality" value=system.legality type="text"}}
+        {{> stat-cell name="system.cost" value=system.cost}}
         {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
   </table>
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

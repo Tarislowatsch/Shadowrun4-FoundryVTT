@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import { CybercombatFlow } from '@domains/matrix/flow/cybercombat-flow.js';
 import { DEVICE_TYPES } from '@models/actor/device.model.js';
 import SR4BaseActorSheet from '@sheets/characters/sr4-base-actor-sheet';
@@ -15,7 +16,7 @@ export default class SR4DeviceSheet extends SR4BaseActorSheet {
 
   static PARTS = {
     sheet: {
-      template: 'systems/shadowrun4e/templates/sheets/actors/device.sheet.hbs',
+      template: TEMPLATES.sheets.actors.device,
       scrollable: [''],
     },
   };

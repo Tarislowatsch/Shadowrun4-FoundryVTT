@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import { getSourceBookBindings } from '@utils/pdf-source.js';
 
 export class SourceBooksMenu extends foundry.applications.api.HandlebarsApplicationMixin(
@@ -23,7 +24,7 @@ export class SourceBooksMenu extends foundry.applications.api.HandlebarsApplicat
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/settings/source-books-menu.hbs',
+      template: TEMPLATES.sheets.settings.sourceBooks,
       scrollable: ['.source-books-rows'],
     },
   };

@@ -1,7 +1,7 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   createRollDialog,
   localize,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
 } from '@utils/dialog';
@@ -10,9 +10,6 @@ import {
   spellResistPool,
   localizeResistAttribute,
 } from './resist-actions.js';
-
-const OPPOSED_RESIST_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/spell-resist.hbs';
 
 /**
  * @param {import('@documents/index').SR4Actor} defender
@@ -38,7 +35,7 @@ export async function openOpposedSpellResistDialog(
   const resistAttrLabel = localizeResistAttribute(resistAttribute);
   const params = createDialogParameters(defender, resistPool);
 
-  const content = await renderTemplate(OPPOSED_RESIST_TEMPLATE, {
+  const content = await renderTemplate(TEMPLATES.magic.spellResist, {
     ...params,
     spellName,
     castingHits,

@@ -1,9 +1,8 @@
-import { elementToRecord } from '../xml/parse-xml.js';
-import { detachMentorBonusAndChoices } from '../mappers/mentors.js';
+import { elementToRecord, toMentorRecord } from '../xml/parse-xml.js';
 
-/** @type {Array<[string, string]>} */
+/** @type {Array<[string, string, ((el: Element) => Record<string, unknown>)?]>} [child, container, recordMapper] */
 const COLLECTIONS = [
-  ['weapon', 'weapons'],
+  ['weapon', 'weapons', parseWeaponRecord],
   ['armor', 'armors'],
   ['gear', 'gears'],
   ['spell', 'spells'],
@@ -12,7 +11,7 @@ const COLLECTIONS = [
   ['cyberware', 'cyberwares'],
   ['bioware', 'biowares'],
   ['program', 'techprograms'],
-  ['mentorspirit', 'mentorspirits'],
+  ['mentorspirit', 'mentorspirits', toMentorRecord],
 ];
 
 /**
@@ -25,28 +24,25 @@ const COLLECTIONS = [
  */
 
 /**
- * @param {string} xmlString
- * @returns {ParsedCharacter}
- * @throws {Error} When the XML is malformed or contains no `<character>`.
+ * @param {Element} characterEl
+ * @returns {Record<string, string>}
  */
-export function extractCharacter(xmlString) {
-  const doc = new DOMParser().parseFromString(xmlString, 'application/xml');
-  const error = doc.querySelector('parsererror');
-  if (error) {
-    throw new Error(error.textContent?.trim() || 'Invalid XML document.');
-  }
-
-  const characterEl = doc.querySelector('character');
-  if (!characterEl) throw new Error('No <character> element found.');
-
-  /** @type {Record<string, unknown>} */
-  const character = {};
+function parseLeafFields(characterEl) {
+  /** @type {Record<string, string>} */
+  const fields = {};
   for (const child of characterEl.children) {
     if (child.children.length === 0) {
-      character[child.tagName] = child.textContent?.trim() ?? '';
+      fields[child.tagName] = child.textContent?.trim() ?? '';
     }
   }
+  return fields;
+}
 
+/**
+ * @param {Element} characterEl
+ * @returns {{ attributes: Record<string, string>, attributeLimits: Record<string, { min: string, max: string, aug: string }> }}
+ */
+function parseAttributes(characterEl) {
   /** @type {Record<string, string>} */
   const attributes = {};
   /** @type {Record<string, { min: string, max: string, aug: string }>} */
@@ -69,56 +65,34 @@ export function extractCharacter(xmlString) {
       };
     }
   }
-  character.attributes = attributes;
-  character.attributeLimits = attributeLimits;
+  return { attributes, attributeLimits };
+}
 
-  /** @type {Record<string, Array<Record<string, unknown>>>} */
-  const items = {};
-  /** @type {Element[]|undefined} */
-  let weaponEls;
-  /** @type {Element[]|undefined} */
-  let gearEls;
-  for (const [child, container] of COLLECTIONS) {
-    const els = [
-      ...characterEl.querySelectorAll(`:scope > ${container} > ${child}`),
-    ];
-    if (els.length === 0) continue;
-    if (child === 'mentorspirit') {
-      items[child] = els.map((el) => {
-        const { bonus, choices } = detachMentorBonusAndChoices(el);
-        const record = elementToRecord(el);
-        record._bonus = bonus;
-        record._choices = choices;
-        return record;
-      });
-      continue;
-    }
-    items[child] = els.map(elementToRecord);
-    if (child === 'weapon') weaponEls = els;
-    if (child === 'gear') gearEls = els;
-  }
+/**
+ * @param {Element} weaponEl
+ * @returns {Record<string, unknown>}
+ */
+function parseWeaponRecord(weaponEl) {
+  const record = elementToRecord(weaponEl);
+  const { clips, weaponMods } = parseWeaponAttachments(weaponEl);
+  if (clips) record._clips = clips;
+  if (weaponMods) record._weaponMods = weaponMods;
+  return record;
+}
 
-  if (gearEls) {
-    const queue = [...gearEls];
-    while (queue.length > 0) {
-      const parentEl = /** @type {Element} */ (queue.shift());
-      const childGearEls = [
-        ...parentEl.querySelectorAll(':scope > children > gear'),
-      ];
-      for (const childEl of childGearEls) {
-        items.gear.push(elementToRecord(childEl));
-        queue.push(childEl);
-      }
-    }
-  }
-
-  if (weaponEls && items.weapon) {
-    for (let i = 0; i < weaponEls.length; i++) {
-      const clipEls = [
-        ...weaponEls[i].querySelectorAll(':scope > clips > clip'),
-      ];
-      if (clipEls.length > 0) {
-        items.weapon[i]._clips = clipEls
+/**
+ * @param {Element} weaponEl
+ * @returns {{ clips?: Array<{ gearGuid: string, count: number }>, weaponMods?: Array<Record<string, unknown>> }}
+ */
+function parseWeaponAttachments(weaponEl) {
+  const clipEls = [...weaponEl.querySelectorAll(':scope > clips > clip')];
+  const modEls = [
+    ...weaponEl.querySelectorAll(':scope > mods > weaponmod'),
+    ...weaponEl.querySelectorAll(':scope > accessories > accessory'),
+  ];
+  return {
+    clips: clipEls.length
+      ? clipEls
           .map((clip) => ({
             gearGuid:
               clip.querySelector(':scope > id')?.textContent?.trim() ?? '',
@@ -129,31 +103,71 @@ export function extractCharacter(xmlString) {
                 10
               ) || 0,
           }))
-          .filter((c) => c.gearGuid);
-      }
+          .filter((c) => c.gearGuid)
+      : undefined,
+    weaponMods: modEls.length ? modEls.map(elementToRecord) : undefined,
+  };
+}
 
-      const modEls = [
-        ...weaponEls[i].querySelectorAll(':scope > mods > weaponmod'),
-        ...weaponEls[i].querySelectorAll(':scope > accessories > accessory'),
-      ];
-      if (modEls.length > 0) {
-        items.weapon[i]._weaponMods = modEls.map(elementToRecord);
-      }
+/**
+ * @param {Element[]} gearEls - Top-level `<gear>` elements already mapped into `gearRecords`.
+ * @param {Array<Record<string, unknown>>} gearRecords - Mutated in place with the flattened `<children><gear>` descendants.
+ */
+function collectNestedGear(gearEls, gearRecords) {
+  const queue = [...gearEls];
+  while (queue.length > 0) {
+    const parentEl = /** @type {Element} */ (queue.shift());
+    for (const childEl of parentEl.querySelectorAll(
+      ':scope > children > gear'
+    )) {
+      gearRecords.push(elementToRecord(childEl));
+      queue.push(childEl);
     }
   }
+}
 
+/**
+ * @param {Element} characterEl
+ * @returns {Record<string, Array<Record<string, unknown>>>}
+ */
+function parseItemCollections(characterEl) {
+  /** @type {Record<string, Array<Record<string, unknown>>>} */
+  const items = {};
+  /** @type {Element[]|undefined} */
+  let gearEls;
+  for (const [child, container, mapRecord = elementToRecord] of COLLECTIONS) {
+    const els = [
+      ...characterEl.querySelectorAll(`:scope > ${container} > ${child}`),
+    ];
+    if (els.length === 0) continue;
+    items[child] = els.map(mapRecord);
+    if (child === 'gear') gearEls = els;
+  }
+  if (gearEls) collectNestedGear(gearEls, items.gear);
+  return items;
+}
+
+/**
+ * @param {Element} characterEl
+ * @returns {Array<Record<string, unknown>>}
+ */
+function parseContacts(characterEl) {
+  return [...characterEl.querySelectorAll(':scope > contacts > contact')].map(
+    elementToRecord
+  );
+}
+
+/**
+ * @param {Element} characterEl
+ * @returns {{ skills: Array<Record<string, unknown>>, spirits: Array<Record<string, unknown>>, vehicles: Array<Record<string, unknown>> }}
+ */
+function parseSubActors(characterEl) {
   const skills = [
     ...characterEl.querySelectorAll(':scope > skills > skill'),
   ].map(elementToRecord);
-
-  character.contacts = [
-    ...characterEl.querySelectorAll(':scope > contacts > contact'),
-  ].map(elementToRecord);
-
   const spirits = [
     ...characterEl.querySelectorAll(':scope > spirits > spirit'),
   ].map(elementToRecord);
-
   const vehicles = [
     ...characterEl.querySelectorAll(':scope > vehicles > vehicle'),
   ].map((el) => {
@@ -163,6 +177,36 @@ export function extractCharacter(xmlString) {
     );
     return record;
   });
+  return { skills, spirits, vehicles };
+}
+
+/**
+ * @param {string} xmlString
+ * @returns {ParsedCharacter}
+ * @throws {Error} When the XML is malformed or contains no `<character>`.
+ */
+export function extractCharacter(xmlString) {
+  const doc = new DOMParser().parseFromString(xmlString, 'application/xml');
+  const error = doc.querySelector('parsererror');
+  if (error) {
+    throw new Error(error.textContent?.trim() || 'Invalid XML document.');
+  }
+
+  const characterEl = doc.querySelector('character');
+  if (!characterEl) throw new Error('No <character> element found.');
+
+  const { attributes, attributeLimits } = parseAttributes(characterEl);
+  const { skills, spirits, vehicles } = parseSubActors(characterEl);
+
+  /** @type {Record<string, unknown>} */
+  const character = {
+    ...parseLeafFields(characterEl),
+    attributes,
+    attributeLimits,
+    contacts: parseContacts(characterEl),
+  };
+
+  const items = parseItemCollections(characterEl);
 
   return { character, items, skills, spirits, vehicles };
 }

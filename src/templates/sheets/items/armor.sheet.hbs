@@ -1,5 +1,5 @@
 <div class="item-sheet-body">
-  {{> "item-sheet-header" nameKey="sr4.item.name"}}
+  {{> item-sheet-header nameKey="sr4.item.name"}}
 
   <table class="item-stats-table">
     <thead>
@@ -16,47 +16,13 @@
     </thead>
     <tbody>
       <tr>
-        <td>
-          <input
-            type="number"
-            name="system.rating"
-            value="{{ system.rating }}"
-          />
-        </td>
-        <td>
-          <input
-            type="number"
-            name="system.ballisticarmor"
-            value="{{ system.ballisticarmor }}"
-          />
-        </td>
-        <td>
-          <input
-            type="number"
-            name="system.impactarmor"
-            value="{{ system.impactarmor }}"
-          />
-        </td>
-        <td>
-          <input
-            type="number"
-            name="system.capacity"
-            value="{{ system.capacity }}"
-          />
-        </td>
-        <td>
-          <input type="text" name="system.avail" value="{{ system.avail }}" />
-        </td>
-        <td>
-          <input
-            type="text"
-            name="system.legality"
-            value="{{ system.legality }}"
-          />
-        </td>
-        <td>
-          <input type="number" name="system.cost" value="{{ system.cost }}" />
-        </td>
+        {{> stat-cell name="system.rating" value=system.rating}}
+        {{> stat-cell name="system.ballisticarmor" value=system.ballisticarmor}}
+        {{> stat-cell name="system.impactarmor" value=system.impactarmor}}
+        {{> stat-cell name="system.capacity" value=system.capacity}}
+        {{> stat-cell name="system.avail" value=system.avail type="text"}}
+        {{> stat-cell name="system.legality" value=system.legality type="text"}}
+        {{> stat-cell name="system.cost" value=system.cost}}
         {{> item-source-cell value=system.source}}
       </tr>
     </tbody>
@@ -77,7 +43,7 @@
     </select>
   </div>
 
-  {{> "mods-section"
+  {{> mods-section
     installedKey="sr4.armormod.installed"
     warning=system.capacityWarning
     warningKey="sr4.armormod.capacityWarning"
@@ -89,5 +55,5 @@
     createType="Armor Mod"
   }}
 
-  {{> "item-textareas"}}
+  {{> item-textareas}}
 </div>

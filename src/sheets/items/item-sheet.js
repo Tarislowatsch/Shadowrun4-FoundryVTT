@@ -1,3 +1,4 @@
+import { TEMPLATES } from '@utils/templates';
 import {
   ImplantGrades,
   ImplantTypes,
@@ -74,73 +75,64 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
 
   static PARTS = {
     ammo: {
-      template: 'systems/shadowrun4e/templates/sheets/items/ammo.sheet.hbs',
+      template: TEMPLATES.sheets.items.ammo,
     },
     action: {
-      template: 'systems/shadowrun4e/templates/sheets/items/action.sheet.hbs',
-    },
-    gear: {
-      template: 'systems/shadowrun4e/templates/sheets/items/gear.sheet.hbs',
+      template: TEMPLATES.sheets.items.action,
     },
     armor: {
-      template: 'systems/shadowrun4e/templates/sheets/items/armor.sheet.hbs',
+      template: TEMPLATES.sheets.items.armor,
     },
     implant: {
-      template: 'systems/shadowrun4e/templates/sheets/items/implant.sheet.hbs',
+      template: TEMPLATES.sheets.items.implant,
     },
     spell: {
-      template: 'systems/shadowrun4e/templates/sheets/items/spell.sheet.hbs',
+      template: TEMPLATES.sheets.items.spell,
     },
     item: {
-      template: 'systems/shadowrun4e/templates/sheets/items/item.sheet.hbs',
+      template: TEMPLATES.sheets.items.item,
     },
     rangedweapon: {
-      template:
-        'systems/shadowrun4e/templates/sheets/items/rangedweapon.sheet.hbs',
+      template: TEMPLATES.sheets.items.rangedweapon,
     },
     meleeweapon: {
-      template:
-        'systems/shadowrun4e/templates/sheets/items/meleeweapon.sheet.hbs',
+      template: TEMPLATES.sheets.items.meleeweapon,
     },
     power: {
-      template: 'systems/shadowrun4e/templates/sheets/items/power.sheet.hbs',
+      template: TEMPLATES.sheets.items.power,
     },
     autosoft: {
-      template: 'systems/shadowrun4e/templates/sheets/items/autosoft.sheet.hbs',
+      template: TEMPLATES.sheets.items.autosoft,
     },
     critterpower: {
-      template:
-        'systems/shadowrun4e/templates/sheets/items/critterpower.sheet.hbs',
+      template: TEMPLATES.sheets.items.critterpower,
     },
     commlink: {
-      template: 'systems/shadowrun4e/templates/sheets/items/commlink.sheet.hbs',
+      template: TEMPLATES.sheets.items.commlink,
     },
     program: {
-      template: 'systems/shadowrun4e/templates/sheets/items/program.sheet.hbs',
+      template: TEMPLATES.sheets.items.program,
     },
     quality: {
-      template: 'systems/shadowrun4e/templates/sheets/items/quality.sheet.hbs',
+      template: TEMPLATES.sheets.items.quality,
     },
     mentor: {
-      template: 'systems/shadowrun4e/templates/sheets/items/mentor.sheet.hbs',
+      template: TEMPLATES.sheets.items.mentor,
     },
     weaponmod: {
-      template:
-        'systems/shadowrun4e/templates/sheets/items/weaponmod.sheet.hbs',
+      template: TEMPLATES.sheets.items.weaponmod,
     },
     armormod: {
-      template: 'systems/shadowrun4e/templates/sheets/items/armormod.sheet.hbs',
+      template: TEMPLATES.sheets.items.armormod,
     },
     vehiclemod: {
-      template:
-        'systems/shadowrun4e/templates/sheets/items/vehiclemod.sheet.hbs',
+      template: TEMPLATES.sheets.items.vehiclemod,
     },
     metatype: {
-      template: 'systems/shadowrun4e/templates/sheets/items/metatype.sheet.hbs',
+      template: TEMPLATES.sheets.items.metatype,
     },
     crittertemplate: {
-      template:
-        'systems/shadowrun4e/templates/sheets/items/crittertemplate.sheet.hbs',
+      template: TEMPLATES.sheets.items.crittertemplate,
     },
   };
 

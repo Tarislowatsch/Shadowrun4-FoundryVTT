@@ -1,15 +1,8 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { DiceUtility } from '@utils/rolls';
-import {
-  createRollDialog,
-  localize,
-  renderTemplate,
-  getInt,
-} from '@utils/dialog';
+import { createRollDialog, localize, getInt } from '@utils/dialog';
 import { getGame } from '@utils/game/game.js';
 import { getResistConfig } from '@domains/magic/dialogs/resist-actions.js';
-
-const SPIRIT_RESIST_TEMPLATE =
-  'systems/shadowrun4e/templates/magic/spirit-resist.hbs';
 
 /**
  * @param {number} force
@@ -41,7 +34,9 @@ export async function openSpiritResistDialog(
   if (mode === 'bind') dicePool = force * 2;
   else if (mode === 'dismiss') dicePool = force + ownerBonus;
 
-  const content = await renderTemplate(SPIRIT_RESIST_TEMPLATE, { resistLabel });
+  const content = await renderTemplate(TEMPLATES.summonedEntity.spiritResist, {
+    resistLabel,
+  });
 
   await createRollDialog({
     title: `${localize(titleKey)} — ${spiritType}`,

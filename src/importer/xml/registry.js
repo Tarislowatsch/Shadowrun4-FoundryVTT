@@ -44,6 +44,19 @@ function categoryOr(fallback) {
 }
 
 /**
+ * @param {string} fallback
+ * @returns {(record: Record<string, unknown>) => string}
+ */
+function parentCategoryOr(fallback) {
+  return (record) =>
+    String(
+      record._parentRecord
+        ? (record._parentRecord.category ?? '')
+        : (record.category ?? '')
+    ).trim() || fallback;
+}
+
+/**
  * @typedef {object} TagConfig
  * @property {string} xmlTag
  * @property {(record: Record<string, unknown>) => { name: string, type: string, system: object }} map
@@ -156,12 +169,7 @@ export const TAG_CONFIGS = [
         ? mapMetavariant(record, record._parentRecord)
         : mapMetatype(record),
     typeLabel: () => 'Metatypes',
-    subcategory: (record) =>
-      String(
-        record._parentRecord
-          ? (record._parentRecord.category ?? '')
-          : (record.category ?? '')
-      ).trim() || 'Metahuman',
+    subcategory: parentCategoryOr('Metahuman'),
   },
   {
     xmlTag: 'critter',
@@ -170,11 +178,6 @@ export const TAG_CONFIGS = [
         ? mapCritterVariant(record, record._parentRecord)
         : mapCritter(record),
     typeLabel: () => 'Critters',
-    subcategory: (record) =>
-      String(
-        record._parentRecord
-          ? (record._parentRecord.category ?? '')
-          : (record.category ?? '')
-      ).trim() || 'Critters',
+    subcategory: parentCategoryOr('Critters'),
   },
 ];

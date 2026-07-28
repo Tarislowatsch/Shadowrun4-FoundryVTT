@@ -6,7 +6,7 @@
   </label>
   {{/if}}
 
-  {{> "status-track-card"
+  {{> status-track-card
       title="sr4.conditionMonitor.physical"
       type="physical"
       max=(add system.conditionMonitor.physical.max system.derivedStats.overflow)
@@ -14,7 +14,7 @@
       current=system.conditionMonitor.physical.value}}
 
   {{#unless system.simpleHp}}
-  {{> "status-track-card"
+  {{> status-track-card
       title="sr4.conditionMonitor.stun"
       type="stun"
       max=system.conditionMonitor.stun.max

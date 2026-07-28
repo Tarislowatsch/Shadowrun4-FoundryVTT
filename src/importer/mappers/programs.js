@@ -1,4 +1,10 @@
-import { commerceFields, parseNumber, sourceOf, upper } from './helpers.js';
+import {
+  commerceFields,
+  isYes,
+  mappedName,
+  parseNumber,
+  sourceOf,
+} from './helpers.js';
 
 /**
  * @param {Record<string, string | string[]>} record
@@ -6,13 +12,13 @@ import { commerceFields, parseNumber, sourceOf, upper } from './helpers.js';
  */
 export function mapProgram(record) {
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Program',
+    name: mappedName(record, 'Unnamed Program'),
     type: 'Program',
     system: {
       ...commerceFields(record),
       rating: parseNumber(record.rating, 0),
       category: String(record.category ?? '').trim(),
-      complexform: upper(record.complexform) === 'YES',
+      complexform: isYes(record.complexform),
       maxrating: parseNumber(record.maxrating, 0) || null,
       source: sourceOf(record),
     },

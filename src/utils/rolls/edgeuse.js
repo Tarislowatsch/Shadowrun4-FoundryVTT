@@ -1,10 +1,10 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { getGame } from '../game/game.js';
 import { DiceUtility } from './diceutility.js';
 
 /** @typedef {import('@documents/actor').SR4Actor} SR4Actor */
 
-const EDGE_DIALOG_TEMPLATE =
-  'systems/shadowrun4e/templates/dicerolls/edge-dialog.hbs';
+const EDGE_DIALOG_TEMPLATE = TEMPLATES.ui.dialogs.edge;
 
 // ---------------------------------------------------------------------------
 // Internal helpers
@@ -66,14 +66,11 @@ export async function showEdgeDialog(options) {
     onCompleteWithResult,
   } = options;
 
-  const content = await foundry.applications.handlebars.renderTemplate(
-    EDGE_DIALOG_TEMPLATE,
-    {
-      message: getGame().i18n?.localize('sr4.roll.edge.useEdgePrompt'),
-      isCriticalGlitch,
-      isGlitch,
-    }
-  );
+  const content = await renderTemplate(EDGE_DIALOG_TEMPLATE, {
+    message: getGame().i18n?.localize('sr4.roll.edge.useEdgePrompt'),
+    isCriticalGlitch,
+    isGlitch,
+  });
 
   await new Promise((resolve) => {
     const dialog = new foundry.applications.api.DialogV2({

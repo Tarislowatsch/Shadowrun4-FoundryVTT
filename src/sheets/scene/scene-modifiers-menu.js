@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import { TraditionLabels } from '@models/index';
 import { getSceneModifiers, setSceneModifiers } from '@utils/index';
 
@@ -50,7 +51,7 @@ export class SceneModifiersMenu extends foundry.applications.api.HandlebarsAppli
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/scene/scene-modifiers-menu.hbs',
+      template: TEMPLATES.sheets.scene.modifiersMenu,
     },
   };
 

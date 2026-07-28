@@ -965,3 +965,52 @@ describe('resolveEssenceModifiers', () => {
     });
   });
 });
+
+describe('mapQuality Exceptional Attribute', () => {
+  it('embeds an attribute maximum effect for an English abbreviation', () => {
+    const item = mapQuality({ name: 'Exceptional Attribute (BOD)' });
+    expect(item.effects).toEqual([
+      {
+        name: 'Exceptional Attribute (BOD)',
+        img: 'icons/svg/upgrade.svg',
+        changes: [
+          {
+            key: 'system.modifiers.attributeMaximum.BODY',
+            type: 'add',
+            value: '1',
+          },
+        ],
+        disabled: false,
+        transfer: true,
+      },
+    ]);
+  });
+
+  it('resolves the German name and abbreviation', () => {
+    const item = mapQuality({ name: 'Außergewöhnliches Attribut (KON)' });
+    expect(item.effects).toHaveLength(1);
+    expect(item.effects[0].changes[0].key).toBe(
+      'system.modifiers.attributeMaximum.BODY'
+    );
+  });
+
+  it('accepts a full attribute key in parentheses', () => {
+    const item = mapQuality({ name: 'Exceptional Attribute (WILLPOWER)' });
+    expect(item.effects[0].changes[0].key).toBe(
+      'system.modifiers.attributeMaximum.WILLPOWER'
+    );
+  });
+
+  it.each([
+    { label: 'unknown token', name: 'Exceptional Attribute (XYZ)' },
+    { label: 'catalog form without parens', name: 'Exceptional Attribute' },
+    {
+      label: 'unparenthesized suffix',
+      name: 'Exceptional Attribute Something',
+    },
+  ])('imports the quality without effects for $label', ({ name }) => {
+    const item = mapQuality({ name });
+    expect(item.effects).toBeUndefined();
+    expect(item.type).toBe('Quality');
+  });
+});

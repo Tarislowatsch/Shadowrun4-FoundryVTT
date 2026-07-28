@@ -1,0 +1,29 @@
+<div
+  class="item-card quality-card"
+  data-item-id="{{ this._id }}"
+  id="{{ this._id }}"
+  title="{{ this.system.description }}"
+>
+  {{> item-card-header}}
+  <div class="item-body">
+    <span class="item-property">
+      <strong>{{localize "sr4.quality.category"}}</strong>
+      {{#if (eq this.system.category "Negative")}}
+        {{localize "sr4.quality.negative"}}
+      {{else}}
+        {{localize "sr4.quality.positive"}}
+      {{/if}}
+    </span>
+    <span class="item-property">
+      <strong>{{localize "sr4.quality.bp"}}</strong>
+      {{ this.system.bp }}
+    </span>
+    {{#if this.system.limit}}
+    <span class="item-property">
+      <strong>{{localize "sr4.quality.limit"}}</strong>
+      {{ this.system.limit }}
+    </span>
+    {{/if}}
+  </div>
+  {{> item-card-actions-effects}}
+</div>

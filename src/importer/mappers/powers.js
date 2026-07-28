@@ -1,13 +1,13 @@
-import { parseDecimal, sourceOf, upper } from './helpers.js';
+import { isYes, mappedName, parseDecimal, sourceOf } from './helpers.js';
 
 /**
  * @param {Record<string, unknown>} record
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapPower(record) {
-  const leveled = upper(record.levels) === 'YES';
+  const leveled = isYes(record.levels);
   return {
-    name: /** @type {string} */ (record.name) ?? 'Unnamed Power',
+    name: mappedName(record, 'Unnamed Power'),
     type: 'Power',
     system: {
       cost: parseDecimal(record.points, 0),

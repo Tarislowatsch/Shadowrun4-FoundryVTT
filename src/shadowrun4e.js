@@ -10,9 +10,7 @@ import {
 } from '@effects/index.js';
 import {
   SR4CharacterSheet,
-  registerCharacterPartials,
-  registerActorPartials,
-  registerItemPartials,
+  registerPartials,
   registerHelpers,
   SR4SkillsSheet,
   SR4ItemSheet,
@@ -22,8 +20,6 @@ import {
   SR4DeviceSheet,
   SR4VehicleSheet,
   SR4ActiveEffectSheet,
-  registerUIPartials,
-  registerSharedPartials,
 } from '@sheets/index.js';
 import { registerHooks } from '@hooks/index.js';
 import {
@@ -146,11 +142,7 @@ registerHooks();
 Hooks.once('init', async function () {
   registerHelpers();
 
-  await registerCharacterPartials();
-  await registerActorPartials();
-  await registerItemPartials();
-  await registerUIPartials();
-  await registerSharedPartials();
+  await registerPartials();
 
   document.addEventListener('click', (event) => {
     const link = event.target.closest('[data-sr4-source]');

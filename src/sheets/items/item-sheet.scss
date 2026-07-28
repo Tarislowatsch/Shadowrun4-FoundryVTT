@@ -12,7 +12,7 @@
   box-sizing: border-box;
   background: var(--sr4-bg-card);
   color: var(--sr4-text);
-  font-family: 'Orbitron', sans-serif;
+  font-family: sans-serif;
   font-size: 0.78rem;
   overflow-y: auto;
 }
@@ -63,7 +63,7 @@
   input[type='text'] {
     font-size: 0.95rem;
     font-weight: 700;
-    font-family: 'Orbitron', sans-serif;
+    font-family: sans-serif;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--sr4-border-dim);
@@ -216,7 +216,7 @@
     border: 1px solid var(--sr4-border-dim);
     border-radius: 3px;
     color: var(--sr4-text);
-    font-family: 'Orbitron', sans-serif;
+    font-family: sans-serif;
     font-size: 0.72rem;
     padding: 4px 6px;
     box-sizing: border-box;

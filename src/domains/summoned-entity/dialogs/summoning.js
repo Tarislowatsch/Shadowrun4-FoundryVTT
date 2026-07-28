@@ -1,3 +1,4 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { localize, mapDocumentsByName } from '@utils/dialog';
 import { getAvailableAffinities, clampForce } from './summoning-helpers.js';
 
@@ -70,8 +71,8 @@ export async function openSummoningDialog(actor, entityType) {
     : actor.getEffectiveMagic();
   const maxForce = statValue * 2;
 
-  const content = await foundry.applications.handlebars.renderTemplate(
-    'systems/shadowrun4e/templates/magic/summoning-dialog.hbs',
+  const content = await renderTemplate(
+    TEMPLATES.summonedEntity.summoningDialog,
     {
       availableTypes,
       selectLabel: game.i18n.localize(

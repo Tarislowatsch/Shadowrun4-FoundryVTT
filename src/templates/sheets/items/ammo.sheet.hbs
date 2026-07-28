@@ -1,6 +1,6 @@
 
   <div class="item-sheet-body">
-    {{> "item-sheet-header" nameKey="sr4.ammo.name"}}
+    {{> item-sheet-header nameKey="sr4.ammo.name"}}
 
     <table class="item-stats-table">
       <thead>
@@ -19,9 +19,9 @@
       </thead>
       <tbody>
         <tr>
-          <td><input type="number" name="system.damageBonus" value="{{ system.damageBonus }}" /></td>
-          <td><input type="number" name="system.damageOverride" value="{{ system.damageOverride }}" placeholder="—" /></td>
-          <td><input type="number" name="system.apBonus" value="{{ system.apBonus }}" /></td>
+          {{> stat-cell name="system.damageBonus" value=system.damageBonus}}
+          {{> stat-cell name="system.damageOverride" value=system.damageOverride placeholder="—"}}
+          {{> stat-cell name="system.apBonus" value=system.apBonus}}
           <td>
             <select name="system.damageTypeOverride">
               <option value="" {{#unless system.damageTypeOverride}}selected{{/unless}}>—</option>
@@ -34,14 +34,14 @@
               {{selectOptions ammocategories selected=system.category localize=true}}
             </select>
           </td>
-          <td><input type="number" name="system.quantity" value="{{ system.quantity }}" /></td>
-          <td><input type="number" name="system.avail" value="{{ system.avail }}" /></td>
-          <td><input type="text" name="system.legality" value="{{ system.legality }}" /></td>
-          <td><input type="number" name="system.cost" value="{{ system.cost }}" /></td>
+          {{> stat-cell name="system.quantity" value=system.quantity}}
+          {{> stat-cell name="system.avail" value=system.avail}}
+          {{> stat-cell name="system.legality" value=system.legality type="text"}}
+          {{> stat-cell name="system.cost" value=system.cost}}
           {{> item-source-cell value=system.source}}
         </tr>
       </tbody>
     </table>
 
-    {{> "item-textareas"}}
+    {{> item-textareas}}
   </div>

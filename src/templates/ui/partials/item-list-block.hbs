@@ -1,0 +1,9 @@
+{{#if items.length}}
+<ul class="{{#if listClass}}{{ listClass }}{{else}}item-list{{/if}}">
+  {{#each items}}
+  {{> (lookup .. 'card')}}
+  {{/each}}
+</ul>
+{{else}}
+<p class="empty-list">{{localize emptyKey}}</p>
+{{/if}}

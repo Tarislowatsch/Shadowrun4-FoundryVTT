@@ -1,7 +1,7 @@
 <div class="sheet-container">
 
   <div class="npc-header">
-    {{> "actor-image"}}
+    {{> actor-image}}
     <div class="npc-header-info">
       {{> meta-field label="sr4.sprite.name" name="name" value=actor.name editMode=editMode}}
       {{> meta-field label="sr4.sprite.type" name="system.spriteType" value=system.spriteType editMode=editMode}}
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  {{> "actor-link-row"
+  {{> actor-link-row
       linkLabel="sr4.sprite.compiler"
       dropType="ownerUuid"
       linkedName=ownerName
@@ -26,17 +26,17 @@
   <h3>{{localize 'sr4.sprite.matrixPersona'}}</h3>
   <div class="grid">
     {{#each matrixStats as |stat|}}
-      {{> "attribute-cell" label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue rollLabel=stat.rollLabel}}
+      {{> attribute-cell label=stat.label name=stat.name value=stat.value sourceValue=stat.sourceValue rollLabel=stat.rollLabel}}
     {{/each}}
   </div>
 
   <hr />
 
-  {{> "monitor-tracks"}}
+  {{> monitor-tracks}}
 
   <hr />
 
-  {{> "critter-powers" critterPowers=critterPowers editMode=editMode}}
+  {{> critter-powers critterPowers=critterPowers editMode=editMode}}
 
   {{> npc-item-list
       items=complexForms
@@ -45,8 +45,8 @@
       emptyKey="sr4.sprite.noComplexForms"
       createAction="createComplexForm"}}
 
-  {{> "npc-skills-section" skills=skills emptyKey="sr4.sprite.noSkills"}}
+  {{> npc-skills-section skills=skills emptyKey="sr4.sprite.noSkills"}}
 
-  {{> "npc-notes"}}
+  {{> npc-notes}}
 
 </div>

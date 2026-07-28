@@ -771,4 +771,34 @@ describe('buildActorData mentor spirits', () => {
     const data = buildActorData(parsed, []);
     expect(data.items.some((i) => i.type === 'Mentor')).toBe(false);
   });
+
+  it('embeds an attribute maximum effect on an "Exceptional Attribute" Quality', () => {
+    const parsed = {
+      character: baseCharacter,
+      items: {
+        quality: [
+          { name: 'Exceptional Attribute (BOD)', qualitytype: 'Positive' },
+        ],
+      },
+      skills: [],
+    };
+    const data = buildActorData(parsed, []);
+
+    const quality = data.items.find(
+      (i) => i.type === 'Quality' && i.name === 'Exceptional Attribute (BOD)'
+    );
+    expect(quality).toBeDefined();
+    expect(quality.effects).toHaveLength(1);
+    expect(quality.effects[0]).toMatchObject({
+      transfer: true,
+      disabled: false,
+      changes: [
+        {
+          key: 'system.modifiers.attributeMaximum.BODY',
+          type: 'add',
+          value: '1',
+        },
+      ],
+    });
+  });
 });

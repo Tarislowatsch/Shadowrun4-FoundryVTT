@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import { parseNpcDefaultSkills } from './npc-default-skills.js';
 
 export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicationMixin(
@@ -19,7 +20,7 @@ export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicatio
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/settings/npc-skills-menu.hbs',
+      template: TEMPLATES.sheets.settings.npcSkills,
       scrollable: ['.skill-list'],
     },
   };

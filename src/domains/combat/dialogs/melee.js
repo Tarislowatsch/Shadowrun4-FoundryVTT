@@ -1,8 +1,7 @@
+import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   createRollDialog,
   localize,
-  meleeAttackTemplatePath,
-  renderTemplate,
   createDialogParameters,
   dialogActions,
   getSkillDicePool,
@@ -87,7 +86,7 @@ async function rollMeleeForTarget(
     isAttack: true,
   });
   const skill = actor.getSkill(skillName);
-  const content = await renderTemplate(meleeAttackTemplatePath(), {
+  const content = await renderTemplate(TEMPLATES.combat.meleeAttackDialog, {
     ...params,
     reachModifier,
   });

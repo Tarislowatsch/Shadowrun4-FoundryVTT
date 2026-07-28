@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { TEMPLATES } from '@utils/templates';
 import { extractCharacter } from '@importer/character/parse-character.js';
 import { buildActorData } from '@importer/character/build-character.js';
 import { buildSummonedActorData } from '@importer/character/build-summoned.js';
@@ -66,7 +67,7 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
 
   static PARTS = {
     form: {
-      template: 'systems/shadowrun4e/templates/importer/character-importer.hbs',
+      template: TEMPLATES.sheets.importer.characterImporter,
     },
   };
 
