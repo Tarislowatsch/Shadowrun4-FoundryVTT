@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { confirmDialog } from '@utils/dialog';
 
 /**
  * Removes every empty compendium folder, repeating until none remain so that
@@ -39,7 +40,7 @@ export async function purgeWorldCompendia() {
   const list = packs
     .map((p) => `<li>${foundry.utils.escapeHTML(p.metadata.label)}</li>`)
     .join('');
-  const confirmed = await foundry.applications.api.DialogV2.confirm({
+  const confirmed = await confirmDialog({
     window: { title: game.i18n.localize('sr4.compendium.purge.button') },
     content: `<p>${game.i18n.format('sr4.compendium.purge.confirm', {
       count: packs.length,

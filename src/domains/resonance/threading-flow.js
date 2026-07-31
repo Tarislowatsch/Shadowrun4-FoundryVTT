@@ -1,5 +1,8 @@
-import { localize, rollSkillDialog } from '@utils/index.js';
-import { offerEdgeRetry } from '@utils/rolls/roll-edge-decision.js';
+import { localize, rollSkillDialog } from '@utils/index';
+import {
+  ALWAYS_OFFER_EDGE,
+  resolveEdgeForRoll,
+} from '@utils/rolls/roll-edge-decision.js';
 import {
   resolveDrain,
   calculateResonanceFadingPool,
@@ -23,7 +26,7 @@ export class ThreadingFlow {
       ui?.notifications?.error(localize('sr4.magic.resonanceStatZero'));
       return;
     }
-    if (!actor.getSkill('Software')) {
+    if (!actor.getSkill('software')) {
       ui?.notifications?.error(localize('sr4.matrix.noSoftwareSkill'));
       return;
     }
@@ -37,11 +40,11 @@ export class ThreadingFlow {
     const rollResult = await ThreadingFlow._rollThreading(actor, complexForm);
     if (!rollResult) return;
 
-    const hits = await offerEdgeRetry(actor, rollResult);
+    const hits = await resolveEdgeForRoll(actor, rollResult, ALWAYS_OFFER_EDGE);
 
     let threadedRating = 0;
     let usedHits = 0;
-    if (!rollResult.isGlitch && hits > 0) {
+    if (hits > 0) {
       const resonance = actor.getAttribute('RESONANCE') ?? 0;
       const cap = calculateThreadingCap(resonance);
       const currentRating =
@@ -80,12 +83,12 @@ export class ThreadingFlow {
    * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null} | undefined>}
    */
   static async _rollThreading(actor, complexForm) {
-    const softwareSkill = actor.getSkill('Software');
+    const softwareSkill = actor.getSkill('software');
     const softwareRating = softwareSkill.system.rating ?? 0;
     const resonance = actor.getAttribute('RESONANCE') ?? 0;
     const numDice = Math.max(resonance + softwareRating, 1);
 
-    return rollSkillDialog(actor, 'Software', {
+    return rollSkillDialog(actor, 'software', {
       dice: numDice,
       titleSuffix: ` (${localize('sr4.matrix.threading')}: ${complexForm.name})`,
     });

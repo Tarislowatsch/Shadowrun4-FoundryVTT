@@ -4,6 +4,13 @@ import { DiceUtility } from '../rolls/diceutility.js';
 /** @typedef {import('@models/index').RollParameters} RollParameters */
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
 
+/** @typedef {{ pending: boolean }} EdgePayment */
+
+/** @returns {EdgePayment} */
+export function createEdgePayment() {
+  return { pending: true };
+}
+
 /**
  * @param {HTMLElement} dialog
  * @param {string} id
@@ -122,7 +129,7 @@ function resolveSmartlink(weapon) {
  * @param {string} rollLabel
  * @param {number} numDice
  * @param {import('@models/index').SR4Weapon} [weapon]
- * @param {{ edgeAvailableOverride?: boolean }} [options]
+ * @param {{ edgeAvailableOverride?: boolean, edgePayment?: EdgePayment | null }} [options]
  * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}>}
  */
 export async function dialogActions(
@@ -131,17 +138,24 @@ export async function dialogActions(
   rollLabel,
   numDice,
   weapon,
-  { edgeAvailableOverride } = {}
+  { edgeAvailableOverride, edgePayment = null } = {}
 ) {
   const smartlink = resolveSmartlink(weapon);
   const rollParameters = getRollParameters(actor, dialog, smartlink);
   const recoilMalus = getInt(dialog, 'recoilMalus');
   const finalRoll = computeFinalPool(numDice, rollParameters, recoilMalus);
-  if (rollParameters.explode) await actor.useEdge();
-  const edgeFlag = edgeAvailableOverride ?? rollParameters.edgeAvailable;
+  if (!edgePayment && rollParameters.explode) {
+    await actor.useEdge();
+  } else if (edgePayment?.pending) {
+    edgePayment.pending = false;
+    await actor.useEdge();
+  }
+  const explode = rollParameters.explode || edgePayment !== null;
+  const edgeFlag =
+    edgeAvailableOverride ?? (!edgePayment && rollParameters.edgeAvailable);
   const { successes, isGlitch, messageId } = await DiceUtility.rollAndShow({
     numDice: finalRoll,
-    explode: rollParameters.explode,
+    explode,
     edgeAvailable: edgeFlag,
     actor,
     skillName: rollLabel,
@@ -152,7 +166,7 @@ export async function dialogActions(
     successes,
     isGlitch,
     rolledDice: finalRoll,
-    edgeUsed: rollParameters.explode,
+    edgeUsed: explode,
     messageId,
   };
 }
@@ -172,14 +186,14 @@ export async function dialogActions(
  * @param {import('@documents/index').SR4Actor} actor
  * @param {number} [numDice]
  * @param {import('@models/index').SR4Weapon} [weapon]
- * @param {{ ignoreModifiers?: boolean, isAttack?: boolean }} [options]
+ * @param {{ ignoreModifiers?: boolean, isAttack?: boolean, edgePayment?: EdgePayment | null }} [options]
  * @returns {DialogParameters}
  */
 export function createDialogParameters(
   actor,
   numDice = 0,
   weapon = undefined,
-  { ignoreModifiers = false, isAttack = false } = {}
+  { ignoreModifiers = false, isAttack = false, edgePayment = null } = {}
 ) {
   const hasSmartlink = weapon ? resolveSmartlink(weapon) : false;
   const attackMalus = isAttack
@@ -190,7 +204,7 @@ export function createDialogParameters(
     : -(actor.system.derivedStats.dicePoolModifier ?? 0) - attackMalus;
   return {
     currentEdge: actor.getAttribute('CURRENTEDGE'),
-    edgeAvailable: actor.getAttribute('CURRENTEDGE') > 0,
+    edgeAvailable: !edgePayment && actor.getAttribute('CURRENTEDGE') > 0,
     maxEdge: actor.getAttribute('EDGE'),
     smartlinkAvailable: weapon ? isRangedWeapon(weapon) : false,
     smartlinkChecked: hasSmartlink,

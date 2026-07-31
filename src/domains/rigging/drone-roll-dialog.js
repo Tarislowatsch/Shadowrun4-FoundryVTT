@@ -5,6 +5,7 @@ import {
   dialogActions,
   getChecked,
   getInt,
+  promptDialog,
 } from '@utils/dialog';
 import {
   ControlModes,
@@ -151,9 +152,7 @@ export async function openDroneRollDialog(vehicle, action) {
   if (storedMode !== ControlModes.AUTONOMOUS && !rigger)
     ui.notifications?.warn(localize('sr4.vehicle.noRigger'));
 
-  const riggerSkills = buildRiggerSkillOptions(rigger, action).map(
-    (option) => ({ ...option, label: localize(option.label) })
-  );
+  const riggerSkills = buildRiggerSkillOptions(rigger, action);
   const paramsActor = rigger ?? vehicle;
   const params = createDialogParameters(paramsActor);
 
@@ -168,7 +167,7 @@ export async function openDroneRollDialog(vehicle, action) {
   const resolve = (html) =>
     resolveDialogPool(html, vehicle, rigger, action, { lookup });
 
-  await foundry.applications.api.DialogV2.prompt({
+  await promptDialog({
     window: { title: `${rollLabel} — ${vehicle.name}` },
     content,
     ok: {

@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
+  ALWAYS_OFFER_EDGE,
   awaitEdgeDecision,
+  resolveEdgeForRoll,
+  resolveFinalSuccesses,
   resolveEdgeDecision,
   getEdgeDecisionEntry,
 } from '../src/utils/rolls/roll-edge-decision.js';
@@ -106,6 +109,84 @@ describe('awaitEdgeDecision — pending offer', () => {
 
     await expect(promise).resolves.toBe(3);
     expect(getEdgeDecisionEntry(ID)).toBeUndefined();
+  });
+});
+
+describe('resolveEdgeForRoll', () => {
+  const roll = (overrides = {}) => ({
+    successes: 3,
+    rolledDice: 6,
+    isGlitch: false,
+    edgeUsed: false,
+    messageId: ID,
+    ...overrides,
+  });
+
+  it('parks a decision when the threshold can never be met', async () => {
+    const promise = resolveEdgeForRoll(makeActor(2), roll(), ALWAYS_OFFER_EDGE);
+    expect(getEdgeDecisionEntry(ID)).toBeDefined();
+
+    await resolveEdgeDecision(ID, 5);
+    await expect(promise).resolves.toBe(5);
+  });
+
+  it('returns immediately once the threshold is met', async () => {
+    const result = await resolveEdgeForRoll(makeActor(2), roll(), 3);
+    expect(result).toBe(3);
+    expect(getEdgeDecisionEntry(ID)).toBeUndefined();
+  });
+
+  it('returns immediately when Edge was already spent on the roll', async () => {
+    const result = await resolveEdgeForRoll(
+      makeActor(2),
+      roll({ edgeUsed: true }),
+      ALWAYS_OFFER_EDGE
+    );
+    expect(result).toBe(3);
+    expect(getEdgeDecisionEntry(ID)).toBeUndefined();
+  });
+
+  it('offers Edge on a glitch too, so the point can buy the glitch away', async () => {
+    const promise = resolveEdgeForRoll(
+      makeActor(2),
+      roll({ isGlitch: true }),
+      ALWAYS_OFFER_EDGE
+    );
+    expect(getEdgeDecisionEntry(ID)?.rollResult.isGlitch).toBe(true);
+
+    await resolveEdgeDecision(ID, 0);
+    await expect(promise).resolves.toBe(0);
+  });
+
+  it('falls back to the rolled successes when a glitched offer times out', async () => {
+    vi.useFakeTimers();
+    const promise = resolveEdgeForRoll(
+      makeActor(2),
+      roll({ isGlitch: true }),
+      ALWAYS_OFFER_EDGE
+    );
+
+    await vi.advanceTimersByTimeAsync(20 * 1000);
+
+    await expect(promise).resolves.toBe(3);
+    expect(getEdgeDecisionEntry(ID)).toBeUndefined();
+  });
+});
+
+describe('resolveFinalSuccesses', () => {
+  it('aborts only when there is no roll result', async () => {
+    await expect(resolveFinalSuccesses(makeActor(2), null)).resolves.toBeNull();
+  });
+
+  it('keeps the hits of a plain glitch instead of aborting the action', async () => {
+    const result = await resolveFinalSuccesses(makeActor(0), {
+      successes: 3,
+      rolledDice: 6,
+      isGlitch: true,
+      edgeUsed: false,
+      messageId: ID,
+    });
+    expect(result).toBe(3);
   });
 });
 

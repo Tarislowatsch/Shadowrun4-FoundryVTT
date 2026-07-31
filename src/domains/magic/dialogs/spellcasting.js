@@ -4,6 +4,7 @@ import {
   localize,
   createDialogParameters,
   dialogActions,
+  promptDialog,
 } from '@utils/dialog';
 
 /**
@@ -21,7 +22,7 @@ export async function askSpellForce(spell, actor) {
     max,
   });
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: { title: localize('sr4.spell.forcedialogtitle') },
     content,
     ok: {
@@ -47,8 +48,8 @@ export async function askSpellForce(spell, actor) {
  * @param {number} numDice
  * @param {import('@models/index').SR4Spell} spell
  * @param {number} force
- * @param {number} [poolModifier]
- * @returns {Promise<{successes: number, isGlitch: boolean}>}
+ * @param {{ poolModifier?: number, edgePayment?: import('@utils/dialog').EdgePayment | null }} [options]
+ * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}>}
  */
 export async function openSpellcastingDialog(
   actor,
@@ -56,10 +57,12 @@ export async function openSpellcastingDialog(
   numDice,
   spell,
   force,
-  poolModifier = 0
+  { poolModifier = 0, edgePayment = null } = {}
 ) {
   const effectiveDice = Math.max(1, numDice + poolModifier);
-  const params = createDialogParameters(actor, effectiveDice);
+  const params = createDialogParameters(actor, effectiveDice, undefined, {
+    edgePayment,
+  });
   let content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     spell,
     force,
@@ -74,6 +77,9 @@ export async function openSpellcastingDialog(
     title: `${localize('sr4.roll.rolling')} ${localize('sr4.skills.' + skillName)} ${spell.name} (${localize('sr4.spell.force')}: ${force})`,
     dice: effectiveDice,
     content,
-    onRoll: (dialog) => dialogActions(dialog, actor, skillName, effectiveDice),
+    onRoll: (dialog) =>
+      dialogActions(dialog, actor, skillName, effectiveDice, undefined, {
+        edgePayment,
+      }),
   });
 }

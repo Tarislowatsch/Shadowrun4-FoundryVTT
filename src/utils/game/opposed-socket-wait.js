@@ -1,5 +1,10 @@
 import { getGame } from './game.js';
 import { getOpposedRollFallbackTimeoutMs } from './opposed-roll-timeout.js';
+import {
+  emitSystemSocket,
+  offSystemSocket,
+  onSystemSocket,
+} from './system-socket.js';
 
 /**
  * @template T
@@ -21,30 +26,44 @@ export function awaitOpposedSocketResponse({
   onMatch,
   fallback,
 }) {
-  const socket = getGame().socket;
-  if (!socket) return Promise.resolve(fallback);
-
   const timeoutMs = getOpposedRollFallbackTimeoutMs(
     getGame().settings.get('shadowrun4e', 'flowOpposedRollTimeout')
   );
 
   return new Promise((resolve) => {
+    let settled = false;
+
+    /**
+     * @param {T} value
+     * @returns {void}
+     */
+    const settle = (value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      offSystemSocket(handler);
+      resolve(value);
+    };
+
     const timeout = setTimeout(() => {
-      socket.off('system.shadowrun4e', handler);
-      resolve(fallback);
+      console.warn(
+        `SR4 | no ${matchAction} within ${timeoutMs}ms after ${triggerAction}, using the fallback`
+      );
+      settle(fallback);
     }, timeoutMs);
 
     const handler = (data) => {
+      if (settled) return;
       if (data.action !== matchAction || !matches(data.payload)) return;
-      clearTimeout(timeout);
-      socket.off('system.shadowrun4e', handler);
-      resolve(onMatch(data.payload));
+      settle(onMatch(data.payload));
     };
 
-    socket.on('system.shadowrun4e', handler);
-    socket.emit('system.shadowrun4e', {
-      action: triggerAction,
-      payload: triggerPayload,
-    });
+    onSystemSocket(handler);
+    emitSystemSocket({ action: triggerAction, payload: triggerPayload }).catch(
+      (error) => {
+        console.error(`SR4 | failed to emit ${triggerAction}`, error);
+        settle(fallback);
+      }
+    );
   });
 }

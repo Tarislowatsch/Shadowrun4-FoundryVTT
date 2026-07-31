@@ -4,8 +4,9 @@ const getValidTargetActorsOrWarnMock = vi.fn();
 const awaitOpposedSocketResponseMock = vi.fn();
 const openDirectSpellAllocationDialogMock = vi.fn();
 const getSpellEffectDataMock = vi.fn();
+const sendCombatSummaryMock = vi.fn();
 
-vi.mock('@utils/index.js', async (importOriginal) => {
+vi.mock('@utils/index', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
@@ -26,8 +27,14 @@ vi.mock('@domains/magic/dialogs/combat-spell.js', async (importOriginal) => {
   };
 });
 
-vi.mock('./apply-effects-flow', () => ({
+vi.mock('../src/domains/magic/flow/apply-effects-flow.js', () => ({
   getSpellEffectData: (...args) => getSpellEffectDataMock(...args),
+}));
+
+vi.mock('@domains/combat/flow/apply-damage-flow.js', () => ({
+  ApplyDamageFlow: {
+    sendCombatSummary: (...args) => sendCombatSummaryMock(...args),
+  },
 }));
 
 const { CombatSpellFlow } = await import(
@@ -35,7 +42,7 @@ const { CombatSpellFlow } = await import(
 );
 
 function makeCaster(uuid = 'Actor.caster1') {
-  return { uuid };
+  return { uuid, name: 'Caster' };
 }
 
 function makeTarget(name = 'Test Target', uuid = 'Actor.target1') {
@@ -75,6 +82,33 @@ describe('CombatSpellFlow direct damage — isPhysical', () => {
         action: 'applyDirectSpellDamage',
         payload: expect.objectContaining({ isPhysical: expected }),
       })
+    );
+  });
+});
+
+describe('CombatSpellFlow direct damage — fully resisted', () => {
+  beforeEach(() => {
+    awaitOpposedSocketResponseMock.mockResolvedValue(0);
+  });
+
+  it('reports the resisted spell instead of ending it silently', async () => {
+    await CombatSpellFlow.start(makeCaster(), makeSpell('PHYSICAL'), 4, 3);
+
+    expect(sendCombatSummaryMock).toHaveBeenCalledWith(
+      'Caster',
+      'Test Target',
+      'spellNoEffect',
+      { spell: 'Test Spell' }
+    );
+  });
+
+  it('neither allocates hits nor emits damage', async () => {
+    await CombatSpellFlow.start(makeCaster(), makeSpell('PHYSICAL'), 4, 3);
+
+    expect(openDirectSpellAllocationDialogMock).not.toHaveBeenCalled();
+    expect(globalThis.game.socket.emit).not.toHaveBeenCalledWith(
+      'system.shadowrun4e',
+      expect.objectContaining({ action: 'applyDirectSpellDamage' })
     );
   });
 });

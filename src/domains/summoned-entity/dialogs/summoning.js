@@ -1,5 +1,5 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
-import { localize, mapDocumentsByName } from '@utils/dialog';
+import { localize, mapDocumentsByName, promptDialog } from '@utils/dialog';
 import { getAvailableAffinities, clampForce } from './summoning-helpers.js';
 
 export {
@@ -87,7 +87,7 @@ export async function openSummoningDialog(actor, entityType) {
     ? 'sr4.magic.compileDialogTitle'
     : 'sr4.magic.summonDialogTitle';
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: { title: localize(titleKey) },
     content,
     ok: {

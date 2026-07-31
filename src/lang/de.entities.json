@@ -1,8 +1,20 @@
 {
   "sr4": {
     "critter": {
+      "actorType": "Akteur-Typ",
+      "attributes": "Attribute",
+      "category": "Kategorie",
+      "complexForms": "Komplexe Formen",
+      "createActor": "Akteur erstellen",
+      "formula": "Formel",
+      "optionalComplexForms": "Optionale komplexe Formen",
+      "skillName": "Name",
+      "skillRating": "Stufe",
+      "skillSpec": "Spezialisierung",
+      "skills": "Fertigkeiten",
       "templateApplied": "Vorlage \"{name}\" angewendet.",
-      "templateWrongType": "Diese Vorlage passt nicht zum Akteur-Typ."
+      "templateWrongType": "Diese Vorlage passt nicht zum Akteur-Typ.",
+      "value": "Wert"
     },
     "spirit": {
       "attributes": "Attribute",

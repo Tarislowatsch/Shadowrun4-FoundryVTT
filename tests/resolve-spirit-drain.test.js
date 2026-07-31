@@ -23,10 +23,11 @@ const { resolveSpiritDrain } = await import(
   '../src/domains/summoned-entity/dialogs/resolve-spirit-drain.js'
 );
 
-function makeActor({ attributes = {} } = {}) {
+function makeActor({ attributes = {}, effectiveMagic } = {}) {
   return {
     getAttribute: (key) => attributes[key] ?? 6,
     getSpellpower: () => attributes.MAGIC ?? 6,
+    getEffectiveMagic: () => effectiveMagic ?? attributes.MAGIC ?? 6,
   };
 }
 
@@ -67,6 +68,17 @@ describe('resolveSpiritDrain', () => {
     const actor = makeActor({ attributes: { MAGIC: 3 } });
 
     await resolveSpiritDrain(actor, 5, 1, 'spirit', labelKeys);
+
+    expect(resolveDrainMock).toHaveBeenCalledWith(
+      actor,
+      expect.objectContaining({ isPhysical: true })
+    );
+  });
+
+  it('compares Force against the Background-Count-reduced Magic, not the raw stat', async () => {
+    const actor = makeActor({ attributes: { MAGIC: 5 }, effectiveMagic: 3 });
+
+    await resolveSpiritDrain(actor, 4, 1, 'spirit', labelKeys);
 
     expect(resolveDrainMock).toHaveBeenCalledWith(
       actor,

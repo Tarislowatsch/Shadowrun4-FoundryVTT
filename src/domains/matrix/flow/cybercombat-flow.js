@@ -1,10 +1,14 @@
 import {
   awaitOpposedSocketResponse,
+  emitSystemSocket,
   getGame,
   getValidMatrixTargetActorsOrWarn,
-} from '@utils/index.js';
+} from '@utils/index';
 import { DiceUtility } from '@utils/rolls';
-import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
+import {
+  ALWAYS_OFFER_EDGE,
+  resolveEdgeForRoll,
+} from '@utils/rolls/roll-edge-decision.js';
 import { getOffensivePrograms, getMatrixPersona } from '../matrix-persona.js';
 import {
   openCybercombatAttackDialog,
@@ -45,7 +49,7 @@ export class CybercombatFlow {
         edgeUsed: rollResult.edgeUsed,
         messageId: rollResult.messageId,
       },
-      Infinity
+      ALWAYS_OFFER_EDGE
     );
 
     for (const target of targets) {
@@ -103,7 +107,7 @@ export class CybercombatFlow {
     const dv = program.rating + netHits;
 
     if (program.category === 'attack') {
-      getGame().socket?.emit('system.shadowrun4e', {
+      await emitSystemSocket({
         action: 'triggerMatrixResist',
         payload: {
           defenderUuid,
@@ -124,7 +128,11 @@ export class CybercombatFlow {
       return;
     }
 
-    getGame().socket?.emit('system.shadowrun4e', {
+    await emitSystemSocket({
+      action: 'applyMatrixJam',
+      payload: { defenderUuid, attackerUuid },
+    });
+    await emitSystemSocket({
       action: 'triggerBiofeedbackResist',
       payload: {
         defenderUuid,
@@ -132,10 +140,6 @@ export class CybercombatFlow {
         programCategory: program.category,
         dv,
       },
-    });
-    getGame().socket?.emit('system.shadowrun4e', {
-      action: 'applyMatrixJam',
-      payload: { defenderUuid, attackerUuid },
     });
   }
 

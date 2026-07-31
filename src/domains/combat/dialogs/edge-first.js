@@ -1,9 +1,11 @@
+import { confirmDialog } from '@utils/dialog';
+
 /**
  * Prompts whether the combatant burns Edge before rolling initiative.
  * @returns {Promise<boolean>}
  */
 export async function promptEdgeFirst() {
-  return foundry.applications.api.DialogV2.confirm({
+  return confirmDialog({
     window: { title: game.i18n.localize('sr4.combat.edgeFirst.title') },
     content: `<p>${game.i18n.localize('sr4.combat.edgeFirst.prompt')}</p>`,
     yes: { label: game.i18n.localize('sr4.combat.edgeFirst.yes') },

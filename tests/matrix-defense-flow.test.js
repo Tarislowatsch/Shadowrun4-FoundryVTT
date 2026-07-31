@@ -8,7 +8,9 @@ const openMatrixResistDialogMock = vi.fn();
 const defaultMatrixDefenseHitsMock = vi.fn();
 const defaultMatrixResistHitsMock = vi.fn();
 const sendDecisionMessageMock = vi.fn();
+const applyMatrixDamageMock = vi.fn();
 const applyDamageSendDecisionMessageMock = vi.fn();
+const applyAndSendMock = vi.fn();
 
 vi.mock('@utils/rolls/decision-provider.js', () => ({
   requestReactiveDecision: (...args) => requestReactiveDecisionMock(...args),
@@ -39,6 +41,7 @@ vi.mock('../src/domains/matrix/dialogs/cybercombat.js', () => ({
 vi.mock('../src/domains/matrix/flow/matrix-damage-flow.js', () => ({
   MatrixDamageFlow: {
     sendDecisionMessage: (...args) => sendDecisionMessageMock(...args),
+    apply: (...args) => applyMatrixDamageMock(...args),
   },
 }));
 
@@ -46,6 +49,7 @@ vi.mock('../src/domains/combat/flow/apply-damage-flow.js', () => ({
   ApplyDamageFlow: {
     sendDecisionMessage: (...args) =>
       applyDamageSendDecisionMessageMock(...args),
+    applyAndSend: (...args) => applyAndSendMock(...args),
   },
 }));
 
@@ -128,7 +132,7 @@ describe('MatrixDefenseFlow.handleBiofeedbackResist', () => {
     );
   });
 
-  it('does not send a damage message when the computed amount is 0', async () => {
+  it('reports the fully resisted biofeedback instead of staying silent', async () => {
     getMatrixPersonaMock.mockReturnValue({ inVR: true, simMode: 'cold' });
     requestReactiveDecisionMock.mockResolvedValue(5);
     computeBiofeedbackDamageMock.mockReturnValue({
@@ -142,6 +146,12 @@ describe('MatrixDefenseFlow.handleBiofeedbackResist', () => {
       programCategory: 'blackout',
     });
 
+    expect(applyAndSendMock).toHaveBeenCalledWith(
+      0,
+      false,
+      defender,
+      'blackIc'
+    );
     expect(applyDamageSendDecisionMessageMock).not.toHaveBeenCalled();
   });
 });
@@ -163,7 +173,7 @@ describe('MatrixDefenseFlow.handleMatrixResist', () => {
     );
   });
 
-  it('clamps unresisted damage at 0 when resist hits exceed the DV', async () => {
+  it('reports the fully resisted attack instead of a card for 0 damage', async () => {
     requestReactiveDecisionMock.mockResolvedValue(9);
     const defender = makeDefender();
 
@@ -172,11 +182,12 @@ describe('MatrixDefenseFlow.handleMatrixResist', () => {
       programName: 'Black Hammer',
     });
 
-    expect(sendDecisionMessageMock).toHaveBeenCalledWith(
-      defender,
+    expect(applyMatrixDamageMock).toHaveBeenCalledWith(
       0,
+      defender,
       'cybercombat'
     );
+    expect(sendDecisionMessageMock).not.toHaveBeenCalled();
   });
 });
 
@@ -194,14 +205,14 @@ describe('MatrixDefenseFlow.handleDefense', () => {
 
     expect(globalThis.game.socket.emit).toHaveBeenCalledWith(
       'system.shadowrun4e',
-      {
+      expect.objectContaining({
         action: 'matrixDefenseRolled',
         payload: {
           attackerUuid: 'Actor.attacker1',
           defenderUuid: defender.uuid,
           defenseHits: 3,
         },
-      }
+      })
     );
   });
 });

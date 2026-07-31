@@ -36,7 +36,7 @@ export async function buildSummonedActorData(record, ownerUuid) {
     return built;
   }
 
-  const sheetStats = buildDefaultSheetStats(force);
+  const sheetStats = buildDefaultSheetStats(force, entityType);
 
   if (isSprite) {
     return {

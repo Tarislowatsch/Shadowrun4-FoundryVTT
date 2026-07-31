@@ -14,6 +14,7 @@ import {
   normalizeLangCode,
 } from '@importer/translation/detect-language.js';
 import { openTranslatePackDialog } from '@sheets/importer/translate-pack-dialog.js';
+import { confirmDialog } from '@utils/dialog';
 import {
   mergeItemNameTranslationEntries,
   registerItemNameTranslations,
@@ -430,7 +431,7 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
     const updateExisting =
       this.element.querySelector('[data-update-existing]')?.checked ?? false;
     if (updateExisting) {
-      const confirmed = await foundry.applications.api.DialogV2.confirm({
+      const confirmed = await confirmDialog({
         window: { title: game.i18n.localize('sr4.importer.updateExisting') },
         content: `<p>${game.i18n.localize('sr4.importer.updateExistingConfirm')}</p>`,
       });

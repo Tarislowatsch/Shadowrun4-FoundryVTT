@@ -5,7 +5,6 @@ import {
   DroneActions,
   buildRiggerSkillOptions,
   controllingActor,
-  findRiggerSkill,
   getVehicleStat,
   mergeRiggerLookup,
   resolveDronePool,
@@ -355,42 +354,6 @@ describe('ControlModes', () => {
       'jumped',
       'remote',
     ]);
-  });
-});
-
-describe('findRiggerSkill', () => {
-  const skills = [
-    {
-      type: 'Skill',
-      name: 'Geschütze',
-      system: { rating: 4, label: 'sr4.skills.gunnery' },
-    },
-    { type: 'Skill', name: 'Gunnery', system: { rating: 2, label: '' } },
-    {
-      type: 'Skill',
-      name: 'Dodge',
-      system: { rating: 3, label: 'sr4.skills.dodge' },
-    },
-  ];
-  const rigger = { items: skills };
-
-  it('prefers a label match over a name match', () => {
-    expect(findRiggerSkill(rigger, 'sr4.skills.gunnery').name).toBe(
-      'Geschütze'
-    );
-  });
-
-  it('falls back to a case-insensitive name match', () => {
-    expect(findRiggerSkill(rigger, 'GUNNERY').name).toBe('Gunnery');
-  });
-
-  it('returns null when neither label nor name matches', () => {
-    expect(findRiggerSkill(rigger, 'sr4.skills.hacking')).toBeNull();
-  });
-
-  it('ignores non-skill items', () => {
-    const actor = { items: [{ type: 'Program', name: 'Dodge', system: {} }] };
-    expect(findRiggerSkill(actor, 'dodge')).toBeNull();
   });
 });
 

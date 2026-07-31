@@ -1,4 +1,6 @@
 import { MELEE_DEFENSE_KEYS } from '@domains/combat/dialogs/defense.js';
+import { findSkillIn } from '@models/index';
+import { buildSkillOptions, skillDisplayLabel } from '@utils/dialog';
 
 /** @enum {string} */
 export const DroneActions = {
@@ -94,26 +96,10 @@ export function getAutosoft(vehicle, autosoftType) {
 /**
  * @param {import('@documents/index').SR4Actor} rigger
  * @param {string} ref
- * @returns {import('@models/index').SR4Skill | null}
- */
-export function findRiggerSkill(rigger, ref) {
-  let nameMatch = null;
-  const lowerRef = ref.toLowerCase();
-  for (const item of rigger.items) {
-    if (item.type !== 'Skill') continue;
-    if (item.system.label === ref) return item;
-    if (!nameMatch && item.name.toLowerCase() === lowerRef) nameMatch = item;
-  }
-  return nameMatch;
-}
-
-/**
- * @param {import('@documents/index').SR4Actor} rigger
- * @param {string} ref
  * @returns {{ rating: number, label: string }}
  */
 export function getRiggerSkill(rigger, ref) {
-  const skillItem = findRiggerSkill(rigger, ref);
+  const skillItem = findSkillIn(rigger.items, ref);
   const rating = skillItem?.system.rating ?? 0;
   return {
     rating: rating > 0 ? rating : -1,
@@ -157,7 +143,7 @@ export function buildRiggerSkillOptions(rigger, action) {
       ) {
         options.push({
           value: item.name.toLowerCase(),
-          label: item.system.label || item.name,
+          label: skillDisplayLabel(item),
           rating: item.system.rating,
         });
       }
@@ -165,17 +151,7 @@ export function buildRiggerSkillOptions(rigger, action) {
     return options;
   }
   if (action === DroneActions.MELEE_DEFENSE) {
-    return MELEE_DEFENSE_KEYS.map((key) => {
-      const skillItem =
-        findRiggerSkill(rigger, `sr4.skills.${key}`) ??
-        findRiggerSkill(rigger, key);
-      if (!skillItem || (skillItem.system.rating ?? 0) <= 0) return null;
-      return {
-        value: key,
-        label: skillItem.system.label || skillItem.name,
-        rating: skillItem.system.rating,
-      };
-    }).filter(Boolean);
+    return buildSkillOptions(rigger, MELEE_DEFENSE_KEYS);
   }
   return [];
 }

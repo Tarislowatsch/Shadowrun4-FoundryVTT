@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { handleFreeRoll } from '@utils/index.js';
+import { handleFreeRoll } from '@utils/index';
 import { SceneModifiersMenu } from '@sheets/scene/scene-modifiers-menu.js';
 
 export class SceneControlsHook {

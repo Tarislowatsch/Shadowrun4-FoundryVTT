@@ -1,4 +1,4 @@
-import { getGame } from '@utils/index.js';
+import { getGame } from '@utils/index';
 import { awaitEntityResist } from '@domains/magic/dialogs/resist-actions.js';
 import {
   resolveSpiritDrain,

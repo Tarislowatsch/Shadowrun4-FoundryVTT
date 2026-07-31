@@ -20,19 +20,21 @@ function buildSkillRollTitle(skill, suffix = '') {
  * allocations or non-standard pools such as Threading).
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
- * @param {{ dice?: number, weapon?: SR4Weapon, titleSuffix?: string, force?: number, edgeAvailableOverride?: boolean }} [options]
+ * @param {{ dice?: number, weapon?: SR4Weapon, titleSuffix?: string, force?: number, edgeAvailableOverride?: boolean, edgePayment?: import('./pool-math.js').EdgePayment | null }} [options]
  * @returns {Promise<(Record<string, unknown> & {successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}) | undefined>}
  */
 export async function rollSkillDialog(
   actor,
   skillName,
-  { dice, weapon, titleSuffix, force, edgeAvailableOverride } = {}
+  { dice, weapon, titleSuffix, force, edgeAvailableOverride, edgePayment } = {}
 ) {
   const resolvedDice = dice ?? getSkillDicePool(actor, skillName);
   if (resolvedDice === undefined) return undefined;
 
   const skill = actor.getSkill(skillName);
-  const params = createDialogParameters(actor, resolvedDice, weapon);
+  const params = createDialogParameters(actor, resolvedDice, weapon, {
+    edgePayment,
+  });
   const content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     ...params,
     skillName,
@@ -49,6 +51,7 @@ export async function rollSkillDialog(
     onRoll: (dialog) =>
       dialogActions(dialog, actor, skillName, resolvedDice, weapon, {
         edgeAvailableOverride,
+        edgePayment,
       }),
   });
 }

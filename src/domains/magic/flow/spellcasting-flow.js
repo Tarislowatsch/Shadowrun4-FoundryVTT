@@ -4,7 +4,12 @@ import {
   getSpellcastingDicePool,
   getValidTargetActors,
   openDicePoolSplitDialog,
-} from '@utils/index.js';
+  rollSkillDialog,
+} from '@utils/index';
+import {
+  ALWAYS_OFFER_EDGE,
+  resolveEdgeForRoll,
+} from '@utils/rolls/roll-edge-decision.js';
 import {
   calculateWillpowerResistancePool,
   resolveDrain,
@@ -14,7 +19,7 @@ import { CombatSpellFlow } from './combat-spell-flow';
 import { OpposedSpellFlow } from './opposed-spell-flow';
 import {
   getSpellEffectData,
-  sendEffectDecisionMessage,
+  requestEffectDecision,
 } from './apply-effects-flow';
 
 /**
@@ -43,11 +48,14 @@ export class SpellcastingFlow {
    * @returns {Promise<void>}
    */
   static async start(actor, spell) {
-    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) return;
     if (!actor.getEffectiveMagic()) {
       ui?.notifications?.error(
         getGame().i18n?.localize('sr4.magic.magicStatZero')
       );
+      return;
+    }
+    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) {
+      await SpellcastingFlow.rollWithoutWorkflow(actor, spell);
       return;
     }
     const force = await askSpellForce(spell, actor);
@@ -59,23 +67,35 @@ export class SpellcastingFlow {
     if (isMultiTarget) {
       await SpellcastingFlow._handleMultiTarget(actor, spell, force, targets);
     } else {
-      await SpellcastingFlow._handleSingleTarget(actor, spell, force);
+      await SpellcastingFlow._handleSingleTarget(actor, spell, force, targets);
     }
   }
 
   /**
    * @param {import('@documents/index').SR4Actor} actor
    * @param {import('@models/index').SR4Spell} spell
-   * @param {number} force
    * @returns {Promise<void>}
    */
-  static async _handleSingleTarget(actor, spell, force) {
+  static async rollWithoutWorkflow(actor, spell) {
+    const numDice = getSpellcastingDicePool(actor, spell);
+    if (numDice === undefined) return;
+    await rollSkillDialog(actor, 'spellcasting', {
+      dice: numDice,
+      titleSuffix: ` ${spell.name}`,
+    });
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} actor
+   * @param {import('@models/index').SR4Spell} spell
+   * @param {number} force
+   * @param {import('@documents/index').SR4Actor[]} targets
+   * @returns {Promise<void>}
+   */
+  static async _handleSingleTarget(actor, spell, force, targets) {
     let poolModifier = 0;
-    if (spell.system?.category === 'HEALTH') {
-      const targets = getValidTargetActors();
-      if (targets.length === 1) {
-        poolModifier = -calculateEssencePenalty(targets[0]);
-      }
+    if (spell.system?.category === 'HEALTH' && targets.length === 1) {
+      poolModifier = -calculateEssencePenalty(targets[0]);
     }
 
     const rollResult = await SpellcastingFlow.rollSpellcasting(
@@ -85,37 +105,37 @@ export class SpellcastingFlow {
       poolModifier
     );
     if (rollResult === null || rollResult === undefined) return;
-    const { successes: hits, isGlitch } = rollResult;
+    const hits = await resolveEdgeForRoll(actor, rollResult, ALWAYS_OFFER_EDGE);
     if (
       spell.system?.duration === 'SUSTAINED' &&
-      !isGlitch &&
+      hits > 0 &&
       getGame().settings.get('shadowrun4e', 'autoSustainEffect')
     ) {
       await actor.applyEffectTemplate('sustain');
     }
-    if (!isGlitch && hits > 0 && spell.system?.category !== 'COMBAT') {
+    if (hits > 0 && spell.system?.category !== 'COMBAT') {
       if (spell.system?.opposed) {
-        await OpposedSpellFlow.start(actor, spell, hits, force);
+        await OpposedSpellFlow.start(actor, spell, hits, force, targets);
       } else {
         const effectData = getSpellEffectData(spell);
         if (effectData.length > 0) {
-          for (const target of getValidTargetActors()) {
-            await sendEffectDecisionMessage(target, effectData, spell.name);
+          for (const target of targets) {
+            await requestEffectDecision(target, effectData, spell.name);
           }
         }
       }
     }
     let drainModifier = 0;
-    if (spell.system?.category === 'COMBAT' && !isGlitch) {
-      drainModifier = await CombatSpellFlow.start(actor, spell, hits, force);
+    if (spell.system?.category === 'COMBAT' && hits > 0) {
+      drainModifier = await CombatSpellFlow.start(
+        actor,
+        spell,
+        hits,
+        force,
+        targets
+      );
     }
-    await SpellcastingFlow.handleDrain(
-      actor,
-      spell,
-      force,
-      hits,
-      drainModifier
-    );
+    await SpellcastingFlow.handleDrain(actor, spell, force, drainModifier);
   }
 
   /**
@@ -136,12 +156,13 @@ export class SpellcastingFlow {
       essencePenalty: isHealth ? calculateEssencePenalty(t) : 0,
     }));
 
-    const allocations = await openDicePoolSplitDialog(
+    const split = await openDicePoolSplitDialog(
+      actor,
       numDice,
       splitTargets,
       spell.name
     );
-    if (!allocations) return;
+    if (split === null) return;
 
     let sustainApplied = false;
     let anyCast = false;
@@ -150,7 +171,7 @@ export class SpellcastingFlow {
     /** @type {{ target: import('@documents/index').SR4Actor, hits: number }[]} */
     const perTargetHits = [];
 
-    for (const { targetId, allocatedDice } of allocations) {
+    for (const { targetId, allocatedDice, edgePayment } of split.allocations) {
       const target = targets.find((t) => t.uuid === targetId);
       if (!target) continue;
 
@@ -162,23 +183,27 @@ export class SpellcastingFlow {
         allocatedDice,
         spell,
         force,
-        penalty
+        { poolModifier: penalty, edgePayment }
       );
       if (rollResult === null || rollResult === undefined) continue;
       anyCast = true;
-      const { successes: hits, isGlitch } = rollResult;
+      const hits = await resolveEdgeForRoll(
+        actor,
+        rollResult,
+        ALWAYS_OFFER_EDGE
+      );
 
       if (
         !sustainApplied &&
         spell.system?.duration === 'SUSTAINED' &&
-        !isGlitch &&
+        hits > 0 &&
         getGame().settings.get('shadowrun4e', 'autoSustainEffect')
       ) {
         await actor.applyEffectTemplate('sustain');
         sustainApplied = true;
       }
 
-      if (isGlitch || hits < 1) continue;
+      if (hits < 1) continue;
 
       if (isCombat) {
         perTargetHits.push({ target, hits });
@@ -195,7 +220,7 @@ export class SpellcastingFlow {
       } else {
         const effectData = getSpellEffectData(spell);
         if (effectData.length > 0) {
-          await sendEffectDecisionMessage(target, effectData, spell.name);
+          await requestEffectDecision(target, effectData, spell.name);
         }
       }
     }
@@ -210,13 +235,7 @@ export class SpellcastingFlow {
     }
 
     if (anyCast) {
-      await SpellcastingFlow.handleDrain(
-        actor,
-        spell,
-        force,
-        0,
-        maxDrainModifier
-      );
+      await SpellcastingFlow.handleDrain(actor, spell, force, maxDrainModifier);
     }
   }
 
@@ -225,31 +244,25 @@ export class SpellcastingFlow {
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} force
    * @param {number} [poolModifier]
-   * @returns {Promise<{ successes: number, isGlitch: boolean } | null>}
+   * @returns {Promise<{ successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null } | null>}
    */
   static async rollSpellcasting(actor, spell, force, poolModifier = 0) {
     const skillName = 'spellcasting';
     const numDice = getSpellcastingDicePool(actor, spell);
     if (numDice === undefined) return null;
-    return openSpellcastingDialog(
-      actor,
-      skillName,
-      numDice,
-      spell,
-      force,
-      poolModifier
-    );
+    return openSpellcastingDialog(actor, skillName, numDice, spell, force, {
+      poolModifier,
+    });
   }
 
   /**
    * @param {import('@documents/index').SR4Actor} actor
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} force
-   * @param {number} hits
    * @param {number} [drainModifier]
    * @returns {Promise<void>}
    */
-  static async handleDrain(actor, spell, force, hits, drainModifier = 0) {
+  static async handleDrain(actor, spell, force, drainModifier = 0) {
     const drainValue = calculateDrainValue(
       force,
       spell.system?.dv ?? 0,

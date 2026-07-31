@@ -1,5 +1,5 @@
 import { Shootingmodes } from '@models/index';
-import { localize, getInt } from '@utils/dialog';
+import { localize, getInt, promptDialog } from '@utils/dialog';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
 
@@ -103,7 +103,7 @@ export async function selectFireModeForSplit(weapon) {
     .join('');
   const content = `<form class="fire-mode-select"><div class="form-group">${modeLabels}</div></form>`;
 
-  const selectedMode = await foundry.applications.api.DialogV2.prompt({
+  const selectedMode = await promptDialog({
     window: { title: localize('sr4.roll.splitPool') },
     content,
     ok: {

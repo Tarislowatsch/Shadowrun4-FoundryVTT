@@ -1,5 +1,5 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
-import { localize, mapDocumentsByName } from '@utils/dialog';
+import { localize, mapDocumentsByName, promptDialog } from '@utils/dialog';
 
 /**
  * @typedef {{ source: 'actor' | 'compendium' | 'world', doc: object }} ComplexFormEntry
@@ -103,7 +103,7 @@ export async function openHitsSelectionDialog(hits, maxUsable, ratingCap) {
     <p class="hint">${hint}</p>
   </div>`;
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: { title: localize('sr4.matrix.threadingDialogTitle') },
     content,
     ok: {
@@ -145,7 +145,7 @@ export async function openThreadingSelectionDialog(actor, formsMap) {
     options,
   });
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: { title: localize('sr4.matrix.threadingDialogTitle') },
     content,
     ok: {

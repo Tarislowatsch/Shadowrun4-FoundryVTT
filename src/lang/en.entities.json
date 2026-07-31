@@ -1,8 +1,20 @@
 {
   "sr4": {
     "critter": {
+      "actorType": "Actor Type",
+      "attributes": "Attributes",
+      "category": "Category",
+      "complexForms": "Complex Forms",
+      "createActor": "Create Actor",
+      "formula": "Formula",
+      "optionalComplexForms": "Optional Complex Forms",
+      "skillName": "Name",
+      "skillRating": "Rating",
+      "skillSpec": "Specialization",
+      "skills": "Skills",
       "templateApplied": "Template \"{name}\" applied.",
-      "templateWrongType": "This template does not match the actor type."
+      "templateWrongType": "This template does not match the actor type.",
+      "value": "Value"
     },
     "spirit": {
       "attributes": "Attributes",

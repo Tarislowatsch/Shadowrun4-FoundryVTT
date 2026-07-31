@@ -1,5 +1,6 @@
 import { TEMPLATES } from '@utils/templates';
 import { localize, openActionDialog } from '@utils/index';
+import { skillDisplayLabel } from '@utils/dialog';
 import {
   ControlModes,
   DEFAULT_RIGGER_LOOKUP,
@@ -193,12 +194,14 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
       for (const option of options) option.selected = option.value === stored;
       const manual = stored !== '' && !options.some((o) => o.selected);
       const defaultRef = globalDefaults[key];
-      const defaultDisplay =
-        items.find(
-          (item) =>
-            item.system.label === defaultRef ||
-            item.name.toLowerCase() === defaultRef.toLowerCase()
-        )?.name ?? defaultRef;
+      const defaultItem = items.find(
+        (item) =>
+          item.system.label === defaultRef ||
+          item.name.toLowerCase() === defaultRef.toLowerCase()
+      );
+      const defaultDisplay = defaultItem
+        ? skillDisplayLabel(defaultItem)
+        : localize(defaultRef);
       return {
         key,
         label:

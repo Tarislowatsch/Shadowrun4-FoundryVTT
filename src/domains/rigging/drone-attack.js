@@ -5,6 +5,7 @@ import {
   createDialogParameters,
   dialogActions,
   getInt,
+  promptDialog,
 } from '@utils/dialog';
 import {
   getFireModeParams,
@@ -47,7 +48,7 @@ export async function openDroneAttackDialog(vehicle, weapon) {
     weapon.system.maxAmmo > 0 &&
     weapon.system.currentAmmo === 0
   ) {
-    await foundry.applications.api.DialogV2.prompt({
+    await promptDialog({
       window: { title: localize('sr4.weapon.emptyTitle') },
       content: `<p>${localize('sr4.weapon.emptyHint')}</p>`,
       ok: {
@@ -89,7 +90,7 @@ export async function openDroneAttackDialog(vehicle, weapon) {
   const resolve = (html) =>
     resolveDialogPool(html, vehicle, rigger, DroneActions.ATTACK, { lookup });
 
-  const result = await foundry.applications.api.DialogV2.prompt({
+  const result = await promptDialog({
     window: { title: `${rollLabel} — ${vehicle.name}` },
     content,
     ok: {

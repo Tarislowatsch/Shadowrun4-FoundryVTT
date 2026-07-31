@@ -1,4 +1,4 @@
-import { getGame } from '@utils/index.js';
+import { getGame } from '@utils/index';
 import { awaitEntityResist } from '@domains/magic/dialogs/resist-actions.js';
 import {
   resolveSpiritDrain,
@@ -16,7 +16,7 @@ export class DismissalFlow {
     const skillName = isSprite ? 'decompiling' : 'banishing';
     const magicRating = isSprite
       ? actor.getAttribute('RESONANCE')
-      : actor.getSpellpower();
+      : actor.getEffectiveMagic();
 
     if (!magicRating) {
       ui?.notifications?.warn(
@@ -26,18 +26,22 @@ export class DismissalFlow {
     }
 
     const targetActor = DismissalFlow._getValidTarget(entityType);
-    const forceOrRating = targetActor
-      ? isSprite
-        ? targetActor.system.rating
-        : targetActor.system.force
-      : undefined;
+    if (!targetActor) {
+      ui?.notifications?.warn(
+        getGame().i18n.localize('sr4.magic.noValidDismissTarget')
+      );
+      return;
+    }
+
+    const forceOrRating = isSprite
+      ? targetActor.system.rating
+      : targetActor.system.force;
 
     const result = await resolveSpiritServiceRoll(
       actor,
       skillName,
       forceOrRating,
       async () => {
-        if (!targetActor) return null;
         const ownerBonus = await DismissalFlow._resolveOwnerBonus(
           targetActor,
           entityType

@@ -1,4 +1,4 @@
-import { getGame } from '@utils/index';
+import { emitSystemSocket, getGame } from '@utils/index';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
 
 /**
@@ -84,6 +84,14 @@ export async function sendEffectDecisionMessage(target, effectData, spellName) {
     },
   });
 
+  if (!message) {
+    console.error(
+      `SR4 | effect decision card could not be created for ${spellName}, applying effects directly`
+    );
+    await applySpellEffects(effectData, target);
+    return null;
+  }
+
   effectDecisionRegistry.set(message.id, {
     target,
     effectData,
@@ -91,4 +99,23 @@ export async function sendEffectDecisionMessage(target, effectData, spellName) {
   });
 
   return message.id;
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} target
+ * @param {object[]} effectData
+ * @param {string} spellName
+ * @returns {Promise<void>}
+ */
+export async function requestEffectDecision(target, effectData, spellName) {
+  if (effectData.length === 0) return;
+
+  await emitSystemSocket({
+    action: 'triggerSpellEffectDecision',
+    payload: {
+      defenderUuid: target.uuid,
+      effectData,
+      spellName,
+    },
+  });
 }

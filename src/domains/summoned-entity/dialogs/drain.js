@@ -157,7 +157,10 @@ export async function resolveDrain(
   );
 
   const unresisted = Math.max(drainValue - finalDrainHits, 0);
-  if (unresisted === 0) return;
+  if (unresisted === 0) {
+    await ApplyDamageFlow.applyAndSend(0, isPhysical, actor, 'drain');
+    return;
+  }
   await ApplyDamageFlow.sendDecisionMessage(
     actor,
     unresisted,

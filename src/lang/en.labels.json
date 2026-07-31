@@ -12,6 +12,8 @@
     },
     "skills": {
       "aeronauticsmechanic": "Aeronautics-Mechanic",
+      "animalhandling": "Animal-Handling",
+      "animaltraining": "Animal-Training",
       "arcana": "Arcana",
       "archery": "Archery",
       "armorer": "Armorer",
@@ -45,6 +47,7 @@
       "exoticmeleeweapon": "Exotic-Melee-Weapon",
       "exoticrangedweapon": "Exotic-Ranged-Weapon",
       "firstaid": "First-Aid",
+      "flight": "Flight",
       "forgery": "Forgery",
       "gunnery": "Gunnery",
       "gymnastics": "Gymnastics",
@@ -73,6 +76,7 @@
       "pilotwatercraft": "Pilot-Watercraft",
       "pistols": "Pistols",
       "registering": "Registering",
+      "riding": "Riding",
       "ritualspellcasting": "Ritual-Spellcasting",
       "running": "Running",
       "shadowing": "Shadowing",
@@ -83,7 +87,8 @@
       "swimming": "Swimming",
       "throwingweapons": "Throwing-Weapons",
       "tracking": "Tracking",
-      "unarmedcombat": "Unarmed-Combat"
+      "unarmedcombat": "Unarmed-Combat",
+      "vettech": "Vet-Tech"
     }
   }
 }

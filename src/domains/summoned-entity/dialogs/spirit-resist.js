@@ -1,7 +1,7 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { DiceUtility } from '@utils/rolls';
 import { createRollDialog, localize, getInt } from '@utils/dialog';
-import { getGame } from '@utils/game/game.js';
+import { emitSystemSocket } from '@utils/game/system-socket.js';
 import { getResistConfig } from '@domains/magic/dialogs/resist-actions.js';
 
 /**
@@ -55,7 +55,7 @@ export async function openSpiritResistDialog(
         extended: false,
       });
 
-      getGame().socket?.emit('system.shadowrun4e', {
+      await emitSystemSocket({
         action: resistedAction,
         payload: { summonerId, resistHits: result.successes },
       });

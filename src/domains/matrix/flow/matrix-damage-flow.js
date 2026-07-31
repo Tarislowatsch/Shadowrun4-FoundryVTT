@@ -1,8 +1,7 @@
-import { getGame, isResponsibleForActor } from '@utils/index';
+import { emitSystemSocket, getGame } from '@utils/index';
 import { getMatrixPersona } from '../matrix-persona.js';
 import { applyMatrixDamage } from '../matrix-rules.js';
 import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
-import { DumpshockFlow } from './dumpshock-flow.js';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
 
 /**
@@ -52,13 +51,10 @@ export class MatrixDamageFlow {
 
     const i18n = getGame().i18n;
     const messages = [];
+    const wasCrashed = monitor.value >= monitor.max;
 
     if (amount > 0) {
-      monitor.value = applyMatrixDamage(
-        monitor.value,
-        monitor.max,
-        amount
-      ).value;
+      const damaged = applyMatrixDamage(monitor.value, monitor.max, amount);
       messages.push({
         content: i18n.format('sr4.matrix.damage.summary', {
           name: actor.name,
@@ -66,9 +62,12 @@ export class MatrixDamageFlow {
           reason: i18n.localize(`sr4.matrix.damage.reason.${reason}`),
         }),
       });
-      await actor.update({
-        'system.conditionMonitor.matrix.value': monitor.value,
-      });
+      if (damaged.value !== monitor.value) {
+        monitor.value = damaged.value;
+        await actor.update({
+          'system.conditionMonitor.matrix.value': monitor.value,
+        });
+      }
     } else {
       messages.push({
         content: i18n.format('sr4.matrix.damage.resisted', {
@@ -77,7 +76,7 @@ export class MatrixDamageFlow {
       });
     }
 
-    if (monitor.value >= monitor.max) {
+    if (!wasCrashed && monitor.value >= monitor.max) {
       await MatrixDamageFlow.handleCrash(actor, messages);
     }
 
@@ -124,14 +123,10 @@ export class MatrixDamageFlow {
         'system.realm': 'physical',
         'system.matrix.jammedBy': '',
       });
-      if (isResponsibleForActor(/** @type {any} */ (actor).id)) {
-        await DumpshockFlow.start(actor);
-      } else {
-        getGame().socket?.emit('system.shadowrun4e', {
-          action: 'triggerDumpshock',
-          payload: { defenderUuid: /** @type {any} */ (actor).uuid },
-        });
-      }
+      await emitSystemSocket({
+        action: 'triggerDumpshock',
+        payload: { defenderUuid: /** @type {any} */ (actor).uuid },
+      });
     }
   }
 
@@ -171,6 +166,14 @@ export class MatrixDamageFlow {
         },
       },
     });
+
+    if (!message) {
+      console.error(
+        `SR4 | matrix damage decision card could not be created for ${actor.name}, applying damage directly`
+      );
+      await MatrixDamageFlow.apply(amount, actor, context);
+      return null;
+    }
 
     matrixDamageRegistry.set(message.id, { actor, amount, context });
     return message.id;

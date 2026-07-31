@@ -4,6 +4,8 @@ import { createAwaitableDecision } from './awaitable-decision.js';
  * @typedef {{ successes: number, rolledDice: number, isGlitch: boolean, isCriticalGlitch?: boolean }} EdgeRollResult
  */
 
+export const ALWAYS_OFFER_EDGE = Infinity;
+
 /** @type {import('./awaitable-decision.js').AwaitableDecisionApi<number, { rollResult: EdgeRollResult }>} */
 const edgeDecisions = createAwaitableDecision();
 
@@ -50,26 +52,26 @@ export async function awaitEdgeDecision({ messageId, actor, rollResult }) {
  * @returns {Promise<number | null>}
  */
 export async function resolveFinalSuccesses(actor, result) {
-  if (!result || result.isGlitch) return null;
+  if (result === null || result === undefined) return null;
   return resolveEdgeForRoll(
     actor,
     /** @type {{ successes: number, rolledDice: number, isGlitch: boolean, edgeUsed: boolean, messageId: string | null }} */ (
       result
     ),
-    Infinity
+    ALWAYS_OFFER_EDGE
   );
 }
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {Record<string, unknown> & { successes: number, isGlitch: boolean, rolledDice: number, edgeUsed?: boolean, messageId: string | null } | null | undefined} result
- * @param {(finalSuccesses: number) => void} onSuccess
+ * @param {(finalSuccesses: number) => void | Promise<void>} onSuccess
  * @returns {Promise<void>}
  */
 export async function resolveFinalSuccessesAndEmit(actor, result, onSuccess) {
   const finalSuccesses = await resolveFinalSuccesses(actor, result);
   if (finalSuccesses === null) return;
-  if (finalSuccesses > 0) onSuccess(finalSuccesses);
+  await onSuccess(finalSuccesses);
 }
 
 /**
@@ -86,27 +88,6 @@ export async function resolveEdgeForRoll(actor, roll, threshold) {
     actor,
     rollResult: { successes, rolledDice, isGlitch },
   });
-}
-
-/**
- * @param {import('@documents/index').SR4Actor} actor
- * @param {{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}} rollResult
- * @param {number} [threshold]
- * @returns {Promise<number>}
- */
-export async function offerEdgeRetry(actor, rollResult, threshold = 0) {
-  if (rollResult.edgeUsed || rollResult.isGlitch) return rollResult.successes;
-  return resolveEdgeForRoll(
-    actor,
-    {
-      successes: rollResult.successes,
-      rolledDice: rollResult.rolledDice,
-      isGlitch: rollResult.isGlitch,
-      edgeUsed: rollResult.edgeUsed,
-      messageId: rollResult.messageId,
-    },
-    threshold
-  );
 }
 
 /**

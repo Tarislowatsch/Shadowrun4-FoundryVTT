@@ -45,6 +45,7 @@
       "noSpiritAffinities": "No spirit types configured — assign types in the Magic tab first",
       "noSpriteAffinities": "No sprite types configured — assign types in the Matrix tab first",
       "noValidBindTarget": "Target a spirit or sprite you have summoned first",
+      "noValidDismissTarget": "Target a spirit or sprite to banish first",
       "overAllocatedWarning": "Allocation exceeds MAGIC — surplus points are ignored",
       "powerpoints": "Power Points",
       "powers": "Powers",
@@ -202,7 +203,6 @@
       "damage": "Damage",
       "damageTypeOverride": "Override Damage Type",
       "damagetype": "Damage Type",
-      "drainValue": "Drain Value",
       "draindialogtitle": "Drain Resistance Test",
       "duration": "Duration",
       "durations": {
@@ -246,7 +246,6 @@
       "forcedialogtitle": "Select Spell Force",
       "limited": "Limited",
       "netHits": "Net hits",
-      "noEffect": "Spell has no effect (fully resisted)",
       "noSpells": "Character has no spells",
       "noTargets": "No valid targets selected — damage not applied",
       "opposed": "Opposed",

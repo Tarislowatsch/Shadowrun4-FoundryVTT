@@ -1,6 +1,6 @@
 <form class="dice-pool-split-dialog">
   <div class="form-group">
-    <span>{{localize "sr4.roll.totalDice"}}: <strong>{{ totalDice }}</strong>
+    <span>{{localize "sr4.roll.totalDice"}}: <strong id="splitTotalDice">{{ totalDice }}</strong>
     — {{localize "sr4.roll.remainingDice"}}: <strong id="remainingDice">{{ remaining }}</strong></span>
   </div>
   <p class="hint">{{localize "sr4.roll.splitHint"}}</p>
@@ -10,4 +10,14 @@
     <input type="number" class="split-dice" name="dice-{{ this.id }}" value="{{ this.initial }}" min="1" max="{{ ../totalDice }}" />
   </div>
   {{/each}}
+  {{#if edgeAvailable}}
+  <div class="form-group split-edge">
+    <label for="splitEdge">{{localize "sr4.roll.useEdge"}} (+{{ maxEdge }})</label>
+    <input type="checkbox" class="sr4-checkbox" id="splitEdge" name="splitEdge" />
+    <span class="edge-count"
+      >({{localize "sr4.stats.CURRENTEDGE"}}: {{ currentEdge }})</span
+    >
+  </div>
+  <p class="hint">{{localize "sr4.roll.splitEdgeHint"}}</p>
+  {{/if}}
 </form>

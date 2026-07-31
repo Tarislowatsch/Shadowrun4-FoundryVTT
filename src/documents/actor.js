@@ -1,7 +1,6 @@
 import { SpellcastingFlow } from '@domains/magic/flow/spellcasting-flow.js';
-import { Attackskill } from '@models/index';
+import { Attackskill, findSkillIn } from '@models/index';
 import {
-  getGame,
   getBackgroundCountMagicModifier,
   getMysticAdeptReduction,
 } from '@utils/index';
@@ -182,19 +181,13 @@ export class SR4Actor extends foundry.documents.Actor {
   }
 
   /**
-   * @param {string} skillName
+   * @param {string} skillRef
    * @returns {import('@models/index').SR4Skill | null}
    */
-  getSkill(skillName) {
+  getSkill(skillRef) {
     /** @type {any} */
     const self = this;
-    return (
-      self.items.find(
-        (item) =>
-          item.type === 'Skill' &&
-          item.name.toLowerCase() === skillName.toLowerCase()
-      ) ?? null
-    );
+    return findSkillIn(self.items, skillRef);
   }
 
   /**
@@ -209,16 +202,6 @@ export class SR4Actor extends foundry.documents.Actor {
     return self.items.find(
       (item) => item.type === 'Skill' && item.system.label === label
     );
-  }
-
-  /**
-   * @param {import('@models/index').SR4Skill} skill
-   * @returns {string|undefined}
-   */
-  getSkillTranslatedLabelOrName(skill) {
-    return skill.system.label
-      ? getGame().i18n?.localize(skill.system.label)
-      : skill.name;
   }
 
   /**

@@ -27,7 +27,7 @@ export async function resolveSpiritDrain(
 
   const isPhysical =
     force >
-    (isSprite ? actor.getAttribute('RESONANCE') : actor.getSpellpower());
+    (isSprite ? actor.getAttribute('RESONANCE') : actor.getEffectiveMagic());
 
   await resolveDrain(actor, {
     label: localize(isSprite ? spriteLabelKey : spiritLabelKey),

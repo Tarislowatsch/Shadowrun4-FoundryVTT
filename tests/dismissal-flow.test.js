@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const rollSkillDialogMock = vi.fn();
-const offerEdgeRetryMock = vi.fn();
+const resolveEdgeForRollMock = vi.fn();
 const awaitEntityResistMock = vi.fn();
 const getSkillDicePoolMock = vi.fn();
 const resolveSpiritDrainMock = vi.fn();
@@ -23,10 +23,11 @@ vi.mock('@utils/dialog/skill-dice.js', () => ({
 }));
 
 vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
-  offerEdgeRetry: (...args) => offerEdgeRetryMock(...args),
+  ALWAYS_OFFER_EDGE: Infinity,
+  resolveEdgeForRoll: (...args) => resolveEdgeForRollMock(...args),
 }));
 
-vi.mock('@utils/index.js', async (importOriginal) => {
+vi.mock('@utils/index', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
@@ -64,7 +65,10 @@ function makeActor({ id = 'Actor.caster1', attributes = {} } = {}) {
       technomancy: { fadingAttribute: 'WILLPOWER' },
     },
     getAttribute: (key) => attributes[key] ?? 6,
-    getSpellpower: () => attributes.MAGIC ?? 6,
+    // deliberately different from getEffectiveMagic so a revert to the raw
+    // attribute fails the stat guard instead of passing silently
+    getSpellpower: () => 0,
+    getEffectiveMagic: () => attributes.MAGIC ?? 6,
   };
 }
 
@@ -99,7 +103,7 @@ function mockRoll({ successes, isGlitch = false, actorHits, resistHits }) {
     edgeUsed: false,
     messageId: null,
   });
-  offerEdgeRetryMock.mockResolvedValue(actorHits);
+  resolveEdgeForRollMock.mockResolvedValue(actorHits);
   awaitEntityResistMock.mockResolvedValue(resistHits);
 }
 
@@ -112,23 +116,29 @@ beforeEach(() => {
 });
 
 describe('DismissalFlow.start — targeting', () => {
-  it('still rolls the skill when no target is set, but never opens the resist flow', async () => {
+  it('warns without rolling when no target is set', async () => {
     mockRoll({ successes: 3, actorHits: 3, resistHits: 0 });
 
     await DismissalFlow.start(makeActor(), 'sprite');
 
-    expect(rollSkillDialogMock).toHaveBeenCalled();
+    expect(globalThis.ui.notifications.warn).toHaveBeenCalledWith(
+      'sr4.magic.noValidDismissTarget'
+    );
+    expect(rollSkillDialogMock).not.toHaveBeenCalled();
     expect(awaitEntityResistMock).not.toHaveBeenCalled();
     expect(resolveSpiritDrainMock).not.toHaveBeenCalled();
   });
 
-  it('still rolls the skill when the target is the wrong actor type, but never opens the resist flow', async () => {
+  it('warns without rolling when the target is the wrong actor type', async () => {
     setTargets([makeTarget('character', { type: 'character' })]);
     mockRoll({ successes: 3, actorHits: 3, resistHits: 0 });
 
     await DismissalFlow.start(makeActor(), 'sprite');
 
-    expect(rollSkillDialogMock).toHaveBeenCalled();
+    expect(globalThis.ui.notifications.warn).toHaveBeenCalledWith(
+      'sr4.magic.noValidDismissTarget'
+    );
+    expect(rollSkillDialogMock).not.toHaveBeenCalled();
     expect(awaitEntityResistMock).not.toHaveBeenCalled();
     expect(resolveSpiritDrainMock).not.toHaveBeenCalled();
   });
@@ -221,14 +231,14 @@ describe('DismissalFlow — reducing tasks/services', () => {
     expect(resolveSpiritDrainMock).toHaveBeenCalled();
   });
 
-  it('treats a glitch as zero net hits but still resolves drain', async () => {
+  it('still reduces tasks on a plain glitch — only a critical glitch scores no hits', async () => {
     const target = makeTarget('sprite', { tasks: 3 });
     setTargets([target]);
     mockRoll({ successes: 5, isGlitch: true, actorHits: 5, resistHits: 0 });
 
     await DismissalFlow.start(makeActor(), 'sprite');
 
-    expect(target.update).not.toHaveBeenCalled();
+    expect(target.update).toHaveBeenCalledWith({ 'system.tasks': 0 });
     expect(resolveSpiritDrainMock).toHaveBeenCalled();
   });
 });

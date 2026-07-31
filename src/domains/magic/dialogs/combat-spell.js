@@ -1,11 +1,14 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
+  buildSkillOptions,
   createRollDialog,
   localize,
   createDialogParameters,
   dialogActions,
   getChecked,
   getInt,
+  promptDialog,
+  waitDialog,
 } from '@utils/dialog';
 import {
   openSoakDialog,
@@ -40,19 +43,13 @@ import {
 const SPELL_DODGE_SKILLS = ['dodge', 'gymnastics'];
 
 /**
- * @param {import('@documents/index').SR4Actor} defender
- * @returns {{ value: string, label: string, rating: number }[]}
+ * @param {number} force
+ * @param {number} netHits
+ * @param {number} dvBonus
+ * @returns {number}
  */
-function buildSpellDodgeSkills(defender) {
-  return SPELL_DODGE_SKILLS.map((key) => {
-    const skill = defender.getSkill(key);
-    if (!skill || skill.system.rating <= 0) return null;
-    return {
-      value: key,
-      label: skill.system.label,
-      rating: skill.system.rating ?? 0,
-    };
-  }).filter(Boolean);
+function indirectSpellDamage(force, netHits, dvBonus) {
+  return force + Math.min(force, netHits) + dvBonus;
 }
 
 /**
@@ -123,6 +120,7 @@ export async function openDirectSpellAllocationDialog(
   defenderName
 ) {
   const bonusHits = Math.min(force, Math.max(0, netHits - 1));
+  if (bonusHits === 0) return 0;
 
   const content = await renderTemplate(TEMPLATES.magic.directSpellAllocation, {
     spellName,
@@ -132,7 +130,7 @@ export async function openDirectSpellAllocationDialog(
     defenderName,
   });
 
-  const result = await foundry.applications.api.DialogV2.prompt({
+  const result = await promptDialog({
     window: {
       title: `${localize('sr4.spell.combatTypes.direct')} — ${spellName}`,
     },
@@ -171,12 +169,32 @@ export async function openIndirectSpellDefenseDialog(
   castingHits,
   force
 ) {
+  const element = spell.system?.element || undefined;
+  /** @type {any} */
+  const sys = defender.system;
+  const rawArmor = sys.armor?.impact ?? 0;
+  const elementRules = computeElementArmorRules(element, rawArmor);
+
+  if (!game.settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
+    await ApplyDamageFlow.sendCombatSummary(
+      attacker.name,
+      defender.name,
+      'potential',
+      {
+        hits: castingHits,
+        damage: indirectSpellDamage(force, castingHits, elementRules.dvBonus),
+        isPhysical: isPhysicalDamageType(resolveIndirectSpellDamageType(spell)),
+      }
+    );
+    return;
+  }
+
   const reaction = defender.getAttribute('REACTION') ?? 0;
   const counterspelling =
     defender.getSkill('counterspelling')?.system?.rating ?? 0;
   const basePool = reaction + counterspelling;
   const params = createDialogParameters(defender, basePool);
-  const rangedSkills = buildSpellDodgeSkills(defender);
+  const rangedSkills = buildSkillOptions(defender, SPELL_DODGE_SKILLS);
 
   const elementKey = spell.system?.element
     ? localize(`sr4.spell.elements.${spell.system.element}`)
@@ -226,7 +244,7 @@ export async function openIndirectSpellDefenseDialog(
     });
   }
 
-  const dodgeResult = await foundry.applications.api.DialogV2.wait({
+  const dodgeResult = await waitDialog({
     window: {
       title: `${localize('sr4.spell.combatTypes.indirect')} — ${attacker.name}: ${spell.name}`,
     },
@@ -267,9 +285,20 @@ export async function openIndirectSpellDefenseDialog(
 
   if (!dodgeResult) return;
 
-  const netHits = Math.max(0, castingHits - dodgeResult.successes);
+  const dodgeHits = await resolveEdgeForRoll(
+    defender,
+    dodgeResult,
+    castingHits
+  );
+
+  const netHits = Math.max(0, castingHits - dodgeHits);
   if (netHits < 1) {
-    ui?.notifications?.info(`${spell.name}: ${localize('sr4.spell.noEffect')}`);
+    await ApplyDamageFlow.sendCombatSummary(
+      attacker.name,
+      defender.name,
+      'spellNoEffect',
+      { spell: spell.name }
+    );
     return;
   }
 
@@ -278,14 +307,9 @@ export async function openIndirectSpellDefenseDialog(
     await sendEffectDecisionMessage(defender, spellEffects, spell.name);
   }
 
-  const element = spell.system?.element || undefined;
-  /** @type {any} */
-  const sys = defender.system;
-  const rawArmor = sys.armor?.impact ?? 0;
-  const elementRules = computeElementArmorRules(element, rawArmor);
   const effectiveArmor = elementRules.noArmor ? 0 : elementRules.effectiveArmor;
 
-  const baseDamage = force + Math.min(force, netHits) + elementRules.dvBonus;
+  const baseDamage = indirectSpellDamage(force, netHits, elementRules.dvBonus);
 
   let isPhysical = isPhysicalDamageType(resolveIndirectSpellDamageType(spell));
   if (isPhysical && baseDamage <= effectiveArmor) isPhysical = false;

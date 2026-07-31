@@ -41,7 +41,7 @@ vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
   resolveEdgeForRoll: (...args) => resolveEdgeForRollMock(...args),
 }));
 
-vi.mock('./apply-damage-flow', () => ({
+vi.mock('../src/domains/combat/flow/apply-damage-flow.js', () => ({
   ApplyDamageFlow: {
     sendDecisionMessage: (...args) => sendDecisionMessageMock(...args),
     sendCombatSummary: (...args) => sendCombatSummaryMock(...args),
@@ -164,4 +164,50 @@ describe('DefenseFlow.start — element rules plumbing', () => {
       expect(effectiveArmor).toBe(0);
     }
   );
+});
+
+describe('DefenseFlow.start — attack fully evaded', () => {
+  beforeEach(() => {
+    resolveEdgeForRollMock.mockResolvedValue(3);
+  });
+
+  it('reports the evasion instead of ending the attack silently', async () => {
+    const defender = makeDefender();
+    const weapon = makeWeapon({ damageType: 'PHYSICAL' });
+
+    await DefenseFlow.start(defender, 'Actor.attacker1', 3, weapon);
+
+    expect(sendCombatSummaryMock).toHaveBeenCalledWith(
+      'Attacker',
+      'Defender',
+      'evaded',
+      { hits: 3, defense: 3 }
+    );
+  });
+
+  it('does not open the soak dialog or assign damage', async () => {
+    const defender = makeDefender();
+    const weapon = makeWeapon({ damageType: 'PHYSICAL' });
+
+    await DefenseFlow.start(defender, 'Actor.attacker1', 3, weapon);
+
+    expect(openSoakDialogMock).not.toHaveBeenCalled();
+    expect(sendDecisionMessageMock).not.toHaveBeenCalled();
+    expect(applyAndSendMock).not.toHaveBeenCalled();
+  });
+
+  it('counts the post-Edge defense hits, not the raw roll', async () => {
+    resolveEdgeForRollMock.mockResolvedValue(5);
+    const defender = makeDefender();
+    const weapon = makeWeapon({ damageType: 'PHYSICAL' });
+
+    await DefenseFlow.start(defender, 'Actor.attacker1', 3, weapon);
+
+    expect(sendCombatSummaryMock).toHaveBeenCalledWith(
+      'Attacker',
+      'Defender',
+      'evaded',
+      { hits: 3, defense: 5 }
+    );
+  });
 });

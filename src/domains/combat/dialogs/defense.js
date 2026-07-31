@@ -1,10 +1,13 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   localize,
+  buildSkillOptions,
   createDialogParameters,
   dialogActions,
   getChecked,
   getInt,
+  ratingBySkill,
+  waitDialog,
 } from '@utils/dialog';
 import { isMeleeWeapon } from '@models/index';
 
@@ -67,26 +70,6 @@ export function skillDefenseModifier(mods, skillKey) {
 
 /**
  * @param {import('@documents/index').SR4Actor} defender
- * @param {string[]} skillKeys
- * @returns {{ options: { value: string, label: string, rating: number }[], ratingBySkill: Map<string, number> }}
- */
-function buildSkillOptions(defender, skillKeys) {
-  /** @type {Map<string, number>} */
-  const ratingBySkill = new Map();
-  const options = skillKeys
-    .map((key) => {
-      const skill = defender.getSkill(key);
-      if (!skill || skill.system.rating <= 0) return null;
-      const rating = skill.system.rating ?? 0;
-      ratingBySkill.set(key, rating);
-      return { value: key, label: skill.system.label, rating };
-    })
-    .filter(Boolean);
-  return { options, ratingBySkill };
-}
-
-/**
- * @param {import('@documents/index').SR4Actor} defender
  * @param {import('@models/index').SR4Weapon} weapon
  * @param {number} [wideDefenseMalus]
  * @returns {number}
@@ -97,7 +80,7 @@ export function defaultDefensePool(defender, weapon, wideDefenseMalus = 0) {
   const params = createDialogParameters(defender);
   const mods = defender.system.modifiers;
   const defenseMod = baseDefenseModifier(mods, isMelee);
-  const { options: skillOptions } = buildSkillOptions(
+  const skillOptions = buildSkillOptions(
     defender,
     isMelee ? MELEE_DEFENSE_KEYS : RANGED_DEFENSE_KEYS
   );
@@ -141,10 +124,11 @@ export async function openDefenseDialog(
   const mods = defender.system.modifiers;
   params.malus -= baseDefenseModifier(mods, isMelee);
 
-  const { options: skillOptions, ratingBySkill } = buildSkillOptions(
+  const skillOptions = buildSkillOptions(
     defender,
     isMelee ? MELEE_DEFENSE_KEYS : RANGED_DEFENSE_KEYS
   );
+  const ratingByKey = ratingBySkill(skillOptions);
 
   const content = await renderTemplate(TEMPLATES.combat.defenseDialog, {
     ...params,
@@ -164,14 +148,14 @@ export async function openDefenseDialog(
     const s1Key = /** @type {HTMLSelectElement|null} */ (
       dialog.querySelector('#skill1')
     )?.value;
-    const s1 = ratingBySkill.get(s1Key) ?? 0;
+    const s1 = ratingByKey.get(s1Key) ?? 0;
     const s2Key =
       isMelee && fullDefense
         ? /** @type {HTMLSelectElement|null} */ (
             dialog.querySelector('#skill2')
           )?.value
         : undefined;
-    const s2 = s2Key ? (ratingBySkill.get(s2Key) ?? 0) : 0;
+    const s2 = s2Key ? (ratingByKey.get(s2Key) ?? 0) : 0;
     const usesSkill = fullDefense || isMelee;
     const base = usesSkill ? s1 + s2 + reaction : reaction;
     const skillMod = usesSkill ? skillDefenseModifier(mods, s1Key) : 0;
@@ -196,7 +180,7 @@ export async function openDefenseDialog(
     return { successes, isGlitch, rolledDice, edgeUsed, messageId };
   };
 
-  return await foundry.applications.api.DialogV2.wait({
+  return await waitDialog({
     window: {
       title: `${localize('sr4.defense.title')} — ${attacker.name} (${weapon.name})`,
     },

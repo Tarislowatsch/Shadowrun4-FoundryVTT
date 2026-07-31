@@ -57,9 +57,16 @@ import { BaseSocketHook } from './base-socket-hook.js';
  * @property {string} resistAttribute
  */
 
+/**
+ * @typedef {object} SpellEffectDecisionPayload
+ * @property {string} defenderUuid
+ * @property {object[]} effectData
+ * @property {string} spellName
+ */
+
 export class CombatSpellHook extends BaseSocketHook {
   /**
-   * @param {{ action: string, payload: DirectSpellResistPayload | DirectSpellDamagePayload | IndirectSpellDefensePayload | OpposedSpellResistPayload }} data
+   * @param {{ action: string, payload: DirectSpellResistPayload | DirectSpellDamagePayload | IndirectSpellDefensePayload | OpposedSpellResistPayload | SpellEffectDecisionPayload }} data
    * @returns {Promise<void>}
    */
   async _onSocketMessage(data) {
@@ -67,7 +74,8 @@ export class CombatSpellHook extends BaseSocketHook {
       data.action !== 'triggerDirectSpellResist' &&
       data.action !== 'applyDirectSpellDamage' &&
       data.action !== 'triggerIndirectSpellDefense' &&
-      data.action !== 'triggerOpposedSpellResist'
+      data.action !== 'triggerOpposedSpellResist' &&
+      data.action !== 'triggerSpellEffectDecision'
     )
       return;
 
@@ -175,6 +183,10 @@ export class CombatSpellHook extends BaseSocketHook {
             casterUuid
           ),
       });
+    } else if (data.action === 'triggerSpellEffectDecision') {
+      const { effectData, spellName } =
+        /** @type {SpellEffectDecisionPayload} */ (data.payload);
+      await sendEffectDecisionMessage(defender, effectData, spellName);
     }
   }
 }

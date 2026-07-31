@@ -1,8 +1,9 @@
 import {
   awaitOpposedSocketResponse,
-  getGame,
+  emitSystemSocket,
   getValidTargetActorsOrWarn,
-} from '@utils/index.js';
+} from '@utils/index';
+import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import { isPhysicalDamageType } from '@models/items/weapons.model.js';
 import { openDirectSpellAllocationDialog } from '../dialogs/combat-spell.js';
 import { getSpellEffectData } from './apply-effects-flow';
@@ -13,17 +14,28 @@ export class CombatSpellFlow {
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} castingHits
    * @param {number} force
+   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
    * @returns {Promise<number>}
    */
-  static async start(caster, spell, castingHits, force) {
-    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) return 0;
-
+  static async start(caster, spell, castingHits, force, preresolvedTargets) {
     const combatType = spell.system?.combatType ?? 'DIRECT';
 
     if (combatType === 'DIRECT') {
-      return CombatSpellFlow._handleDirect(caster, spell, castingHits, force);
+      return CombatSpellFlow._handleDirect(
+        caster,
+        spell,
+        castingHits,
+        force,
+        preresolvedTargets
+      );
     }
-    return CombatSpellFlow._handleIndirect(caster, spell, castingHits, force);
+    return CombatSpellFlow._handleIndirect(
+      caster,
+      spell,
+      castingHits,
+      force,
+      preresolvedTargets
+    );
   }
 
   /**
@@ -31,10 +43,17 @@ export class CombatSpellFlow {
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} castingHits
    * @param {number} force
+   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
    * @returns {Promise<number>}
    */
-  static async _handleDirect(caster, spell, castingHits, force) {
-    const targets = getValidTargetActorsOrWarn(spell.name);
+  static async _handleDirect(
+    caster,
+    spell,
+    castingHits,
+    force,
+    preresolvedTargets
+  ) {
+    const targets = getValidTargetActorsOrWarn(spell.name, preresolvedTargets);
     if (targets.length === 0) return 0;
 
     let maxAppliedHits = 0;
@@ -86,8 +105,11 @@ export class CombatSpellFlow {
     });
 
     if (netHits < 1) {
-      ui?.notifications?.info(
-        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noEffect')}`
+      await ApplyDamageFlow.sendCombatSummary(
+        caster.name,
+        target.name,
+        'spellNoEffect',
+        { spell: spell.name }
       );
       return 0;
     }
@@ -101,7 +123,7 @@ export class CombatSpellFlow {
 
     const isPhysical = isPhysicalDamageType(spell.system?.damageType);
     const effects = getSpellEffectData(spell);
-    getGame().socket?.emit('system.shadowrun4e', {
+    await emitSystemSocket({
       action: 'applyDirectSpellDamage',
       payload: {
         defenderUuid,
@@ -121,17 +143,24 @@ export class CombatSpellFlow {
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} castingHits
    * @param {number} force
+   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
    * @returns {Promise<number>}
    */
-  static async _handleIndirect(caster, spell, castingHits, force) {
-    const targets = getValidTargetActorsOrWarn(spell.name);
+  static async _handleIndirect(
+    caster,
+    spell,
+    castingHits,
+    force,
+    preresolvedTargets
+  ) {
+    const targets = getValidTargetActorsOrWarn(spell.name, preresolvedTargets);
     if (targets.length === 0) return 0;
 
     const spellSnapshot = spell.toObject();
     for (const target of targets) {
       const defenderUuid = target.uuid;
       if (!defenderUuid) continue;
-      getGame().socket?.emit('system.shadowrun4e', {
+      await emitSystemSocket({
         action: 'triggerIndirectSpellDefense',
         payload: {
           defenderUuid,
@@ -154,7 +183,6 @@ export class CombatSpellFlow {
    * @returns {Promise<number>}
    */
   static async startPerTarget(caster, spell, perTargetHits, force) {
-    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) return 0;
     const combatType = spell.system?.combatType ?? 'DIRECT';
 
     if (combatType === 'DIRECT') {
@@ -177,7 +205,7 @@ export class CombatSpellFlow {
     for (const { target, hits } of perTargetHits) {
       const defenderUuid = target.uuid;
       if (!defenderUuid) continue;
-      getGame().socket?.emit('system.shadowrun4e', {
+      await emitSystemSocket({
         action: 'triggerIndirectSpellDefense',
         payload: {
           defenderUuid,

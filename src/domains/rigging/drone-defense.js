@@ -4,6 +4,7 @@ import {
   createDialogParameters,
   dialogActions,
   getChecked,
+  waitDialog,
 } from '@utils/dialog';
 import {
   DroneActions,
@@ -38,9 +39,7 @@ export async function openDroneDefenseDialog(
   const lookup = getRiggerLookup(defender);
 
   const riggerSkills = isMelee
-    ? buildRiggerSkillOptions(rigger, DroneActions.MELEE_DEFENSE).map(
-        (option) => ({ ...option, label: localize(option.label) })
-      )
+    ? buildRiggerSkillOptions(rigger, DroneActions.MELEE_DEFENSE)
     : [];
   const params = createDialogParameters(rigger ?? defender);
 
@@ -94,7 +93,7 @@ export async function openDroneDefenseDialog(
     return { successes, isGlitch, rolledDice, edgeUsed, messageId };
   };
 
-  return await foundry.applications.api.DialogV2.wait({
+  return await waitDialog({
     window: {
       title: `${localize('sr4.defense.title')} — ${attacker.name} (${weapon.name})`,
     },

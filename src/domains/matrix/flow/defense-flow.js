@@ -1,4 +1,4 @@
-import { getGame } from '@utils/index';
+import { emitSystemSocket, getGame } from '@utils/index';
 import {
   requestReactiveDecision,
   DecisionCategory,
@@ -39,7 +39,7 @@ export class MatrixDefenseFlow {
         }),
     });
 
-    getGame().socket?.emit('system.shadowrun4e', {
+    await emitSystemSocket({
       action: 'matrixDefenseRolled',
       payload: {
         attackerUuid: payload.attackerUuid,
@@ -72,6 +72,10 @@ export class MatrixDefenseFlow {
         }),
     });
     const unresisted = Math.max(payload.dv - (hits ?? 0), 0);
+    if (unresisted === 0) {
+      await MatrixDamageFlow.apply(0, defender, 'cybercombat');
+      return;
+    }
     await MatrixDamageFlow.sendDecisionMessage(
       defender,
       unresisted,
@@ -128,14 +132,16 @@ export class MatrixDefenseFlow {
       }
     );
 
-    if (amount > 0) {
-      await ApplyDamageFlow.sendDecisionMessage(
-        defender,
-        amount,
-        isPhysical,
-        'blackIc'
-      );
+    if (amount === 0) {
+      await ApplyDamageFlow.applyAndSend(0, isPhysical, defender, 'blackIc');
+      return;
     }
+    await ApplyDamageFlow.sendDecisionMessage(
+      defender,
+      amount,
+      isPhysical,
+      'blackIc'
+    );
   }
 
   /**

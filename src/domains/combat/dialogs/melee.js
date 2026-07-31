@@ -33,15 +33,22 @@ export async function openMeleeAttackDialog(actor, skillName, weapon) {
 
   if (targets.length > 1) {
     const allocations = await splitDiceAcrossTargets(
+      actor,
       dice,
       targets,
       weapon.name
     );
     if (!allocations) return;
-    for (const { target, targetUuid, allocatedDice } of allocations) {
+    for (const {
+      target,
+      targetUuid,
+      allocatedDice,
+      edgePayment,
+    } of allocations) {
       await rollMeleeForTarget(actor, skillName, allocatedDice, weapon, {
         target,
         titleSuffix: ` → ${target?.name ?? ''}`,
+        edgePayment,
         emit: (finalSuccesses) =>
           emitDefenseTriggerForTarget(
             actor,
@@ -67,7 +74,7 @@ export async function openMeleeAttackDialog(actor, skillName, weapon) {
  * @param {string} skillName
  * @param {number} dice
  * @param {SR4Weapon} weapon
- * @param {{ target?: import('@documents/index').SR4Actor, titleSuffix: string, emit: (finalSuccesses: number) => void }} options
+ * @param {{ target?: import('@documents/index').SR4Actor, titleSuffix: string, edgePayment?: import('@utils/dialog').EdgePayment | null, emit: (finalSuccesses: number) => void | Promise<void> }} options
  * @returns {Promise<void>}
  */
 async function rollMeleeForTarget(
@@ -75,7 +82,7 @@ async function rollMeleeForTarget(
   skillName,
   dice,
   weapon,
-  { target, titleSuffix, emit }
+  { target, titleSuffix, edgePayment = null, emit }
 ) {
   const attackerReach = weapon.system.reach ?? 0;
   const defenderReach = target ? getEquippedMeleeReach(target) : 0;
@@ -84,6 +91,7 @@ async function rollMeleeForTarget(
 
   const params = createDialogParameters(actor, totalDice, weapon, {
     isAttack: true,
+    edgePayment,
   });
   const skill = actor.getSkill(skillName);
   const content = await renderTemplate(TEMPLATES.combat.meleeAttackDialog, {
@@ -98,6 +106,7 @@ async function rollMeleeForTarget(
     onRoll: (dialog) =>
       dialogActions(dialog, actor, skillName, totalDice, weapon, {
         edgeAvailableOverride: false,
+        edgePayment,
       }),
   });
 

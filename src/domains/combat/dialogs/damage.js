@@ -1,5 +1,6 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { getGame } from '@utils/game/game';
+import { promptDialog } from '@utils/dialog';
 
 /**
  * Opens a dialog allowing the user to adjust the damage amount before applying.
@@ -20,7 +21,7 @@ export async function openModifyDamageDialog(actor, amount, isPhysical) {
     damageType,
   });
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: { title: getGame().i18n.localize('sr4.damage.modify') },
     content,
     ok: {

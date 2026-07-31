@@ -6,6 +6,7 @@ import {
   normalizeLangCode,
 } from '@importer/translation/detect-language.js';
 import { registerItemNameTranslations } from '@utils/item-name-translations.js';
+import { promptDialog } from '@utils/dialog';
 
 const ALL_PACKS_VALUE = '__all__';
 
@@ -61,7 +62,7 @@ export async function openTranslatePackDialog(preset) {
     </form>
   `;
 
-  await foundry.applications.api.DialogV2.prompt({
+  await promptDialog({
     window: { title: game.i18n.localize('sr4.importer.translatePackTitle') },
     content,
     render: preset

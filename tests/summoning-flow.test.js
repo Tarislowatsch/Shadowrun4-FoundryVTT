@@ -5,11 +5,11 @@ const calculateSummonedEntityDrainPoolMock = vi.fn();
 const getEffectiveDrainModifierMock = vi.fn(() => 0);
 const resolveSpiritDrainMock = vi.fn();
 const rollSkillDialogMock = vi.fn();
-const offerEdgeRetryMock = vi.fn();
+const resolveEdgeForRollMock = vi.fn();
 const openSummoningDialogMock = vi.fn();
 const awaitOpposedSocketResponseMock = vi.fn();
 
-vi.mock('@utils/index.js', async (importOriginal) => {
+vi.mock('@utils/index', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
@@ -46,7 +46,8 @@ vi.mock('@utils/dialog/skill-dice.js', () => ({
 }));
 
 vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
-  offerEdgeRetry: (...args) => offerEdgeRetryMock(...args),
+  ALWAYS_OFFER_EDGE: Infinity,
+  resolveEdgeForRoll: (...args) => resolveEdgeForRollMock(...args),
 }));
 
 const { SummoningFlow } = await import(
@@ -72,7 +73,7 @@ function mockRoll({ successes, isGlitch = false, summonerHits, spiritHits }) {
     edgeUsed: false,
     messageId: null,
   });
-  offerEdgeRetryMock.mockResolvedValue(summonerHits);
+  resolveEdgeForRollMock.mockResolvedValue(summonerHits);
   awaitOpposedSocketResponseMock.mockResolvedValue(spiritHits);
 }
 
@@ -152,5 +153,154 @@ describe('SummoningFlow.startWatcher — drain', () => {
         drainValue: 7,
       })
     );
+  });
+
+  it('rolls at the Force the watcher is actually created with', async () => {
+    mockRoll({ successes: 4, summonerHits: 4 });
+
+    await SummoningFlow.startWatcher(makeActor());
+
+    expect(rollSkillDialogMock).toHaveBeenCalledWith(
+      expect.anything(),
+      'summoning',
+      1
+    );
+  });
+});
+
+describe('SummoningFlow.createEntity', () => {
+  let created;
+
+  beforeEach(() => {
+    created = { id: 'Actor.spirit1', update: vi.fn() };
+    globalThis.Actor = { create: vi.fn().mockResolvedValue([created]) };
+    globalThis.fromUuid = vi.fn().mockResolvedValue({ id: 'Actor.summoner1' });
+    globalThis.game.users = [];
+  });
+
+  it('grants ownership to a user who owns the summoner without having it assigned', async () => {
+    globalThis.game.users = [
+      { id: 'user1', isGM: false, character: { id: 'Actor.other' } },
+    ];
+    globalThis.fromUuid.mockResolvedValue({
+      id: 'Actor.summoner1',
+      ownership: { user1: 3 },
+    });
+
+    await SummoningFlow.createEntity({
+      ownerUuid: 'Actor.summoner1',
+      entityType: 'spirit',
+      spiritType: 'COMBAT',
+      force: 4,
+      services: 2,
+      templateSystem: null,
+    });
+
+    expect(created.update).toHaveBeenCalledWith({
+      ownership: { user1: 3 },
+    });
+  });
+
+  it('ignores a permissive world default so not every player owns the summon', async () => {
+    globalThis.game.users = [
+      { id: 'user1', isGM: false, character: { id: 'Actor.other' } },
+      { id: 'user2', isGM: false, character: null },
+    ];
+    globalThis.fromUuid.mockResolvedValue({
+      id: 'Actor.summoner1',
+      ownership: { default: 3 },
+    });
+
+    await SummoningFlow.createEntity({
+      ownerUuid: 'Actor.summoner1',
+      entityType: 'spirit',
+      spiritType: 'COMBAT',
+      force: 4,
+      services: 2,
+      templateSystem: null,
+    });
+
+    expect(created.update).not.toHaveBeenCalled();
+  });
+
+  it('leaves ownership untouched when no player controls the summoner', async () => {
+    globalThis.game.users = [{ id: 'gm', isGM: true }];
+
+    await SummoningFlow.createEntity({
+      ownerUuid: 'Actor.summoner1',
+      entityType: 'spirit',
+      spiritType: 'COMBAT',
+      force: 4,
+      services: 2,
+      templateSystem: null,
+    });
+
+    expect(created.update).not.toHaveBeenCalled();
+  });
+
+  it('builds a sprite statblock with Resonance but no Magic', async () => {
+    await SummoningFlow.createEntity({
+      ownerUuid: 'Actor.summoner1',
+      entityType: 'sprite',
+      spiritType: 'COURIER',
+      force: 4,
+      services: 2,
+      templateSystem: null,
+    });
+
+    const [[[actorData]]] = globalThis.Actor.create.mock.calls;
+    expect(actorData.system.sheetStats).toMatchObject({
+      MAGIC: 0,
+      RESONANCE: 4,
+      MATRIXINITIATIVE: 8,
+    });
+    expect(actorData.system.tasks).toBe(2);
+  });
+
+  it('builds a spirit statblock with Magic but no Resonance', async () => {
+    await SummoningFlow.createEntity({
+      ownerUuid: 'Actor.summoner1',
+      entityType: 'spirit',
+      spiritType: 'COMBAT',
+      force: 4,
+      services: 2,
+      templateSystem: null,
+    });
+
+    const [[[actorData]]] = globalThis.Actor.create.mock.calls;
+    expect(actorData.system.sheetStats).toMatchObject({
+      MAGIC: 4,
+      RESONANCE: 0,
+    });
+    expect(actorData.system.services).toBe(2);
+  });
+
+  it('keeps the statblock shape the hand-rolled default block produced', async () => {
+    await SummoningFlow.createEntity({
+      ownerUuid: 'Actor.summoner1',
+      entityType: 'spirit',
+      spiritType: 'COMBAT',
+      force: 4,
+      services: 2,
+      templateSystem: null,
+    });
+
+    const [[[actorData]]] = globalThis.Actor.create.mock.calls;
+    const stats = actorData.system.sheetStats;
+    expect(stats).toMatchObject({
+      BODY: 4,
+      AGILITY: 4,
+      REACTION: 4,
+      STRENGTH: 4,
+      CHARISMA: 4,
+      INTUITION: 4,
+      LOGIC: 4,
+      WILLPOWER: 4,
+      EDGE: 4,
+      ESSENCE: 6,
+      INITIATIVE: 8,
+      ASTRALINITIATIVE: 8,
+    });
+    expect(stats.CURRENTEDGE).toBe(stats.EDGE);
   });
 });

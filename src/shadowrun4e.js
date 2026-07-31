@@ -28,7 +28,7 @@ import {
   openMatrixActionDialog,
   getGame,
   openSourceReference,
-} from '@utils/index.js';
+} from '@utils/index';
 import {
   handleAttackRoll,
   handleSkillRoll,

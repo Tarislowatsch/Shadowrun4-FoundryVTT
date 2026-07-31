@@ -126,6 +126,26 @@ describe('requestReactiveDecision — dialog passthrough', () => {
     expect(ChatMessage.create).not.toHaveBeenCalled();
   });
 
+  it('falls back to the dialog when the pending card cannot be created', async () => {
+    settings.decisionMode = 'chat';
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    ChatMessage.create.mockResolvedValue(undefined);
+    const openDialog = vi.fn(async () => ({ successes: 3 }));
+
+    const result = await requestReactiveDecision({
+      actor: makeActor(),
+      category: DecisionCategory.COMBAT,
+      dialogKind: DecisionKind.DEFENSE,
+      routing: DecisionRouting.OWNER,
+      chatModeSupported: true,
+      standardPool: 5,
+      openDialog,
+    });
+
+    expect(openDialog).toHaveBeenCalledOnce();
+    expect(result).toEqual({ successes: 3 });
+  });
+
   it('opens the dialog for GM routing (no owner actor)', async () => {
     settings.decisionMode = 'chat';
     const openDialog = vi.fn(async () => ({ successes: 0 }));

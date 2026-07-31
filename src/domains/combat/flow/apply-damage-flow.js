@@ -288,6 +288,20 @@ export class ApplyDamageFlow {
       },
     });
 
+    if (!message) {
+      console.error(
+        `SR4 | damage decision card could not be created for ${actor.name}, applying damage directly`
+      );
+      await ApplyDamageFlow.applyAndSend(
+        amount,
+        isPhysical,
+        actor,
+        context,
+        onApply
+      );
+      return null;
+    }
+
     damageDecisionRegistry.set(message.id, {
       actor,
       amount,
@@ -323,15 +337,37 @@ export class ApplyDamageFlow {
   /**
    * @param {string} attackerName
    * @param {string} defenderName
-   * @param {'potential'|'result'|'directSpell'} mode
-   * @param {{ hits?: number, damage?: number, base?: number, soaked?: number, final?: number, spell?: string, isPhysical: boolean }} params
+   * @param {'potential'|'result'|'directSpell'|'evaded'|'spellNoEffect'|'missed'} mode
+   * @param {{ hits?: number, defense?: number, damage?: number, base?: number, soaked?: number, final?: number, spell?: string, isPhysical?: boolean }} params
    */
   static async sendCombatSummary(attackerName, defenderName, mode, params) {
     const i18n = getGame().i18n;
-    const type = localizeDamageType(params.isPhysical);
+    const type = localizeDamageType(params.isPhysical ?? false);
 
     let content;
-    if (mode === 'potential') {
+    if (mode === 'missed') {
+      content = defenderName
+        ? i18n.format('sr4.damage.chatMissed', {
+            attacker: attackerName,
+            defender: defenderName,
+          })
+        : i18n.format('sr4.damage.chatMissedNoTarget', {
+            attacker: attackerName,
+          });
+    } else if (mode === 'evaded') {
+      content = i18n.format('sr4.damage.chatEvaded', {
+        attacker: attackerName,
+        defender: defenderName,
+        hits: params.hits,
+        defense: params.defense,
+      });
+    } else if (mode === 'spellNoEffect') {
+      content = i18n.format('sr4.damage.chatSpellNoEffect', {
+        attacker: attackerName,
+        defender: defenderName,
+        spell: params.spell,
+      });
+    } else if (mode === 'potential') {
       content = i18n.format('sr4.damage.chatPotential', {
         attacker: attackerName,
         defender: defenderName,

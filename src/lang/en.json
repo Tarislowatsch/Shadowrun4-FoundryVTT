@@ -45,19 +45,6 @@
         "simple": "Simple",
         "test": "Test"
       },
-      "attributeAbr": {
-        "AGILITY": "GES",
-        "BODY": "KON",
-        "CHARISMA": "CHA",
-        "EDGE": "EDG",
-        "INTUITION": "INT",
-        "LOGIC": "LOG",
-        "MAGIC": "MAG",
-        "REACTION": "REA",
-        "RESONANCE": "RES",
-        "STRENGTH": "STR",
-        "WILLPOWER": "WIL"
-      },
       "categories": {
         "matrix": "Matrix",
         "none": "-",

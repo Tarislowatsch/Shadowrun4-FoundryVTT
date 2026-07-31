@@ -57,10 +57,11 @@ export function getValidMatrixTargetActorsOrWarn(warnLabel) {
 
 /**
  * @param {string} warnLabel used in the "no targets" warning message
+ * @param {import('@documents/index').SR4Actor[]} [preresolved]
  * @returns {import('@documents/index').SR4Actor[]}
  */
-export function getValidTargetActorsOrWarn(warnLabel) {
-  const targets = getValidTargetActors();
+export function getValidTargetActorsOrWarn(warnLabel, preresolved) {
+  const targets = preresolved ?? getValidTargetActors();
   if (targets.length === 0) {
     ui?.notifications?.warn(
       `${warnLabel}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`

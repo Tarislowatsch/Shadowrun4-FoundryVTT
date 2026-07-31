@@ -212,6 +212,13 @@ export async function requestReactiveDecision(opts) {
     },
   });
 
+  if (!message) {
+    console.error(
+      `SR4 | pending dialog card could not be created for ${actor.name}, opening the dialog directly`
+    );
+    return openDialog();
+  }
+
   const timeoutSeconds =
     game.settings.get('shadowrun4e', 'flowOpposedRollTimeout') ?? 30;
 

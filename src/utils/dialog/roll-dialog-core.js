@@ -1,4 +1,5 @@
 import { getGame } from '../game/game.js';
+import { promptDialog } from './dialog-v2.js';
 
 /**
  * Returns a localised string, optionally appended with a suffix.
@@ -43,7 +44,7 @@ export async function createRollDialog(config) {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let autoRollTimer;
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: { title: config.title },
     content: config.content,
 

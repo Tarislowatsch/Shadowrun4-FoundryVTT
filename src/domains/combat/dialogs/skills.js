@@ -24,20 +24,23 @@ export async function handleSkillRoll(actor, skillName, weapon) {
     const targets = getValidTargetActors();
     if (targets.length > 1) {
       const allocations = await splitDiceAcrossTargets(
+        actor,
         dice,
         targets,
         weapon.name
       );
       if (!allocations) return;
-      for (const { target, targetUuid, allocatedDice } of allocations) {
-        await _rollSkillForTarget(
-          actor,
-          skillName,
-          allocatedDice,
-          weapon,
+      for (const {
+        target,
+        targetUuid,
+        allocatedDice,
+        edgePayment,
+      } of allocations) {
+        await _rollSkillForTarget(actor, skillName, allocatedDice, weapon, {
           targetUuid,
-          target?.name ?? ''
-        );
+          targetName: target?.name ?? '',
+          edgePayment,
+        });
       }
       return;
     }
@@ -71,8 +74,7 @@ export async function openSkillDialog(actor, skillName, dice, weapon) {
  * @param {string} skillName
  * @param {number} dice
  * @param {SR4Weapon} weapon
- * @param {string} targetUuid
- * @param {string} targetName
+ * @param {{ targetUuid: string, targetName: string, edgePayment: import('@utils/dialog').EdgePayment | null }} options
  * @returns {Promise<void>}
  */
 async function _rollSkillForTarget(
@@ -80,14 +82,14 @@ async function _rollSkillForTarget(
   skillName,
   dice,
   weapon,
-  targetUuid,
-  targetName
+  { targetUuid, targetName, edgePayment }
 ) {
   const result = await rollSkillDialog(actor, skillName, {
     dice,
     weapon,
     titleSuffix: ` → ${targetName}`,
     edgeAvailableOverride: false,
+    edgePayment,
   });
   await resolveFinalSuccessesAndEmit(actor, result, (finalSuccesses) =>
     emitDefenseTriggerForTarget(actor, weapon, finalSuccesses, targetUuid)

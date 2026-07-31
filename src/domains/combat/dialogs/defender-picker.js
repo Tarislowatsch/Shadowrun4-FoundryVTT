@@ -1,5 +1,5 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
-import { localize } from '@utils/dialog';
+import { localize, promptDialog } from '@utils/dialog';
 
 /**
  * @typedef {object} DefenderPickerActor
@@ -27,7 +27,7 @@ export async function openDefenderPickerDialog(
     actors,
   });
 
-  return foundry.applications.api.DialogV2.prompt({
+  return promptDialog({
     window: {
       title: localize('sr4.settings.gmDefenderPicker.dialogTitle'),
     },

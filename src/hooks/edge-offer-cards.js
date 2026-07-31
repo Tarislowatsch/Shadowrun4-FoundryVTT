@@ -1,4 +1,4 @@
-import { DiceUtility, showEdgeDialog } from '@utils/index';
+import { DiceUtility, emitSystemSocket, showEdgeDialog } from '@utils/index';
 import {
   getEdgeDecisionEntry,
   resolveEdgeDecision,
@@ -143,7 +143,7 @@ export function renderInitiativeEdgeCard(chatMessage, html) {
           'flags.sr4.initiativeEdge.resolved': true,
         });
       } else {
-        game.socket?.emit('system.shadowrun4e', {
+        await emitSystemSocket({
           action: 'resolveInitiativeEdge',
           payload: { messageId: chatMessage.id },
         });

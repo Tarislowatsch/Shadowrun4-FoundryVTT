@@ -36,10 +36,14 @@ function resolveSheetStats(attributes, force, fallback = 0) {
  * Flat force-scaled sheetStats for a summoned spirit/sprite with no matching
  * CritterTemplate to derive attributes from.
  * @param {number} force
+ * @param {'spirit' | 'sprite'} [entityType]
  * @returns {Record<string, number>}
  */
-export function buildDefaultSheetStats(force) {
-  return resolveSheetStats({}, force, force);
+export function buildDefaultSheetStats(force, entityType = 'spirit') {
+  const stats = resolveSheetStats({}, force, force);
+  if (entityType === 'sprite') stats.MAGIC = 0;
+  else stats.RESONANCE = 0;
+  return stats;
 }
 
 /**

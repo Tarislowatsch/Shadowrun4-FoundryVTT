@@ -1,5 +1,5 @@
 import { resolveEdgeForRoll } from '@utils/rolls/roll-edge-decision.js';
-import { getGame, awaitOpposedSocketResponse } from '@utils/game';
+import { awaitOpposedSocketResponse, emitSystemSocket } from '@utils/game';
 import { DiceUtility } from '@utils/rolls/diceutility.js';
 import { localize, standardAutoRollPool } from '@utils/dialog';
 
@@ -193,7 +193,7 @@ export async function resolveAndEmitSpellResist({
     );
   }
 
-  getGame().socket?.emit('system.shadowrun4e', {
+  await emitSystemSocket({
     action: socketAction,
     payload: {
       casterUuid,

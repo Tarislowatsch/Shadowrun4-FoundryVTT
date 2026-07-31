@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const rollSkillDialogMock = vi.fn();
-const offerEdgeRetryMock = vi.fn();
+const resolveEdgeForRollMock = vi.fn();
 const awaitEntityResistMock = vi.fn();
 const getSkillDicePoolMock = vi.fn();
 const resolveSpiritDrainMock = vi.fn();
@@ -23,10 +23,11 @@ vi.mock('@utils/dialog/skill-dice.js', () => ({
 }));
 
 vi.mock('@utils/rolls/roll-edge-decision.js', () => ({
-  offerEdgeRetry: (...args) => offerEdgeRetryMock(...args),
+  ALWAYS_OFFER_EDGE: Infinity,
+  resolveEdgeForRoll: (...args) => resolveEdgeForRollMock(...args),
 }));
 
-vi.mock('@utils/index.js', async (importOriginal) => {
+vi.mock('@utils/index', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
@@ -95,7 +96,7 @@ function mockRoll({ successes, isGlitch = false, summonerHits, resistHits }) {
     edgeUsed: false,
     messageId: null,
   });
-  offerEdgeRetryMock.mockResolvedValue(summonerHits);
+  resolveEdgeForRollMock.mockResolvedValue(summonerHits);
   awaitEntityResistMock.mockResolvedValue(resistHits);
 }
 
@@ -188,15 +189,14 @@ describe('BindingFlow.start — first binding', () => {
     );
   });
 
-  it('treats a glitch as zero net hits even with more summoner successes', async () => {
+  it('still binds on a plain glitch — only a critical glitch scores no hits', async () => {
     mockRoll({ successes: 5, isGlitch: true, summonerHits: 5, resistHits: 0 });
 
     const target = makeTarget('spirit');
     await BindingFlow.start(makeActor(), target);
 
-    expect(target.update).not.toHaveBeenCalled();
-    expect(globalThis.ui.notifications.info).toHaveBeenCalledWith(
-      'sr4.magic.bindingFailed'
+    expect(target.update).toHaveBeenCalledWith(
+      expect.objectContaining({ 'system.bound': true })
     );
   });
 
@@ -206,7 +206,7 @@ describe('BindingFlow.start — first binding', () => {
     const target = makeTarget('spirit');
     await BindingFlow.start(makeActor(), target);
 
-    expect(offerEdgeRetryMock).not.toHaveBeenCalled();
+    expect(resolveEdgeForRollMock).not.toHaveBeenCalled();
     expect(target.update).not.toHaveBeenCalled();
     expect(resolveSpiritDrainMock).not.toHaveBeenCalled();
   });

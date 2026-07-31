@@ -1,3 +1,5 @@
+import { promptDialog } from '@utils/dialog';
+
 export async function onOpenCreateItemDialog(_event, _target) {
   const types = [
     'Ranged Weapon',
@@ -17,7 +19,7 @@ export async function onOpenCreateItemDialog(_event, _target) {
         `<option value="${t}">${game.i18n.localize(`TYPES.Item.${t}`)}</option>`
     )
     .join('');
-  const result = await foundry.applications.api.DialogV2.prompt({
+  const result = await promptDialog({
     window: { title: game.i18n.localize('sr4.item.create') },
     content: `<fieldset><select name="type" style="width:100%">${options}</select></fieldset>`,
     ok: {

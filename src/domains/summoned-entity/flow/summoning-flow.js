@@ -1,9 +1,10 @@
 import {
   awaitOpposedSocketResponse,
+  emitSystemSocket,
   getEffectiveDrainModifier,
   getGame,
   localize,
-} from '@utils/index.js';
+} from '@utils/index';
 import { getResistConfig } from '@domains/magic/dialogs/resist-actions.js';
 import {
   resolveDrain,
@@ -13,7 +14,12 @@ import {
   loadCompendiumTemplates,
   resolveSpiritServiceRoll,
 } from '../dialogs/index.js';
-import { buildCritterActorData } from '@importer/character/build-critter.js';
+import {
+  buildCritterActorData,
+  buildDefaultSheetStats,
+} from '@importer/character/build-critter.js';
+
+const WATCHER_FORCE = 1;
 
 export class SummoningFlow {
   /**
@@ -90,7 +96,7 @@ export class SummoningFlow {
     const result = await resolveSpiritServiceRoll(
       actor,
       'summoning',
-      0,
+      WATCHER_FORCE,
       () => 0
     );
     if (!result || result.netHits < 1) {
@@ -108,7 +114,7 @@ export class SummoningFlow {
       actor,
       'spirit',
       'Watcher',
-      1,
+      WATCHER_FORCE,
       hours,
       templateItem
     );
@@ -121,7 +127,7 @@ export class SummoningFlow {
 
     await resolveDrain(actor, {
       label: localize('sr4.magic.watcherDrain'),
-      force: 1,
+      force: WATCHER_FORCE,
       drainPool: calculateSummonedEntityDrainPool(actor, 'spirit'),
       drainValue: hours + getEffectiveDrainModifier(actor),
       isPhysical: false,
@@ -168,10 +174,7 @@ export class SummoningFlow {
     services,
     templateItem
   ) {
-    const socket = getGame().socket;
-    if (!socket) return;
-
-    socket.emit('system.shadowrun4e', {
+    await emitSystemSocket({
       action: 'createSummonedEntity',
       payload: {
         ownerUuid: actor.uuid,
@@ -209,28 +212,7 @@ export class SummoningFlow {
       );
       if (templateImg) actorData.img = templateImg;
     } else {
-      const defaultStats = {};
-      const statKeys = [
-        'BODY',
-        'AGILITY',
-        'REACTION',
-        'STRENGTH',
-        'CHARISMA',
-        'INTUITION',
-        'LOGIC',
-        'WILLPOWER',
-        'MAGIC',
-        'EDGE',
-        'CURRENTEDGE',
-        'ESSENCE',
-        'INITIATIVE',
-        'ASTRALINITIATIVE',
-      ];
-      for (const k of statKeys) defaultStats[k] = force || 1;
-      defaultStats.ESSENCE = 6;
-      defaultStats.INITIATIVE = (force || 1) * 2;
-      defaultStats.ASTRALINITIATIVE = (force || 1) * 2;
-      defaultStats.CURRENTEDGE = defaultStats.EDGE;
+      const defaultStats = buildDefaultSheetStats(force || 1, entityType);
 
       actorData = {
         name: spiritType,
@@ -257,13 +239,9 @@ export class SummoningFlow {
     if (!created) return;
 
     const owner = await fromUuid(ownerUuid);
-    const ownerUser = getGame().users?.find(
-      (u) => u.character?.id === owner?.id
-    );
-    if (ownerUser) {
-      await created.update({
-        ownership: { [ownerUser.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER },
-      });
+    const ownership = SummoningFlow._buildOwnership(owner);
+    if (Object.keys(ownership).length > 0) {
+      await created.update({ ownership });
     }
 
     const scene = getGame().scenes?.active;
@@ -279,5 +257,24 @@ export class SummoningFlow {
       tokenData.y = ownerToken.y;
     }
     await scene.createEmbeddedDocuments('Token', [tokenData]);
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor | null} owner
+   * @returns {Record<string, number>}
+   */
+  static _buildOwnership(owner) {
+    /** @type {Record<string, number>} */
+    const ownership = {};
+    if (!owner) return ownership;
+    const ownerLevel = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+    for (const user of getGame().users ?? []) {
+      if (user.isGM) continue;
+      const controlsOwner =
+        user.character?.id === owner.id ||
+        owner.ownership?.[user.id] === ownerLevel;
+      if (controlsOwner) ownership[user.id] = ownerLevel;
+    }
+    return ownership;
   }
 }

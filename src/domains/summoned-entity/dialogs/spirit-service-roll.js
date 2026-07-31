@@ -1,5 +1,8 @@
 import { rollForcedSkill } from '@utils/dialog';
-import { offerEdgeRetry } from '@utils/rolls/roll-edge-decision.js';
+import {
+  ALWAYS_OFFER_EDGE,
+  resolveEdgeForRoll,
+} from '@utils/rolls/roll-edge-decision.js';
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
@@ -16,9 +19,9 @@ export async function resolveSpiritServiceRoll(
 ) {
   const rollResult = await rollForcedSkill(actor, skillName, forceOrRating);
   if (!rollResult) return null;
-  const hits = await offerEdgeRetry(actor, rollResult);
+  const hits = await resolveEdgeForRoll(actor, rollResult, ALWAYS_OFFER_EDGE);
   const resistHits = await resolveResistHits(rollResult, hits);
   if (resistHits === null || resistHits === undefined) return null;
-  const netHits = rollResult.isGlitch ? 0 : Math.max(0, hits - resistHits);
+  const netHits = Math.max(0, hits - resistHits);
   return { rollResult, hits, resistHits, netHits };
 }

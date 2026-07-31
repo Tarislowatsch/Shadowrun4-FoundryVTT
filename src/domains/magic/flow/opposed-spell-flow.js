@@ -1,11 +1,11 @@
 import {
   awaitOpposedSocketResponse,
-  getGame,
   getValidTargetActorsOrWarn,
-} from '@utils/index.js';
+} from '@utils/index';
+import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import {
   getSpellEffectData,
-  sendEffectDecisionMessage,
+  requestEffectDecision,
 } from './apply-effects-flow';
 
 /**
@@ -25,10 +25,11 @@ export class OpposedSpellFlow {
    * @param {import('@models/index').SR4Spell} spell
    * @param {number} castingHits
    * @param {number} force
+   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
    * @returns {Promise<void>}
    */
-  static async start(caster, spell, castingHits, force) {
-    const targets = getValidTargetActorsOrWarn(spell.name);
+  static async start(caster, spell, castingHits, force, preresolvedTargets) {
+    const targets = getValidTargetActorsOrWarn(spell.name, preresolvedTargets);
     if (targets.length === 0) return;
 
     const effectData = getSpellEffectData(spell);
@@ -93,14 +94,17 @@ export class OpposedSpellFlow {
     });
 
     if (netHits < 1) {
-      ui?.notifications?.info(
-        `${spell.name}: ${getGame().i18n?.localize('sr4.spell.noEffect')}`
+      await ApplyDamageFlow.sendCombatSummary(
+        caster.name,
+        target.name,
+        'spellNoEffect',
+        { spell: spell.name }
       );
       return;
     }
 
     if (effectData.length > 0) {
-      await sendEffectDecisionMessage(target, effectData, spell.name);
+      await requestEffectDecision(target, effectData, spell.name);
     }
   }
 

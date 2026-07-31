@@ -1,4 +1,4 @@
-import { getGame, getValidTargetActors } from '@utils/index';
+import { emitSystemSocket, getGame, getValidTargetActors } from '@utils/index';
 import { openDroneDefenseDialog } from '@domains/rigging/index.js';
 import { openDefenseDialog, defaultDefensePool } from '../dialogs/defense.js';
 import { openSoakDialog, defaultSoakPool } from '../dialogs/soak.js';
@@ -46,12 +46,32 @@ function buildWeaponSnapshot(weapon) {
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
+ * @param {Array<import('@documents/index').SR4Actor>} targets
+ * @returns {Promise<void>}
+ */
+async function reportMissedAttack(actor, targets) {
+  if (targets.length === 0) {
+    await ApplyDamageFlow.sendCombatSummary(actor.name, '', 'missed', {});
+    return;
+  }
+  for (const target of targets) {
+    await ApplyDamageFlow.sendCombatSummary(
+      actor.name,
+      target.name,
+      'missed',
+      {}
+    );
+  }
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} actor
  * @param {import('@models/index').SR4Weapon} weapon
  * @param {number} successes
  * @param {CombatModifiers} [modifiers]
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function emitDefenseTrigger(
+export async function emitDefenseTrigger(
   actor,
   weapon,
   successes,
@@ -62,6 +82,11 @@ export function emitDefenseTrigger(
   const attackerUuid = /** @type {any} */ (actor).uuid;
   const validTargets = getValidTargetActors();
 
+  if (successes < 1) {
+    await reportMissedAttack(actor, validTargets);
+    return;
+  }
+
   const weaponSnapshot = buildWeaponSnapshot(weapon);
 
   if (validTargets.length === 0) {
@@ -69,7 +94,7 @@ export function emitDefenseTrigger(
       getGame().settings.get('shadowrun4e', 'gmDefenderPicker') &&
       getGame().settings.get('shadowrun4e', 'combatDefenseWorkflow')
     ) {
-      getGame().socket?.emit('system.shadowrun4e', {
+      await emitSystemSocket({
         action: 'selectDefender',
         payload: {
           attackerUuid,
@@ -86,7 +111,7 @@ export function emitDefenseTrigger(
   for (const target of validTargets) {
     const defenderUuid = /** @type {any} */ (target).uuid;
     if (!defenderUuid) continue;
-    getGame().socket?.emit('system.shadowrun4e', {
+    await emitSystemSocket({
       action: 'triggerDefense',
       payload: {
         defenderUuid,
@@ -106,9 +131,9 @@ export function emitDefenseTrigger(
  * @param {number} successes
  * @param {string} targetUuid
  * @param {CombatModifiers} [modifiers]
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function emitDefenseTriggerForTarget(
+export async function emitDefenseTriggerForTarget(
   actor,
   weapon,
   successes,
@@ -116,8 +141,16 @@ export function emitDefenseTriggerForTarget(
   { wideDefenseMalus = 0, burstDamageBonus = 0 } = {}
 ) {
   if (!weapon?.type) return;
+
+  if (successes < 1) {
+    /** @type {import('@documents/index').SR4Actor | undefined} */
+    const target = /** @type {any} */ (await fromUuid(targetUuid));
+    await reportMissedAttack(actor, target ? [target] : []);
+    return;
+  }
+
   const weaponSnapshot = buildWeaponSnapshot(weapon);
-  getGame().socket?.emit('system.shadowrun4e', {
+  await emitSystemSocket({
     action: 'triggerDefense',
     payload: {
       defenderUuid: targetUuid,
@@ -257,7 +290,15 @@ export class DefenseFlow {
     );
 
     const netSuccesses = Math.max(successes - defenseHits, 0);
-    if (netSuccesses === 0) return;
+    if (netSuccesses === 0) {
+      await ApplyDamageFlow.sendCombatSummary(
+        attacker.name,
+        defender.name,
+        'evaded',
+        { hits: successes, defense: defenseHits }
+      );
+      return;
+    }
 
     const {
       raw: rawArmor,

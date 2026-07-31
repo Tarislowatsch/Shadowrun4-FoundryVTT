@@ -68,6 +68,27 @@ export default [
       'no-console': 'off',
       'no-unused-expressions': 'off',
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "CallExpression[callee.object.property.name='DialogV2'][callee.property.name=/^(prompt|wait|confirm)$/]",
+          message:
+            'Use promptDialog/waitDialog/confirmDialog from @utils/dialog so dismissing a dialog resolves to null instead of rejecting.',
+        },
+        {
+          selector:
+            "CallExpression[callee.property.name=/^(emit|on|off)$/][arguments.0.value='system.shadowrun4e']",
+          message:
+            'Use emitSystemSocket/onSystemSocket/offSystemSocket from @utils/game so the emitting client receives the message too.',
+        },
+      ],
     },
+  },
+
+  {
+    files: ['src/utils/dialog/dialog-v2.js', 'src/utils/game/system-socket.js'],
+    rules: { 'no-restricted-syntax': 'off' },
   },
 ];
