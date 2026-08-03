@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { findSkillIn, skillLabelFor } from '@models/actions/skill-lookup.js';
+import {
+  findSkillIn,
+  normalizeSkillKey,
+  skillLabelFor,
+} from '@models/actions/skill-lookup.js';
 import {
   buildSkillOptions,
   ratingBySkill,
@@ -33,6 +37,33 @@ describe('skillLabelFor', () => {
   it('normalises case and surrounding whitespace', () => {
     expect(skillLabelFor('  GUNNERY ')).toBe('sr4.skills.gunnery');
   });
+
+  it('drops the separators of hyphenated and spaced spellings', () => {
+    expect(skillLabelFor('Unarmed-Combat')).toBe('sr4.skills.unarmedcombat');
+    expect(skillLabelFor('Unarmed Combat')).toBe('sr4.skills.unarmedcombat');
+  });
+});
+
+describe('normalizeSkillKey', () => {
+  it('maps every spelling of a skill to the same key', () => {
+    expect(normalizeSkillKey('Exotic-Ranged-Weapon')).toBe(
+      'exoticrangedweapon'
+    );
+    expect(normalizeSkillKey('Exotic Ranged Weapon')).toBe(
+      'exoticrangedweapon'
+    );
+    expect(normalizeSkillKey('exoticrangedweapon')).toBe('exoticrangedweapon');
+  });
+
+  it('returns an empty key for nullish values', () => {
+    expect(normalizeSkillKey(undefined)).toBe('');
+    expect(normalizeSkillKey(null)).toBe('');
+  });
+
+  it('returns an empty key for a name without alphanumerics', () => {
+    expect(normalizeSkillKey('---')).toBe('');
+    expect(normalizeSkillKey('   ')).toBe('');
+  });
 });
 
 describe('findSkillIn', () => {
@@ -40,6 +71,19 @@ describe('findSkillIn', () => {
     const items = [skill('Unarmed-Combat', 'sr4.skills.unarmedcombat', 4)];
 
     expect(findSkillIn(items, 'unarmedcombat').name).toBe('Unarmed-Combat');
+  });
+
+  it('finds a skill whose name differs only in its separators', () => {
+    const items = [skill('Unarmed-Combat', '', 4)];
+
+    expect(findSkillIn(items, 'Unarmed Combat').name).toBe('Unarmed-Combat');
+  });
+
+  it('does not match an unnamed skill on an empty reference', () => {
+    const items = [skill(undefined, '', 4), skill('', '', 2)];
+
+    expect(findSkillIn(items, '')).toBeNull();
+    expect(findSkillIn(items, '---')).toBeNull();
   });
 
   it('finds a skill whose name was localized by the importer', () => {

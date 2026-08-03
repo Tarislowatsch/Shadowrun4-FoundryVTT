@@ -181,6 +181,83 @@ describe('buildCritterActorData', () => {
     });
   });
 
+  it('matches compendium skills whose names differ in hyphenation', async () => {
+    const compendiumDocs = [
+      {
+        name: 'Unarmed-Combat',
+        toObject: () => ({
+          name: 'Unarmed-Combat',
+          system: { attribute: 'AGILITY', group: 'close combat' },
+        }),
+      },
+      {
+        name: 'Clubs',
+        toObject: () => ({
+          name: 'Clubs',
+          system: { attribute: 'AGILITY', group: 'close combat' },
+        }),
+      },
+    ];
+    globalThis.game.packs = {
+      get: (id) =>
+        id === 'shadowrun4e.skills'
+          ? { getDocuments: async () => compendiumDocs }
+          : undefined,
+    };
+
+    try {
+      const template = skillTemplate('spirit', [
+        { name: 'Unarmed Combat', rating: 0, ratingFormula: 'F', spec: '' },
+        { name: 'Close Combat', rating: 0, ratingFormula: 'F', spec: '' },
+      ]);
+
+      const data = await buildCritterActorData(template, 'Spirit of Fire', 4);
+
+      const skills = data.items.filter((i) => i.type === 'Skill');
+      expect(skills.map((s) => s.name)).toEqual(['Unarmed-Combat', 'Clubs']);
+      expect(skills[0].system).toMatchObject({
+        attribute: 'AGILITY',
+        rating: 4,
+        ratingFormula: 'F',
+      });
+    } finally {
+      delete globalThis.game.packs;
+    }
+  });
+
+  it('keeps a nameless compendium skill out of the name lookup', async () => {
+    const compendiumDocs = [
+      {
+        name: '',
+        toObject: () => ({
+          name: '',
+          system: { attribute: 'LOGIC', group: '' },
+        }),
+      },
+    ];
+    globalThis.game.packs = {
+      get: (id) =>
+        id === 'shadowrun4e.skills'
+          ? { getDocuments: async () => compendiumDocs }
+          : undefined,
+    };
+
+    try {
+      const template = skillTemplate('spirit', [
+        { name: '---', rating: 0, ratingFormula: 'F', spec: '' },
+      ]);
+
+      const data = await buildCritterActorData(template, 'Spirit of Fire', 4);
+
+      const skills = data.items.filter((i) => i.type === 'Skill');
+      expect(skills).toHaveLength(1);
+      expect(skills[0].name).toBe('---');
+      expect(skills[0].system.attribute).toBeUndefined();
+    } finally {
+      delete globalThis.game.packs;
+    }
+  });
+
   it('enriches skill items with compendium data and expands groups', async () => {
     const compendiumDocs = [
       {

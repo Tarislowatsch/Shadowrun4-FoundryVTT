@@ -3,7 +3,7 @@ import {
   resolveAttribute,
 } from '@domains/magic/force-formula.js';
 import { ATTRIBUTE_MAP } from '@importer/mappers/constants.js';
-import { lower } from '@importer/mappers/helpers.js';
+import { normalizeSkillKey } from '@models/actions/skill-lookup.js';
 
 /**
  * @param {Record<string, { value: number, formula: string }>} attributes
@@ -124,11 +124,15 @@ async function buildCritterSkillItems(skillEntries, force) {
   if (!skillEntries?.length) return [];
 
   const compendiumSkills = await loadCompendiumSkills();
-  const byName = new Map(compendiumSkills.map((s) => [lower(s.name), s]));
+  const byName = new Map(
+    compendiumSkills
+      .map((s) => [normalizeSkillKey(s.name), s])
+      .filter(([key]) => key)
+  );
   /** @type {Map<string, Array<object>>} */
   const byGroup = new Map();
   for (const s of compendiumSkills) {
-    const group = lower(s.system.group);
+    const group = normalizeSkillKey(s.system.group);
     if (!group) continue;
     if (!byGroup.has(group)) byGroup.set(group, []);
     byGroup.get(group).push(s);
@@ -137,14 +141,14 @@ async function buildCritterSkillItems(skillEntries, force) {
   const items = [];
   const seen = new Set();
   const add = (item) => {
-    const key = lower(item.name);
+    const key = normalizeSkillKey(item.name);
     if (seen.has(key)) return;
     seen.add(key);
     items.push(item);
   };
 
   for (const entry of skillEntries) {
-    const key = lower(entry.name);
+    const key = normalizeSkillKey(entry.name);
     const match = byName.get(key);
     if (match) {
       add(buildSkillItem(entry, force, match));

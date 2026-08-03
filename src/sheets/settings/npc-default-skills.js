@@ -1,3 +1,5 @@
+import { normalizeSkillKey } from '@models/actions/skill-lookup.js';
+
 export const DEFAULT_NPC_SKILLS = [
   'archery',
   'automatics',
@@ -29,11 +31,12 @@ export const DEFAULT_NPC_SKILLS_JSON = JSON.stringify(DEFAULT_NPC_SKILLS);
 export function parseNpcDefaultSkills(raw) {
   try {
     const parsed = JSON.parse(raw || DEFAULT_NPC_SKILLS_JSON);
-    if (!Array.isArray(parsed)) return [...DEFAULT_NPC_SKILLS];
+    if (!Array.isArray(parsed))
+      return DEFAULT_NPC_SKILLS.map(normalizeSkillKey);
     return parsed
       .filter((s) => typeof s === 'string' || typeof s === 'number')
-      .map((s) => String(s).toLowerCase());
+      .map(normalizeSkillKey);
   } catch {
-    return [...DEFAULT_NPC_SKILLS];
+    return DEFAULT_NPC_SKILLS.map(normalizeSkillKey);
   }
 }

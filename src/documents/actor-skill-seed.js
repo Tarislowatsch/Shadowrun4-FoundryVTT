@@ -1,4 +1,5 @@
 import { parseNpcDefaultSkills } from '@sheets/settings/npc-default-skills.js';
+import { normalizeSkillKey } from '@models/actions/skill-lookup.js';
 
 /**
  * @param {import('./actor.js').SR4Actor} actor
@@ -33,7 +34,7 @@ export async function buildCompendiumSkillData(npcOnly = false) {
       )
     );
     skillEntries = skillEntries.filter((e) =>
-      allowlist.has(e.name?.toLowerCase())
+      allowlist.has(normalizeSkillKey(e.name))
     );
   }
   const skills = await Promise.all(

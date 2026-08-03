@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { TEMPLATES } from '@utils/templates';
 import { parseNpcDefaultSkills } from './npc-default-skills.js';
+import { normalizeSkillKey } from '@models/actions/skill-lookup.js';
 
 export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
@@ -39,9 +40,9 @@ export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicatio
       const cat = entry.system?.category ?? 'misc';
       if (!categoryMap.has(cat)) categoryMap.set(cat, []);
       categoryMap.get(cat).push({
-        id: entry.name.toLowerCase(),
+        id: normalizeSkillKey(entry.name),
         name: entry.name,
-        checked: saved.has(entry.name.toLowerCase()),
+        checked: saved.has(normalizeSkillKey(entry.name)),
       });
     }
 
