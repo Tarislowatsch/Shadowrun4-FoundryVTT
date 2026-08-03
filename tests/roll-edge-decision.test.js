@@ -7,27 +7,15 @@ import {
   resolveEdgeDecision,
   getEdgeDecisionEntry,
 } from '../src/utils/rolls/roll-edge-decision.js';
+import { applyFoundryUpdate, withFlagApi } from './helpers/foundry-document.js';
 
 // setup.js installs a foundry.Game stub and a matching `game` instance. Here we
 // additionally stub game.messages / game.settings, which this module needs.
 
-/** Applies Foundry-style flattened (dot-notation) update data to a plain object. */
-function applyUpdate(target, data) {
-  for (const [path, value] of Object.entries(data)) {
-    const keys = path.split('.');
-    let obj = target;
-    for (let i = 0; i < keys.length - 1; i++) {
-      obj[keys[i]] ??= {};
-      obj = obj[keys[i]];
-    }
-    obj[keys[keys.length - 1]] = value;
-  }
-}
-
 function makeMessage({ isAuthor = true } = {}) {
   const message = { isAuthor, flags: {} };
-  message.update = vi.fn(async (data) => applyUpdate(message, data));
-  return message;
+  message.update = vi.fn(async (data) => applyFoundryUpdate(message, data));
+  return withFlagApi(message);
 }
 
 function makeActor(currentEdge) {
@@ -94,7 +82,7 @@ describe('awaitEdgeDecision — pending offer', () => {
     await resolveEdgeDecision(ID, 5);
     await promise;
 
-    expect(message.flags.sr4.edgeDecision.resolved).toBe(true);
+    expect(message.flags.shadowrun4e.edgeDecision.resolved).toBe(true);
   });
 
   it('resolves with the original successes after the timeout elapses', async () => {
@@ -202,7 +190,7 @@ describe('resolveEdgeDecision', () => {
 
     await expect(promise).resolves.toBe(7);
     expect(getEdgeDecisionEntry(ID)).toBeUndefined();
-    expect(message.flags.sr4.edgeDecision.resolved).toBe(true);
+    expect(message.flags.shadowrun4e.edgeDecision.resolved).toBe(true);
   });
 
   it('falls back to the original successes when no count is given', async () => {

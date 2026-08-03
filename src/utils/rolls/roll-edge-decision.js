@@ -1,4 +1,5 @@
 import { createAwaitableDecision } from './awaitable-decision.js';
+import { SYSTEM_ID } from '../game/system-id.js';
 
 /**
  * @typedef {{ successes: number, rolledDice: number, isGlitch: boolean, isCriticalGlitch?: boolean }} EdgeRollResult
@@ -39,8 +40,9 @@ export async function awaitEdgeDecision({ messageId, actor, rollResult }) {
     extra: { rollResult },
   });
 
-  await message.update({
-    'flags.sr4.edgeDecision': { pending: true, resolved: false },
+  await message.setFlag(SYSTEM_ID, 'edgeDecision', {
+    pending: true,
+    resolved: false,
   });
 
   return promise;
@@ -98,11 +100,11 @@ export async function resolveEdgeForRoll(actor, roll, threshold) {
 export async function resolveEdgeDecision(messageId, finalSuccesses) {
   edgeDecisions.settle(messageId, finalSuccesses);
   const message = game.messages?.get(messageId);
-  if (
-    message &&
-    !message.flags?.sr4?.edgeDecision?.resolved &&
-    message.isAuthor
-  ) {
-    await message.update({ 'flags.sr4.edgeDecision.resolved': true });
+  const decision = message?.getFlag(SYSTEM_ID, 'edgeDecision');
+  if (decision && !decision.resolved && message.isAuthor) {
+    await message.setFlag(SYSTEM_ID, 'edgeDecision', {
+      ...decision,
+      resolved: true,
+    });
   }
 }

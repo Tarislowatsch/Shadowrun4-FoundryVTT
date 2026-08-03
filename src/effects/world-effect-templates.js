@@ -1,3 +1,4 @@
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 import { EFFECT_TEMPLATES } from './effect.templates.js';
 
 const BUILTIN_PREFIX = 'builtin:';
@@ -7,8 +8,6 @@ const WORLD_PREFIX = 'world:';
 let worldTemplateCache = null;
 
 /**
- * Clears the cached list of world template effects. Call this whenever an
- * Item or ActiveEffect that could be flagged as a template changes.
  * @returns {void}
  */
 export function invalidateWorldEffectTemplateCache() {
@@ -16,27 +15,23 @@ export function invalidateWorldEffectTemplateCache() {
 }
 
 /**
- * Collects ActiveEffects flagged as templates on any world-level Item.
- * Result is cached until invalidateWorldEffectTemplateCache() is called.
  * @returns {foundry.documents.ActiveEffect[]}
  */
 export function getWorldEffectTemplates() {
-  if (worldTemplateCache) return worldTemplateCache;
+  if (worldTemplateCache) return [...worldTemplateCache];
 
-  const items = game.items?.contents ?? [];
+  const items = game.items?.contents;
+  if (!items) return [];
+
   worldTemplateCache = items.flatMap((item) =>
     item.effects.contents.filter((effect) =>
-      effect.getFlag('sr4', 'isEffectTemplate')
+      effect.getFlag(SYSTEM_ID, 'isEffectTemplate')
     )
   );
-  return worldTemplateCache;
+  return [...worldTemplateCache];
 }
 
 /**
- * Merges the built-in EFFECT_TEMPLATES with user-defined templates found on
- * world Items into a single list for consumers like the Token Action HUD.
- * Keys are namespaced ("builtin:<key>" / "world:<effectId>") so the two
- * sources can never collide.
  * @returns {Array<{key: string, name: string, img: string, changes: object[], duration: object|undefined, statuses: string[]}>}
  */
 export function getAllEffectTemplates() {
@@ -64,8 +59,6 @@ export function getAllEffectTemplates() {
 }
 
 /**
- * Resolves a template key (as returned by getAllEffectTemplates, or a bare
- * built-in key for backward compatibility) into ActiveEffect creation data.
  * @param {string} key
  * @returns {Record<string, unknown>|undefined}
  */

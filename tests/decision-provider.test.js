@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { applyFoundryUpdate, withFlagApi } from './helpers/foundry-document.js';
 
 const rollAndShowMock = vi.fn();
 
@@ -15,19 +16,6 @@ const {
   DecisionKind,
   DecisionRouting,
 } = await import('@utils/rolls/decision-provider.js');
-
-/** Applies Foundry-style flattened (dot-notation) update data to a plain object. */
-function applyUpdate(target, data) {
-  for (const [path, value] of Object.entries(data)) {
-    const keys = path.split('.');
-    let obj = target;
-    for (let i = 0; i < keys.length - 1; i++) {
-      obj[keys[i]] ??= {};
-      obj = obj[keys[i]];
-    }
-    obj[keys[keys.length - 1]] = value;
-  }
-}
 
 /** @type {Record<string, unknown>} */
 let settings;
@@ -52,9 +40,13 @@ beforeEach(() => {
   globalThis.ChatMessage = {
     getSpeaker: () => ({}),
     create: vi.fn(async (data) => {
-      createdMessage = { id: 'pending-1', flags: data.flags, isAuthor: true };
+      createdMessage = withFlagApi({
+        id: 'pending-1',
+        flags: data.flags,
+        isAuthor: true,
+      });
       createdMessage.update = vi.fn(async (patch) =>
-        applyUpdate(createdMessage, patch)
+        applyFoundryUpdate(createdMessage, patch)
       );
       return createdMessage;
     }),
@@ -187,14 +179,16 @@ describe('requestReactiveDecision — chat mode', () => {
     await Promise.resolve();
     expect(ChatMessage.create).toHaveBeenCalledOnce();
     expect(getPendingDialogEntry('pending-1')).toBeDefined();
-    expect(createdMessage.flags.sr4.pendingDialog.actorId).toBe('actor-1');
+    expect(createdMessage.flags.shadowrun4e.pendingDialog.actorId).toBe(
+      'actor-1'
+    );
 
     await resolvePendingDialog('pending-1');
 
     await expect(promise).resolves.toEqual(dialogResult);
     expect(openDialog).toHaveBeenCalledOnce();
     expect(rollAndShowMock).not.toHaveBeenCalled();
-    expect(createdMessage.flags.sr4.pendingDialog.resolved).toBe(true);
+    expect(createdMessage.flags.shadowrun4e.pendingDialog.resolved).toBe(true);
     expect(getPendingDialogEntry('pending-1')).toBeUndefined();
   });
 
@@ -230,7 +224,7 @@ describe('requestReactiveDecision — chat mode', () => {
       rolledDice: 7,
       edgeUsed: false,
     });
-    expect(createdMessage.flags.sr4.pendingDialog.resolved).toBe(true);
+    expect(createdMessage.flags.shadowrun4e.pendingDialog.resolved).toBe(true);
     expect(getPendingDialogEntry('pending-1')).toBeUndefined();
   });
 });

@@ -4,6 +4,7 @@ import {
   MENTOR_CATEGORIES,
   isParagonCategory,
 } from '@models/items/mentor.model.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /** @type {Readonly<Record<string, string>>} */
 const CATEGORY_ALIASES = Object.freeze({
@@ -289,7 +290,7 @@ export function mapMentor(record) {
         disabled: true,
         transfer: true,
         flags: {
-          sr4: {
+          [SYSTEM_ID]: {
             mentorChoice: {
               set: String(choice.set ?? '1'),
               name: choice.name ?? '',

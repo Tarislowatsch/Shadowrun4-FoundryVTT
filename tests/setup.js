@@ -10,8 +10,16 @@ class SchemaField extends NoopField {
   }
 }
 
-class TypeDataModel {}
-class ActiveEffect {}
+class TypeDataModel {
+  static migrateData(source) {
+    return source;
+  }
+}
+class ActiveEffect {
+  static migrateData(source) {
+    return source;
+  }
+}
 class Actor {}
 class FoundryGame {}
 

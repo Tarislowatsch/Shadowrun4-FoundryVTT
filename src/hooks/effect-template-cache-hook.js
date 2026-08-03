@@ -2,6 +2,7 @@ import { invalidateWorldEffectTemplateCache } from '@effects/index.js';
 
 const INVALIDATING_EVENTS = [
   'createItem',
+  'updateItem',
   'deleteItem',
   'createActiveEffect',
   'updateActiveEffect',

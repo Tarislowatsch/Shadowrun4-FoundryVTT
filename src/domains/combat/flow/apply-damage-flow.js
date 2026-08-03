@@ -1,5 +1,6 @@
 import { getGame } from '@utils/index';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /**
  * @typedef {object} DamageDecisionEntry
@@ -276,7 +277,7 @@ export class ApplyDamageFlow {
       content,
       speaker: ChatMessage.getSpeaker({ actor }),
       flags: {
-        sr4: {
+        [SYSTEM_ID]: {
           damageDecision: {
             actorId: actor.id,
             amount,

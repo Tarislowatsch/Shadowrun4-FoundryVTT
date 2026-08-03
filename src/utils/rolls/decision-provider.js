@@ -1,5 +1,6 @@
 import { createAwaitableDecision } from './awaitable-decision.js';
 import { DiceUtility } from './diceutility.js';
+import { SYSTEM_ID } from '../game/system-id.js';
 
 export const DecisionCategory = Object.freeze({
   COMBAT: 'combat',
@@ -133,12 +134,12 @@ export function getPendingDialogEntry(messageId) {
  */
 async function markPendingResolved(messageId) {
   const message = game.messages?.get(messageId);
-  if (
-    message &&
-    !message.flags?.sr4?.pendingDialog?.resolved &&
-    message.isAuthor
-  ) {
-    await message.update({ 'flags.sr4.pendingDialog.resolved': true });
+  const pending = message?.getFlag(SYSTEM_ID, 'pendingDialog');
+  if (pending && !pending.resolved && message.isAuthor) {
+    await message.setFlag(SYSTEM_ID, 'pendingDialog', {
+      ...pending,
+      resolved: true,
+    });
   }
 }
 
@@ -201,7 +202,7 @@ export async function requestReactiveDecision(opts) {
     content,
     speaker: ChatMessage.getSpeaker({ actor }),
     flags: {
-      sr4: {
+      [SYSTEM_ID]: {
         pendingDialog: {
           actorId,
           dialogKind,

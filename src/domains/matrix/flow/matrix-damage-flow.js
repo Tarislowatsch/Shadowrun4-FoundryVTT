@@ -3,6 +3,7 @@ import { getMatrixPersona } from '../matrix-persona.js';
 import { applyMatrixDamage } from '../matrix-rules.js';
 import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /**
  * @typedef {object} MatrixDamageDecisionEntry
@@ -156,7 +157,7 @@ export class MatrixDamageFlow {
       content,
       speaker: ChatMessage.getSpeaker({ actor }),
       flags: {
-        sr4: {
+        [SYSTEM_ID]: {
           matrixDamageDecision: {
             actorId: actor.id,
             amount,

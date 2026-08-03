@@ -15,6 +15,7 @@ import {
   resolveMatrixDamageDecision,
 } from '@domains/matrix/flow/matrix-damage-flow.js';
 import { isResponsibleForActor } from '@utils/actor-ownership.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 import {
   getPendingDialogEntry,
   resolvePendingDialog,
@@ -38,7 +39,7 @@ export function renderDecisionCard(
   html,
   { flagKey, getEntry, cardSelector, buttonWrapperClass, buildButtons }
 ) {
-  const decision = chatMessage.flags?.sr4?.[flagKey];
+  const decision = chatMessage.getFlag(SYSTEM_ID, flagKey);
   if (!decision) return;
   if (decision.resolved) return;
   if (!isResponsibleForActor(decision.actorId)) return;

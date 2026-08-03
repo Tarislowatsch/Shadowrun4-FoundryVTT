@@ -72,6 +72,12 @@
       "updateExistingHint": "Matched bestehende Items über Katalog-GUID oder Originalname, soweit möglich — findet nicht garantiert jeden bestehenden Eintrag. Es werden nur Übersetzungs-Metadaten aktualisiert, Namen und andere Felder bleiben unangetastet.",
       "upload": "XML-Dateien"
     },
+    "migration": {
+      "flagNamespace": {
+        "done": "{count} Effekt(e) in den shadowrun4e-Flag-Namensraum migriert.",
+        "failed": "Der shadowrun4e-Flag-Namensraum konnte nicht migriert werden. Details in der Konsole."
+      }
+    },
     "settings": {
       "ammoTracking": {
         "hint": "Wenn aktiv, verfolgen Waffen die Munition und ziehen sie bei jedem Angriff ab. Leere Waffen können nur nachgeladen werden. Burst-Feuer-Boni werden proportional reduziert wenn nicht genug Munition vorhanden ist.",

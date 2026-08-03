@@ -1,5 +1,6 @@
 import { emitSystemSocket, getGame } from '@utils/index';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /**
  * @typedef {object} EffectDecisionEntry
@@ -74,7 +75,7 @@ export async function sendEffectDecisionMessage(target, effectData, spellName) {
     content,
     speaker: ChatMessage.getSpeaker({ actor: target }),
     flags: {
-      sr4: {
+      [SYSTEM_ID]: {
         effectDecision: {
           actorId: target.id,
           spellName,

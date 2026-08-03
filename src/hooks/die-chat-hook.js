@@ -1,4 +1,5 @@
 import { isPrimaryGM } from '@utils/actor-ownership.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 import { BaseSocketHook } from './base-socket-hook.js';
 import {
   appendEdgeButton,
@@ -32,7 +33,11 @@ export class DieChatHook extends BaseSocketHook {
     if (data.action !== 'resolveInitiativeEdge') return;
     if (!isPrimaryGM()) return;
     const message = game.messages?.get(data.payload?.messageId);
-    if (!message || message.flags?.sr4?.initiativeEdge?.resolved) return;
-    await message.update({ 'flags.sr4.initiativeEdge.resolved': true });
+    const info = message?.getFlag(SYSTEM_ID, 'initiativeEdge');
+    if (!info || info.resolved) return;
+    await message.setFlag(SYSTEM_ID, 'initiativeEdge', {
+      ...info,
+      resolved: true,
+    });
   }
 }

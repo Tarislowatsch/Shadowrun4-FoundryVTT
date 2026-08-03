@@ -1,4 +1,5 @@
 import { TEMPLATES } from '@utils/templates';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 import { SR4EffectTargets } from '@effects/index.js';
 
 /**
@@ -67,8 +68,8 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
       img: this.document.img ?? 'icons/svg/aura.svg',
       active: !this.document.disabled,
       durationTurns: this.document.duration?.turns ?? 0,
-      showOnToken: !!this.document.flags?.sr4?.showOnToken,
-      isTemplate: !!this.document.flags?.sr4?.isEffectTemplate,
+      showOnToken: !!this.document.getFlag(SYSTEM_ID, 'showOnToken'),
+      isTemplate: !!this.document.getFlag(SYSTEM_ID, 'isEffectTemplate'),
       changes,
       multipleChanges: changes.length > 1,
       description: this.document.description ?? '',
@@ -175,8 +176,7 @@ export default class SR4ActiveEffectSheet extends foundry.applications.api.Handl
       name,
       img,
       disabled: !active,
-      'flags.sr4.showOnToken': showOnToken,
-      'flags.sr4.isEffectTemplate': isTemplate,
+      flags: { [SYSTEM_ID]: { showOnToken, isEffectTemplate: isTemplate } },
       duration: { turns: durationTurns > 0 ? durationTurns : undefined },
       description,
       changes,

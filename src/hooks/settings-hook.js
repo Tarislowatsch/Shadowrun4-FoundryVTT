@@ -201,6 +201,13 @@ export class SettingsHook {
         range: { min: 0, max: 200, step: 5 },
       });
 
+      game.settings.register('shadowrun4e', 'flagMigrationVersion', {
+        scope: 'world',
+        config: false,
+        type: Number,
+        default: 0,
+      });
+
       game.settings.register('shadowrun4e', 'spiritCompendium', {
         name: 'sr4.settings.spiritCompendium.name',
         hint: 'sr4.settings.spiritCompendium.hint',

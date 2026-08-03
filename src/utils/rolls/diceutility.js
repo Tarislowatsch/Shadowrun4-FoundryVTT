@@ -1,6 +1,7 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { SR4 } from '@config';
 import { watchDiceTotalPatch } from '@hooks/dice-total-patch-hook.js';
+import { SYSTEM_ID } from '../game/system-id.js';
 
 /** @typedef {import('@models/index').SR4RollResult} SR4RollResult */
 /** @typedef {import('@models/index').SR4RollOptions} SR4RollOptions */
@@ -148,7 +149,7 @@ export class DiceUtility {
         speaker: ChatMessage.getSpeaker(),
         flavor: content,
         flags: {
-          sr4: {
+          [SYSTEM_ID]: {
             actorId: actor?.id ?? null,
             edgeAvailable: edgeAvailable ?? false,
             extended: extended ?? false,

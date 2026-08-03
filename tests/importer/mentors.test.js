@@ -244,7 +244,9 @@ describe('mapMentor', () => {
       name: 'Great dragons',
       disabled: true,
       transfer: true,
-      flags: { sr4: { mentorChoice: { set: '1', name: 'Great dragons' } } },
+      flags: {
+        shadowrun4e: { mentorChoice: { set: '1', name: 'Great dragons' } },
+      },
     });
     expect(result.system.choices).toEqual([
       { set: 1, name: 'Great dragons', description: '', hasBonus: true },

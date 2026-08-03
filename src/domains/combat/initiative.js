@@ -2,6 +2,7 @@
 import { SR4 } from '@config';
 import { resolveRiggerSync } from '@domains/rigging/index.js';
 import { REALM_CHOICES } from '@models/shared';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 import { computeRealmPasses } from '@domains/magic/split.js';
 import {
   matrixSimPasses,
@@ -17,7 +18,7 @@ export const REALMS = REALM_CHOICES;
  */
 export function getCombatantRealm(combatant) {
   return (
-    combatant?.getFlag?.('shadowrun4e', 'realm') ??
+    combatant?.getFlag?.(SYSTEM_ID, 'realm') ??
     combatant?.actor?.system?.realm ??
     'physical'
   );
@@ -54,7 +55,7 @@ export function effectivePassCount(lockedPasses, livePasses) {
  */
 export function combatantPasses(combatant) {
   return effectivePassCount(
-    combatant.getFlag('shadowrun4e', 'passLock'),
+    combatant.getFlag(SYSTEM_ID, 'passLock'),
     getPassCount(combatant)
   );
 }

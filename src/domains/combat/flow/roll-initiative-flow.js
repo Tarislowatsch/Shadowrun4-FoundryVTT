@@ -6,6 +6,7 @@ import {
   glitchInitiative,
 } from '../initiative.js';
 import { promptEdgeFirst } from '../dialogs/edge-first.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /**
  * @param {import('@documents/index').SR4Combat} combat
@@ -54,7 +55,7 @@ export async function rollInitiativeForCombatant(combat, combatant) {
     speaker: ChatMessage.getSpeaker({ actor }),
     flavor,
     flags: {
-      sr4: {
+      [SYSTEM_ID]: {
         actorId: actor.id,
         initiativeEdge: canEdge
           ? {

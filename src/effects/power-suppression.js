@@ -1,36 +1,38 @@
+import { SYSTEM_ID } from '@utils/game/system-id.js';
+
 /**
  * @typedef {object} PowerEffectLike
  * @property {string} id
  * @property {boolean} disabled
- * @property {{ sr4?: { suppressedByPower?: boolean } }} [flags]
+ * @property {Record<string, { suppressedByPower?: boolean }>} [flags]
  */
 
 /**
  * SM p. 118: a suppressed power is nullified, so its transferred effects have
- * to stop applying. `flags.sr4.suppressedByPower` is the only marker for who
- * turned an effect off, so effects disabled by anything else stay untouched
- * and are never re-enabled here.
+ * to stop applying. `suppressedByPower` is the only marker for who turned an
+ * effect off, so effects disabled by anything else stay untouched and are
+ * never re-enabled here.
  *
  * @param {PowerEffectLike[]} effects
  * @param {boolean} suppressed
- * @returns {Array<{ _id: string, disabled: boolean, 'flags.sr4.suppressedByPower': boolean }>}
+ * @returns {Array<{ _id: string, disabled: boolean, flags: Record<string, { suppressedByPower: boolean }> }>}
  */
 export function planPowerEffectStates(effects, suppressed) {
   const plan = [];
   for (const effect of effects) {
-    const marked = effect.flags?.sr4?.suppressedByPower === true;
+    const marked = effect.flags?.[SYSTEM_ID]?.suppressedByPower === true;
     if (suppressed) {
       if (effect.disabled) continue;
       plan.push({
         _id: effect.id,
         disabled: true,
-        'flags.sr4.suppressedByPower': true,
+        flags: { [SYSTEM_ID]: { suppressedByPower: true } },
       });
     } else if (marked) {
       plan.push({
         _id: effect.id,
         disabled: false,
-        'flags.sr4.suppressedByPower': false,
+        flags: { [SYSTEM_ID]: { suppressedByPower: false } },
       });
     }
   }

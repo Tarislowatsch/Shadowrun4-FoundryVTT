@@ -1,4 +1,5 @@
 import { getPassCount, combatantPasses } from '../initiative.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /**
  * Locks each combatant's pass count for the current round onto a flag, so
@@ -9,7 +10,7 @@ import { getPassCount, combatantPasses } from '../initiative.js';
 export async function refreshPassLocks(combat) {
   const updates = combat.combatants.map((c) => ({
     _id: c.id,
-    'flags.shadowrun4e.passLock': getPassCount(c),
+    [`flags.${SYSTEM_ID}.passLock`]: getPassCount(c),
   }));
   if (updates.length)
     await combat.updateEmbeddedDocuments('Combatant', updates);
@@ -40,7 +41,7 @@ export async function advanceTurn(combat) {
   if (firstInNextPass !== -1) {
     return combat.update({
       turn: firstInNextPass,
-      [`flags.shadowrun4e.initiativePass`]: nextPass,
+      [`flags.${SYSTEM_ID}.initiativePass`]: nextPass,
     });
   }
 

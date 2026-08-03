@@ -1,15 +1,16 @@
 import { isParagonCategory } from '@models/items/mentor.model.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 /**
  * @typedef {object} MentorChoiceEffectLike
  * @property {string} id
  * @property {boolean} disabled
- * @property {{ sr4?: { mentorChoice?: { set: string, name: string } } }} [flags]
+ * @property {Record<string, { mentorChoice?: { set: string, name: string } }>} [flags]
  */
 
 /**
  * Pure planning function: for every embedded ActiveEffect flagged with
- * `flags.sr4.mentorChoice`, decides whether it should be enabled — true iff
+ * `mentorChoice`, decides whether it should be enabled — true iff
  * its `name` matches the selection for its `set`. Effects without the flag
  * are left untouched.
  *
@@ -21,7 +22,7 @@ export function planMentorChoiceEffectStates(effects, selectedChoices) {
   /** @type {Array<{ _id: string, disabled: boolean }>} */
   const plan = [];
   for (const effect of effects) {
-    const mentorChoice = effect.flags?.sr4?.mentorChoice;
+    const mentorChoice = effect.flags?.[SYSTEM_ID]?.mentorChoice;
     if (!mentorChoice) continue;
     const selected = selectedChoices?.[String(mentorChoice.set)];
     const disabled = selected !== mentorChoice.name;

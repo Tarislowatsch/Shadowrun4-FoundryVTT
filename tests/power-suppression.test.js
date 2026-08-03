@@ -12,8 +12,16 @@ describe('planPowerEffectStates', () => {
     ];
 
     expect(planPowerEffectStates(effects, true)).toEqual([
-      { _id: 'e1', disabled: true, 'flags.sr4.suppressedByPower': true },
-      { _id: 'e2', disabled: true, 'flags.sr4.suppressedByPower': true },
+      {
+        _id: 'e1',
+        disabled: true,
+        flags: { shadowrun4e: { suppressedByPower: true } },
+      },
+      {
+        _id: 'e2',
+        disabled: true,
+        flags: { shadowrun4e: { suppressedByPower: true } },
+      },
     ]);
   });
 
@@ -24,7 +32,11 @@ describe('planPowerEffectStates', () => {
 
   it('plans nothing when suppressing an already suppressed power', () => {
     const effects = [
-      { id: 'e1', disabled: true, flags: { sr4: { suppressedByPower: true } } },
+      {
+        id: 'e1',
+        disabled: true,
+        flags: { shadowrun4e: { suppressedByPower: true } },
+      },
     ];
     expect(planPowerEffectStates(effects, true)).toEqual([]);
   });
@@ -39,13 +51,17 @@ describe('planPowerEffectStates', () => {
       {
         id: 'e1',
         disabled: true,
-        flags: { sr4: { suppressedByPower: true } },
+        flags: { shadowrun4e: { suppressedByPower: true } },
       },
       { id: 'e2', disabled: true },
     ];
 
     expect(planPowerEffectStates(effects, false)).toEqual([
-      { _id: 'e1', disabled: false, 'flags.sr4.suppressedByPower': false },
+      {
+        _id: 'e1',
+        disabled: false,
+        flags: { shadowrun4e: { suppressedByPower: false } },
+      },
     ]);
   });
 });
@@ -63,7 +79,11 @@ describe('setPowerSuppressed', () => {
     expect(item.update).toHaveBeenCalledWith({
       'system.suppressed': true,
       effects: [
-        { _id: 'e1', disabled: true, 'flags.sr4.suppressedByPower': true },
+        {
+          _id: 'e1',
+          disabled: true,
+          flags: { shadowrun4e: { suppressedByPower: true } },
+        },
       ],
     });
   });
@@ -77,7 +97,7 @@ describe('setPowerSuppressed', () => {
           {
             id: 'e1',
             disabled: true,
-            flags: { sr4: { suppressedByPower: true } },
+            flags: { shadowrun4e: { suppressedByPower: true } },
           },
         ],
       },
@@ -100,7 +120,11 @@ describe('setPowerSuppressed', () => {
     expect(item.update).toHaveBeenCalledWith({
       'system.suppressed': true,
       effects: [
-        { _id: 'late', disabled: true, 'flags.sr4.suppressedByPower': true },
+        {
+          _id: 'late',
+          disabled: true,
+          flags: { shadowrun4e: { suppressedByPower: true } },
+        },
       ],
     });
   });

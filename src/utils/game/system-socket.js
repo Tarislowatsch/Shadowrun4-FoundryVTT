@@ -1,6 +1,7 @@
 import { getGame } from './game.js';
+import { SYSTEM_ID } from './system-id.js';
 
-const SYSTEM_SOCKET_EVENT = 'system.shadowrun4e';
+const SYSTEM_SOCKET_EVENT = `system.${SYSTEM_ID}`;
 
 const CLIENT_ORIGIN = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 

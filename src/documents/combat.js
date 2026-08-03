@@ -4,16 +4,21 @@ import {
   advanceTurn,
   refreshPassLocks,
 } from '@domains/combat/flow/turn-order-flow.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 
 export class SR4Combat extends Combat {
   get initiativePass() {
-    return this.getFlag('shadowrun4e', 'initiativePass') ?? 1;
+    return this.getFlag(SYSTEM_ID, 'initiativePass') ?? 1;
   }
 
   async _preUpdate(changed, options, userId) {
     await super._preUpdate(changed, options, userId);
     if ('round' in changed) {
-      foundry.utils.setProperty(changed, 'flags.shadowrun4e.initiativePass', 1);
+      foundry.utils.setProperty(
+        changed,
+        `flags.${SYSTEM_ID}.initiativePass`,
+        1
+      );
     }
   }
 

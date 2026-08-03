@@ -11,13 +11,15 @@ describe('planMentorChoiceEffectStates', () => {
       {
         id: 'e1',
         disabled: true,
-        flags: { sr4: { mentorChoice: { set: '1', name: 'Combat spells' } } },
+        flags: {
+          shadowrun4e: { mentorChoice: { set: '1', name: 'Combat spells' } },
+        },
       },
       {
         id: 'e2',
         disabled: false,
         flags: {
-          sr4: { mentorChoice: { set: '1', name: 'Detection spells' } },
+          shadowrun4e: { mentorChoice: { set: '1', name: 'Detection spells' } },
         },
       },
     ];
@@ -36,12 +38,14 @@ describe('planMentorChoiceEffectStates', () => {
       {
         id: 'a',
         disabled: true,
-        flags: { sr4: { mentorChoice: { set: '1', name: 'Great dragons' } } },
+        flags: {
+          shadowrun4e: { mentorChoice: { set: '1', name: 'Great dragons' } },
+        },
       },
       {
         id: 'b',
         disabled: true,
-        flags: { sr4: { mentorChoice: { set: '2', name: 'Opposed' } } },
+        flags: { shadowrun4e: { mentorChoice: { set: '2', name: 'Opposed' } } },
       },
     ];
     const plan = planMentorChoiceEffectStates(effects, {
@@ -67,7 +71,9 @@ describe('planMentorChoiceEffectStates', () => {
       {
         id: 'e1',
         disabled: false,
-        flags: { sr4: { mentorChoice: { set: '1', name: 'Combat spells' } } },
+        flags: {
+          shadowrun4e: { mentorChoice: { set: '1', name: 'Combat spells' } },
+        },
       },
     ];
     expect(
@@ -87,7 +93,9 @@ describe('selectMentorChoice', () => {
             id: 'e1',
             disabled: true,
             flags: {
-              sr4: { mentorChoice: { set: '1', name: 'Combat spells' } },
+              shadowrun4e: {
+                mentorChoice: { set: '1', name: 'Combat spells' },
+              },
             },
           },
         ],
@@ -112,7 +120,9 @@ describe('selectMentorChoice', () => {
             id: 'e1',
             disabled: false,
             flags: {
-              sr4: { mentorChoice: { set: '1', name: 'Combat spells' } },
+              shadowrun4e: {
+                mentorChoice: { set: '1', name: 'Combat spells' },
+              },
             },
           },
         ],

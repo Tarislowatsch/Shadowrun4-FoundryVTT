@@ -72,6 +72,12 @@
       "updateExistingHint": "Matches existing items by catalog GUID or original name where possible — not guaranteed to find every existing entry. Only translation metadata is updated; names and other fields are left untouched.",
       "upload": "XML files"
     },
+    "migration": {
+      "flagNamespace": {
+        "done": "Migrated {count} effect(s) to the shadowrun4e flag namespace.",
+        "failed": "Could not migrate the shadowrun4e flag namespace. See the console for details."
+      }
+    },
     "settings": {
       "ammoTracking": {
         "hint": "When enabled, weapons track and deduct ammunition on each attack. Empty weapons can only be reloaded. Burst fire bonuses are reduced proportionally when insufficient ammo is available.",

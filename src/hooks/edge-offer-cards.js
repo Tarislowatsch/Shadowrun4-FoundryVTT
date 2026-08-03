@@ -4,6 +4,7 @@ import {
   resolveEdgeDecision,
 } from '@utils/rolls/roll-edge-decision.js';
 import { isResponsibleForActor } from '@utils/actor-ownership.js';
+import { SYSTEM_ID } from '@utils/game/system-id.js';
 import { appendButton } from './chat-card-dom.js';
 
 const EDGE_BUTTON_LIFETIME_MS = 1000 * 60 * 30;
@@ -13,7 +14,7 @@ const EDGE_BUTTON_LIFETIME_MS = 1000 * 60 * 30;
  * @param {HTMLElement} html
  */
 export function appendEdgeButton(chatMessage, html) {
-  const flags = chatMessage.flags?.sr4;
+  const flags = chatMessage.flags?.[SYSTEM_ID];
   if (!flags) return;
 
   if (!flags.actorId || !isResponsibleForActor(flags.actorId)) return;
@@ -118,11 +119,13 @@ export function appendEdgeButton(chatMessage, html) {
  * @param {HTMLElement} html
  */
 export function renderInitiativeEdgeCard(chatMessage, html) {
-  const info = chatMessage.flags?.sr4?.initiativeEdge;
+  const info = chatMessage.getFlag(SYSTEM_ID, 'initiativeEdge');
   if (!info || info.resolved) return;
-  if (!isResponsibleForActor(chatMessage.flags?.sr4?.actorId)) return;
 
-  const actor = game.actors.get(chatMessage.flags.sr4.actorId);
+  const actorId = chatMessage.getFlag(SYSTEM_ID, 'actorId');
+  if (!isResponsibleForActor(actorId)) return;
+
+  const actor = game.actors.get(actorId);
   if (!actor || actor.getAttribute('CURRENTEDGE') <= 0) return;
 
   const combatant = game.combats
@@ -139,8 +142,9 @@ export function renderInitiativeEdgeCard(chatMessage, html) {
       clearTimeout(fallbackTimer);
       edgeBtn.remove();
       if (chatMessage.isAuthor || game.user?.isGM) {
-        await chatMessage.update({
-          'flags.sr4.initiativeEdge.resolved': true,
+        await chatMessage.setFlag(SYSTEM_ID, 'initiativeEdge', {
+          ...info,
+          resolved: true,
         });
       } else {
         await emitSystemSocket({
