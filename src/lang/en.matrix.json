@@ -131,7 +131,8 @@
     "program": {
       "category": "Category",
       "complexform": "Complex Form",
-      "maxrating": "Max Rating"
+      "maxrating": "Max Rating",
+      "rating": "Rating"
     }
   }
 }

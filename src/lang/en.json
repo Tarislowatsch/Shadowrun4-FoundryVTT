@@ -405,11 +405,6 @@
       "powers": "Racial Powers",
       "reach": "Reach"
     },
-    "program": {
-      "category": "Category",
-      "complexform": "Complex Form",
-      "maxrating": "Max. Rating"
-    },
     "quality": {
       "bp": "BP",
       "category": "Category",

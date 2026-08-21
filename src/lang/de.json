@@ -405,11 +405,6 @@
       "powers": "Rassenkräfte",
       "reach": "Reichweite"
     },
-    "program": {
-      "category": "Kategorie",
-      "complexform": "Komplexe Form",
-      "maxrating": "Max. Stufe"
-    },
     "quality": {
       "bp": "BP",
       "category": "Kategorie",

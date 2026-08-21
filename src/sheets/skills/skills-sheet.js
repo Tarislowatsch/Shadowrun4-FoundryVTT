@@ -4,6 +4,12 @@ import {
   KnowledgeSkillCategories,
   SR4Attributes,
 } from '@models/index';
+import {
+  cancelItemName,
+  confirmItemName,
+  editItemName,
+  resetItemName,
+} from '../shared';
 
 export default class SR4SkillsSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ItemSheetV2
@@ -17,6 +23,12 @@ export default class SR4SkillsSheet extends foundry.applications.api.HandlebarsA
     form: {
       submitOnChange: true,
       closeOnSubmit: false,
+    },
+    actions: {
+      editItemName: SR4SkillsSheet.#onEditItemName,
+      confirmItemName: SR4SkillsSheet.#onConfirmItemName,
+      cancelItemName: SR4SkillsSheet.#onCancelItemName,
+      resetItemName: SR4SkillsSheet.#onResetItemName,
     },
   };
 
@@ -49,6 +61,22 @@ export default class SR4SkillsSheet extends foundry.applications.api.HandlebarsA
     context.knowledgeskillcategories = KnowledgeSkillCategories;
 
     return context;
+  }
+
+  static #onEditItemName(event, target) {
+    editItemName(target);
+  }
+
+  static async #onConfirmItemName(event, target) {
+    await confirmItemName(target, this.item);
+  }
+
+  static #onCancelItemName(event, target) {
+    cancelItemName(target);
+  }
+
+  static async #onResetItemName(event, target) {
+    await resetItemName(this.item);
   }
 
   // ---------------------------------------------------------------------------

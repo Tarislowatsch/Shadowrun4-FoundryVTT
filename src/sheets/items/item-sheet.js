@@ -27,17 +27,17 @@ import {
   buildMentorContext,
   selectMentorChoice,
 } from '@effects/index';
-import SR4ActiveEffectSheet from '@sheets/effects/SR4ActiveEffectSheet';
+import SR4ActiveEffectSheet from '../effects/SR4ActiveEffectSheet';
 import {
   buildModPoolFromCollection,
   resolveModsAndAvailability,
   wireFocusSelectListeners,
   wireImageEditListener,
+  cancelItemName,
+  confirmItemName,
+  editItemName,
+  resetItemName,
 } from '@sheets/shared';
-import {
-  buildCustomNamePayload,
-  buildResetNamePayload,
-} from './item-name-override.js';
 
 export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ItemSheetV2
@@ -410,28 +410,6 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
     });
   }
 
-  /**
-   * @param {HTMLElement} row
-   * @param {boolean} editing
-   */
-  _setNameEditMode(row, editing) {
-    row
-      .querySelector('.item-sheet-name-value')
-      ?.classList.toggle('hidden', editing);
-    row
-      .querySelector('.item-sheet-name-edit')
-      ?.classList.toggle('hidden', editing);
-    row
-      .querySelector('.item-sheet-name-input')
-      ?.classList.toggle('hidden', !editing);
-    row
-      .querySelector('.item-sheet-name-confirm')
-      ?.classList.toggle('hidden', !editing);
-    row
-      .querySelector('.item-sheet-name-cancel')
-      ?.classList.toggle('hidden', !editing);
-  }
-
   _prepareActionsEffectsContext(context) {
     context.linkedActions = (this.item.parent?.items ?? [])
       .filter(
@@ -521,58 +499,19 @@ export default class SR4ItemSheet extends foundry.applications.api.HandlebarsApp
   }
 
   static #onEditItemName(event, target) {
-    const row = target.closest('.item-sheet-name-row');
-    const input = row?.querySelector('.item-sheet-name-input');
-    if (!row || !input) return;
-    input.dataset.originalValue = input.value;
-    this._setNameEditMode(row, true);
-    input.focus();
-    input.select();
+    editItemName(target);
   }
 
   static async #onConfirmItemName(event, target) {
-    const row = target.closest('.item-sheet-name-row');
-    const input = row?.querySelector('.item-sheet-name-input');
-    if (!row || !input) return;
-    const payload = buildCustomNamePayload(input.value);
-    if (!payload) {
-      ui.notifications.warn(game.i18n.localize('sr4.item.nameOverrideEmpty'));
-      return;
-    }
-    try {
-      await this.item.update(payload);
-    } catch (err) {
-      console.error(err);
-      ui.notifications.error(
-        game.i18n.localize('sr4.item.nameOverrideSaveFailed')
-      );
-    }
+    await confirmItemName(target, this.item);
   }
 
   static #onCancelItemName(event, target) {
-    const row = target.closest('.item-sheet-name-row');
-    const input = row?.querySelector('.item-sheet-name-input');
-    if (!row || !input) return;
-    input.value = input.dataset.originalValue ?? input.value;
-    this._setNameEditMode(row, false);
+    cancelItemName(target);
   }
 
   static async #onResetItemName() {
-    const { payload, restoredCanonicalName } = buildResetNamePayload(this.item);
-    try {
-      await this.item.update(payload);
-    } catch (err) {
-      console.error(err);
-      ui.notifications.error(
-        game.i18n.localize('sr4.item.nameOverrideSaveFailed')
-      );
-      return;
-    }
-    if (!restoredCanonicalName) {
-      ui.notifications.warn(
-        game.i18n.localize('sr4.item.nameOverrideResetIncomplete')
-      );
-    }
+    await resetItemName(this.item);
   }
 
   // -- Effects (embedded on this item) ---------------------------------------

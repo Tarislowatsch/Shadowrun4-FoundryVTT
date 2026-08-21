@@ -131,7 +131,8 @@
     "program": {
       "category": "Kategorie",
       "complexform": "Komplexe Form",
-      "maxrating": "Maximalstufe"
+      "maxrating": "Maximalstufe",
+      "rating": "Stufe"
     }
   }
 }

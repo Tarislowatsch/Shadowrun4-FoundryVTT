@@ -6,6 +6,7 @@
       <tr>
         <th>{{localize 'sr4.program.category'}}</th>
         <th>{{localize 'sr4.program.complexform'}}</th>
+        <th>{{localize 'sr4.program.rating'}}</th>
         <th>{{localize 'sr4.program.maxrating'}}</th>
         <th>{{localize 'sr4.item.avail'}}</th>
         <th>{{localize 'sr4.item.legality'}}</th>
@@ -24,6 +25,7 @@
             {{#if system.complexform}}checked{{/if}}
           />
         </td>
+        {{> stat-cell name="system.rating" value=system.rating}}
         {{> stat-cell name="system.maxrating" value=system.maxrating}}
         {{> stat-cell name="system.avail" value=system.avail type="text"}}
         {{> stat-cell name="system.legality" value=system.legality type="text"}}

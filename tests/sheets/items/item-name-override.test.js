@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   buildCustomNamePayload,
   buildResetNamePayload,
-} from '@sheets/items/item-name-override.js';
+} from '@sheets/shared/item-name.js';
 
 describe('buildCustomNamePayload', () => {
   it('trims and accepts a non-empty value', () => {
