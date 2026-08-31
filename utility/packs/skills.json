@@ -1278,7 +1278,7 @@
       "name": "Compiling",
       "system": {
         "attribute": "RESONANCE",
-        "category": "misc",
+        "category": "resonance",
         "description": "",
         "label": "sr4.skills.compiling",
         "rating": 0,
@@ -1296,7 +1296,7 @@
       "name": "Decompiling",
       "system": {
         "attribute": "RESONANCE",
-        "category": "misc",
+        "category": "resonance",
         "description": "",
         "label": "sr4.skills.decompiling",
         "rating": 0,
@@ -1314,7 +1314,7 @@
       "name": "Registering",
       "system": {
         "attribute": "RESONANCE",
-        "category": "misc",
+        "category": "resonance",
         "description": "",
         "label": "sr4.skills.registering",
         "rating": 0,
@@ -1326,5 +1326,80 @@
     "documentClass": "Item",
     "flags": {},
     "uuid": "Compendium.sr4e.skills.73"
+  },
+    {
+    "data": {
+      "name": "Vettech",
+      "system": {
+        "attribute": "LOGIC",
+        "category": "combat",
+        "description": "",
+        "group": "Animal Husbandry",
+        "label": "sr4.skills.vettech",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.02"
+  },
+      {
+    "data": {
+      "name": "Riding",
+      "system": {
+        "attribute": "REACTION",
+        "category": "physical",
+        "description": "",
+        "group": "Animal Husbandry",
+        "label": "sr4.skills.riding",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.02"
+  },
+        {
+    "data": {
+      "name": "Animal Training",
+      "system": {
+        "attribute": "REACTION",
+        "category": "physical",
+        "description": "",
+        "group": "Animal Husbandry",
+        "label": "sr4.skills.animaltraining",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.02"
+  },      {
+    "data": {
+      "name": "Animal Handling",
+      "system": {
+        "attribute": "INTUITION",
+        "category": "technical",
+        "description": "",
+        "group": "Animal Husbandry",
+        "label": "sr4.skills.animalhandling",
+        "rating": 0,
+        "source": "",
+        "type": "active"
+      },
+      "type": "Skill"
+    },
+    "documentClass": "Item",
+    "flags": {},
+    "uuid": "Compendium.sr4e.skills.02"
   }
 ]
