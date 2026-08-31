@@ -191,6 +191,28 @@ export class SettingsHook {
         default: true,
       });
 
+      game.settings.register('shadowrun4e', 'changeEncumbranceToStrength', {
+        name: 'sr4.settings.changeEncumbranceToStrength.name',
+        hint: 'sr4.settings.changeEncumbranceToStrength.hint',
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: false,
+      });
+
+      game.settings.register(
+        'shadowrun4e',
+        'ignoreEncumbranceSingleArmorItem',
+        {
+          name: 'sr4.settings.ignoreEncumbranceSingleArmorItem.name',
+          hint: 'sr4.settings.ignoreEncumbranceSingleArmorItem.hint',
+          scope: 'world',
+          config: true,
+          type: Boolean,
+          default: false,
+        }
+      );
+
       game.settings.register('shadowrun4e', 'defaultTokenVisionRange', {
         name: 'sr4.settings.defaultTokenVisionRange.name',
         hint: 'sr4.settings.defaultTokenVisionRange.hint',

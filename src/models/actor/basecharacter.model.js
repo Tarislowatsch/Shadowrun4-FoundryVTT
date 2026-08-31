@@ -395,7 +395,8 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
     const { ballistic, impact, encumbrance } = computeArmorStacking(
       equipped,
       bonus,
-      self.sheetStats.BODY
+      self.sheetStats.BODY,
+      self.sheetStats.STRENGTH
     );
 
     self.armor.ballistic = ballistic;

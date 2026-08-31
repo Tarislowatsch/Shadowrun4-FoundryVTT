@@ -1,6 +1,28 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { computeDerivedStats } from '../src/models/actor/character-derived-stats.js';
 import { SR4BaseCharacterData } from '../src/models/actor/basecharacter.model.js';
+
+vi.mock('@utils/game/game', () => ({
+  getGame: () => globalThis.game,
+}));
+
+let settings;
+
+beforeEach(() => {
+  settings = {
+    changeEncumbranceToStrength: false,
+    ignoreEncumbranceSingleArmorItem: false,
+  };
+
+  globalThis.game = {
+    settings: {
+      get: vi.fn((namespace, key) => {
+        if (namespace !== 'shadowrun4e') return undefined;
+        return settings[key];
+      }),
+    },
+  };
+});
 
 function makeActorData({
   BODY = 4,

@@ -1,5 +1,7 @@
 // Armor Stacking & Encumbrance (SR4 p.161, Form-Fitting: Arsenal p.48)
 
+import { getGame } from '@utils/game/game';
+
 /**
  * @param {any} item
  * @param {'effectiveBallistic'|'effectiveImpact'} key
@@ -18,9 +20,10 @@ function armorValue(item, key) {
  * @param {any[]} equipped
  * @param {{ ballistic: number, impact: number }} bonus
  * @param {number} body
+ * @param {number} strength
  * @returns {{ ballistic: number, impact: number, encumbrance: number }}
  */
-export function computeArmorStacking(equipped, bonus, body) {
+export function computeArmorStacking(equipped, bonus, body, strength) {
   const standard = [];
   const accessories = [];
   const formFitting = [];
@@ -70,12 +73,48 @@ export function computeArmorStacking(equipped, bonus, body) {
     ) +
     bonus.impact;
 
-  const maxAllowed = body * 2;
-  const excess = Math.max(
-    0,
-    Math.max(encumbranceBallistic, encumbranceImpact) - maxAllowed
+  const maxEncumbrance = Math.max(encumbranceBallistic, encumbranceImpact);
+  const excess = computeExcessEncumbrance(
+    maxEncumbrance,
+    body,
+    strength,
+    equipped.length
   );
-  const encumbrance = excess > 0 ? Math.ceil(excess / 2) : 0;
+  const encumbrance = Math.ceil(excess / 2);
 
   return { ballistic, impact, encumbrance };
+}
+/**
+ * @param {number} body
+ * @param {number} strength
+ * @returns {number}
+ */
+function computeMaxAllowedEncumbrance(body, strength) {
+  if (getGame().settings.get('shadowrun4e', 'changeEncumbranceToStrength')) {
+    return strength + body;
+  }
+  return body * 2;
+}
+
+/**
+ * @param {number} encumbrance
+ * @param {number} body
+ * @param {number} strength
+ * @param {number} equippedArmorCount
+ * @returns {number}
+ */
+function computeExcessEncumbrance(
+  encumbrance,
+  body,
+  strength,
+  equippedArmorCount
+) {
+  if (
+    getGame().settings.get('shadowrun4e', 'ignoreEncumbranceSingleArmorItem') &&
+    equippedArmorCount === 1
+  ) {
+    return 0;
+  }
+  const maxAllowed = computeMaxAllowedEncumbrance(body, strength);
+  return Math.max(0, encumbrance - maxAllowed);
 }

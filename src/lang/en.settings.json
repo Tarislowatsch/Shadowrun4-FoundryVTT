@@ -132,6 +132,14 @@
         "hint": "Default vision range (in grid units) for newly created actors. Set to 0 for unlimited range.",
         "name": "Default Token Vision Range"
       },
+      "changeEncumbranceToStrength": {
+        "hint": "When enabled, an actor's encumbrance threshold is calculated as Strength + Body instead of Body x 2.",
+        "name": "Encumbrance: Use Strength + Body"
+      },
+      "ignoreEncumbranceSingleArmorItem": {
+        "hint": "When enabled, a single equipped armor item does not count toward encumbrance.",
+        "name": "Encumbrance: Ignore Single Armor Item"
+      },
       "flowEdgeTimeout": {
         "hint": "How long (in seconds) the Edge buttons stay active on a roll card during a combat or magic flow before they are automatically removed and the flow continues with the original result.",
         "name": "Flow Edge Timeout"

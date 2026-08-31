@@ -132,6 +132,14 @@
         "hint": "Standard-Sichtweite (in Rastereinheiten) für neu erstellte Actors. 0 für unbegrenzte Sicht.",
         "name": "Standard-Token-Sichtweite"
       },
+      "changeEncumbranceToStrength": {
+        "hint": "Wenn aktiviert, wird die Traglastgrenze eines Actors aus Stärke + Konstitution statt Konstitution × 2 berechnet.",
+        "name": "Traglast: Stärke + Konstitution verwenden"
+      },
+      "ignoreEncumbranceSingleArmorItem": {
+        "hint": "Wenn aktiviert, zählt ein einzelnes ausgerüstetes Rüstungsteil nicht zur Traglast.",
+        "name": "Traglast: Einzelnes Rüstungsteil ignorieren"
+      },
       "flowEdgeTimeout": {
         "hint": "Wie lange (in Sekunden) die Edge-Buttons auf einer Wurfkarte während eines Kampf- oder Magie-Flows aktiv bleiben, bevor sie automatisch entfernt werden und der Flow mit dem ursprünglichen Ergebnis weiterläuft.",
         "name": "Flow-Edge-Timeout"
