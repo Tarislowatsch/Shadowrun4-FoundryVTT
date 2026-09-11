@@ -83,7 +83,10 @@ export function captureLiveInitiativeScores(actor) {
       if (combatant.initiative === null) continue;
       if (combatant.initiative >= SR4.rules.edgeInitiativeSentinel) continue;
       const base = getInitiativeBase(self, getCombatantRealm(combatant));
-      map.set(combatant.id, { combatant, score: base - self.getMalus() });
+      map.set(combatant.id, {
+        combatant,
+        score: base - Math.abs(self.getMalus()),
+      });
     }
   }
   return map;
@@ -91,17 +94,23 @@ export function captureLiveInitiativeScores(actor) {
 
 /**
  * @param {import('./actor.js').SR4Actor} actor
- * @param {Map<string, { combatant: object, score: number }> | undefined} oldScores
+ * @param {Array<[string, number]> | undefined} oldScoresData
  * @returns {Promise<void>}
  */
-export async function applyLiveInitiativeUpdate(actor, oldScores) {
-  if (!oldScores) return;
+export async function applyLiveInitiativeUpdate(actor, oldScoresData) {
+  if (!oldScoresData) return;
+
+  const oldScoreMap = new Map(oldScoresData);
+
   const newScores = captureLiveInitiativeScores(actor);
+
   for (const [combatantId, { combatant, score }] of newScores) {
-    const previous = oldScores.get(combatantId);
-    if (!previous) continue;
-    const delta = score - previous.score;
+    if (!oldScoreMap.has(combatantId)) continue;
+
+    const previousScore = oldScoreMap.get(combatantId);
+    const delta = score - previousScore;
     if (delta === 0) continue;
+
     await combatant.update({
       initiative: Math.max(0, combatant.initiative + delta),
     });

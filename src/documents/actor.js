@@ -276,8 +276,13 @@ export class SR4Actor extends foundry.documents.Actor {
   async _preUpdate(changed, options, userId) {
     if (shouldBlockJammedMatrixUpdate(this, changed)) return false;
     await super._preUpdate(changed, options, userId);
-    if (game.settings.get('shadowrun4e', 'liveInitiativeReduction'))
-      options._sr4IniScores = captureLiveInitiativeScores(this);
+    if (game.settings.get('shadowrun4e', 'liveInitiativeReduction')) {
+      const oldScores = captureLiveInitiativeScores(this);
+      options._sr4IniScores = Array.from(
+        oldScores,
+        ([combatantId, { score }]) => [combatantId, score]
+      );
+    }
   }
 
   async _onUpdate(changed, options, userId) {

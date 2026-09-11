@@ -28,7 +28,7 @@ export async function rollInitiativeForCombatant(combat, combatant) {
   }
 
   const malus = actor.getMalus?.() ?? 0;
-  const numDice = Math.max(1, base - malus);
+  const numDice = Math.max(1, base - Math.abs(malus));
   const roll = await new Roll(
     `${numDice}d6cs>=${SR4.rules.successThreshold}`
   ).evaluate();
