@@ -26,6 +26,7 @@ import {
   resolveDialogPool,
   wireDroneDialog,
 } from './drone-roll-dialog';
+import { SR4 } from '@config';
 
 /**
  * @param {import('@documents/index').SR4Actor} vehicle
@@ -41,7 +42,7 @@ export async function openDroneAttackDialog(vehicle, weapon) {
   const ranged = isRangedWeapon(weapon);
   const ammoTracking =
     ranged &&
-    /** @type {boolean} */ (game.settings.get('shadowrun4e', 'ammoTracking'));
+    /** @type {boolean} */ (game.settings.get(SR4.namespace, 'ammoTracking'));
 
   if (
     ammoTracking &&

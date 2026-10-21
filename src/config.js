@@ -16,6 +16,8 @@
 /**
  * @typedef {object} SR4Config
  *
+ * @property {string} namespace Namespace für game.settings (entspricht der System-ID aus system.json)
+ *
  * @property {SR4Rules} rules
  *
  * @property {SR4Workflow} workflow
@@ -54,7 +56,10 @@
  *   RESONANCE: keyof import('@models/index').SR4SheetStats,
  * }} attributes
  */
+
+/** @type {SR4Config} */
 export const SR4 = {
+  namespace: 'shadowrun4e',
   rules: {
     successThreshold: 5,
     conditionMonitorBase: 8,
@@ -98,27 +103,6 @@ export const SR4 = {
     'mag',
     'res',
   ],
-  /** @typedef {keyof import('@models/index').SR4SheetStats} AttributeKey */
-
-  /** @type {{
-   *  BODY: AttributeKey,
-   *  CHARISMA: AttributeKey,
-   *  EDGE: AttributeKey,
-   *  CURRENTEDGE: AttributeKey,
-   *  AGILITY: AttributeKey,
-   *  INTUITION: AttributeKey,
-   *  ESSENCE: AttributeKey,
-   *  ASTRALINITIATIVE: AttributeKey,
-   *  REACTION: AttributeKey,
-   *  LOGIC: AttributeKey,
-   *  INITIATIVE: AttributeKey,
-   *  MATRIXINITIATIVE: AttributeKey,
-   *  STRENGTH: AttributeKey,
-   *  WILLPOWER: AttributeKey,
-   *  MAGIC: AttributeKey,
-   *  RESONANCE: AttributeKey,
-   * }}
-   */
   attributes: {
     BODY: 'BODY',
     CHARISMA: 'CHARISMA',

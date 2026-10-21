@@ -39,6 +39,7 @@ import {
   getSpellEffectData,
   sendEffectDecisionMessage,
 } from '../flow/apply-effects-flow.js';
+import { SR4 } from '@config';
 
 const SPELL_DODGE_SKILLS = ['dodge', 'gymnastics'];
 
@@ -175,7 +176,7 @@ export async function openIndirectSpellDefenseDialog(
   const rawArmor = sys.armor?.impact ?? 0;
   const elementRules = computeElementArmorRules(element, rawArmor);
 
-  if (!game.settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
+  if (!game.settings.get(SR4.namespace, 'combatDefenseWorkflow')) {
     await ApplyDamageFlow.sendCombatSummary(
       attacker.name,
       defender.name,
@@ -318,7 +319,7 @@ export async function openIndirectSpellDefenseDialog(
   const hint = elementRules.hint;
   const onApply = buildElementOnApply(element, defender, netHits);
 
-  if (!game.settings.get('shadowrun4e', 'combatSoakWorkflow')) {
+  if (!game.settings.get(SR4.namespace, 'combatSoakWorkflow')) {
     await ApplyDamageFlow.sendDecisionMessage(
       defender,
       baseDamage,

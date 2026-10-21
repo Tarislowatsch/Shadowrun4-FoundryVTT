@@ -176,12 +176,16 @@ export function parseDamage(raw) {
     damage = match ? parseInt(match[0], 10) : 0;
   }
 
+  const tag = str.match(/\(\s*(e|fire|cold|acid)\s*\)/i)?.[1]?.toLowerCase();
+
   let damageType;
-  if (/\(e\)/i.test(str)) damageType = dt.ELECTRICITY;
-  else if (/\(f\)/i.test(str)) damageType = dt.FIRE;
+  if (tag === 'e') damageType = dt.ELECTRICITY;
+  else if (tag === 'fire') damageType = dt.FIRE;
+  else if (tag === 'acid') damageType = dt.ACID;
+  else if (tag === 'cold') damageType = dt.ICE;
   else {
-    const code = str.replace(/STR/gi, '').replace(/\([^)]*\)/g, '');
-    damageType = /[SG]/i.test(code) && !/P/i.test(code) ? dt.STUN : dt.PHYSICAL;
+    const code = str.match(/(?:\d|\))\s*([PSG])\b/i)?.[1]?.toUpperCase();
+    damageType = code === 'S' || code === 'G' ? dt.STUN : dt.PHYSICAL;
   }
 
   return { damage, damageType, strengthBased };

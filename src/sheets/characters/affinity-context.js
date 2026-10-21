@@ -1,3 +1,5 @@
+import { SR4 } from '@config';
+
 /**
  * @param {Record<string, string>} affinities
  * @param {string} i18nPrefix
@@ -12,7 +14,7 @@ export async function buildAffinityCategories(
 ) {
   const settingKey =
     entityType === 'sprite' ? 'spriteCompendium' : 'spiritCompendium';
-  const packId = game.settings.get('shadowrun4e', settingKey) ?? '';
+  const packId = game.settings.get(SR4.namespace, settingKey) ?? '';
   let templateNames = null;
 
   if (packId) {

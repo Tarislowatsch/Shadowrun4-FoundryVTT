@@ -7,7 +7,12 @@ import {
   parseNumber,
   sourceOf,
 } from './helpers.js';
-import { CATEGORY_TO_ATTACKSKILL, XML_CATEGORY_TO_ENUM } from './constants.js';
+import {
+  CATEGORY_TO_ATTACKSKILL,
+  CATEGORY_TO_DAMAGETYPE,
+  XML_CATEGORY_TO_ENUM,
+  dt,
+} from './constants.js';
 
 /**
  * @typedef {Record<string, string | string[]>} StatblockRecord
@@ -29,25 +34,36 @@ function attackSkillFor(category) {
 }
 
 /**
+ * Ein expliziter Element-Suffix im Schadensstring (z. B. "(e)") gewinnt.
+ * Nur bei PHYSICAL/STUN greift das Mapping über die Kategorie.
+ *
+ * @param {string} category
+ * @param {string} parsedType
+ * @returns {string}
+ */
+function resolveDamageType(category, parsedType) {
+  if (parsedType !== dt.PHYSICAL && parsedType !== dt.STUN) return parsedType;
+  return CATEGORY_TO_DAMAGETYPE[category] ?? parsedType;
+}
+
+/**
  * @param {StatblockRecord} record
  * @returns {MappedItem}
  */
 export function mapMeleeWeapon(record) {
-  const { damage, damageType, strengthBased } = parseDamage(
-    /** @type {string} */ (record.damage)
-  );
   const category = englishOr(record, 'category');
+  const parsed = parseDamage(/** @type {string} */ (record.damage));
   return {
     name: mappedName(record, 'Unnamed Weapon'),
     type: 'Melee Weapon',
     system: {
-      damage,
-      damageType,
+      damage: parsed.damage,
+      damageType: resolveDamageType(category, parsed.damageType),
       ap: parseNumber(record.ap, 0),
       attackSkill: attackSkillFor(category),
       category: XML_CATEGORY_TO_ENUM[category] ?? '',
       reach: parseNumber(record.reach, 0),
-      noStrengthBonus: !strengthBased,
+      noStrengthBonus: !parsed.strengthBased,
       source: sourceOf(record),
     },
   };
@@ -58,17 +74,15 @@ export function mapMeleeWeapon(record) {
  * @returns {MappedItem}
  */
 export function mapRangedWeapon(record) {
-  const { damage, damageType } = parseDamage(
-    /** @type {string} */ (record.damage)
-  );
-  const { capacity, feed } = parseAmmo(/** @type {string} */ (record.ammo));
   const category = englishOr(record, 'category');
+  const parsed = parseDamage(/** @type {string} */ (record.damage));
+  const { capacity, feed } = parseAmmo(/** @type {string} */ (record.ammo));
   return {
     name: mappedName(record, 'Unnamed Weapon'),
     type: 'Ranged Weapon',
     system: {
-      damage,
-      damageType,
+      damage: parsed.damage,
+      damageType: resolveDamageType(category, parsed.damageType),
       ap: parseNumber(record.ap, 0),
       attackSkill: attackSkillFor(category),
       category: XML_CATEGORY_TO_ENUM[category] ?? '',

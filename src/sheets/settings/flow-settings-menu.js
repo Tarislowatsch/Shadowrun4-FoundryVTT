@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { SR4 } from '@config';
 import { TEMPLATES } from '@utils/templates';
 
 const SECTIONS = [
@@ -62,8 +63,8 @@ export class FlowSettingsMenu extends foundry.applications.api.HandlebarsApplica
   };
 
   #describe(key, decisionMode) {
-    const cfg = game.settings.settings.get(`shadowrun4e.${key}`);
-    const value = game.settings.get('shadowrun4e', key);
+    const cfg = game.settings.settings.get(`${SR4.namespace}.${key}`);
+    const value = game.settings.get(SR4.namespace, key);
     const world = cfg.scope === 'world';
     const field = {
       key,
@@ -99,7 +100,7 @@ export class FlowSettingsMenu extends foundry.applications.api.HandlebarsApplica
   }
 
   async _prepareContext() {
-    const decisionMode = game.settings.get('shadowrun4e', 'decisionMode');
+    const decisionMode = game.settings.get(SR4.namespace, 'decisionMode');
     return {
       isGM: game.user.isGM,
       sections: SECTIONS.map((section) => ({
@@ -149,12 +150,12 @@ export class FlowSettingsMenu extends foundry.applications.api.HandlebarsApplica
   static async #onSave() {
     const isGM = game.user.isGM;
     for (const key of FLOW_KEYS) {
-      const cfg = game.settings.settings.get(`shadowrun4e.${key}`);
+      const cfg = game.settings.settings.get(`${SR4.namespace}.${key}`);
       if (cfg.scope === 'world' && !isGM) continue;
       const value = this.#read(key);
       if (value === undefined) continue;
-      if (value !== game.settings.get('shadowrun4e', key))
-        await game.settings.set('shadowrun4e', key, value);
+      if (value !== game.settings.get(SR4.namespace, key))
+        await game.settings.set(SR4.namespace, key, value);
     }
     this.close();
   }
@@ -162,10 +163,10 @@ export class FlowSettingsMenu extends foundry.applications.api.HandlebarsApplica
   static async #onReset() {
     const isGM = game.user.isGM;
     for (const key of FLOW_KEYS) {
-      const cfg = game.settings.settings.get(`shadowrun4e.${key}`);
+      const cfg = game.settings.settings.get(`${SR4.namespace}.${key}`);
       if (cfg.scope === 'world' && !isGM) continue;
-      if (game.settings.get('shadowrun4e', key) !== cfg.default)
-        await game.settings.set('shadowrun4e', key, cfg.default);
+      if (game.settings.get(SR4.namespace, key) !== cfg.default)
+        await game.settings.set(SR4.namespace, key, cfg.default);
     }
     this.render();
   }

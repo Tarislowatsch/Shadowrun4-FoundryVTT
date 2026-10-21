@@ -1,3 +1,4 @@
+import { SR4 } from '@config';
 import { getGame } from './game.js';
 import { getOpposedRollFallbackTimeoutMs } from './opposed-roll-timeout.js';
 import {
@@ -27,7 +28,7 @@ export function awaitOpposedSocketResponse({
   fallback,
 }) {
   const timeoutMs = getOpposedRollFallbackTimeoutMs(
-    getGame().settings.get('shadowrun4e', 'flowOpposedRollTimeout')
+    getGame().settings.get(SR4.namespace, 'flowOpposedRollTimeout')
   );
 
   return new Promise((resolve) => {

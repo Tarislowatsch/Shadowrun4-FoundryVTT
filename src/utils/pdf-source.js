@@ -1,3 +1,5 @@
+import { SR4 } from '@config';
+
 const SOURCE_PATTERN =
   /^(.+?)(?:[,.\s]+(?:(?:page|p\.?|s\.?|seite)\s*)?(\d+))?[,.\s]*$/i;
 
@@ -21,7 +23,7 @@ export function parseSourceReference(source) {
 export function getSourceBookBindings() {
   try {
     return JSON.parse(
-      game.settings.get('shadowrun4e', 'sourceBookBindings') || '{}'
+      game.settings.get(SR4.namespace, 'sourceBookBindings') || '{}'
     );
   } catch {
     return {};

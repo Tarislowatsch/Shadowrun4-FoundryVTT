@@ -21,6 +21,7 @@ export async function resolveSpiritDrain(
 ) {
   const isSprite = entityType === 'sprite';
   const drainValue = calculateSummoningDrain(
+    force,
     hits,
     isSprite ? 0 : getEffectiveDrainModifier(actor)
   );

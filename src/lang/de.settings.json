@@ -103,6 +103,10 @@
         "hint": "Wenn aktiv, fordern Matrix-Angriffe Ziele zu Verteidigungs- und Widerstandswürfen auf. Deaktivieren schaltet den Cyberkampf-Ablauf aus.",
         "name": "Matrix: Cyberkampf-Workflow"
       },
+      "conjuringDrain": {
+        "hint": "Wenn aktiviert, berechnet sich der Entzug beim Beschwören, Binden und Verbannen von Geistern sowie beim Kompilieren, Registrieren und Dekompilieren von Sprites aus der halben Kraft bzw. Stufe (aufgerundet) zuzüglich der Erfolge der Gegenseite statt aus dem Doppelten ihrer Erfolge (Street Magic S. 31, Unwired S. 39).",
+        "name": "Alternativer Beschwörungs-Entzug"
+      },
       "decisionMode": {
         "choices": {
           "chat": "Chat-Button",
@@ -123,14 +127,6 @@
       "decisionModeMatrix": {
         "hint": "Entscheidungsmodus für reaktive Matrixwürfe (Matrixausweichen, -widerstand, Dumpshock), wenn der globale Modus auf Benutzerdefiniert steht.",
         "name": "Entscheidungsmodus: Matrix"
-      },
-      "defaultTokenVision": {
-        "hint": "Aktiviert automatisch die Sicht auf dem Prototyp-Token wenn ein neuer Actor erstellt wird.",
-        "name": "Standard-Token-Sicht"
-      },
-      "defaultTokenVisionRange": {
-        "hint": "Standard-Sichtweite (in Rastereinheiten) für neu erstellte Actors. 0 für unbegrenzte Sicht.",
-        "name": "Standard-Token-Sichtweite"
       },
       "changeEncumbranceToStrength": {
         "hint": "Wenn aktiviert, wird die Traglastgrenze eines Actors aus Stärke + Konstitution statt Konstitution × 2 berechnet.",

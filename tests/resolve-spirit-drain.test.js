@@ -3,6 +3,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const resolveDrainMock = vi.fn();
 const calculateSummonedEntityDrainPoolMock = vi.fn();
 const getEffectiveDrainModifierMock = vi.fn(() => 0);
+const settingsGetMock = vi.fn();
+
+vi.mock('@utils/game', () => ({
+  getGame: () => globalThis.game,
+}));
 
 vi.mock('@domains/summoned-entity/dialogs/drain.js', () => ({
   resolveDrain: (...args) => resolveDrainMock(...args),
@@ -38,30 +43,85 @@ const labelKeys = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+
+  globalThis.game = {
+    settings: {
+      get: settingsGetMock,
+    },
+  };
+
+  settingsGetMock.mockReturnValue(false);
   calculateSummonedEntityDrainPoolMock.mockReturnValue(8);
+  getEffectiveDrainModifierMock.mockReturnValue(0);
 });
 
 describe('resolveSpiritDrain', () => {
-  it('resolves drain with DV = 2x hits (min 2), Stun when Force <= the resisting stat', async () => {
-    const actor = makeActor({ attributes: { MAGIC: 5 } });
+  describe('default summoning drain formula', () => {
+    it('resolves drain with DV = 2x hits (min 2), Stun when Force <= the resisting stat', async () => {
+      const actor = makeActor({ attributes: { MAGIC: 5 } });
 
-    await resolveSpiritDrain(actor, 4, 3, 'spirit', labelKeys);
+      await resolveSpiritDrain(actor, 4, 3, 'spirit', labelKeys);
 
-    expect(resolveDrainMock).toHaveBeenCalledWith(
-      actor,
-      expect.objectContaining({ drainValue: 6, isPhysical: false, force: 4 })
-    );
+      expect(resolveDrainMock).toHaveBeenCalledWith(
+        actor,
+        expect.objectContaining({
+          drainValue: 6,
+          isPhysical: false,
+          force: 4,
+        })
+      );
+    });
+
+    it('applies the minimum drain value of 2 when no hits were scored', async () => {
+      const actor = makeActor({ attributes: { MAGIC: 5 } });
+
+      await resolveSpiritDrain(actor, 4, 0, 'spirit', labelKeys);
+
+      expect(resolveDrainMock).toHaveBeenCalledWith(
+        actor,
+        expect.objectContaining({ drainValue: 2 })
+      );
+    });
   });
 
-  it('applies the minimum drain value of 2 when no hits were scored', async () => {
-    const actor = makeActor({ attributes: { MAGIC: 5 } });
+  describe('alternative summoning drain formula', () => {
+    beforeEach(() => {
+      settingsGetMock.mockReturnValue(true);
+    });
 
-    await resolveSpiritDrain(actor, 4, 0, 'spirit', labelKeys);
+    it.each([
+      [1, 1, 0],
+      [5, 5, 2],
+      [5, 2, -1],
+    ])(
+      'calculates drain for Force %i as %i plus modifier %i',
+      async (force, expectedDrain, modifier) => {
+        getEffectiveDrainModifierMock.mockReturnValue(modifier);
 
-    expect(resolveDrainMock).toHaveBeenCalledWith(
-      actor,
-      expect.objectContaining({ drainValue: 2 })
+        const actor = makeActor({ attributes: { MAGIC: 6 } });
+
+        await resolveSpiritDrain(actor, force, 0, 'spirit', labelKeys);
+
+        expect(resolveDrainMock).toHaveBeenCalledWith(
+          actor,
+          expect.objectContaining({
+            drainValue: expectedDrain,
+            force,
+          })
+        );
+      }
     );
+
+    it('reads the summoningDrain setting', async () => {
+      const actor = makeActor();
+
+      await resolveSpiritDrain(actor, 5, 3, 'spirit', labelKeys);
+
+      expect(settingsGetMock).toHaveBeenCalledWith(
+        'shadowrun4e',
+        'summoningDrain'
+      );
+    });
   });
 
   it('is Physical drain when Force exceeds the resisting stat', async () => {
@@ -91,12 +151,14 @@ describe('resolveSpiritDrain', () => {
     const actor = makeActor();
 
     await resolveSpiritDrain(actor, 4, 3, 'spirit', labelKeys);
+
     expect(resolveDrainMock).toHaveBeenLastCalledWith(
       expect.anything(),
       expect.objectContaining({ drainValue: 9 })
     );
 
     await resolveSpiritDrain(actor, 4, 3, 'sprite', labelKeys);
+
     expect(resolveDrainMock).toHaveBeenLastCalledWith(
       expect.anything(),
       expect.objectContaining({ drainValue: 6 })
@@ -107,12 +169,14 @@ describe('resolveSpiritDrain', () => {
     const actor = makeActor();
 
     await resolveSpiritDrain(actor, 4, 3, 'spirit', labelKeys);
+
     expect(resolveDrainMock).toHaveBeenLastCalledWith(
       expect.anything(),
       expect.objectContaining({ label: 'sr4.magic.bindingDrain' })
     );
 
     await resolveSpiritDrain(actor, 4, 3, 'sprite', labelKeys);
+
     expect(resolveDrainMock).toHaveBeenLastCalledWith(
       expect.anything(),
       expect.objectContaining({ label: 'sr4.magic.registeringFading' })

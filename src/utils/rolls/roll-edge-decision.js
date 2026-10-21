@@ -1,5 +1,6 @@
 import { createAwaitableDecision } from './awaitable-decision.js';
 import { SYSTEM_ID } from '../game/system-id.js';
+import { SR4 } from '@config';
 
 /**
  * @typedef {{ successes: number, rolledDice: number, isGlitch: boolean, isCriticalGlitch?: boolean }} EdgeRollResult
@@ -31,7 +32,7 @@ export async function awaitEdgeDecision({ messageId, actor, rollResult }) {
   if (!message) return rollResult.successes;
 
   const timeoutSeconds =
-    game.settings.get('shadowrun4e', 'flowEdgeTimeout') ?? 20;
+    game.settings.get(SR4.namespace, 'flowEdgeTimeout') ?? 20;
   const promise = edgeDecisions.park({
     messageId,
     timeoutMs: timeoutSeconds * 1000,

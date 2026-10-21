@@ -23,6 +23,7 @@ import {
   selectFireModeForSplit,
   wireFireModeControls,
 } from './fire-modes.js';
+import { SR4 } from '@config';
 
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
 
@@ -137,7 +138,7 @@ async function rollRangedAttack(
  */
 async function openRangedAttackDialog(actor, skillName, weapon) {
   const ammoTracking = /** @type {boolean} */ (
-    game.settings.get('shadowrun4e', 'ammoTracking')
+    game.settings.get(SR4.namespace, 'ammoTracking')
   );
 
   if (

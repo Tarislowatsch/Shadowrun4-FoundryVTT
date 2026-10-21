@@ -15,6 +15,7 @@ import {
   openMatrixResistDialog,
 } from '../dialogs/cybercombat.js';
 import { DumpshockFlow } from './dumpshock-flow.js';
+import { SR4 } from '@config';
 
 export class CybercombatFlow {
   /**
@@ -22,7 +23,7 @@ export class CybercombatFlow {
    * @returns {Promise<void>}
    */
   static async start(attacker) {
-    if (!getGame().settings.get('shadowrun4e', 'cybercombatWorkflow')) return;
+    if (!getGame().settings.get(SR4.namespace, 'cybercombatWorkflow')) return;
 
     const programs = getOffensivePrograms(attacker);
     if (programs.length === 0) {

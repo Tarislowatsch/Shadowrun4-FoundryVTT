@@ -1,6 +1,7 @@
 import { createAwaitableDecision } from './awaitable-decision.js';
 import { DiceUtility } from './diceutility.js';
 import { SYSTEM_ID } from '../game/system-id.js';
+import { SR4 } from '@config';
 
 export const DecisionCategory = Object.freeze({
   COMBAT: 'combat',
@@ -73,14 +74,14 @@ function labelForKind(dialogKind) {
  * @returns {'dialog' | 'chat'}
  */
 export function resolveDecisionMode(category) {
-  const mode = game.settings.get('shadowrun4e', 'decisionMode') ?? 'dialog';
+  const mode = game.settings.get(SR4.namespace, 'decisionMode') ?? 'dialog';
   if (mode !== 'custom') return mode;
   const key = {
     [DecisionCategory.COMBAT]: 'decisionModeCombat',
     [DecisionCategory.MAGIC]: 'decisionModeMagic',
     [DecisionCategory.MATRIX]: 'decisionModeMatrix',
   }[category];
-  return (key && game.settings.get('shadowrun4e', key)) || 'dialog';
+  return (key && game.settings.get(SR4.namespace, key)) || 'dialog';
 }
 
 /**
@@ -221,7 +222,7 @@ export async function requestReactiveDecision(opts) {
   }
 
   const timeoutSeconds =
-    game.settings.get('shadowrun4e', 'flowOpposedRollTimeout') ?? 30;
+    game.settings.get(SR4.namespace, 'flowOpposedRollTimeout') ?? 30;
 
   return /** @type {Promise<T>} */ (
     pendingDialogs.park({

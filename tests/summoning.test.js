@@ -1,10 +1,29 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+const settingsGetMock = vi.fn();
+
+vi.mock('@utils/game', () => ({
+  getGame: () => globalThis.game,
+}));
+
 import {
   getAvailableAffinities,
   clampForce,
   calculateSummoningDrain,
   SPIRIT_AFFINITY_CATEGORIES,
 } from '../src/domains/summoned-entity/dialogs/summoning-helpers.js';
+
+beforeEach(() => {
+  vi.clearAllMocks();
+
+  globalThis.game = {
+    settings: {
+      get: settingsGetMock,
+    },
+  };
+
+  settingsGetMock.mockReturnValue(false);
+});
 
 describe('SPIRIT_AFFINITY_CATEGORIES', () => {
   it('contains exactly the 5 spell categories', () => {
@@ -27,6 +46,7 @@ describe('getAvailableAffinities', () => {
       ILLUSION: '',
       MANIPULATION: '',
     };
+
     expect(getAvailableAffinities(affinities)).toEqual([]);
   });
 
@@ -38,6 +58,7 @@ describe('getAvailableAffinities', () => {
       ILLUSION: '',
       MANIPULATION: '',
     };
+
     expect(getAvailableAffinities(affinities)).toEqual([
       'Fire Spirit',
       'Water Spirit',
@@ -52,6 +73,7 @@ describe('getAvailableAffinities', () => {
       ILLUSION: 'Fire Spirit',
       MANIPULATION: 'Water Spirit',
     };
+
     expect(getAvailableAffinities(affinities)).toEqual([
       'Fire Spirit',
       'Water Spirit',
@@ -66,6 +88,7 @@ describe('getAvailableAffinities', () => {
       ILLUSION: '  ',
       MANIPULATION: 'Earth Spirit',
     };
+
     expect(getAvailableAffinities(affinities)).toEqual([
       'Air Spirit',
       'Earth Spirit',
@@ -85,6 +108,7 @@ describe('getAvailableAffinities', () => {
       ILLUSION: 'Man',
       MANIPULATION: 'Earth',
     };
+
     expect(getAvailableAffinities(affinities)).toEqual([
       'Fire',
       'Air',
@@ -114,24 +138,69 @@ describe('clampForce', () => {
 });
 
 describe('calculateSummoningDrain', () => {
-  it.each([
-    [3, 6],
-    [5, 10],
-    [10, 20],
-    [2, 4],
-  ])('returns 2 × %i hits = %i', (hits, expected) => {
-    expect(calculateSummoningDrain(hits)).toBe(expected);
+  describe('default calculation', () => {
+    beforeEach(() => {
+      settingsGetMock.mockReturnValue(false);
+    });
+
+    it.each([
+      [3, 6],
+      [5, 10],
+      [10, 20],
+      [2, 4],
+    ])('returns 2 × %i hits = %i', (hits, expected) => {
+      expect(calculateSummoningDrain(6, hits)).toBe(expected);
+    });
+
+    it.each([0, 1])('has a minimum drain of 2 (hits=%i)', (hits) => {
+      expect(calculateSummoningDrain(6, hits)).toBe(2);
+    });
+
+    it('adds a positive modifier term', () => {
+      expect(calculateSummoningDrain(6, 3, 2)).toBe(8);
+    });
+
+    it('adds a negative modifier term', () => {
+      expect(calculateSummoningDrain(6, 3, -2)).toBe(4);
+    });
   });
 
-  it.each([0, 1])('has a minimum drain of 2 (hits=%i)', (hits) => {
-    expect(calculateSummoningDrain(hits)).toBe(2);
-  });
+  describe('alternative calculation using Force', () => {
+    beforeEach(() => {
+      settingsGetMock.mockReturnValue(true);
+    });
 
-  it('adds a positive modifier term', () => {
-    expect(calculateSummoningDrain(3, 2)).toBe(8);
-  });
+    it.each([
+      [1, 1],
+      [2, 1],
+      [3, 2],
+      [4, 2],
+      [5, 3],
+      [6, 3],
+      [10, 5, 0],
+      [10, 6, 1],
+    ])(
+      'calculates ceil(Force / 2) for Force %i = %i',
+      (force, expected, hits) => {
+        expect(calculateSummoningDrain(force, hits || 0)).toBe(expected);
+      }
+    );
 
-  it('adds a negative modifier term', () => {
-    expect(calculateSummoningDrain(3, -2)).toBe(4);
+    it('adds a positive modifier to the alternative formula', () => {
+      expect(calculateSummoningDrain(5, 3, 2)).toBe(8);
+    });
+
+    it('adds a negative modifier to the alternative formula', () => {
+      expect(calculateSummoningDrain(5, 3, -1)).toBe(5);
+    });
+
+    it('uses the summoningDrain setting', () => {
+      calculateSummoningDrain(5, 3, 2);
+
+      expect(settingsGetMock).toHaveBeenCalledWith(
+        'shadowrun4e',
+        'summoningDrain'
+      );
+    });
   });
 });

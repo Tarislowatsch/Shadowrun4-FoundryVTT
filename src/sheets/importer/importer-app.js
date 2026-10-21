@@ -19,6 +19,7 @@ import {
   mergeItemNameTranslationEntries,
   registerItemNameTranslations,
 } from '@utils/item-name-translations.js';
+import { SR4 } from '@config';
 
 /** @type {number} */
 const CHUNK_SIZE = 100;
@@ -277,7 +278,7 @@ export class XmlImporterApp extends foundry.applications.api.HandlebarsApplicati
       ...new Set(this.#groups.map((g) => g.source)),
     ].sort();
 
-    const saved = game.settings.get('shadowrun4e', 'importerEnabledSources');
+    const saved = game.settings.get(SR4.namespace, 'importerEnabledSources');
     if (saved.length > 0) {
       const available = new Set(this.#availableSources);
       this.#enabledSources = new Set(saved.filter((s) => available.has(s)));

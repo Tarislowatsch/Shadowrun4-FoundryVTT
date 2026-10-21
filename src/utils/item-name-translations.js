@@ -1,3 +1,5 @@
+import { SR4 } from '@config';
+
 const DICT_VERSION = 1;
 
 /**
@@ -69,7 +71,7 @@ let _cache = null;
  */
 export function getItemNameTranslations() {
   return (_cache ??= parseItemNameTranslations(
-    game.settings.get('shadowrun4e', 'itemNameTranslations')
+    game.settings.get(SR4.namespace, 'itemNameTranslations')
   ));
 }
 

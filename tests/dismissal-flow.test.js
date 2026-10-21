@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const rollSkillDialogMock = vi.fn();
 const resolveEdgeForRollMock = vi.fn();
@@ -36,6 +36,14 @@ vi.mock('@utils/index', async (importOriginal) => {
   };
 });
 
+vi.mock('@utils/game', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    getGame: () => globalThis.game,
+  };
+});
+
 vi.mock('@domains/summoned-entity/dialogs/index.js', async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -54,6 +62,9 @@ vi.mock('@domains/magic/dialogs/resist-actions.js', async (importOriginal) => {
 
 const { DismissalFlow } = await import(
   '../src/domains/summoned-entity/flow/dismissal-flow.js'
+);
+const { calculateSummoningDrain } = await import(
+  '../src/domains/summoned-entity/dialogs/summoning-helpers.js'
 );
 
 function makeActor({ id = 'Actor.caster1', attributes = {} } = {}) {
@@ -310,6 +321,99 @@ describe('DismissalFlow — drain', () => {
     await DismissalFlow.start(makeActor(), 'spirit');
 
     expect(resolveSpiritDrainMock).toHaveBeenCalled();
+  });
+});
+
+describe('DismissalFlow — alternative conjuring drain setting', () => {
+  let originalSettings;
+  let summoningDrainEnabled;
+  let drainResults;
+
+  beforeEach(() => {
+    originalSettings = globalThis.game.settings;
+    summoningDrainEnabled = true;
+    drainResults = [];
+
+    globalThis.game.settings = {
+      get: (namespace, key) =>
+        key === 'summoningDrain'
+          ? summoningDrainEnabled
+          : originalSettings?.get?.(namespace, key),
+    };
+
+    resolveSpiritDrainMock.mockImplementation(async (_actor, force, hits) => {
+      drainResults.push(calculateSummoningDrain(force, hits));
+    });
+  });
+
+  afterEach(() => {
+    globalThis.game.settings = originalSettings;
+    resolveSpiritDrainMock.mockReset();
+  });
+
+  it('banishing a spirit: drain is ceil(Force / 2) + the spirit’s hits', async () => {
+    setTargets([makeTarget('spirit', { force: 4 })]);
+    mockRoll({ successes: 5, actorHits: 5, resistHits: 3 });
+
+    await DismissalFlow.start(makeActor(), 'spirit');
+
+    expect(drainResults).toEqual([5]);
+  });
+
+  it('rounds half the Force up for odd Force values', async () => {
+    setTargets([makeTarget('spirit', { force: 5 })]);
+    mockRoll({ successes: 5, actorHits: 5, resistHits: 1 });
+
+    await DismissalFlow.start(makeActor(), 'spirit');
+
+    expect(drainResults).toEqual([4]);
+  });
+
+  it('decompiling a sprite: uses the sprite rating as Force', async () => {
+    setTargets([makeTarget('sprite', { rating: 5 })]);
+    mockRoll({ successes: 5, actorHits: 5, resistHits: 2 });
+
+    await DismissalFlow.start(makeActor(), 'sprite');
+
+    expect(drainResults).toEqual([5]);
+  });
+
+  it('has no minimum of 2 when the spirit scores no hits', async () => {
+    setTargets([makeTarget('spirit', { force: 1 })]);
+    mockRoll({ successes: 5, actorHits: 5, resistHits: 0 });
+
+    await DismissalFlow.start(makeActor(), 'spirit');
+
+    expect(drainResults).toEqual([1]);
+  });
+
+  it('still resolves drain when the dismissal attempt fails', async () => {
+    setTargets([makeTarget('spirit', { force: 4 })]);
+    mockRoll({ successes: 2, actorHits: 2, resistHits: 3 });
+
+    await DismissalFlow.start(makeActor(), 'spirit');
+
+    expect(drainResults).toEqual([5]);
+  });
+
+  it('falls back to 2 x hits (minimum 2) when the setting is disabled', async () => {
+    summoningDrainEnabled = false;
+    setTargets([makeTarget('spirit', { force: 4 })]);
+    mockRoll({ successes: 5, actorHits: 5, resistHits: 3 });
+
+    await DismissalFlow.start(makeActor(), 'spirit');
+
+    expect(drainResults).toEqual([6]);
+  });
+
+  it('keeps the minimum of 2 when the setting is disabled and no hits were scored', async () => {
+    summoningDrainEnabled = false;
+    setTargets([makeTarget('spirit', { force: 1 })]);
+    mockRoll({ successes: 5, actorHits: 5, resistHits: 0 });
+
+    await DismissalFlow.start(makeActor(), 'spirit');
+
+    expect(drainResults).toEqual([2]);
   });
 });
 

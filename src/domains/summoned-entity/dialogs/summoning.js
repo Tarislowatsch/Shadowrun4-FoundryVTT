@@ -1,6 +1,7 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
 import { localize, mapDocumentsByName, promptDialog } from '@utils/dialog';
 import { getAvailableAffinities, clampForce } from './summoning-helpers.js';
+import { SR4 } from '@config';
 
 export {
   SPIRIT_AFFINITY_CATEGORIES,
@@ -16,7 +17,7 @@ export {
 export async function loadCompendiumTemplates(entityType) {
   const settingKey =
     entityType === 'sprite' ? 'spriteCompendium' : 'spiritCompendium';
-  const packId = game.settings.get('shadowrun4e', settingKey) ?? '';
+  const packId = game.settings.get(SR4.namespace, settingKey) ?? '';
   if (!packId) return null;
   const pack = game.packs.get(packId);
   if (!pack) return null;

@@ -4,6 +4,7 @@ import {
   DEFAULT_RIGGER_LOOKUP,
   mergeRiggerLookup,
 } from '@domains/rigging/index.js';
+import { SR4 } from '@config';
 
 const SKILL_ROLES = [
   'attackSkill',
@@ -38,7 +39,7 @@ export class RiggerLookupMenu extends foundry.applications.api.HandlebarsApplica
   async _prepareContext() {
     const saved = mergeRiggerLookup(
       DEFAULT_RIGGER_LOOKUP,
-      game.settings.get('shadowrun4e', 'riggerLookup')
+      game.settings.get(SR4.namespace, 'riggerLookup')
     );
 
     const compendium = game.packs.get('shadowrun4e.skills');

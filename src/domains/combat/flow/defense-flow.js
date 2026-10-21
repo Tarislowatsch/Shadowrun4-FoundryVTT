@@ -16,6 +16,7 @@ import {
   buildElementOnApply,
 } from '@models/index';
 import { ApplyDamageFlow } from './apply-damage-flow';
+import { SR4 } from '@config';
 
 /**
  * @param {import('@models/index').SR4Weapon} weapon
@@ -91,8 +92,8 @@ export async function emitDefenseTrigger(
 
   if (validTargets.length === 0) {
     if (
-      getGame().settings.get('shadowrun4e', 'gmDefenderPicker') &&
-      getGame().settings.get('shadowrun4e', 'combatDefenseWorkflow')
+      getGame().settings.get(SR4.namespace, 'gmDefenderPicker') &&
+      getGame().settings.get(SR4.namespace, 'combatDefenseWorkflow')
     ) {
       await emitSystemSocket({
         action: 'selectDefender',
@@ -234,7 +235,7 @@ export class DefenseFlow {
     const attacker = /** @type {any} */ (await fromUuid(attackerUuid));
     if (!defender || !attacker) return;
 
-    if (!getGame().settings.get('shadowrun4e', 'combatDefenseWorkflow')) {
+    if (!getGame().settings.get(SR4.namespace, 'combatDefenseWorkflow')) {
       await DefenseFlow._sendPotentialSummary(
         defender,
         attacker,
@@ -326,7 +327,7 @@ export class DefenseFlow {
     const hint = elementRules.hint;
     const onApply = buildElementOnApply(dt, defender, netSuccesses);
 
-    if (!getGame().settings.get('shadowrun4e', 'combatSoakWorkflow')) {
+    if (!getGame().settings.get(SR4.namespace, 'combatSoakWorkflow')) {
       await ApplyDamageFlow.sendDecisionMessage(
         defender,
         baseDamage,

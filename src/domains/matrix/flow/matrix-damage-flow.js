@@ -4,6 +4,7 @@ import { applyMatrixDamage } from '../matrix-rules.js';
 import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
 import { SYSTEM_ID } from '@utils/game/system-id.js';
+import { SR4 } from '@config';
 
 /**
  * @typedef {object} MatrixDamageDecisionEntry
@@ -138,7 +139,7 @@ export class MatrixDamageFlow {
    * @returns {Promise<string | null>}
    */
   static async sendDecisionMessage(actor, amount, context) {
-    if (!getGame().settings.get('shadowrun4e', 'applyDamageWorkflow')) {
+    if (!getGame().settings.get(SR4.namespace, 'applyDamageWorkflow')) {
       await MatrixDamageFlow.apply(amount, actor, context);
       return null;
     }

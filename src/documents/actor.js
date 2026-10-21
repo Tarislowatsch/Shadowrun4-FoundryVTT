@@ -17,6 +17,7 @@ import {
   addSkillsFromCompendium,
   buildCompendiumSkillData as buildCompendiumSkillDataFromSeed,
 } from './actor-skill-seed.js';
+import { SR4 } from '@config';
 
 /** @type {import('@models/index').SR4SheetStats} */
 const DEFAULT_STATS = {
@@ -276,7 +277,7 @@ export class SR4Actor extends foundry.documents.Actor {
   async _preUpdate(changed, options, userId) {
     if (shouldBlockJammedMatrixUpdate(this, changed)) return false;
     await super._preUpdate(changed, options, userId);
-    if (game.settings.get('shadowrun4e', 'liveInitiativeReduction')) {
+    if (game.settings.get(SR4.namespace, 'liveInitiativeReduction')) {
       const oldScores = captureLiveInitiativeScores(this);
       options._sr4IniScores = Array.from(
         oldScores,
@@ -287,7 +288,7 @@ export class SR4Actor extends foundry.documents.Actor {
 
   async _onUpdate(changed, options, userId) {
     await super._onUpdate(changed, options, userId);
-    if (!game.settings.get('shadowrun4e', 'liveInitiativeReduction')) return;
+    if (!game.settings.get(SR4.namespace, 'liveInitiativeReduction')) return;
     await applyLiveInitiativeUpdate(this, options._sr4IniScores);
   }
 
@@ -300,13 +301,6 @@ export class SR4Actor extends foundry.documents.Actor {
     const updates = {};
     if (self.type === 'character') {
       updates['prototypeToken.actorLink'] = true;
-    }
-    if (game.settings.get('shadowrun4e', 'defaultTokenVision')) {
-      updates['prototypeToken.sight.enabled'] = true;
-      updates['prototypeToken.sight.range'] = game.settings.get(
-        'shadowrun4e',
-        'defaultTokenVisionRange'
-      );
     }
     if (Object.keys(updates).length > 0) {
       await self.update(updates);

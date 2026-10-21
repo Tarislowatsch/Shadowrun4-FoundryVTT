@@ -1,5 +1,6 @@
 // Armor Stacking & Encumbrance (SR4 p.161, Form-Fitting: Arsenal p.48)
 
+import { SR4 } from '@config';
 import { getGame } from '@utils/game/game';
 
 /**
@@ -90,7 +91,7 @@ export function computeArmorStacking(equipped, bonus, body, strength) {
  * @returns {number}
  */
 function computeMaxAllowedEncumbrance(body, strength) {
-  if (getGame().settings.get('shadowrun4e', 'changeEncumbranceToStrength')) {
+  if (getGame().settings.get(SR4.namespace, 'changeEncumbranceToStrength')) {
     return strength + body;
   }
   return body * 2;
@@ -110,7 +111,7 @@ function computeExcessEncumbrance(
   equippedArmorCount
 ) {
   if (
-    getGame().settings.get('shadowrun4e', 'ignoreEncumbranceSingleArmorItem') &&
+    getGame().settings.get(SR4.namespace, 'ignoreEncumbranceSingleArmorItem') &&
     equippedArmorCount === 1
   ) {
     return 0;

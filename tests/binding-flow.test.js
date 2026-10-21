@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const rollSkillDialogMock = vi.fn();
 const resolveEdgeForRollMock = vi.fn();
@@ -36,6 +36,14 @@ vi.mock('@utils/index', async (importOriginal) => {
   };
 });
 
+vi.mock('@utils/game', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    getGame: () => globalThis.game,
+  };
+});
+
 vi.mock('@domains/summoned-entity/dialogs/index.js', async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -54,6 +62,9 @@ vi.mock('@domains/magic/dialogs/resist-actions.js', async (importOriginal) => {
 
 const { BindingFlow } = await import(
   '../src/domains/summoned-entity/flow/binding-flow.js'
+);
+const { calculateSummoningDrain } = await import(
+  '../src/domains/summoned-entity/dialogs/summoning-helpers.js'
 );
 
 function makeActor({ id = 'Actor.summoner1', attributes = {} } = {}) {
@@ -294,6 +305,92 @@ describe('BindingFlow.start — drain', () => {
     await BindingFlow.start(summoner, makeTarget('spirit'));
 
     expect(resolveSpiritDrainMock).toHaveBeenCalled();
+  });
+});
+
+describe('BindingFlow.start — alternative conjuring drain setting', () => {
+  let originalSettings;
+  let summoningDrainEnabled;
+  let drainResults;
+
+  beforeEach(() => {
+    originalSettings = globalThis.game.settings;
+    summoningDrainEnabled = true;
+    drainResults = [];
+
+    globalThis.game.settings = {
+      get: (namespace, key) =>
+        key === 'summoningDrain'
+          ? summoningDrainEnabled
+          : originalSettings?.get?.(namespace, key),
+    };
+
+    resolveSpiritDrainMock.mockImplementation(async (_actor, force, hits) => {
+      drainResults.push(calculateSummoningDrain(force, hits));
+    });
+  });
+
+  afterEach(() => {
+    globalThis.game.settings = originalSettings;
+    resolveSpiritDrainMock.mockReset();
+  });
+
+  it('binding a spirit: drain is ceil(Force / 2) + the spirit’s hits', async () => {
+    mockRoll({ successes: 4, summonerHits: 4, resistHits: 3 });
+
+    await BindingFlow.start(makeActor(), makeTarget('spirit', { force: 4 }));
+
+    expect(drainResults).toEqual([5]);
+  });
+
+  it('rounds half the Force up for odd Force values', async () => {
+    mockRoll({ successes: 4, summonerHits: 4, resistHits: 1 });
+
+    await BindingFlow.start(makeActor(), makeTarget('spirit', { force: 5 }));
+
+    expect(drainResults).toEqual([4]);
+  });
+
+  it('registering a sprite: uses the sprite rating as Force', async () => {
+    mockRoll({ successes: 5, summonerHits: 5, resistHits: 2 });
+
+    await BindingFlow.start(makeActor(), makeTarget('sprite', { rating: 5 }));
+
+    expect(drainResults).toEqual([5]);
+  });
+
+  it('has no minimum of 2 when the spirit scores no hits', async () => {
+    mockRoll({ successes: 3, summonerHits: 3, resistHits: 0 });
+
+    await BindingFlow.start(makeActor(), makeTarget('spirit', { force: 1 }));
+
+    expect(drainResults).toEqual([1]);
+  });
+
+  it('still resolves drain when the binding attempt fails', async () => {
+    mockRoll({ successes: 1, summonerHits: 1, resistHits: 3 });
+
+    await BindingFlow.start(makeActor(), makeTarget('spirit', { force: 4 }));
+
+    expect(drainResults).toEqual([5]);
+  });
+
+  it('falls back to 2 x hits (minimum 2) when the setting is disabled', async () => {
+    summoningDrainEnabled = false;
+    mockRoll({ successes: 4, summonerHits: 4, resistHits: 3 });
+
+    await BindingFlow.start(makeActor(), makeTarget('spirit', { force: 4 }));
+
+    expect(drainResults).toEqual([6]);
+  });
+
+  it('keeps the minimum of 2 when the setting is disabled and no hits were scored', async () => {
+    summoningDrainEnabled = false;
+    mockRoll({ successes: 3, summonerHits: 3, resistHits: 0 });
+
+    await BindingFlow.start(makeActor(), makeTarget('spirit', { force: 1 }));
+
+    expect(drainResults).toEqual([2]);
   });
 });
 

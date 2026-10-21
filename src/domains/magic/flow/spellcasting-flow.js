@@ -21,6 +21,7 @@ import {
   getSpellEffectData,
   requestEffectDecision,
 } from './apply-effects-flow';
+import { SR4 } from '@config';
 
 /**
  * @param {import('@documents/index').SR4Actor} target
@@ -54,7 +55,7 @@ export class SpellcastingFlow {
       );
       return;
     }
-    if (!getGame().settings.get('shadowrun4e', 'spellWorkflow')) {
+    if (!getGame().settings.get(SR4.namespace, 'spellWorkflow')) {
       await SpellcastingFlow.rollWithoutWorkflow(actor, spell);
       return;
     }
@@ -109,7 +110,7 @@ export class SpellcastingFlow {
     if (
       spell.system?.duration === 'SUSTAINED' &&
       hits > 0 &&
-      getGame().settings.get('shadowrun4e', 'autoSustainEffect')
+      getGame().settings.get(SR4.namespace, 'autoSustainEffect')
     ) {
       await actor.applyEffectTemplate('sustain');
     }
@@ -197,7 +198,7 @@ export class SpellcastingFlow {
         !sustainApplied &&
         spell.system?.duration === 'SUSTAINED' &&
         hits > 0 &&
-        getGame().settings.get('shadowrun4e', 'autoSustainEffect')
+        getGame().settings.get(SR4.namespace, 'autoSustainEffect')
       ) {
         await actor.applyEffectTemplate('sustain');
         sustainApplied = true;

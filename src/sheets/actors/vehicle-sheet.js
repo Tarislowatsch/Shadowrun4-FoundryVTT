@@ -10,6 +10,7 @@ import {
   resolveRiggerSync,
 } from '@domains/rigging/index.js';
 import { SR4SummonedEntitySheet } from './sr4-summoned-entity-sheet.js';
+import { SR4 } from '@config';
 
 const RIGGER_CONFIG_ROLES = [
   { key: 'attackSkill', itemType: 'Skill' },
@@ -175,7 +176,7 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
     const globalDefaults = mergeRiggerLookup(
       DEFAULT_RIGGER_LOOKUP,
       typeof game !== 'undefined' && game?.settings
-        ? game.settings.get('shadowrun4e', 'riggerLookup')
+        ? game.settings.get(SR4.namespace, 'riggerLookup')
         : '{}'
     );
 

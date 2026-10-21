@@ -20,9 +20,14 @@ import {
   resolveEssenceModifiers,
   XML_CATEGORY_TO_ENUM,
   CATEGORY_TO_ATTACKSKILL,
+  CATEGORY_TO_DAMAGETYPE,
   ATTRIBUTE_ABBR_TO_KEY,
 } from '@importer/mappers/index.js';
-import { WeaponCategory, Attackskill } from '@models/items/weapon.enums.js';
+import {
+  WeaponCategory,
+  Attackskill,
+  DamageTypes,
+} from '@models/items/weapon.enums.js';
 import { SR4Attributes } from '@models/attribute.enum.js';
 
 describe('simple mappers', () => {
@@ -239,6 +244,134 @@ describe('simple mappers', () => {
 });
 
 describe('weapon mappers', () => {
+  describe('weapon damage types', () => {
+    it.each([
+      {
+        label: 'electric suffix (Shock Glove) -> ELECTRICITY, -half ap ignored',
+        map: mapMeleeWeapon,
+        input: {
+          name: 'Shock Glove',
+          category: 'Unarmed',
+          type: 'Melee',
+          damage: '5S(e)',
+          ap: '-half',
+        },
+        expected: { damage: 5, damageType: 'ELECTRICITY', ap: 0 },
+      },
+      {
+        label: 'Laser Weapons category -> LASER',
+        map: mapRangedWeapon,
+        input: {
+          name: 'Ares MP Laser 3',
+          category: 'Laser Weapons',
+          type: 'Ranged',
+          damage: '7P',
+          ap: '-half',
+          ammo: '2x5(c) or external source',
+        },
+        expected: { damage: 7, damageType: 'LASER', category: 'LASER_WEAPONS' },
+      },
+      {
+        label: 'Flamethrowers category -> FIRE',
+        map: mapRangedWeapon,
+        input: {
+          name: 'Flamethrower',
+          category: 'Flamethrowers',
+          type: 'Ranged',
+          damage: '8P',
+        },
+        expected: { damage: 8, damageType: 'FIRE' },
+      },
+      {
+        label: 'flechette (f) stays PHYSICAL and keeps AP',
+        map: mapRangedWeapon,
+        input: {
+          name: 'Mossberg AM-CMDT',
+          category: 'Shotguns',
+          type: 'Ranged',
+          damage: '9P(f)',
+          ap: '+5',
+        },
+        expected: { damage: 9, damageType: 'PHYSICAL', ap: 5 },
+      },
+      {
+        label: 'flechette with blast falloff parses damage only',
+        map: mapRangedWeapon,
+        input: {
+          name: 'Grenade: Fragmentation',
+          category: 'Gear',
+          type: 'Ranged',
+          damage: '12P(f) (-1/m)',
+          ap: '+5',
+        },
+        expected: { damage: 12, damageType: 'PHYSICAL', ap: 5 },
+      },
+      {
+        label: 'explicit suffix wins over category mapping',
+        map: mapRangedWeapon,
+        input: {
+          name: 'Odd Laser',
+          category: 'Laser Weapons',
+          type: 'Ranged',
+          damage: '7P(e)',
+        },
+        expected: { damageType: 'ELECTRICITY' },
+      },
+      {
+        label: '(fire) suffix -> FIRE',
+        map: mapRangedWeapon,
+        input: { name: 'X', category: 'Special Weapons', damage: '6P(fire)' },
+        expected: { damageType: 'FIRE' },
+      },
+      {
+        label: '(acid) suffix -> ACID',
+        map: mapRangedWeapon,
+        input: { name: 'X', category: 'Special Weapons', damage: '6P(acid)' },
+        expected: { damageType: 'ACID' },
+      },
+      {
+        label: '(cold) suffix -> ICE',
+        map: mapRangedWeapon,
+        input: { name: 'X', category: 'Special Weapons', damage: '6P(cold)' },
+        expected: { damageType: 'ICE' },
+      },
+      {
+        label: 'plain S damage -> STUN',
+        map: mapRangedWeapon,
+        input: { name: 'Taser', category: 'Tasers', damage: '6S' },
+        expected: { damage: 6, damageType: 'STUN' },
+      },
+      {
+        label: 'launcher damage text without number -> 0',
+        map: mapRangedWeapon,
+        input: {
+          name: 'ArmTech MGL-12',
+          category: 'Grenade Launchers',
+          damage: 'Grenade',
+        },
+        expected: { damage: 0, damageType: 'PHYSICAL' },
+      },
+      {
+        label: 'strength-based melee damage keeps offset',
+        map: mapMeleeWeapon,
+        input: {
+          name: 'Katana',
+          category: 'Blades',
+          type: 'Melee',
+          damage: '(STR/2+3)P',
+          ap: '-1',
+        },
+        expected: {
+          damage: 3,
+          damageType: 'PHYSICAL',
+          ap: -1,
+          noStrengthBonus: false,
+        },
+      },
+    ])('$label', ({ map, input, expected }) => {
+      expect(map(input).system).toMatchObject(expected);
+    });
+  });
   it('maps a melee weapon with attack skill and reach', () => {
     const item = mapMeleeWeapon({
       name: 'Combat Axe',
@@ -597,6 +730,19 @@ describe('enum consistency', () => {
     const validKeys = new Set(Object.keys(WeaponCategory));
     for (const [xmlName, key] of Object.entries(XML_CATEGORY_TO_ENUM)) {
       expect(validKeys.has(key), `${xmlName} → ${key}`).toBe(true);
+    }
+  });
+
+  it('CATEGORY_TO_DAMAGETYPE values are valid DamageTypes keys', () => {
+    const validKeys = new Set(Object.keys(DamageTypes));
+    for (const [xmlName, key] of Object.entries(CATEGORY_TO_DAMAGETYPE)) {
+      expect(validKeys.has(key), `${xmlName} → ${key}`).toBe(true);
+    }
+  });
+
+  it('CATEGORY_TO_DAMAGETYPE only uses known weapon categories', () => {
+    for (const xmlName of Object.keys(CATEGORY_TO_DAMAGETYPE)) {
+      expect(XML_CATEGORY_TO_ENUM[xmlName], xmlName).toBeDefined();
     }
   });
 

@@ -92,6 +92,13 @@ export const XML_CATEGORY_TO_ENUM = {
   'Underbarrel Weapons': wc.UNDERBARREL_WEAPONS,
   Cyberware: wc.CYBERWARE,
 };
+/**
+ * @type {Record<string, string>}
+ */
+export const CATEGORY_TO_DAMAGETYPE = {
+  'Laser Weapons': dt.LASER,
+  Flamethrowers: dt.FIRE,
+};
 
 /**
  * @type {Record<string, string>}

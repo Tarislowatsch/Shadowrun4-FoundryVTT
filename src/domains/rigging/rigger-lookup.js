@@ -1,3 +1,4 @@
+import { SR4 } from '@config';
 import { MELEE_DEFENSE_KEYS } from '@domains/combat/dialogs/defense.js';
 import { findSkillIn } from '@models/index';
 import { buildSkillOptions, skillDisplayLabel } from '@utils/dialog';
@@ -52,7 +53,7 @@ export function mergeRiggerLookup(defaults, settingJson, overrides = {}) {
 export function getRiggerLookup(vehicle) {
   const settingJson =
     typeof game !== 'undefined' && game?.settings
-      ? /** @type {string} */ (game.settings.get('shadowrun4e', 'riggerLookup'))
+      ? /** @type {string} */ (game.settings.get(SR4.namespace, 'riggerLookup'))
       : '{}';
   const overrides = /** @type {any} */ (vehicle?.system)?.riggerOverrides ?? {};
   return mergeRiggerLookup(DEFAULT_RIGGER_LOOKUP, settingJson, overrides);

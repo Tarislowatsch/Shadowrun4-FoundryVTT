@@ -66,6 +66,24 @@ describe('parseDamage', () => {
     ['5S(e)', { damage: 5, damageType: 'ELECTRICITY', strengthBased: false }],
     ['(STR/2+1)P', { damage: 1, damageType: 'PHYSICAL', strengthBased: true }],
     ['(STR/2)P', { damage: 0, damageType: 'PHYSICAL', strengthBased: true }],
+
+    ['6P(fire)', { damage: 6, damageType: 'FIRE', strengthBased: false }],
+    ['6P(acid)', { damage: 6, damageType: 'ACID', strengthBased: false }],
+    ['6P(cold)', { damage: 6, damageType: 'ICE', strengthBased: false }],
+
+    ['9P(f)', { damage: 9, damageType: 'PHYSICAL', strengthBased: false }],
+    [
+      '12P(f) (-1/m)',
+      { damage: 12, damageType: 'PHYSICAL', strengthBased: false },
+    ],
+
+    ['8G', { damage: 8, damageType: 'STUN', strengthBased: false }],
+
+    ['Grenade', { damage: 0, damageType: 'PHYSICAL', strengthBased: false }],
+    ['Missile', { damage: 0, damageType: 'PHYSICAL', strengthBased: false }],
+
+    ['', { damage: 0, damageType: 'PHYSICAL', strengthBased: false }],
+    [undefined, { damage: 0, damageType: 'PHYSICAL', strengthBased: false }],
   ])('parseDamage(%j) reads value, type and scaling', (input, expected) => {
     expect(parseDamage(input)).toEqual(expected);
   });

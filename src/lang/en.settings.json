@@ -87,6 +87,10 @@
         "hint": "When enabled, a dialog is shown before applying damage, allowing confirmation or adjustment. Disabling applies damage immediately.",
         "name": "Damage: Confirmation Workflow"
       },
+      "conjuringDrain": {
+        "hint": "When enabled, drain from summoning, binding and banishing spirits and fading from compiling, registering and decompiling sprites is half the Force/Rating (rounded up) plus the hits scored by the opposing entity, instead of twice its hits (Street Magic p. 31, Unwired p. 39).",
+        "name": "Alternative Conjuring Drain"
+      },
       "autoSustainEffect": {
         "hint": "Automatically create a sustain active effect when a sustained spell is cast.",
         "name": "Auto Sustain Effect"
@@ -123,14 +127,6 @@
       "decisionModeMatrix": {
         "hint": "Decision mode for reactive matrix rolls (matrix defense, resist, dumpshock) when the global mode is set to Custom.",
         "name": "Decision Mode: Matrix"
-      },
-      "defaultTokenVision": {
-        "hint": "Automatically enable vision on the prototype token when creating a new actor.",
-        "name": "Default Token Vision"
-      },
-      "defaultTokenVisionRange": {
-        "hint": "Default vision range (in grid units) for newly created actors. Set to 0 for unlimited range.",
-        "name": "Default Token Vision Range"
       },
       "changeEncumbranceToStrength": {
         "hint": "When enabled, an actor's encumbrance threshold is calculated as Strength + Body instead of Body x 2.",

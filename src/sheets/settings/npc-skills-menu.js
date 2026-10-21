@@ -2,6 +2,7 @@
 import { TEMPLATES } from '@utils/templates';
 import { parseNpcDefaultSkills } from './npc-default-skills.js';
 import { normalizeSkillKey } from '@models/actions/skill-lookup.js';
+import { SR4 } from '@config';
 
 export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
@@ -31,7 +32,7 @@ export class NpcSkillsMenu extends foundry.applications.api.HandlebarsApplicatio
     if (!compendium) return { categories: [] };
 
     const index = await compendium.getIndex({ fields: ['system.category'] });
-    const savedJson = game.settings.get('shadowrun4e', 'npcDefaultSkills');
+    const savedJson = game.settings.get(SR4.namespace, 'npcDefaultSkills');
     const saved = new Set(parseNpcDefaultSkills(savedJson));
 
     const categoryMap = new Map();

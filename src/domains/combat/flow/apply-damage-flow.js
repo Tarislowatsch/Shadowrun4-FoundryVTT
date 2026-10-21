@@ -1,6 +1,7 @@
 import { getGame } from '@utils/index';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
 import { SYSTEM_ID } from '@utils/game/system-id.js';
+import { SR4 } from '@config';
 
 /**
  * @typedef {object} DamageDecisionEntry
@@ -251,7 +252,7 @@ export class ApplyDamageFlow {
     context,
     { hint, onApply } = {}
   ) {
-    if (!getGame().settings.get('shadowrun4e', 'applyDamageWorkflow')) {
+    if (!getGame().settings.get(SR4.namespace, 'applyDamageWorkflow')) {
       await ApplyDamageFlow.applyAndSend(
         amount,
         isPhysical,

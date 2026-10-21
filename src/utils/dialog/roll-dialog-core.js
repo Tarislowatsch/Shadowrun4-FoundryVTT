@@ -1,3 +1,4 @@
+import { SR4 } from '@config';
 import { getGame } from '../game/game.js';
 import { promptDialog } from './dialog-v2.js';
 
@@ -62,7 +63,7 @@ export async function createRollDialog(config) {
 
       if (config.autoRoll) {
         const timeoutSeconds = getGame().settings.get(
-          'shadowrun4e',
+          SR4.namespace,
           'flowOpposedRollTimeout'
         );
         autoRollTimer = setTimeout(() => {
