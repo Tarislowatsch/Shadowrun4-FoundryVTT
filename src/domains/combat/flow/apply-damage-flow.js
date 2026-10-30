@@ -273,7 +273,6 @@ export class ApplyDamageFlow {
         type: damageType,
       }
     )}</p>${hintHtml}</div>`;
-
     const message = await ChatMessage.create({
       content,
       speaker: ChatMessage.getSpeaker({ actor }),

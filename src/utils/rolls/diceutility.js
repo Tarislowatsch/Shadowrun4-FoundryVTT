@@ -146,7 +146,7 @@ export class DiceUtility {
       patch = watchDiceTotalPatch(successes);
 
       const message = await roll.toMessage({
-        speaker: ChatMessage.getSpeaker(),
+        speaker: ChatMessage.getSpeaker({ alias: templateData.actorName }),
         flavor: content,
         flags: {
           [SYSTEM_ID]: {
@@ -162,7 +162,6 @@ export class DiceUtility {
           },
         },
       });
-
       if (!message) {
         patch.cancel();
         return null;
