@@ -336,7 +336,7 @@ describe('DismissalFlow — alternative conjuring drain setting', () => {
 
     globalThis.game.settings = {
       get: (namespace, key) =>
-        key === 'summoningDrain'
+        key === 'conjuringDrain'
           ? summoningDrainEnabled
           : originalSettings?.get?.(namespace, key),
     };

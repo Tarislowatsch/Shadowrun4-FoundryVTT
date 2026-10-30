@@ -194,12 +194,12 @@ describe('calculateSummoningDrain', () => {
       expect(calculateSummoningDrain(5, 3, -1)).toBe(5);
     });
 
-    it('uses the summoningDrain setting', () => {
+    it('uses the conjuringDrain setting', () => {
       calculateSummoningDrain(5, 3, 2);
 
       expect(settingsGetMock).toHaveBeenCalledWith(
         'shadowrun4e',
-        'summoningDrain'
+        'conjuringDrain'
       );
     });
   });

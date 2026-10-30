@@ -40,7 +40,7 @@ export function clampForce(rawForce, maxForce) {
  * @returns {number}
  */
 export function calculateSummoningDrain(force, spiritHits, modifier = 0) {
-  if (getGame().settings.get(SR4.namespace, 'summoningDrain')) {
+  if (getGame().settings.get(SR4.namespace, 'conjuringDrain')) {
     return Math.ceil(force / 2) + spiritHits + modifier;
   }
   return resistanceValueFromHits(spiritHits, 2) + modifier;

@@ -119,7 +119,7 @@ describe('resolveSpiritDrain', () => {
 
       expect(settingsGetMock).toHaveBeenCalledWith(
         'shadowrun4e',
-        'summoningDrain'
+        'conjuringDrain'
       );
     });
   });
