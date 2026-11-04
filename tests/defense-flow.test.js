@@ -11,9 +11,13 @@ const sendDecisionMessageMock = vi.fn();
 const sendCombatSummaryMock = vi.fn();
 const applyAndSendMock = vi.fn();
 
+const emitSystemSocketMock = vi.fn();
+const getValidTargetActorsMock = vi.fn();
+
 vi.mock('@utils/index', () => ({
   getGame: () => globalThis.game,
-  getValidTargetActors: vi.fn(),
+  getValidTargetActors: (...args) => getValidTargetActorsMock(...args),
+  emitSystemSocket: (...args) => emitSystemSocketMock(...args),
 }));
 
 vi.mock('@domains/combat/dialogs/defense.js', () => ({
@@ -49,7 +53,7 @@ vi.mock('../src/domains/combat/flow/apply-damage-flow.js', () => ({
   },
 }));
 
-const { DefenseFlow } = await import(
+const { DefenseFlow, emitDefenseTrigger } = await import(
   '../src/domains/combat/flow/defense-flow.js'
 );
 
@@ -94,6 +98,8 @@ beforeEach(() => {
     return null;
   });
   resolveEdgeForRollMock.mockResolvedValue(0);
+  getValidTargetActorsMock.mockReturnValue([]);
+  emitSystemSocketMock.mockResolvedValue(undefined);
 });
 
 // weapon.system.damage=6, netSuccesses=3, burstDamageBonus=0
@@ -209,5 +215,67 @@ describe('DefenseFlow.start — attack fully evaded', () => {
       'evaded',
       { hits: 3, defense: 5 }
     );
+  });
+});
+
+describe('DefenseFlow.start — knockdown attack context', () => {
+  beforeEach(() => {
+    globalThis.game.settings.get = (_scope, key) =>
+      key === 'combatDefenseWorkflow';
+  });
+
+  it.each([
+    ['gel rounds', true, true],
+    ['ordinary ammo', false, false],
+    ['a weapon without the field', undefined, false],
+  ])('forwards %s to the damage decision', async (_label, loaded, expected) => {
+    const weapon = makeWeapon({ damageType: 'PHYSICAL' });
+    if (loaded !== undefined) weapon.system.gelRounds = loaded;
+
+    await DefenseFlow.start(makeDefender(), 'Actor.attacker1', 3, weapon);
+
+    const [, , , , options] = sendDecisionMessageMock.mock.calls[0];
+    expect(options.attack).toEqual({ gelRounds: expected });
+  });
+
+  it.each([
+    ['gel ammo is loaded', true, true],
+    ['ordinary ammo is loaded', false, false],
+  ])(
+    'flattens effectiveGelRounds onto the socket payload when %s',
+    async (_label, effectiveGelRounds, expected) => {
+      const target = { uuid: 'Actor.defender1' };
+      getValidTargetActorsMock.mockReturnValue([target]);
+      const weapon = {
+        type: 'Ranged Weapon',
+        system: {
+          damage: 6,
+          ap: 0,
+          damageType: 'PHYSICAL',
+          effectiveGelRounds,
+        },
+        toObject: () => ({ type: 'Ranged Weapon', system: {} }),
+      };
+
+      await emitDefenseTrigger({ uuid: 'Actor.attacker1' }, weapon, 3);
+
+      expect(emitSystemSocketMock).toHaveBeenCalledTimes(1);
+      const { payload } = emitSystemSocketMock.mock.calls[0][0];
+      expect(payload.weapon.system.gelRounds).toBe(expected);
+    }
+  );
+
+  it('also forwards it on the soak-workflow path', async () => {
+    globalThis.game.settings.get = () => true;
+    requestReactiveDecisionMock.mockImplementation(async (opts) =>
+      opts.dialogKind === 'DEFENSE' ? { successes: 3 } : { hits: 1 }
+    );
+    const weapon = makeWeapon({ damageType: 'PHYSICAL' });
+    weapon.system.gelRounds = true;
+
+    await DefenseFlow.start(makeDefender(), 'Actor.attacker1', 3, weapon);
+
+    const [, , , , options] = sendDecisionMessageMock.mock.calls[0];
+    expect(options.attack).toEqual({ gelRounds: true });
   });
 });

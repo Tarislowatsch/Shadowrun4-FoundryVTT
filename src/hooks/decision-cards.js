@@ -63,6 +63,60 @@ export function renderDecisionCard(
 }
 
 /**
+ * @param {import('@domains/combat/flow/apply-damage-flow.js').DamageDecisionEntry} entry
+ * @param {() => void} cleanup
+ * @param {string} messageId
+ * @returns {import('./chat-card-dom.js').ButtonConfig[]}
+ */
+export function buildDamageDecisionButtons(entry, cleanup, messageId) {
+  const damageType = entry.isPhysical
+    ? game.i18n.localize('sr4.damage.physical')
+    : game.i18n.localize('sr4.damage.stun');
+
+  let applied = false;
+
+  /**
+   * @param {number} amount
+   * @returns {Promise<void>}
+   */
+  const applyDamage = async (amount) => {
+    if (applied) return;
+    applied = true;
+    cleanup();
+    await resolveDamageDecision(messageId);
+    await ApplyDamageFlow.applyAndSend(
+      amount,
+      entry.isPhysical,
+      entry.actor,
+      entry.context,
+      { onApply: entry.onApply, attack: entry.attack }
+    );
+  };
+
+  return [
+    {
+      className: 'apply-damage',
+      label: `${game.i18n.localize('sr4.damage.apply')} (${entry.amount} ${damageType})`,
+      onClick: () => applyDamage(entry.amount),
+    },
+    {
+      className: 'modify-damage',
+      label: game.i18n.localize('sr4.damage.modify'),
+      once: false,
+      onClick: async () => {
+        const finalAmount = await openModifyDamageDialog(
+          entry.actor,
+          entry.amount,
+          entry.isPhysical
+        );
+        if (finalAmount === null) return;
+        await applyDamage(finalAmount);
+      },
+    },
+  ];
+}
+
+/**
  * @param {ChatMessage} chatMessage
  * @param {HTMLElement} html
  */
@@ -72,55 +126,8 @@ export function renderDamageDecisionCard(chatMessage, html) {
     getEntry: getDamageDecisionEntry,
     cardSelector: '.damage-decision-card',
     buttonWrapperClass: 'damage-decision-buttons',
-    /**
-     * @param {import('@domains/combat/flow/apply-damage-flow.js').DamageDecisionEntry} entry
-     * @param {() => void} cleanup
-     */
-    buildButtons: (entry, cleanup) => {
-      const damageType = entry.isPhysical
-        ? game.i18n.localize('sr4.damage.physical')
-        : game.i18n.localize('sr4.damage.stun');
-
-      return [
-        {
-          className: 'apply-damage',
-          label: `${game.i18n.localize('sr4.damage.apply')} (${entry.amount} ${damageType})`,
-          onClick: async () => {
-            cleanup();
-            await resolveDamageDecision(chatMessage.id);
-            await ApplyDamageFlow.applyAndSend(
-              entry.amount,
-              entry.isPhysical,
-              entry.actor,
-              entry.context,
-              entry.onApply
-            );
-          },
-        },
-        {
-          className: 'modify-damage',
-          label: game.i18n.localize('sr4.damage.modify'),
-          once: false,
-          onClick: async () => {
-            const finalAmount = await openModifyDamageDialog(
-              entry.actor,
-              entry.amount,
-              entry.isPhysical
-            );
-            if (finalAmount === null) return;
-            cleanup();
-            await resolveDamageDecision(chatMessage.id);
-            await ApplyDamageFlow.applyAndSend(
-              finalAmount,
-              entry.isPhysical,
-              entry.actor,
-              entry.context,
-              entry.onApply
-            );
-          },
-        },
-      ];
-    },
+    buildButtons: (entry, cleanup) =>
+      buildDamageDecisionButtons(entry, cleanup, chatMessage.id),
   });
 }
 

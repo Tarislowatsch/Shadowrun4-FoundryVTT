@@ -81,7 +81,7 @@
     "settings": {
       "ammoTracking": {
         "hint": "Wenn aktiv, verfolgen Waffen die Munition und ziehen sie bei jedem Angriff ab. Leere Waffen können nur nachgeladen werden. Burst-Feuer-Boni werden proportional reduziert wenn nicht genug Munition vorhanden ist.",
-        "name": "Munitionsverfolgung"
+        "name": "Kampf: Munitionsverfolgung"
       },
       "applyDamageWorkflow": {
         "hint": "Wenn aktiv, wird vor dem Anwenden von Schaden ein Dialog zur Bestätigung oder Anpassung angezeigt. Deaktivieren wendet Schaden sofort an.",
@@ -105,7 +105,7 @@
       },
       "conjuringDrain": {
         "hint": "Wenn aktiviert, berechnet sich der Entzug beim Beschwören, Binden und Verbannen von Geistern sowie beim Kompilieren, Registrieren und Dekompilieren von Sprites aus der halben Kraft bzw. Stufe (aufgerundet) zuzüglich der Erfolge der Gegenseite statt aus dem Doppelten ihrer Erfolge (Street Magic S. 31, Unwired S. 39).",
-        "name": "Alternativer Beschwörungs-Entzug"
+        "name": "Magie: Alternativer Beschwörungs-Entzug"
       },
       "decisionMode": {
         "choices": {
@@ -153,6 +153,7 @@
         "save": "Speichern",
         "sections": {
           "client": "Persönlich (nur dieser Client)",
+          "knockdown": "Niederschlag",
           "reactive": "Reaktive Entscheidungen",
           "timeouts": "Timeouts",
           "workflows": "Automatische Abläufe"
@@ -169,9 +170,26 @@
         "selectLabel": "Verteidiger",
         "unknownAttacker": "Unbekannt"
       },
+      "knockdownAutoThreshold": {
+        "hint": "Sobald die Niederschlagsregel für einen Angriff greift, wirft Schaden ab diesem Wert das Ziel unabhängig von seiner Konstitution zu Boden. 0 schaltet diesen Teil der Regel ab.",
+        "name": "Niederschlag: Automatische Grenze"
+      },
+      "knockdownBodyModifier": {
+        "hint": "Wird beim Vergleich mit dem Schaden auf die Konstitution des Ziels addiert. Positive Werte machen Niederschläge seltener, negative häufiger.",
+        "name": "Niederschlag: Konstitutions-Modifikator"
+      },
+      "knockdownRule": {
+        "choices": {
+          "always": "Bei jedem Angriff",
+          "gelOnly": "Nur bei Gel-Munition",
+          "off": "Aus"
+        },
+        "hint": "Ob Schaden aus einem einzelnen Angriff das Ziel zu Boden wirft, sobald er dessen Konstitution erreicht. „Nur bei Gel-Munition\" beschränkt den Konstitutions-Vergleich auf Munition, die als Gel-Munition markiert ist; die automatische Grenze gilt weiterhin für jeden Angriff. Standardmäßig aus.",
+        "name": "Niederschlagsregel"
+      },
       "liveInitiativeReduction": {
         "hint": "Passt den Initiativwert eines Kämpfers mitten im Durchgang automatisch an, wenn sich sein Initiative-Attribut oder Wundmodifikator ändert.",
-        "name": "Live-Initiativänderungen"
+        "name": "Kampf: Live-Initiativänderungen"
       },
       "npcSkillsMenu": {
         "filter": "Fertigkeiten filtern…",
@@ -216,15 +234,15 @@
       },
       "spiritCompendium": {
         "hint": "Kompendium-Pack für die Geist-Typ-Dropdowns im Magie-Tab. Leer lassen für Freitext-Eingabe.",
-        "name": "Geister-Kompendium"
+        "name": "Magie: Geister-Kompendium"
       },
       "spriteCompendium": {
         "hint": "Kompendium-Pack für die Sprite-Typ-Dropdowns im Matrix-Tab. Leer lassen für Freitext-Eingabe.",
-        "name": "Sprite-Kompendium"
+        "name": "Resonanz: Sprite-Kompendium"
       },
       "useDefaultEffectSheet": {
         "hint": "Wenn aktiv, öffnen aktive Effekte mit Foundrys eingebautem Sheet statt dem SR4-eigenen.",
-        "name": "Standard-Effekt-Sheet verwenden"
+        "name": "Darstellung: Standard-Effekt-Sheet verwenden"
       },
       "xmlImporter": {
         "hint": "Importiert Items aus externen XML-Statblock-Dateien in Welt-Kompendien.",

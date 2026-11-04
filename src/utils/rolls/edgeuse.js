@@ -111,6 +111,7 @@ export async function showEdgeDialog(options) {
             reroll: true,
             edgeAvailable: false,
             prevSuccesses: successes,
+            actor,
           });
           consumeEdge(
             actor,
@@ -132,6 +133,7 @@ export async function showEdgeDialog(options) {
             reroll: true,
             edgeAvailable: false,
             prevSuccesses: successes,
+            actor,
           });
           consumeEdge(
             actor,

@@ -1,10 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-
-const settingsGetMock = vi.fn();
-
-vi.mock('@utils/game', () => ({
-  getGame: () => globalThis.game,
-}));
+import { describe, it, expect } from 'vitest';
 
 import {
   getAvailableAffinities,
@@ -12,18 +6,6 @@ import {
   calculateSummoningDrain,
   SPIRIT_AFFINITY_CATEGORIES,
 } from '../src/domains/summoned-entity/dialogs/summoning-helpers.js';
-
-beforeEach(() => {
-  vi.clearAllMocks();
-
-  globalThis.game = {
-    settings: {
-      get: settingsGetMock,
-    },
-  };
-
-  settingsGetMock.mockReturnValue(false);
-});
 
 describe('SPIRIT_AFFINITY_CATEGORIES', () => {
   it('contains exactly the 5 spell categories', () => {
@@ -139,10 +121,6 @@ describe('clampForce', () => {
 
 describe('calculateSummoningDrain', () => {
   describe('default calculation', () => {
-    beforeEach(() => {
-      settingsGetMock.mockReturnValue(false);
-    });
-
     it.each([
       [3, 6],
       [5, 10],
@@ -166,10 +144,6 @@ describe('calculateSummoningDrain', () => {
   });
 
   describe('alternative calculation using Force', () => {
-    beforeEach(() => {
-      settingsGetMock.mockReturnValue(true);
-    });
-
     it.each([
       [1, 1],
       [2, 1],
@@ -182,25 +156,18 @@ describe('calculateSummoningDrain', () => {
     ])(
       'calculates ceil(Force / 2) for Force %i = %i',
       (force, expected, hits) => {
-        expect(calculateSummoningDrain(force, hits || 0)).toBe(expected);
+        expect(calculateSummoningDrain(force, hits || 0, 0, true)).toBe(
+          expected
+        );
       }
     );
 
     it('adds a positive modifier to the alternative formula', () => {
-      expect(calculateSummoningDrain(5, 3, 2)).toBe(8);
+      expect(calculateSummoningDrain(5, 3, 2, true)).toBe(8);
     });
 
     it('adds a negative modifier to the alternative formula', () => {
-      expect(calculateSummoningDrain(5, 3, -1)).toBe(5);
-    });
-
-    it('uses the conjuringDrain setting', () => {
-      calculateSummoningDrain(5, 3, 2);
-
-      expect(settingsGetMock).toHaveBeenCalledWith(
-        'shadowrun4e',
-        'conjuringDrain'
-      );
+      expect(calculateSummoningDrain(5, 3, -1, true)).toBe(5);
     });
   });
 });

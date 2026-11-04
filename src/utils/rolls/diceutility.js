@@ -70,9 +70,6 @@ export class DiceUtility {
   static async followUpRoll(options) {
     const roll = await new Roll(buildRollFormula(options)).roll();
     const { successes, failures, rolls } = DiceUtility.determineSuccess(roll);
-    if (options.explode && options.actor) {
-      await options.actor.useEdge();
-    }
     const totalSuccesses = successes + (options.prevSuccesses ?? 0);
     await this.showResults({
       successes: totalSuccesses,
@@ -146,7 +143,7 @@ export class DiceUtility {
       patch = watchDiceTotalPatch(successes);
 
       const message = await roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ alias: templateData.actorName }),
+        speaker: ChatMessage.getSpeaker({ actor }),
         flavor: content,
         flags: {
           [SYSTEM_ID]: {
@@ -158,7 +155,7 @@ export class DiceUtility {
             isGlitch: glitch,
             successes,
             rolledDice: rolls.length,
-            options,
+            options: { ...options, actor: undefined },
           },
         },
       });

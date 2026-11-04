@@ -309,29 +309,21 @@ describe('BindingFlow.start — drain', () => {
 });
 
 describe('BindingFlow.start — alternative conjuring drain setting', () => {
-  let originalSettings;
   let summoningDrainEnabled;
   let drainResults;
 
   beforeEach(() => {
-    originalSettings = globalThis.game.settings;
     summoningDrainEnabled = true;
     drainResults = [];
 
-    globalThis.game.settings = {
-      get: (namespace, key) =>
-        key === 'conjuringDrain'
-          ? summoningDrainEnabled
-          : originalSettings?.get?.(namespace, key),
-    };
-
     resolveSpiritDrainMock.mockImplementation(async (_actor, force, hits) => {
-      drainResults.push(calculateSummoningDrain(force, hits));
+      drainResults.push(
+        calculateSummoningDrain(force, hits, 0, summoningDrainEnabled)
+      );
     });
   });
 
   afterEach(() => {
-    globalThis.game.settings = originalSettings;
     resolveSpiritDrainMock.mockReset();
   });
 

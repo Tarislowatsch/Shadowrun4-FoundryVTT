@@ -154,7 +154,7 @@ export function isYes(value) {
 /**
  * @typedef {object} ParsedDamage
  * @property {number} damage
- * @property {string} damageType - One of PHYSICAL, STUN, ELECTRICITY, FIRE.
+ * @property {string} damageType - One of PHYSICAL, STUN, ELECTRICITY, FIRE, ACID, ICE.
  * @property {boolean} strengthBased - True for Strength-scaling melee damage.
  */
 

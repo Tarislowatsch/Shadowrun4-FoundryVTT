@@ -34,16 +34,20 @@ describe('ApplyDamageFlow.sendDecisionMessage — card cannot be created', () =>
       .mockResolvedValue(undefined);
     const actor = makeActor();
     const onApply = vi.fn();
+    const attack = { gelRounds: true };
 
     const result = await ApplyDamageFlow.sendDecisionMessage(
       actor,
       5,
       true,
       'combat',
-      { onApply }
+      { onApply, attack }
     );
 
-    expect(applySpy).toHaveBeenCalledWith(5, true, actor, 'combat', onApply);
+    expect(applySpy).toHaveBeenCalledWith(5, true, actor, 'combat', {
+      onApply,
+      attack,
+    });
     expect(result).toBeNull();
     expect(console.error).toHaveBeenCalled();
   });

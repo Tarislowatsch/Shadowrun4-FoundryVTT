@@ -4,6 +4,7 @@ import { createSR4CombatTracker } from '@sheets/combat/sr4-combat-tracker.js';
 import {
   SR4ActiveEffect,
   EFFECT_TEMPLATES,
+  SR4_STATUS_EFFECTS,
   getWorldEffectTemplates,
   getAllEffectTemplates,
   resolveEffectTemplate,
@@ -158,38 +159,7 @@ Hooks.once('init', async function () {
   CONFIG.Combat.documentClass = SR4Combat;
   CONFIG.ui.combat = createSR4CombatTracker();
   CONFIG.ActiveEffect.documentClass = SR4ActiveEffect;
-  CONFIG.statusEffects.push(
-    {
-      id: 'sr4-sustain',
-      label: 'sr4.effect.templates.sustain',
-      img: 'icons/svg/aura.svg',
-    },
-    {
-      id: 'sr4-disoriented',
-      label: 'sr4.effect.templates.disoriented',
-      img: 'icons/svg/stoned.svg',
-    },
-    {
-      id: 'sr4-blind',
-      label: 'sr4.effect.templates.blind',
-      img: 'icons/svg/blind.svg',
-    },
-    {
-      id: 'sr4-blind-flare-comp',
-      label: 'sr4.effect.templates.blindFlareComp',
-      img: 'icons/svg/blind.svg',
-    },
-    {
-      id: 'sr4-knocked-down',
-      label: 'sr4.effect.templates.knockedDown',
-      img: 'icons/svg/falling.svg',
-    },
-    {
-      id: 'sr4-dumpshocked',
-      label: 'sr4.effect.templates.dumpshocked',
-      img: 'icons/svg/stoned.svg',
-    }
-  );
+  CONFIG.statusEffects.push(...SR4_STATUS_EFFECTS);
   CONFIG.Actor.prototypeToken = {
     actorLink: true,
   };

@@ -14,6 +14,10 @@ const SECTIONS = [
     ],
   },
   {
+    label: 'sr4.settings.flowSettingsMenu.sections.knockdown',
+    keys: ['knockdownRule', 'knockdownAutoThreshold', 'knockdownBodyModifier'],
+  },
+  {
     label: 'sr4.settings.flowSettingsMenu.sections.reactive',
     keys: [
       'decisionMode',
@@ -32,7 +36,7 @@ const SECTIONS = [
   },
 ];
 
-const FLOW_KEYS = SECTIONS.flatMap((section) => section.keys);
+export const FLOW_KEYS = SECTIONS.flatMap((section) => section.keys);
 const CUSTOM_KEYS = new Set([
   'decisionModeCombat',
   'decisionModeMagic',

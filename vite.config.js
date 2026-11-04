@@ -24,7 +24,6 @@ function copyStaticPlugin(outDir, isWatch) {
       copyDir('src/assets', path.join(outDir, 'assets'));
       copyDir('src/lang', path.join(outDir, 'lang'));
       fs.copyFileSync('system.json', path.join(outDir, 'system.json'));
-      fs.copyFileSync('template.json', path.join(outDir, 'template.json'));
       if (!isWatch) copyDir('packs', path.join(outDir, 'packs'));
     },
   };

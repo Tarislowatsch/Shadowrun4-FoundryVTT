@@ -8,6 +8,7 @@ const fields = foundry.data.fields;
  * @property {number} apBonus
  * @property {string} damageTypeOverride
  * @property {number|null} damageOverride
+ * @property {boolean} gelRounds
  * @property {number} quantity
  */
 
@@ -24,6 +25,7 @@ export class SR4AmmoData extends foundry.abstract.TypeDataModel {
         nullable: true,
         integer: true,
       }),
+      gelRounds: new fields.BooleanField({ initial: false }),
     };
   }
 }

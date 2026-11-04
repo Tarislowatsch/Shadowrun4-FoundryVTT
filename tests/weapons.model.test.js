@@ -127,6 +127,18 @@ describe('SR4RangedWeaponData.prepareDerivedData', () => {
       expect(prepareWeapon().loadedAmmoName).toBeNull();
     });
 
+    it('effectiveGelRounds is false without ammo', () => {
+      expect(prepareWeapon().effectiveGelRounds).toBe(false);
+    });
+
+    it.each([
+      ['gel ammo', { gelRounds: true }, true],
+      ['ordinary ammo', { gelRounds: false }, false],
+      ['ammo predating the field', {}, false],
+    ])('derives effectiveGelRounds from %s', (_label, ammo, expected) => {
+      expect(prepareWeapon({}, ammo).effectiveGelRounds).toBe(expected);
+    });
+
     // Parametrised: weapon damage type → effectiveApHalf / effectiveArmorType
     it.each([
       ['PHYSICAL', 'ballistic', false, 'ballistic'],

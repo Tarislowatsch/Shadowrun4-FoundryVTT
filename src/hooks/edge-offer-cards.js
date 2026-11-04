@@ -67,6 +67,7 @@ export function appendEdgeButton(chatMessage, html) {
         cleanup();
         await DiceUtility.followUpRoll({
           ...options,
+          actor,
           numDice: rolledDice - 1,
           prevSuccesses: successes,
           reroll: false,
@@ -80,8 +81,10 @@ export function appendEdgeButton(chatMessage, html) {
         label: game.i18n.localize('sr4.roll.extendEdge'),
         onClick: async () => {
           cleanup();
+          await actor?.useEdge();
           await DiceUtility.followUpRoll({
             ...options,
+            actor,
             numDice: rolledDice - 1 + (actor?.sheetStats.EDGE ?? 0),
             explode: true,
             prevSuccesses: successes,
@@ -152,6 +155,7 @@ export function renderInitiativeEdgeCard(chatMessage, html) {
           payload: { messageId: chatMessage.id },
         });
       }
+      await actor.useEdge();
       const total = await DiceUtility.followUpRoll({
         numDice: actor.getAttribute('EDGE') ?? 6,
         explode: true,

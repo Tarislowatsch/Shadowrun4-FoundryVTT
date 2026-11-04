@@ -81,7 +81,7 @@
     "settings": {
       "ammoTracking": {
         "hint": "When enabled, weapons track and deduct ammunition on each attack. Empty weapons can only be reloaded. Burst fire bonuses are reduced proportionally when insufficient ammo is available.",
-        "name": "Ammo Tracking"
+        "name": "Combat: Ammo Tracking"
       },
       "applyDamageWorkflow": {
         "hint": "When enabled, a dialog is shown before applying damage, allowing confirmation or adjustment. Disabling applies damage immediately.",
@@ -89,7 +89,7 @@
       },
       "conjuringDrain": {
         "hint": "When enabled, drain from summoning, binding and banishing spirits and fading from compiling, registering and decompiling sprites is half the Force/Rating (rounded up) plus the hits scored by the opposing entity, instead of twice its hits (Street Magic p. 31, Unwired p. 39).",
-        "name": "Alternative Conjuring Drain"
+        "name": "Magic: Alternative Conjuring Drain"
       },
       "autoSustainEffect": {
         "hint": "Automatically create a sustain active effect when a sustained spell is cast.",
@@ -153,6 +153,7 @@
         "save": "Save",
         "sections": {
           "client": "Personal (this client only)",
+          "knockdown": "Knockdown",
           "reactive": "Reactive Decisions",
           "timeouts": "Timeouts",
           "workflows": "Automatic Workflows"
@@ -169,9 +170,26 @@
         "selectLabel": "Defender",
         "unknownAttacker": "Unknown"
       },
+      "knockdownAutoThreshold": {
+        "hint": "Once the knockdown rule applies to an attack, damage at or above this value knocks the target down regardless of its Body. Set to 0 to disable this part of the rule.",
+        "name": "Knockdown: Automatic Threshold"
+      },
+      "knockdownBodyModifier": {
+        "hint": "Added to the target's Body when comparing it against the damage. Positive values make knockdowns rarer, negative values more common.",
+        "name": "Knockdown: Body Modifier"
+      },
+      "knockdownRule": {
+        "choices": {
+          "always": "Every attack",
+          "gelOnly": "Only gel rounds",
+          "off": "Off"
+        },
+        "hint": "Whether damage from a single attack knocks the target down when it reaches its Body. \"Only gel rounds\" restricts the Body comparison to ammunition flagged as gel rounds; the automatic threshold still applies to every attack. Off by default.",
+        "name": "Knockdown Rule"
+      },
       "liveInitiativeReduction": {
         "hint": "Automatically adjust a combatant's Initiative Score mid-turn when their Initiative attribute or wound modifier changes.",
-        "name": "Live Initiative Changes"
+        "name": "Combat: Live Initiative Changes"
       },
       "npcSkillsMenu": {
         "filter": "Filter skills…",
@@ -216,15 +234,15 @@
       },
       "spiritCompendium": {
         "hint": "Compendium pack used to populate spirit type dropdowns on the Magic tab. Leave blank to use free-text input.",
-        "name": "Spirit Compendium"
+        "name": "Magic: Spirit Compendium"
       },
       "spriteCompendium": {
         "hint": "Compendium pack used to populate sprite type dropdowns on the Matrix tab. Leave blank to use free-text input.",
-        "name": "Sprite Compendium"
+        "name": "Resonance: Sprite Compendium"
       },
       "useDefaultEffectSheet": {
         "hint": "When enabled, active effects open with Foundry's built-in sheet instead of the SR4 custom sheet.",
-        "name": "Use Default Effect Sheet"
+        "name": "Display: Use Default Effect Sheet"
       },
       "xmlImporter": {
         "hint": "Import items from external XML statblock files into world compendia.",

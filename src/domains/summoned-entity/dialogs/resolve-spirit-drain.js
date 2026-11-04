@@ -1,4 +1,6 @@
+import { SR4 } from '@config';
 import { localize } from '@utils/dialog';
+import { getGame } from '@utils/game';
 import { resolveDrain, calculateSummonedEntityDrainPool } from './drain.js';
 import { calculateSummoningDrain } from './summoning-helpers.js';
 import { getEffectiveDrainModifier } from '@utils/scene/scene-modifiers.js';
@@ -23,7 +25,8 @@ export async function resolveSpiritDrain(
   const drainValue = calculateSummoningDrain(
     force,
     hits,
-    isSprite ? 0 : getEffectiveDrainModifier(actor)
+    isSprite ? 0 : getEffectiveDrainModifier(actor),
+    Boolean(getGame().settings.get(SR4.namespace, 'conjuringDrain'))
   );
 
   const isPhysical =

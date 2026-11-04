@@ -63,7 +63,7 @@ function computeTotalCost(mods, baseCost) {
  * @param {object} system
  * @param {object|null} ammo
  * @param {any[]} mods
- * @returns {{ effectiveDamage: number, effectiveAP: number, effectiveRC: number, effectiveSmartlink: boolean, effectiveDamageType: string, effectiveApHalf: boolean, effectiveArmorType: string, loadedAmmoName: string|null, usedModSlots: number, modSlotWarning: boolean, totalCost: number }}
+ * @returns {{ effectiveDamage: number, effectiveAP: number, effectiveRC: number, effectiveSmartlink: boolean, effectiveDamageType: string, effectiveApHalf: boolean, effectiveArmorType: string, effectiveGelRounds: boolean, loadedAmmoName: string|null, usedModSlots: number, modSlotWarning: boolean, totalCost: number }}
  */
 export function computeRangedWeaponDerived(system, ammo, mods) {
   const ammoDamageOverride = ammo?.system?.damageOverride;
@@ -99,6 +99,7 @@ export function computeRangedWeaponDerived(system, ammo, mods) {
     effectiveDamageType,
     effectiveApHalf,
     effectiveArmorType,
+    effectiveGelRounds: !!ammo?.system?.gelRounds,
     loadedAmmoName: ammo?.name ?? null,
     usedModSlots,
     modSlotWarning:

@@ -1,5 +1,3 @@
-import { SR4 } from '@config';
-import { getGame } from '@utils/game';
 import { clamp, resistanceValueFromHits } from '@utils/math.js';
 
 export const SPIRIT_AFFINITY_CATEGORIES = [
@@ -37,10 +35,16 @@ export function clampForce(rawForce, maxForce) {
  * @param {number} force
  * @param {number} spiritHits
  * @param {number} [modifier]
+ * @param {boolean} [alternative]
  * @returns {number}
  */
-export function calculateSummoningDrain(force, spiritHits, modifier = 0) {
-  if (getGame().settings.get(SR4.namespace, 'conjuringDrain')) {
+export function calculateSummoningDrain(
+  force,
+  spiritHits,
+  modifier = 0,
+  alternative = false
+) {
+  if (alternative) {
     return Math.ceil(force / 2) + spiritHits + modifier;
   }
   return resistanceValueFromHits(spiritHits, 2) + modifier;

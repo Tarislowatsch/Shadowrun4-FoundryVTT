@@ -1,7 +1,13 @@
 import { getGame } from '@utils/index';
+import {
+  applyKnockdown,
+  KNOCKDOWN_CONTEXTS,
+} from '@models/shared/knockdown-rules.js';
 import { createDecisionRegistry } from '@utils/decision-registry.js';
 import { SYSTEM_ID } from '@utils/game/system-id.js';
 import { SR4 } from '@config';
+
+/** @typedef {import('@models/shared/knockdown-rules.js').SR4AttackContext} SR4AttackContext */
 
 /**
  * @typedef {object} DamageDecisionEntry
@@ -11,6 +17,7 @@ import { SR4 } from '@config';
  * @property {string} context
  * @property {string | undefined} hint
  * @property {(() => Promise<void>) | undefined} onApply
+ * @property {SR4AttackContext | undefined} attack
  */
 
 /** @type {ReturnType<typeof createDecisionRegistry<DamageDecisionEntry>>} */
@@ -242,7 +249,7 @@ export class ApplyDamageFlow {
    * @param {number} amount
    * @param {boolean} isPhysical
    * @param {string} context
-   * @param {{ edgeOfferIds?: string[], hint?: string, onApply?: () => Promise<void> }} [options]
+   * @param {{ edgeOfferIds?: string[], hint?: string, onApply?: () => Promise<void>, attack?: SR4AttackContext }} [options]
    * @returns {Promise<string | null>} the ChatMessage id, or null when the workflow is disabled
    */
   static async sendDecisionMessage(
@@ -250,16 +257,13 @@ export class ApplyDamageFlow {
     amount,
     isPhysical,
     context,
-    { hint, onApply } = {}
+    { hint, onApply, attack } = {}
   ) {
     if (!getGame().settings.get(SR4.namespace, 'applyDamageWorkflow')) {
-      await ApplyDamageFlow.applyAndSend(
-        amount,
-        isPhysical,
-        actor,
-        context,
-        onApply
-      );
+      await ApplyDamageFlow.applyAndSend(amount, isPhysical, actor, context, {
+        onApply,
+        attack,
+      });
       return null;
     }
 
@@ -293,13 +297,10 @@ export class ApplyDamageFlow {
       console.error(
         `SR4 | damage decision card could not be created for ${actor.name}, applying damage directly`
       );
-      await ApplyDamageFlow.applyAndSend(
-        amount,
-        isPhysical,
-        actor,
-        context,
-        onApply
-      );
+      await ApplyDamageFlow.applyAndSend(amount, isPhysical, actor, context, {
+        onApply,
+        attack,
+      });
       return null;
     }
 
@@ -310,6 +311,7 @@ export class ApplyDamageFlow {
       context,
       hint,
       onApply,
+      attack,
     });
 
     return message.id;
@@ -320,10 +322,16 @@ export class ApplyDamageFlow {
    * @param {boolean} isPhysical
    * @param {import('@documents/index').SR4Actor} actor
    * @param {string} context
-   * @param {(() => Promise<void>) | undefined} [onApply]
+   * @param {{ onApply?: () => Promise<void>, attack?: SR4AttackContext }} [options]
    * @returns {Promise<void>}
    */
-  static async applyAndSend(amount, isPhysical, actor, context, onApply) {
+  static async applyAndSend(
+    amount,
+    isPhysical,
+    actor,
+    context,
+    { onApply, attack } = {}
+  ) {
     const messages = await ApplyDamageFlow.apply(
       amount,
       isPhysical,
@@ -332,6 +340,13 @@ export class ApplyDamageFlow {
     );
     if (messages.length > 0)
       await ApplyDamageFlow.sendMessages(messages, actor);
+    if (KNOCKDOWN_CONTEXTS.has(context)) {
+      try {
+        await applyKnockdown(actor, amount, attack);
+      } catch (error) {
+        console.error(`SR4 | knockdown check failed for ${actor.name}`, error);
+      }
+    }
     if (onApply) await onApply();
   }
 

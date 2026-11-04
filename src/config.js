@@ -1,3 +1,5 @@
+import { SYSTEM_ID } from '@utils/game/system-id.js';
+
 /**
  * @typedef {object} SR4Rules
  * @property {number} successThreshold
@@ -16,7 +18,7 @@
 /**
  * @typedef {object} SR4Config
  *
- * @property {string} namespace Namespace für game.settings (entspricht der System-ID aus system.json)
+ * @property {string} namespace Namespace für game.settings (muss der System-ID aus system.json entsprechen)
  *
  * @property {SR4Rules} rules
  *
@@ -59,7 +61,7 @@
 
 /** @type {SR4Config} */
 export const SR4 = {
-  namespace: 'shadowrun4e',
+  namespace: SYSTEM_ID,
   rules: {
     successThreshold: 5,
     conditionMonitorBase: 8,

@@ -9,6 +9,7 @@
           <th>{{localize 'sr4.ammo.damageOverride'}}</th>
           <th>{{localize 'sr4.ammo.apBonus'}}</th>
           <th>{{localize 'sr4.ammo.damageTypeOverride'}}</th>
+          <th data-tooltip="{{localize 'sr4.ammo.gelRoundsHint'}}">{{localize 'sr4.ammo.gelRounds'}}</th>
           <th>{{localize 'sr4.ammo.category'}}</th>
           <th>{{localize 'sr4.ammo.quantity'}}</th>
           <th>{{localize 'sr4.weapon.avail'}}</th>
@@ -27,6 +28,9 @@
               <option value="" {{#unless system.damageTypeOverride}}selected{{/unless}}>—</option>
               {{selectOptions damagetypes selected=system.damageTypeOverride localize=true}}
             </select>
+          </td>
+          <td>
+            <input type="checkbox" class="sr4-checkbox" data-field="system.gelRounds" {{#if system.gelRounds}}checked{{/if}} />
           </td>
           <td>
             <select name="system.category">

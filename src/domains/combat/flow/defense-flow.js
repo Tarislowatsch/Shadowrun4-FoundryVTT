@@ -35,6 +35,7 @@ function buildWeaponSnapshot(weapon) {
       damageType: sys.effectiveDamageType ?? sys.damageType,
       armorType: sys.effectiveArmorType ?? sys.armorType,
       apHalf: sys.effectiveApHalf ?? false,
+      gelRounds: sys.effectiveGelRounds ?? false,
     },
   };
 }
@@ -326,6 +327,7 @@ export class DefenseFlow {
     const elementResistance = getElementResistance(defender, dt);
     const hint = elementRules.hint;
     const onApply = buildElementOnApply(dt, defender, netSuccesses);
+    const attack = { gelRounds: weapon.system.gelRounds ?? false };
 
     if (!getGame().settings.get(SR4.namespace, 'combatSoakWorkflow')) {
       await ApplyDamageFlow.sendDecisionMessage(
@@ -333,7 +335,7 @@ export class DefenseFlow {
         baseDamage,
         isPhysical,
         'combat',
-        { hint, onApply }
+        { hint, onApply, attack }
       );
       return;
     }
@@ -387,7 +389,7 @@ export class DefenseFlow {
       finalDamage,
       isPhysical,
       'combat',
-      { hint, onApply }
+      { hint, onApply, attack }
     );
   }
 }

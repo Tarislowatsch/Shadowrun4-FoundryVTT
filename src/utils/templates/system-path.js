@@ -1,4 +1,4 @@
-export const SYSTEM_ID = 'shadowrun4e';
+import { SYSTEM_ID } from '../game/system-id.js';
 
 /**
  * @param {string} relative

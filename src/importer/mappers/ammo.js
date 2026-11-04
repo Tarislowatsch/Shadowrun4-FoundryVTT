@@ -20,6 +20,27 @@ function parseAmmoDamageType(raw) {
   return /^[sg]/i.test(code) ? dt.STUN : dt.PHYSICAL;
 }
 
+/**
+ * @param {unknown} [raw]
+ * @returns {boolean}
+ */
+function isGelDamageCode(raw) {
+  const str = String(raw ?? '').trim();
+  if (!str) return false;
+  return /^g/i.test(str.replace(/\([^)]*\)/g, ''));
+}
+
+/**
+ * @param {Record<string, unknown>} record
+ * @param {Record<string, unknown>|null} [bonusSource]
+ * @returns {boolean}
+ */
+export function isGelAmmo(record, bonusSource) {
+  if (isGelDamageCode(bonusSource?.damagereplace || bonusSource?.damagetype))
+    return true;
+  return /\bgel\b/i.test(englishOr(record, 'name'));
+}
+
 /** @type {{ damageBonus: number, apBonus: number, damageTypeOverride: string, damageOverride: number|null }} */
 export const EMPTY_WEAPON_BONUS = Object.freeze({
   damageBonus: 0,
@@ -127,14 +148,10 @@ export function resolveAmmoWeaponCategory(record, weaponCategoryTranslations) {
  * @returns {{ name: string, type: string, system: object }}
  */
 export function mapAmmo(record, weaponCategoryTranslations) {
-  const flat = parseFlatWeaponBonus(record);
-  const bonus = hasWeaponBonus(record)
-    ? mapWeaponBonus(
-        /** @type {Record<string, unknown>} */ (record.weaponbonus)
-      )
-    : flat
-      ? mapWeaponBonus(flat)
-      : EMPTY_WEAPON_BONUS;
+  const bonusSource = hasWeaponBonus(record)
+    ? /** @type {Record<string, unknown>} */ (record.weaponbonus)
+    : parseFlatWeaponBonus(record);
+  const bonus = bonusSource ? mapWeaponBonus(bonusSource) : EMPTY_WEAPON_BONUS;
   return {
     name: mappedName(record, 'Unnamed Ammo'),
     type: 'Ammo',
@@ -144,6 +161,7 @@ export function mapAmmo(record, weaponCategoryTranslations) {
       quantity: parseNumber(record.qty, 0),
       source: sourceOf(record),
       ...bonus,
+      gelRounds: isGelAmmo(record, bonusSource),
       category:
         XML_CATEGORY_TO_ENUM[
           resolveAmmoWeaponCategory(record, weaponCategoryTranslations)

@@ -484,7 +484,50 @@ describe('gear mapper', () => {
       apBonus: 2,
       damageBonus: -1,
       damageTypeOverride: 'STUN',
+      gelRounds: true,
     });
+  });
+
+  it('flags the "G" damage code of older data sets as gel rounds', () => {
+    const item = mapGear({
+      name: 'Ammo: Impact Rounds',
+      category: 'Ammunition',
+      weaponbonus: { ap: '2', damage: '-1', damagetype: 'G' },
+    });
+    expect(item.system.gelRounds).toBe(true);
+  });
+
+  it.each([
+    ['Ammo: APDS', { ap: '-4' }],
+    ['Ammo: Regular Ammo', {}],
+    ['Ammo: Stick-n-Shock', { damage: '-1', damagetype: '(e)' }],
+    ['Ammo: Gelatin Rounds', { damage: '-1', damagetype: 'S' }],
+  ])('does not flag %s as gel rounds', (name, weaponbonus) => {
+    const item = mapGear({ name, category: 'Ammunition', weaponbonus });
+    expect(item.system.gelRounds).toBe(false);
+  });
+
+  it.each([
+    ['a G damage code', '-1G', true],
+    ['an S damage code', '-1S', false],
+  ])(
+    'reads %s off the flat weaponbonus path without help from the name',
+    (_label, weaponbonusdamage, expected) => {
+      const item = mapGear({
+        name: 'Ammo: Impact Rounds',
+        category: 'Ammunition',
+        extra: 'Heavy Pistols',
+        weaponbonusdamage,
+        weaponbonusap: '+2',
+      });
+      expect(item.system.gelRounds).toBe(expected);
+    }
+  );
+
+  it('does not leak gelRounds into weapon mods', () => {
+    expect(
+      mapWeaponMod({ name: 'Gel-Filled Grip' }).system.gelRounds
+    ).toBeUndefined();
   });
 
   it('maps Flechette (P(f) stays physical) as Ammo', () => {

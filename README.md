@@ -18,7 +18,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 * Ranged & melee weapons, with weapon mods
 * Armor, with armor mods
-* Ammunition
+* Ammunition, with a gel rounds flag that lowers the target's Body when checking for knockdown
 * Cyberware / bioware (implants), with essence scaled by Biocompatibility and Sensitive System qualities
 * Commlinks, programs, and autosofts
 * Spells, adept/critter powers, foci, and fetishes
@@ -76,6 +76,7 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 * Ammunition tracking on weapon attacks
 * Combat spell defense (direct mana/physical resist, indirect dodge & soak)
 * Configurable damage application workflow (world setting)
+* Knockdown: damage from a single attack that reaches the target's Body knocks it down, as does damage at or above a configurable threshold; applies the Knocked Down effect and reports it in chat. Only attacks count (weapons and combat spells), not drain, dumpshock or Black IC. Opt-in, off by default — see the flow settings menu
 * Full SR4 elemental damage type set (Acid, Radiation, Sound, Ice, Metal, Sand, Smoke, Water) with matching armor/AP rules
 * "Shadowrun" scene controls group with Free Roll and GM Scene Modifiers (Background Count) toolbar buttons
 
@@ -89,12 +90,14 @@ A custom implementation of **Shadowrun 4th Edition** for Foundry Virtual Tableto
 
 ### Combat & Reaction Flows (menu)
 
-All combat, magic, and matrix flow settings live in a dedicated **"Combat & Reaction Flows"** menu that groups them into automatic workflows, reactive decisions, timeouts, and personal (client) settings. World settings stay GM-only; players can still adjust their personal ones from the same menu.
+All combat, magic, and matrix flow settings live in a dedicated **"Combat & Reaction Flows"** menu that groups them into automatic workflows, knockdown, reactive decisions, timeouts, and personal (client) settings. World settings stay GM-only; players can still adjust their personal ones from the same menu.
 
 * Combat defense workflow toggle, with automatic soak sub-toggle (soak disables when defense is off)
 * Cybercombat workflow toggle
 * GM defender picker for untargeted attacks
 * Damage application workflow toggle
+* **Knockdown rule** (default off): on every attack, or only for ammunition flagged as gel rounds (the automatic threshold still applies to every attack)
+* Automatic knockdown threshold (default 10, `0` disables that half of the rule) and a global Body modifier to make knockdowns rarer or more common
 * **Reactive decision mode**: how reactive rolls (defense, soak, resist, dumpshock) are requested from the affected player — a **dialog** that opens immediately, or a public **chat button** that opens the same dialog when the responsible player clicks it. No click within the timeout auto-resolves with the dialog's standard pool.
 * **Custom mode**: pick the decision mode per category (Combat / Magic / Matrix) — these options appear only when the global mode is set to Custom.
 * Edge decision timeout and opposed-roll timeout for interactive flows
