@@ -3,16 +3,22 @@
 const FLAG_SCOPE = 'shadowrun4e';
 const FLAG_KEY = 'sceneModifiers';
 
-/** @type {{ backgroundCount: number, backgroundCountTradition: string, mysticAdeptReduction: string }} */
+/**
+ * @typedef {{ backgroundCount: number, backgroundCountTradition: string, mysticAdeptReduction: string, light: string, obscurant: string }} SceneModifiers
+ */
+
+/** @type {SceneModifiers} */
 const DEFAULTS = {
   backgroundCount: 0,
   backgroundCountTradition: '',
   mysticAdeptReduction: 'spellpower',
+  light: 'normal',
+  obscurant: 'none',
 };
 
 /**
  * @param {object} [scene]
- * @returns {{ backgroundCount: number, backgroundCountTradition: string, mysticAdeptReduction: string }}
+ * @returns {SceneModifiers}
  */
 export function getSceneModifiers(scene) {
   const stored = scene?.getFlag?.(FLAG_SCOPE, FLAG_KEY) ?? {};
@@ -28,8 +34,17 @@ export function getBackgroundCount(scene) {
 }
 
 /**
+ * @param {object} [scene]
+ * @returns {{ light: string, obscurant: string }}
+ */
+export function getSceneVisibility(scene) {
+  const { light, obscurant } = getSceneModifiers(scene);
+  return { light, obscurant };
+}
+
+/**
  * @param {object} scene
- * @param {Partial<{ backgroundCount: number, backgroundCountTradition: string }>} data
+ * @param {Partial<SceneModifiers>} data
  * @returns {Promise<object>}
  */
 export function setSceneModifiers(scene, data) {

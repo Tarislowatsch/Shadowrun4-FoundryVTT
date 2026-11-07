@@ -46,13 +46,13 @@
     "verified": "14"
   },
   "description": "Shadowrun 4th Edition System for Foundry VTT",
-  "download": "https://github.com/Tarislowatsch/Shadowrun4-FoundryVTT/releases/download/v1.28.0/shadowrun4e.zip",
+  "download": "https://github.com/Tarislowatsch/Shadowrun4-FoundryVTT/releases/download/v1.29.0/shadowrun4e.zip",
   "esmodules": [
     "shadowrun4e.js"
   ],
   "grid": {
-    "Units": "m",
-    "distance": 5
+    "distance": 1,
+    "units": "m"
   },
   "id": "shadowrun4e",
   "initiative": {
@@ -96,6 +96,11 @@
       "path": "lang/en.labels.json"
     },
     {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.release-notes.json"
+    },
+    {
       "lang": "de",
       "name": "Deutsch",
       "path": "lang/de.json"
@@ -129,6 +134,11 @@
       "lang": "de",
       "name": "Deutsch",
       "path": "lang/de.labels.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.release-notes.json"
     }
   ],
   "manifest": "https://raw.githubusercontent.com/Tarislowatsch/Shadowrun4-FoundryVTT/main/system.json",
@@ -153,5 +163,5 @@
     "style.css"
   ],
   "title": "Shadowrun 4th Edition",
-  "version": "1.28.0"
+  "version": "1.29.0"
 }

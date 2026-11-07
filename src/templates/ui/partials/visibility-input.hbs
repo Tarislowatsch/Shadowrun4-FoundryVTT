@@ -1,0 +1,43 @@
+{{#if senses}}
+<div class="form-group">
+  <label for="sense">{{localize "sr4.visibility.sense.label"}}</label>
+  <select id="sense" name="sense">
+    {{#each senses.options}}
+    <option value="{{this.value}}" data-bonus="{{this.bonus}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+    {{/each}}
+  </select>
+</div>
+<div class="form-group">
+  <label for="senseBonus">{{localize "sr4.visibility.sense.bonus"}}</label>
+  <input type="number" id="senseBonus" name="senseBonus" value="{{senses.bonus}}" readonly />
+</div>
+{{/if}}
+{{#if visibility}}
+<details class="sr4-visibility" data-flare-compensation="{{visibility.flareCompensation}}" {{#if visibility.active}}open{{/if}}>
+  <summary>{{localize "sr4.scene.modifiers.visibility.section"}}</summary>
+  <div class="form-group">
+    <label for="visibilityMalus">
+      {{localize "sr4.visibility.malus"}}
+      {{> tooltip text=(localize "sr4.tooltip.visibility")}}
+    </label>
+    <input type="number" id="visibilityMalus" name="visibilityMalus" value="{{visibility.malus}}" min="0" />
+  </div>
+  <div class="form-group visibility-conditions">
+    <select id="visibilityLight" name="visibilityLight" aria-label="{{localize "sr4.scene.modifiers.visibility.light.name"}}">
+      {{#each visibility.lightOptions}}
+      <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+      {{/each}}
+    </select>
+    <select id="visibilityObscurant" name="visibilityObscurant" aria-label="{{localize "sr4.scene.modifiers.visibility.obscurant.name"}}">
+      {{#each visibility.obscurantOptions}}
+      <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+      {{/each}}
+    </select>
+    <select id="visionMode" name="visionMode" aria-label="{{localize "sr4.visibility.vision.label"}}">
+      {{#each visibility.modeOptions}}
+      <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+      {{/each}}
+    </select>
+  </div>
+</details>
+{{/if}}

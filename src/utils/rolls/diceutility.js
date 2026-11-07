@@ -114,7 +114,8 @@ export class DiceUtility {
    */
   static async showResults(data) {
     const { successes, failures, rolls, roll, options } = data;
-    const { edgeAvailable, reroll, actor, skillName, extended } = options;
+    const { edgeAvailable, reroll, actor, skillName, extended, details } =
+      options;
 
     const glitch = isGlitch({ failures, rolls }, reroll);
     const critGlitch = glitch && successes === 0;
@@ -127,6 +128,7 @@ export class DiceUtility {
       showCombined: reroll || extended,
       actorName: actor?.name,
       skillName,
+      details,
     };
 
     let patch =

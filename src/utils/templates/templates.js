@@ -19,6 +19,7 @@ export const TEMPLATES = {
   },
   magic: {
     spellForce: templatePath('domains/magic/dialogs/spell-force.hbs'),
+    areaTargets: templatePath('domains/magic/dialogs/area-targets.hbs'),
     spellResist: templatePath('domains/magic/dialogs/spell-resist.hbs'),
     directSpellAllocation: templatePath(
       'domains/magic/dialogs/direct-spell-allocation.hbs'
@@ -26,6 +27,7 @@ export const TEMPLATES = {
     indirectSpellDefense: templatePath(
       'domains/magic/dialogs/indirect-spell-defense.hbs'
     ),
+    resistSummary: templatePath('domains/magic/chat/resist-summary.hbs'),
   },
   matrix: {
     cybercombatAttack: templatePath(
@@ -142,5 +144,6 @@ export const TEMPLATES = {
     },
     editModeToggle: templatePath('ui/edit-mode-toggle.hbs'),
     importUpdateButton: templatePath('ui/import-update-button.hbs'),
+    releaseNotes: templatePath('ui/release-notes.hbs'),
   },
 };

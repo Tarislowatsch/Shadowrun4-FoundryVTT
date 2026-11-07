@@ -8,6 +8,9 @@ import {
   migrateLegacyValue,
   realmModeField,
   SIM_MODE_CHOICES,
+  visionField,
+  visionFromMetatype,
+  resolveVision,
 } from '@models/shared';
 import { Traditions } from '@models/magic';
 import { computeDerivedStats } from './character-derived-stats.js';
@@ -295,6 +298,8 @@ export const connectionsField = () =>
  * @property {SR4DerivedStats}        derivedStats
  * @property {SR4BaseMetaData}        metaData
  * @property {SR4Modifiers}           modifiers
+ * @property {import('@models/shared/fields').SR4Vision} vision
+ * @property {import('@models/shared/fields').SR4Vision} visionDisabled
  * @property {SR4DescriptionAndNotes} descriptionAndNotes
  * @property {SharedSR4ConditionMonitor}    conditionMonitor
  * @property {SR4Armor}               armor
@@ -337,6 +342,8 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
       sheetStats: new SR4SheetStatsData(),
       derivedStats: derivedStatsField(),
       modifiers: modifiersField(),
+      vision: visionField(),
+      visionDisabled: visionField(),
       metaData: baseMetaDataField(),
       descriptionAndNotes: descriptionField(),
       conditionMonitor: conditionMonitorField(),
@@ -371,6 +378,19 @@ export class SR4BaseCharacterData extends foundry.abstract.TypeDataModel {
         }),
       }),
     };
+  }
+
+  prepareBaseData() {
+    const self = /** @type {any} */ (this);
+    if (!self.vision) return;
+    Object.assign(
+      self.vision,
+      resolveVision(
+        self.vision,
+        visionFromMetatype(this.parent?.items),
+        self.visionDisabled
+      )
+    );
   }
 
   prepareDerivedData() {

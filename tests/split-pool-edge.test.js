@@ -138,6 +138,25 @@ describe('dialogActions — Edge owed by a split pool', () => {
   });
 });
 
+describe('dialogActions — details line', () => {
+  it('forwards the details to the roll card', async () => {
+    await dialogActions(
+      makeDialog(),
+      makeActor(),
+      'spellcasting',
+      6,
+      undefined,
+      {
+        details: 'Force 4 · Radius 7 m',
+      }
+    );
+
+    expect(rollAndShowMock).toHaveBeenCalledWith(
+      expect.objectContaining({ details: 'Force 4 · Radius 7 m' })
+    );
+  });
+});
+
 describe('createDialogParameters — Edge owed by a split pool', () => {
   it('hides the Edge checkbox for the rolls of a split pool', () => {
     const params = createDialogParameters(makeActor(), 6, undefined, {

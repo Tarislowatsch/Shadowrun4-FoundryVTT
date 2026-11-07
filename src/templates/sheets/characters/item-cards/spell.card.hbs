@@ -23,7 +23,7 @@
     </span>
     <span class="item-property">
       <strong>{{localize "sr4.spell.range"}}</strong>
-      {{localize (concat "sr4.spell.ranges." this.system.range)}}
+      {{localize (concat "sr4.spell.ranges." this.system.range)}}{{#if this.system.area}} ({{localize "sr4.spell.areaShort"}}){{/if}}
     </span>
 
     {{#if (eq this.system.category "COMBAT")}}

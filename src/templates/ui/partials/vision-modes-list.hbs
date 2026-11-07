@@ -1,0 +1,25 @@
+{{#if visionModes.rows}}
+<ul class="vision-mode-list">
+  {{#each visionModes.rows as |row|}}
+  <li class="vision-mode-row item-row{{#unless row.active}} suppressed{{/unless}}">
+    <span class="item-name">{{localize row.label}}</span>
+    {{#if row.fromMetatype}}
+    <span class="item-property">{{localize "sr4.visibility.modes.fromMetatype"}}</span>
+    {{/if}}
+    {{#if row.active}}
+    <a data-action="toggleVisionMode" data-vision-mode="{{row.mode}}"
+      data-tooltip="{{localize 'sr4.visibility.modes.deactivate'}}"><i class="fas fa-eye"></i></a>
+    {{else}}
+    <a data-action="toggleVisionMode" data-vision-mode="{{row.mode}}"
+      data-tooltip="{{localize 'sr4.visibility.modes.activate'}}"><i class="fas fa-eye-slash"></i></a>
+    {{/if}}
+    {{#if (and @root.editMode row.removable)}}
+    <a data-action="removeVisionMode" data-vision-mode="{{row.mode}}"
+      data-tooltip="{{localize 'sr4.visibility.modes.remove'}}"><i class="fas fa-trash"></i></a>
+    {{/if}}
+  </li>
+  {{/each}}
+</ul>
+{{else}}
+<p class="empty-list">{{localize "sr4.visibility.modes.none"}}</p>
+{{/if}}

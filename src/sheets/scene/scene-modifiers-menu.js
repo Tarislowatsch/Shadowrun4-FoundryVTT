@@ -1,32 +1,78 @@
 // @ts-nocheck
 import { TEMPLATES } from '@utils/templates';
-import { TraditionLabels } from '@models/index';
+import {
+  TraditionLabels,
+  LightConditions,
+  ObscurantConditions,
+  VISIBILITY_LABEL_PREFIXES,
+  labelledValues,
+} from '@models/index';
 import { getSceneModifiers, setSceneModifiers } from '@utils/index';
 
-const FIELDS = [
+/**
+ * @param {Record<string, string>} values
+ * @param {string} prefix
+ * @returns {Record<string, string>}
+ */
+function labelChoices(values, prefix) {
+  return Object.fromEntries(
+    labelledValues(values, prefix).map(({ value, label }) => [value, label])
+  );
+}
+
+const SECTIONS = [
   {
-    key: 'backgroundCount',
-    type: 'number',
-    name: 'sr4.scene.modifiers.backgroundCount.name',
-    hint: 'sr4.scene.modifiers.backgroundCount.hint',
+    legend: 'sr4.scene.modifiers.backgroundCount.section',
+    fields: [
+      {
+        key: 'backgroundCount',
+        type: 'number',
+        name: 'sr4.scene.modifiers.backgroundCount.name',
+        hint: 'sr4.scene.modifiers.backgroundCount.hint',
+      },
+      {
+        key: 'backgroundCountTradition',
+        type: 'select',
+        name: 'sr4.scene.modifiers.backgroundCountTradition.name',
+        hint: 'sr4.scene.modifiers.backgroundCountTradition.hint',
+      },
+      {
+        key: 'mysticAdeptReduction',
+        type: 'select',
+        name: 'sr4.scene.modifiers.mysticAdeptReduction.name',
+        hint: 'sr4.scene.modifiers.mysticAdeptReduction.hint',
+        choices: {
+          spellpower: 'sr4.scene.modifiers.mysticAdeptReduction.spellpower',
+          powerPoints: 'sr4.scene.modifiers.mysticAdeptReduction.powerPoints',
+        },
+      },
+    ],
   },
   {
-    key: 'backgroundCountTradition',
-    type: 'select',
-    name: 'sr4.scene.modifiers.backgroundCountTradition.name',
-    hint: 'sr4.scene.modifiers.backgroundCountTradition.hint',
-  },
-  {
-    key: 'mysticAdeptReduction',
-    type: 'select',
-    name: 'sr4.scene.modifiers.mysticAdeptReduction.name',
-    hint: 'sr4.scene.modifiers.mysticAdeptReduction.hint',
-    choices: {
-      spellpower: 'sr4.scene.modifiers.mysticAdeptReduction.spellpower',
-      powerPoints: 'sr4.scene.modifiers.mysticAdeptReduction.powerPoints',
-    },
+    legend: 'sr4.scene.modifiers.visibility.section',
+    fields: [
+      {
+        key: 'light',
+        type: 'select',
+        name: 'sr4.scene.modifiers.visibility.light.name',
+        hint: 'sr4.scene.modifiers.visibility.light.hint',
+        choices: labelChoices(LightConditions, VISIBILITY_LABEL_PREFIXES.light),
+      },
+      {
+        key: 'obscurant',
+        type: 'select',
+        name: 'sr4.scene.modifiers.visibility.obscurant.name',
+        hint: 'sr4.scene.modifiers.visibility.obscurant.hint',
+        choices: labelChoices(
+          ObscurantConditions,
+          VISIBILITY_LABEL_PREFIXES.obscurant
+        ),
+      },
+    ],
   },
 ];
+
+const FIELDS = SECTIONS.flatMap((section) => section.fields);
 
 export class SceneModifiersMenu extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
@@ -59,7 +105,10 @@ export class SceneModifiersMenu extends foundry.applications.api.HandlebarsAppli
     const modifiers = getSceneModifiers(this.scene);
     return {
       sceneName: this.scene?.name ?? '',
-      fields: FIELDS.map((field) => this.#describe(field, modifiers)),
+      sections: SECTIONS.map((section) => ({
+        legend: section.legend,
+        fields: section.fields.map((field) => this.#describe(field, modifiers)),
+      })),
     };
   }
 

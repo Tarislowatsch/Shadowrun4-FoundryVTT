@@ -10,6 +10,7 @@ vi.mock('@hooks/dice-total-patch-hook.js', () => ({
 }));
 
 const { DiceUtility } = await import('../src/utils/rolls/diceutility.js');
+const { renderTemplate } = await import('@utils/templates');
 const { SYSTEM_ID } = await import('../src/utils/game/system-id.js');
 
 const toMessageMock = vi.fn(async () => ({ id: 'msg-1' }));
@@ -65,6 +66,32 @@ describe('DiceUtility.showResults', () => {
     expect(flags.actorId).toBe('actor-1');
     expect(flags.options.actor).toBeUndefined();
     expect(flags.options.skillName).toBe('Pistols');
+  });
+});
+
+describe('DiceUtility.showResults — details line', () => {
+  it('renders the details line into the roll card', async () => {
+    await DiceUtility.rollAndShow({
+      numDice: 2,
+      actor: makeActor(),
+      details: 'Force 4 · Radius 7 m',
+    });
+
+    expect(renderTemplate).toHaveBeenCalledWith(
+      'roll-results.hbs',
+      expect.objectContaining({ details: 'Force 4 · Radius 7 m' })
+    );
+  });
+
+  it('keeps the details in the stored roll options for follow-up rolls', async () => {
+    await DiceUtility.rollAndShow({
+      numDice: 2,
+      actor: makeActor(),
+      details: 'Force 4 · Radius 7 m',
+    });
+
+    const flags = toMessageMock.mock.calls[0][0].flags[SYSTEM_ID];
+    expect(flags.options.details).toBe('Force 4 · Radius 7 m');
   });
 });
 

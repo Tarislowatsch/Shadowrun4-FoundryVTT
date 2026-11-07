@@ -1,74 +1,111 @@
-import {
-  awaitOpposedSocketResponse,
-  emitSystemSocket,
-  getValidTargetActorsOrWarn,
-} from '@utils/index';
+import { awaitOpposedSocketResponse, emitSystemSocket } from '@utils/index';
 import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import { isPhysicalDamageType } from '@models/items/weapons.model.js';
 import { openDirectSpellAllocationDialog } from '../dialogs/combat-spell.js';
 import { getSpellEffectData } from './apply-effects-flow';
+import { ResistOutcome, resistOutcome } from '../resist-summary.js';
 
 export class CombatSpellFlow {
   /**
    * @param {import('@documents/index').SR4Actor} caster
    * @param {import('@models/index').SR4Spell} spell
-   * @param {number} castingHits
    * @param {number} force
-   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
-   * @returns {Promise<number>}
+   * @param {import('../spell-targeting.js').SpellTargetHits[]} perTarget
+   * @param {{ quiet?: boolean }} [options]
+   * @returns {Promise<{ drainModifier: number, outcomes: import('../resist-summary.js').SpellResistOutcome[] }>}
    */
-  static async start(caster, spell, castingHits, force, preresolvedTargets) {
+  static async resolve(
+    caster,
+    spell,
+    force,
+    perTarget,
+    { quiet = false } = {}
+  ) {
+    const reachable = perTarget.filter(({ target }) => target.uuid);
     const combatType = spell.system?.combatType ?? 'DIRECT';
-
     if (combatType === 'DIRECT') {
-      return CombatSpellFlow._handleDirect(
+      return CombatSpellFlow._resolveDirect(
         caster,
         spell,
-        castingHits,
         force,
-        preresolvedTargets
+        reachable,
+        quiet
       );
     }
-    return CombatSpellFlow._handleIndirect(
-      caster,
-      spell,
-      castingHits,
-      force,
-      preresolvedTargets
-    );
+    await CombatSpellFlow._resolveIndirect(caster, spell, force, reachable);
+    return {
+      drainModifier: 0,
+      outcomes: reachable.map(({ target, hits }) => ({
+        target,
+        kind: ResistOutcome.DEFENSE_REQUESTED,
+        hits,
+      })),
+    };
   }
 
   /**
    * @param {import('@documents/index').SR4Actor} caster
    * @param {import('@models/index').SR4Spell} spell
-   * @param {number} castingHits
    * @param {number} force
-   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
-   * @returns {Promise<number>}
+   * @param {import('../spell-targeting.js').SpellTargetHits[]} perTarget
+   * @param {boolean} quiet
+   * @returns {Promise<{ drainModifier: number, outcomes: import('../resist-summary.js').SpellResistOutcome[] }>}
    */
-  static async _handleDirect(
-    caster,
-    spell,
-    castingHits,
-    force,
-    preresolvedTargets
-  ) {
-    const targets = getValidTargetActorsOrWarn(spell.name, preresolvedTargets);
-    if (targets.length === 0) return 0;
+  static async _resolveDirect(caster, spell, force, perTarget, quiet) {
+    const resisted = await Promise.all(
+      perTarget.map(async ({ target, hits }) => ({
+        target,
+        netHits: await CombatSpellFlow._requestDirectResist(
+          caster,
+          spell,
+          hits,
+          force,
+          target
+        ),
+      }))
+    );
 
-    let maxAppliedHits = 0;
-    for (const target of targets) {
-      if (!target.uuid) continue;
-      const applied = await CombatSpellFlow._directSpellVsTarget(
+    let drainModifier = 0;
+    for (const { target, netHits } of resisted) {
+      const applied = await CombatSpellFlow._applyDirectResult(
         caster,
         spell,
-        castingHits,
         force,
-        target
+        target,
+        netHits,
+        quiet
       );
-      maxAppliedHits = Math.max(maxAppliedHits, applied);
+      drainModifier = Math.max(drainModifier, applied);
     }
-    return maxAppliedHits;
+    return {
+      drainModifier,
+      outcomes: resisted.map(({ target, netHits }) =>
+        resistOutcome(target, netHits)
+      ),
+    };
+  }
+
+  /**
+   * @param {import('@documents/index').SR4Actor} caster
+   * @param {import('@models/index').SR4Spell} spell
+   * @param {number} force
+   * @param {import('../spell-targeting.js').SpellTargetHits[]} perTarget
+   * @returns {Promise<void>}
+   */
+  static async _resolveIndirect(caster, spell, force, perTarget) {
+    const spellSnapshot = spell.toObject();
+    for (const { target, hits } of perTarget) {
+      await emitSystemSocket({
+        action: 'triggerIndirectSpellDefense',
+        payload: {
+          defenderUuid: target.uuid,
+          casterUuid: caster.uuid,
+          spell: spellSnapshot,
+          castingHits: hits,
+          force,
+        },
+      });
+    }
   }
 
   /**
@@ -79,11 +116,11 @@ export class CombatSpellFlow {
    * @param {import('@documents/index').SR4Actor} target
    * @returns {Promise<number>}
    */
-  static async _directSpellVsTarget(caster, spell, castingHits, force, target) {
+  static _requestDirectResist(caster, spell, castingHits, force, target) {
     const defenderUuid = target.uuid;
     const isMana = spell.system?.type === 'MANA';
 
-    const netHits = await awaitOpposedSocketResponse({
+    return awaitOpposedSocketResponse({
       triggerAction: 'triggerDirectSpellResist',
       triggerPayload: {
         defenderUuid,
@@ -103,8 +140,27 @@ export class CombatSpellFlow {
           : Math.max(0, castingHits - payload.resistHits),
       fallback: 0,
     });
+  }
 
+  /**
+   * @param {import('@documents/index').SR4Actor} caster
+   * @param {import('@models/index').SR4Spell} spell
+   * @param {number} force
+   * @param {import('@documents/index').SR4Actor} target
+   * @param {number} netHits
+   * @param {boolean} quiet
+   * @returns {Promise<number>}
+   */
+  static async _applyDirectResult(
+    caster,
+    spell,
+    force,
+    target,
+    netHits,
+    quiet
+  ) {
     if (netHits < 1) {
+      if (quiet) return 0;
       await ApplyDamageFlow.sendCombatSummary(
         caster.name,
         target.name,
@@ -126,96 +182,16 @@ export class CombatSpellFlow {
     await emitSystemSocket({
       action: 'applyDirectSpellDamage',
       payload: {
-        defenderUuid,
+        defenderUuid: target.uuid,
         casterUuid: caster.uuid,
         spellName: spell.name,
         damage: force + appliedHits,
         isPhysical,
         effects,
+        quiet,
       },
     });
 
     return appliedHits;
-  }
-
-  /**
-   * @param {import('@documents/index').SR4Actor} caster
-   * @param {import('@models/index').SR4Spell} spell
-   * @param {number} castingHits
-   * @param {number} force
-   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
-   * @returns {Promise<number>}
-   */
-  static async _handleIndirect(
-    caster,
-    spell,
-    castingHits,
-    force,
-    preresolvedTargets
-  ) {
-    const targets = getValidTargetActorsOrWarn(spell.name, preresolvedTargets);
-    if (targets.length === 0) return 0;
-
-    const spellSnapshot = spell.toObject();
-    for (const target of targets) {
-      const defenderUuid = target.uuid;
-      if (!defenderUuid) continue;
-      await emitSystemSocket({
-        action: 'triggerIndirectSpellDefense',
-        payload: {
-          defenderUuid,
-          casterUuid: caster.uuid,
-          spell: spellSnapshot,
-          castingHits,
-          force,
-        },
-      });
-    }
-
-    return 0;
-  }
-
-  /**
-   * @param {import('@documents/index').SR4Actor} caster
-   * @param {import('@models/index').SR4Spell} spell
-   * @param {{ target: import('@documents/index').SR4Actor, hits: number }[]} perTargetHits
-   * @param {number} force
-   * @returns {Promise<number>}
-   */
-  static async startPerTarget(caster, spell, perTargetHits, force) {
-    const combatType = spell.system?.combatType ?? 'DIRECT';
-
-    if (combatType === 'DIRECT') {
-      let maxAppliedHits = 0;
-      for (const { target, hits } of perTargetHits) {
-        if (!target.uuid) continue;
-        const applied = await CombatSpellFlow._directSpellVsTarget(
-          caster,
-          spell,
-          hits,
-          force,
-          target
-        );
-        maxAppliedHits = Math.max(maxAppliedHits, applied);
-      }
-      return maxAppliedHits;
-    }
-
-    const spellSnapshot = spell.toObject();
-    for (const { target, hits } of perTargetHits) {
-      const defenderUuid = target.uuid;
-      if (!defenderUuid) continue;
-      await emitSystemSocket({
-        action: 'triggerIndirectSpellDefense',
-        payload: {
-          defenderUuid,
-          casterUuid: caster.uuid,
-          spell: spellSnapshot,
-          castingHits: hits,
-          force,
-        },
-      });
-    }
-    return 0;
   }
 }

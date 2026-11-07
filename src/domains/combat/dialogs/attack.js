@@ -103,6 +103,7 @@ async function rollRangedAttack(
   const params = createDialogParameters(actor, dice, weapon, {
     isAttack: true,
     edgePayment,
+    visibility: true,
   });
   const skill = actor.getSkill(skillName);
   const content = await renderTemplate(templatePath, {

@@ -5,6 +5,7 @@ import {
   getBackgroundCountMagicModifier,
   getEffectiveDrainModifier,
   getMysticAdeptReduction,
+  getSceneVisibility,
 } from '@utils/scene/scene-modifiers.js';
 
 /**
@@ -21,6 +22,8 @@ describe('getSceneModifiers', () => {
       backgroundCount: 3,
       backgroundCountTradition: '',
       mysticAdeptReduction: 'spellpower',
+      light: 'normal',
+      obscurant: 'none',
     });
   });
 
@@ -29,6 +32,8 @@ describe('getSceneModifiers', () => {
       backgroundCount: 0,
       backgroundCountTradition: '',
       mysticAdeptReduction: 'spellpower',
+      light: 'normal',
+      obscurant: 'none',
     });
   });
 });
@@ -123,5 +128,22 @@ describe('getEffectiveDrainModifier', () => {
     });
     const actor = { getMagicTradition: () => 'HERMETIC' };
     expect(getEffectiveDrainModifier(actor, scene)).toBe(-3);
+  });
+});
+
+describe('getSceneVisibility', () => {
+  it('defaults to normal light without obscurant', () => {
+    expect(getSceneVisibility(undefined)).toEqual({
+      light: 'normal',
+      obscurant: 'none',
+    });
+  });
+
+  it('reads the stored scene conditions', () => {
+    expect(
+      getSceneVisibility(
+        makeScene({ light: 'fullDarkness', obscurant: 'heavyFog' })
+      )
+    ).toEqual({ light: 'fullDarkness', obscurant: 'heavyFog' });
   });
 });

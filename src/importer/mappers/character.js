@@ -268,9 +268,32 @@ export function mapCharacterSkill(record) {
 
 /**
  * @param {Record<string, any>} character
+ * @returns {string[]}
+ */
+export function metatypeLookupNames(character) {
+  const names = ['metavariant', 'metatype'].flatMap((field) => {
+    const localized = String(character[field] ?? '').trim();
+    return [
+      String(character[`${field}_english`] ?? '').trim(),
+      GERMAN_METATYPE_NAMES[localized],
+      localized,
+    ];
+  });
+  return [...new Set(names.filter(Boolean))];
+}
+
+/** @type {Readonly<Record<string, string>>} */
+const GERMAN_METATYPE_NAMES = Object.freeze({
+  Mensch: 'Human',
+  Zwerg: 'Dwarf',
+});
+
+/**
+ * @param {Record<string, any>} character
+ * @param {{ system?: { qualities?: { positive?: string[], negative?: string[] }, powers?: string[], optionalPowers?: string[] } } | null} [template]
  * @returns {{ name: string, type: string, system: object } | null}
  */
-export function mapCharacterMetatype(character) {
+export function mapCharacterMetatype(character, template = null) {
   const metatypeName = String(character.metatype ?? '').trim();
   if (!metatypeName) return null;
 
@@ -300,12 +323,15 @@ export function mapCharacterMetatype(character) {
       baseMetatype: metavariant ? metatypeName : '',
       attributes,
       movement,
-      qualities: { positive: [], negative: [] },
+      qualities: {
+        positive: [...(template?.system?.qualities?.positive ?? [])],
+        negative: [...(template?.system?.qualities?.negative ?? [])],
+      },
       reach: 0,
       armorBallistic: 0,
       armorImpact: 0,
-      powers: [],
-      optionalPowers: [],
+      powers: [...(template?.system?.powers ?? [])],
+      optionalPowers: [...(template?.system?.optionalPowers ?? [])],
       source: '',
     },
   };

@@ -5,6 +5,21 @@ export function getGame() {
   return game;
 }
 
+const TARGETABLE_ACTOR_TYPES = Object.freeze([
+  'character',
+  'npc',
+  'vehicle',
+  'spirit',
+]);
+
+/**
+ * @param {{ type?: string } | null | undefined} actor
+ * @returns {boolean}
+ */
+export function isTargetableActor(actor) {
+  return !!actor && TARGETABLE_ACTOR_TYPES.includes(actor.type ?? '');
+}
+
 /**
  * @returns {import('@documents/index').SR4Actor[]}
  */
@@ -12,14 +27,7 @@ export function getValidTargetActors() {
   return /** @type {import('@documents/index').SR4Actor[]} */ (
     [...(getGame().user?.targets ?? [])]
       .map((t) => t.actor)
-      .filter(
-        (a) =>
-          !!a &&
-          (a.type === 'character' ||
-            a.type === 'npc' ||
-            a.type === 'vehicle' ||
-            a.type === 'spirit')
-      )
+      .filter(isTargetableActor)
   );
 }
 
@@ -47,21 +55,6 @@ export function getValidMatrixTargetActors() {
  */
 export function getValidMatrixTargetActorsOrWarn(warnLabel) {
   const targets = getValidMatrixTargetActors();
-  if (targets.length === 0) {
-    ui?.notifications?.warn(
-      `${warnLabel}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`
-    );
-  }
-  return targets;
-}
-
-/**
- * @param {string} warnLabel used in the "no targets" warning message
- * @param {import('@documents/index').SR4Actor[]} [preresolved]
- * @returns {import('@documents/index').SR4Actor[]}
- */
-export function getValidTargetActorsOrWarn(warnLabel, preresolved) {
-  const targets = preresolved ?? getValidTargetActors();
   if (targets.length === 0) {
     ui?.notifications?.warn(
       `${warnLabel}: ${getGame().i18n?.localize('sr4.spell.noTargets')}`

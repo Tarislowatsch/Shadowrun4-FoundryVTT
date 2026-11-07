@@ -177,6 +177,12 @@
     "spell": {
       "applyHits": "Netto-Erfolge einsetzen",
       "applyHitsHint": "Jeder eingesetzte Erfolg erhöht den Zauber-SW und den Entzugs-EW um 1.",
+      "area": "Fläche",
+      "areaDetails": "Kraft {force} · Radius {radius} m",
+      "areaRadius": "Radius",
+      "areaShort": "F",
+      "areaTargetsHint": "Abwählen, wer nicht sichtbar ist oder nicht betroffen sein soll.",
+      "areaTargetsTitle": "Ziele in der Fläche",
       "cast": "Zaubern",
       "categories": {
         "COMBAT": "Kampfzauber",
@@ -243,23 +249,38 @@
       },
       "essencePenalty": "Essenz-Malus",
       "force": "Kraft",
+      "forceDetails": "Kraft {force}",
       "forcedialogtitle": "Zauberkraft auswählen",
       "limited": "Begrenzt",
+      "markedTargetsHint": "Keine Fläche platziert. Der Zauber trifft die markierten Ziele – abwählen, wer nicht betroffen sein soll.",
+      "markedTargetsTitle": "Markierte Ziele",
       "netHits": "Netto-Erfolge",
       "noSpells": "Keine Zauber vorhanden",
-      "noTargets": "Kein gültiges Ziel ausgewählt — Schaden nicht angewendet",
+      "noTargets": "Kein gültiges Ziel ausgewählt",
       "opposed": "Vergleichend",
       "opposedResist": "Zauber widerstehen",
+      "placeTemplate": "Fläche platzieren",
+      "radiusAdjust": "Radius anpassen (m)",
       "range": "Reichweite",
       "ranges": {
-        "AREA": "F",
         "LOS": "S",
         "SELF": "S",
         "TOUCH": "B",
-        "area": "F",
         "los": "S",
         "self": "S",
         "touch": "B"
+      },
+      "resistSummary": {
+        "affected": {
+          "one": "{hits} Netto-Erfolg",
+          "other": "{hits} Netto-Erfolge"
+        },
+        "defenseRequested": {
+          "one": "Verteidigung angefragt ({hits} Erfolg)",
+          "other": "Verteidigung angefragt ({hits} Erfolge)"
+        },
+        "noHits": "keine Erfolge",
+        "resisted": "widerstanden"
       },
       "source": "Quelle",
       "type": "Typ",
@@ -268,7 +289,8 @@
         "PHYSICAL": "K",
         "mana": "M",
         "physical": "K"
-      }
+      },
+      "withheldDice": "Einbehaltene Würfel"
     }
   }
 }

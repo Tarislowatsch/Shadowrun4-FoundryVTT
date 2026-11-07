@@ -9,6 +9,10 @@
     {{/if}}
   {{/collapsible-section}}
 
+  {{#> collapsible-section title=(localize 'sr4.visibility.modes.title') btnAction="addVisionMode" btnTooltip="sr4.visibility.modes.add" btnDisabled=visionModes.complete}}
+    {{> vision-modes-list}}
+  {{/collapsible-section}}
+
   {{#> collapsible-section title=(localize 'sr4.bio.physicalDescription')}}
     <div class="info-columns">
       {{> meta-field label='sr4.metadata.realName' name='system.descriptionAndNotes.realName' value=system.descriptionAndNotes.realName editMode=editMode}}

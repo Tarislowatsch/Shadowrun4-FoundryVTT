@@ -1,5 +1,5 @@
 import { TEMPLATES, renderTemplate } from '@utils/templates';
-import { SR4SkillGroupByName } from '@models/index';
+import { SR4SkillGroupByName, skillLabelFor } from '@models/index';
 import { localize, createRollDialog } from './roll-dialog-core.js';
 import { createDialogParameters, dialogActions } from './pool-math.js';
 
@@ -15,18 +15,35 @@ function buildSkillRollTitle(skill, suffix = '') {
 }
 
 /**
+ * @param {import('@documents/index').SR4Item | null | undefined} skill
+ * @returns {boolean}
+ */
+function isPerceptionSkill(skill) {
+  return skill?.system?.label === skillLabelFor('perception');
+}
+
+/**
  * Rolls a skill check for `actor`. The dice pool is assembled automatically via
  * {@link getSkillDicePool} unless `options.dice` overrides it (e.g. target-split
  * allocations or non-standard pools such as Threading).
  * @param {import('@documents/index').SR4Actor} actor
  * @param {string} skillName
- * @param {{ dice?: number, weapon?: SR4Weapon, titleSuffix?: string, force?: number, edgeAvailableOverride?: boolean, edgePayment?: import('./pool-math.js').EdgePayment | null }} [options]
+ * @param {{ dice?: number, weapon?: SR4Weapon, titleSuffix?: string, force?: number, edgeAvailableOverride?: boolean, edgePayment?: import('./pool-math.js').EdgePayment | null, visibility?: boolean, visualOnly?: boolean }} [options]
  * @returns {Promise<(Record<string, unknown> & {successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}) | undefined>}
  */
 export async function rollSkillDialog(
   actor,
   skillName,
-  { dice, weapon, titleSuffix, force, edgeAvailableOverride, edgePayment } = {}
+  {
+    dice,
+    weapon,
+    titleSuffix,
+    force,
+    edgeAvailableOverride,
+    edgePayment,
+    visibility = Boolean(weapon),
+    visualOnly = false,
+  } = {}
 ) {
   const resolvedDice = dice ?? getSkillDicePool(actor, skillName);
   if (resolvedDice === undefined) return undefined;
@@ -34,6 +51,9 @@ export async function rollSkillDialog(
   const skill = actor.getSkill(skillName);
   const params = createDialogParameters(actor, resolvedDice, weapon, {
     edgePayment,
+    visibility,
+    visualOnly,
+    perception: isPerceptionSkill(skill),
   });
   const content = await renderTemplate(TEMPLATES.ui.dialogs.roll, {
     ...params,

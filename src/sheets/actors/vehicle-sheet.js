@@ -1,4 +1,5 @@
 import { TEMPLATES } from '@utils/templates';
+import { buildVisionModesContext } from '@sheets/shared';
 import { localize, openActionDialog } from '@utils/index';
 import { skillDisplayLabel } from '@utils/dialog';
 import {
@@ -134,6 +135,7 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
     return {
       editMode: this.editMode,
       tabs: this._prepareTabs('primary'),
+      visionModes: buildVisionModesContext(this.actor),
       actor: {
         img: actorData.img,
         name: actorData.name,

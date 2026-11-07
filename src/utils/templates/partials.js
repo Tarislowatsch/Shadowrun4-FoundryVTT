@@ -135,6 +135,8 @@ const UI_PARTIALS = {
   'stat-cell': templatePath('ui/partials/stat-cell.hbs'),
   'textarea-field': templatePath('ui/partials/textarea-field.hbs'),
   tooltip: templatePath('ui/partials/tooltip.hbs'),
+  'visibility-input': templatePath('ui/partials/visibility-input.hbs'),
+  'vision-modes-list': templatePath('ui/partials/vision-modes-list.hbs'),
   'wide-burst-malus': templatePath('ui/partials/wide-burst-malus.hbs'),
 };
 

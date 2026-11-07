@@ -14,6 +14,7 @@
  * @property {boolean} [extended]
  * @property {boolean} [reroll]
  * @property {number} [prevSuccesses]
+ * @property {string} [details]
  */
 
 /**
@@ -35,6 +36,8 @@
  * @property {boolean} explode
  * @property {boolean} edgeAvailable
  * @property {boolean} extended
+ * @property {number} [visibilityMalus]
+ * @property {number} [senseBonus]
  */
 
 export {};

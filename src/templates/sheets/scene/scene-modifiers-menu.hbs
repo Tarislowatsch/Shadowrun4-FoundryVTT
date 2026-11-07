@@ -1,9 +1,10 @@
 <div class="scene-modifiers-menu" style="display:flex; flex-direction:column; gap:12px; padding:8px; box-sizing:border-box;">
   <p class="hint" style="margin:0;">{{localize "sr4.scene.modifiers.hint"}}{{#if sceneName}} — <strong>{{sceneName}}</strong>{{/if}}</p>
 
+  {{#each sections}}
   <fieldset style="border:1px solid var(--color-border-light-tertiary); border-radius:4px; padding:8px; display:flex; flex-direction:column; gap:8px;">
-    <legend style="padding:0 4px; font-weight:bold;">{{localize "sr4.scene.modifiers.backgroundCount.section"}}</legend>
-    {{#each fields}}
+    <legend style="padding:0 4px; font-weight:bold;">{{localize this.legend}}</legend>
+    {{#each this.fields}}
     <div class="form-group flexcol" style="gap:2px;">
       <div style="display:flex; align-items:center; gap:8px;">
         <label style="flex:1;">{{localize this.name}}</label>
@@ -21,6 +22,7 @@
     </div>
     {{/each}}
   </fieldset>
+  {{/each}}
 
   <footer class="sheet-footer flexrow" style="margin-top:8px; gap:8px; flex-shrink:0;">
     <button type="button" data-action="save">

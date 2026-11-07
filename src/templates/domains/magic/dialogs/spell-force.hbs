@@ -10,3 +10,19 @@
   />
   <span class="hint">Max: {{ max }}</span>
 </div>
+{{#if area}}
+<div class="form-group">
+  <label for="radiusAdjust">{{localize "sr4.spell.radiusAdjust"}}</label>
+  <input type="number" id="radiusAdjust" name="radiusAdjust" value="0" step="1" />
+  <span class="hint">
+    {{localize "sr4.spell.areaRadius"}}: <strong data-area-radius></strong> m ·
+    {{localize "sr4.spell.withheldDice"}}: <strong data-area-withheld></strong>
+  </span>
+</div>
+{{/if}}
+{{#if template}}
+<div class="form-group">
+  <label for="placeTemplate">{{localize "sr4.spell.placeTemplate"}}</label>
+  <input type="checkbox" id="placeTemplate" name="placeTemplate" {{checked templateDefault}} />
+</div>
+{{/if}}

@@ -36,6 +36,7 @@ import { BaseSocketHook } from './base-socket-hook.js';
  * @property {string} spellName
  * @property {number} damage
  * @property {boolean} isPhysical
+ * @property {boolean} [quiet]
  */
 
 /**
@@ -117,15 +118,17 @@ export class CombatSpellHook extends BaseSocketHook {
           ),
       });
     } else if (data.action === 'applyDirectSpellDamage') {
-      const { damage, isPhysical, spellName, casterUuid, effects } =
+      const { damage, isPhysical, spellName, casterUuid, effects, quiet } =
         /** @type {DirectSpellDamagePayload} */ (data.payload);
-      const caster = /** @type {any} */ (await fromUuid(casterUuid));
-      await ApplyDamageFlow.sendCombatSummary(
-        caster?.name ?? '?',
-        defender.name,
-        'directSpell',
-        { spell: spellName, damage, isPhysical }
-      );
+      if (!quiet) {
+        const caster = /** @type {any} */ (await fromUuid(casterUuid));
+        await ApplyDamageFlow.sendCombatSummary(
+          caster?.name ?? '?',
+          defender.name,
+          'directSpell',
+          { spell: spellName, damage, isPhysical }
+        );
+      }
       await ApplyDamageFlow.sendDecisionMessage(
         defender,
         damage,

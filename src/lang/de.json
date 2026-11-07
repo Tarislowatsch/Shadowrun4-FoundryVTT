@@ -159,8 +159,9 @@
       "showOnToken": "Am Token anzeigen",
       "source": "Quelle",
       "templates": {
+        "astralPerception": "Astrale Wahrnehmung",
         "blind": "Geblendet",
-        "blindFlareComp": "Geblendet (Blendschutz)",
+        "blindFlareComp": "Geblendet (Blitzkompensation)",
         "disoriented": "Desorientiert (Elektrizität)",
         "dumpshocked": "Dumpshock",
         "knockedDown": "Am Boden",
@@ -187,6 +188,12 @@
       },
       "defenseModifier": "Verteidigungs-Würfelpool-Modifikator",
       "generalModifier": "Allgemeiner Würfelpool-Modifikator",
+      "sense": {
+        "hearing": "Wahrnehmungsbonus: Gehör",
+        "sight": "Wahrnehmungsbonus: Sicht",
+        "smell": "Wahrnehmungsbonus: Geruch/Geschmack",
+        "touch": "Wahrnehmungsbonus: Tastsinn"
+      },
       "skill": {
         "aeronauticsmechanic": "Fertigkeit: Luftfahrtmechanik",
         "arcana": "Fertigkeit: Arcana",
@@ -435,7 +442,18 @@
         },
         "noScene": "Keine aktive Szene — zuerst eine Szene öffnen oder anzeigen.",
         "save": "Speichern",
-        "title": "Szenenmodifikatoren"
+        "title": "Szenenmodifikatoren",
+        "visibility": {
+          "light": {
+            "hint": "Lichtverhältnisse in dieser Szene. Wirkt als Sichtmodifikator auf Angriffe, Spruchzauberei und visuelle Wahrnehmung.",
+            "name": "Beleuchtung"
+          },
+          "obscurant": {
+            "hint": "Nebel, Dunst, Regen oder Rauch in dieser Szene. Wird zum Beleuchtungsmodifikator addiert.",
+            "name": "Sichtbehinderung"
+          },
+          "section": "Sicht"
+        }
       }
     },
     "skills": {

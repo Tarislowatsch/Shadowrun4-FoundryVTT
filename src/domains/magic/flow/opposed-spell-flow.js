@@ -1,12 +1,10 @@
-import {
-  awaitOpposedSocketResponse,
-  getValidTargetActorsOrWarn,
-} from '@utils/index';
+import { awaitOpposedSocketResponse } from '@utils/index';
 import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import {
   getSpellEffectData,
   requestEffectDecision,
 } from './apply-effects-flow';
+import { resistOutcome } from '../resist-summary.js';
 
 /**
  * @param {string} category
@@ -23,32 +21,50 @@ export class OpposedSpellFlow {
   /**
    * @param {import('@documents/index').SR4Actor} caster
    * @param {import('@models/index').SR4Spell} spell
-   * @param {number} castingHits
    * @param {number} force
-   * @param {import('@documents/index').SR4Actor[]} [preresolvedTargets]
-   * @returns {Promise<void>}
+   * @param {import('../spell-targeting.js').SpellTargetHits[]} perTarget
+   * @param {{ quiet?: boolean }} [options]
+   * @returns {Promise<import('../resist-summary.js').SpellResistOutcome[]>}
    */
-  static async start(caster, spell, castingHits, force, preresolvedTargets) {
-    const targets = getValidTargetActorsOrWarn(spell.name, preresolvedTargets);
-    if (targets.length === 0) return;
-
+  static async resolve(
+    caster,
+    spell,
+    force,
+    perTarget,
+    { quiet = false } = {}
+  ) {
     const effectData = getSpellEffectData(spell);
-    const category = spell.system?.category ?? '';
-    const spellType = spell.system?.type ?? 'PHYSICAL';
-    const resistAttribute = getOpposedResistAttribute(category, spellType);
+    const resistAttribute = OpposedSpellFlow.getResistAttribute(spell);
 
-    for (const target of targets) {
-      if (!target.uuid) continue;
-      await OpposedSpellFlow.opposedVsTarget(
+    const resisted = await Promise.all(
+      perTarget
+        .filter(({ target }) => target.uuid)
+        .map(async ({ target, hits }) => ({
+          target,
+          netHits: await OpposedSpellFlow._requestResist(
+            caster,
+            spell,
+            hits,
+            force,
+            target,
+            resistAttribute
+          ),
+        }))
+    );
+
+    for (const { target, netHits } of resisted) {
+      await OpposedSpellFlow._applyResult(
         caster,
         spell,
-        castingHits,
-        force,
         target,
-        resistAttribute,
-        effectData
+        netHits,
+        effectData,
+        quiet
       );
     }
+    return resisted.map(({ target, netHits }) =>
+      resistOutcome(target, netHits)
+    );
   }
 
   /**
@@ -58,21 +74,19 @@ export class OpposedSpellFlow {
    * @param {number} force
    * @param {import('@documents/index').SR4Actor} target
    * @param {string} resistAttribute
-   * @param {object[]} effectData
-   * @returns {Promise<void>}
+   * @returns {Promise<number>}
    */
-  static async opposedVsTarget(
+  static _requestResist(
     caster,
     spell,
     castingHits,
     force,
     target,
-    resistAttribute,
-    effectData
+    resistAttribute
   ) {
     const defenderUuid = target.uuid;
 
-    const netHits = await awaitOpposedSocketResponse({
+    return awaitOpposedSocketResponse({
       triggerAction: 'triggerOpposedSpellResist',
       triggerPayload: {
         defenderUuid,
@@ -92,8 +106,20 @@ export class OpposedSpellFlow {
           : Math.max(0, castingHits - payload.resistHits),
       fallback: 0,
     });
+  }
 
+  /**
+   * @param {import('@documents/index').SR4Actor} caster
+   * @param {import('@models/index').SR4Spell} spell
+   * @param {import('@documents/index').SR4Actor} target
+   * @param {number} netHits
+   * @param {object[]} effectData
+   * @param {boolean} quiet
+   * @returns {Promise<void>}
+   */
+  static async _applyResult(caster, spell, target, netHits, effectData, quiet) {
     if (netHits < 1) {
+      if (quiet) return;
       await ApplyDamageFlow.sendCombatSummary(
         caster.name,
         target.name,

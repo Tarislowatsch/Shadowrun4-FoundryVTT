@@ -9,10 +9,12 @@ import { ActorDirectoryHook } from './actor-directory-hook';
 import { CompendiumDirectoryHook } from './compendium-directory-hook';
 import { CompendiumItemNameHook } from './compendium-item-name-hook';
 import { SummoningHook } from './summoning-hook';
+import { SpellAreaHook } from './spell-area-hook';
 import { LinkedActorCleanupHook } from './linked-actor-cleanup-hook';
 import { SceneControlsHook } from './scene-controls-hook';
 import { EffectTemplateCacheHook } from './effect-template-cache-hook';
 import { FlagMigrationHook } from './flag-migration-hook';
+import { ReleaseNotesHook } from './release-notes-hook';
 
 export function registerHooks() {
   new SettingsHook();
@@ -20,6 +22,7 @@ export function registerHooks() {
   new CombatSpellHook();
   new CybercombatHook();
   new SummoningHook();
+  new SpellAreaHook();
   new DataModelRegistrationHook();
   new InitiativeHook();
   new DieChatHook();
@@ -30,4 +33,5 @@ export function registerHooks() {
   new SceneControlsHook();
   new EffectTemplateCacheHook();
   new FlagMigrationHook();
+  new ReleaseNotesHook();
 }

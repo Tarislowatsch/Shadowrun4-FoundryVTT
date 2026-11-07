@@ -1,4 +1,4 @@
-import { promptDialog } from '@utils/dialog';
+import { promptSelectDialog } from '@utils/dialog';
 
 export async function onOpenCreateItemDialog(_event, _target) {
   const types = [
@@ -13,19 +13,13 @@ export async function onOpenCreateItemDialog(_event, _target) {
     'Armor Mod',
     'Action',
   ];
-  const options = types
-    .map(
-      (t) =>
-        `<option value="${t}">${game.i18n.localize(`TYPES.Item.${t}`)}</option>`
-    )
-    .join('');
-  const result = await promptDialog({
-    window: { title: game.i18n.localize('sr4.item.create') },
-    content: `<fieldset><select name="type" style="width:100%">${options}</select></fieldset>`,
-    ok: {
-      label: game.i18n.localize('sr4.item.create'),
-      callback: (event, button) => button.form.elements.type.value,
-    },
+  const result = await promptSelectDialog({
+    title: game.i18n.localize('sr4.item.create'),
+    okLabel: game.i18n.localize('sr4.item.create'),
+    options: types.map((t) => ({
+      value: t,
+      label: game.i18n.localize(`TYPES.Item.${t}`),
+    })),
   });
   if (!result) return;
   const [item] = await this.actor.createEmbeddedDocuments('Item', [

@@ -36,4 +36,16 @@
   <hr />
 
   {{> critter-powers critterPowers=critterPowers editMode=editMode}}
+
+  <hr />
+
+  <div class="npc-section">
+    <div class="tab-header">
+      <h3>{{localize 'sr4.visibility.modes.title'}}</h3>
+      {{#if editMode}}
+        {{> item-create-btn btnAction="addVisionMode" btnTooltip="sr4.visibility.modes.add" btnDisabled=visionModes.complete}}
+      {{/if}}
+    </div>
+    {{> vision-modes-list}}
+  </div>
 </div>

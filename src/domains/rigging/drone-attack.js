@@ -6,6 +6,7 @@ import {
   dialogActions,
   getInt,
   promptDialog,
+  ROLL_DIALOG_WIDTH,
 } from '@utils/dialog';
 import {
   getFireModeParams,
@@ -60,7 +61,10 @@ export async function openDroneAttackDialog(vehicle, weapon) {
     return;
   }
 
-  const params = createDialogParameters(rigger ?? vehicle, 0, weapon);
+  const params = createDialogParameters(rigger ?? vehicle, 0, weapon, {
+    visibility: true,
+    visionActor: vehicle,
+  });
   const fireModeParams = ranged
     ? getFireModeParams(weapon)
     : {
@@ -93,6 +97,7 @@ export async function openDroneAttackDialog(vehicle, weapon) {
 
   const result = await promptDialog({
     window: { title: `${rollLabel} — ${vehicle.name}` },
+    position: { width: ROLL_DIALOG_WIDTH },
     content,
     ok: {
       label: localize('sr4.roll.rollButton'),

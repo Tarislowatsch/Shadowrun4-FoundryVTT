@@ -177,6 +177,12 @@
     "spell": {
       "applyHits": "Net hits to apply",
       "applyHitsHint": "Each applied hit adds +1 to spell DV and +1 to Drain DV.",
+      "area": "Area",
+      "areaDetails": "Force {force} · Radius {radius} m",
+      "areaRadius": "Radius",
+      "areaShort": "A",
+      "areaTargetsHint": "Uncheck anyone who is not visible or should not be affected.",
+      "areaTargetsTitle": "Targets in the area",
       "cast": "Cast",
       "categories": {
         "COMBAT": "Combat",
@@ -243,23 +249,38 @@
       },
       "essencePenalty": "Essence Penalty",
       "force": "Force",
+      "forceDetails": "Force {force}",
       "forcedialogtitle": "Select Spell Force",
       "limited": "Limited",
+      "markedTargetsHint": "No area placed. The spell hits the marked targets – uncheck anyone who should not be affected.",
+      "markedTargetsTitle": "Marked targets",
       "netHits": "Net hits",
       "noSpells": "Character has no spells",
-      "noTargets": "No valid targets selected — damage not applied",
+      "noTargets": "No valid targets selected",
       "opposed": "Opposed",
       "opposedResist": "Resist Spell",
+      "placeTemplate": "Place area",
+      "radiusAdjust": "Adjust radius (m)",
       "range": "Range",
       "ranges": {
-        "AREA": "A",
         "LOS": "LOS",
         "SELF": "S",
         "TOUCH": "T",
-        "area": "A",
         "los": "LOS",
         "self": "S",
         "touch": "T"
+      },
+      "resistSummary": {
+        "affected": {
+          "one": "{hits} net hit",
+          "other": "{hits} net hits"
+        },
+        "defenseRequested": {
+          "one": "defense requested ({hits} hit)",
+          "other": "defense requested ({hits} hits)"
+        },
+        "noHits": "no hits",
+        "resisted": "resisted"
       },
       "source": "Source",
       "type": "Type",
@@ -268,7 +289,8 @@
         "PHYSICAL": "P",
         "mana": "M",
         "physical": "P"
-      }
+      },
+      "withheldDice": "Withheld dice"
     }
   }
 }

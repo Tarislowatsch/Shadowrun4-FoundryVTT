@@ -228,6 +228,7 @@
       "meleeDefenseModifier": "Melee Defense Modifier",
       "overview": "Overview",
       "parryModifier": "Parry Modifier",
+      "perception": "Perception",
       "rangedDefenseModifier": "Ranged Defense Modifier",
       "unarmedDamageModifier": "Unarmed Damage Modifier",
       "woundModifier": "Current Wound Modifier"
@@ -333,7 +334,8 @@
       "loadedAmmo": "Drag ammo items from the compendium or item directory onto the character sheet to make them available here.",
       "shots": "Number of rounds fired. Each shot beyond the first adds 1 recoil, reduced by the weapon's RC value.",
       "smartlink": "+2 dice. Requires an implanted smartlink and a smartlink-compatible weapon.",
-      "specialization": "+2 dice when the skill specialization applies to this roll."
+      "specialization": "+2 dice when the skill specialization applies to this roll.",
+      "visibility": "Preset from the scene lighting and obscurant plus the best available vision mode. Change the conditions below or overwrite the value."
     },
     "vehiclemod": {
       "accelBonus": "Accel Bonus",
@@ -350,6 +352,46 @@
       "slotWarning": "Slot capacity exceeded!",
       "slotsUsed": "Slots",
       "speedBonus": "Speed Bonus"
+    },
+    "visibility": {
+      "light": {
+        "fullDarkness": "Full Darkness",
+        "glare": "Glare",
+        "normal": "Normal Light",
+        "partialLight": "Partial Light"
+      },
+      "malus": "Visibility Modifier",
+      "modes": {
+        "activate": "Activate Vision Mode",
+        "add": "Add Vision Mode",
+        "deactivate": "Deactivate Vision Mode",
+        "fromMetatype": "Metatype",
+        "none": "Normal vision only",
+        "remove": "Remove Vision Mode",
+        "title": "Vision Modes"
+      },
+      "obscurant": {
+        "heavyFog": "Heavy Fog/Mist/Rain/Smoke",
+        "lightFog": "Light Fog/Mist/Rain/Smoke",
+        "none": "No Obscurant",
+        "thermalSmoke": "Thermal Smoke"
+      },
+      "sense": {
+        "bonus": "Sense Bonus",
+        "hearing": "Hearing",
+        "label": "Sense",
+        "sight": "Sight",
+        "smell": "Smell/Taste",
+        "touch": "Touch"
+      },
+      "vision": {
+        "flareCompensation": "Flare Compensation",
+        "label": "Vision",
+        "lowLight": "Low-Light",
+        "normal": "Normal",
+        "thermographic": "Thermographic",
+        "ultrasound": "Ultrasound"
+      }
     },
     "weapon": {
       "ammo": "Ammo",

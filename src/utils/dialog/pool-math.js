@@ -1,5 +1,11 @@
 import { isRangedWeapon } from '@models/index';
 import { DiceUtility } from '../rolls/diceutility.js';
+import {
+  buildSenseContext,
+  buildVisibilityContext,
+  getSenseBonus,
+  getVisibilityMalus,
+} from './visibility.js';
 
 /** @typedef {import('@models/index').RollParameters} RollParameters */
 /** @typedef {import('@models/index').SR4Weapon} SR4Weapon */
@@ -44,7 +50,24 @@ export function getInt(dialog, id) {
 function getRollParameters(actor, dialog, smartlinkOverride) {
   return {
     edgeAvailable: actor.getAttribute('CURRENTEDGE') > 0,
-    maxEdge: actor.getAttribute('EDGE'),
+    ...readDialogModifiers(dialog, {
+      maxEdge: actor.getAttribute('EDGE'),
+      smartlinkOverride,
+    }),
+  };
+}
+
+/**
+ * @param {HTMLElement} dialog
+ * @param {{ maxEdge?: number, smartlinkOverride?: boolean }} [options]
+ * @returns {Omit<RollParameters, 'edgeAvailable'>}
+ */
+export function readDialogModifiers(
+  dialog,
+  { maxEdge = 0, smartlinkOverride = false } = {}
+) {
+  return {
+    maxEdge,
     explode: getChecked(dialog, 'edge'),
     bonus: getInt(dialog, 'bonus'),
     malus: getInt(dialog, 'malus'),
@@ -53,7 +76,26 @@ function getRollParameters(actor, dialog, smartlinkOverride) {
     specialization: getChecked(dialog, 'specialization'),
     hotSim: getChecked(dialog, 'hotSim'),
     controlRig: getChecked(dialog, 'controlRig'),
+    visibilityMalus: getVisibilityMalus(dialog),
+    senseBonus: getSenseBonus(dialog),
   };
+}
+
+/**
+ * @param {HTMLElement} dialog
+ * @param {number} baseDice
+ * @param {number} maxEdge
+ * @returns {number}
+ */
+export function previewDialogPool(dialog, baseDice, maxEdge) {
+  return Math.max(
+    1,
+    computeFinalPool(
+      baseDice,
+      /** @type {RollParameters} */ (readDialogModifiers(dialog, { maxEdge })),
+      getInt(dialog, 'recoilMalus')
+    )
+  );
 }
 
 /**
@@ -82,7 +124,9 @@ export function computeFinalPool(baseDice, rollParameters, recoilMalus = 0) {
     baseDice +
     rollParameters.bonus -
     rollParameters.malus -
-    recoilMalus +
+    recoilMalus -
+    (rollParameters.visibilityMalus ?? 0) +
+    (rollParameters.senseBonus ?? 0) +
     determineBoni(rollParameters)
   );
 }
@@ -129,7 +173,7 @@ function resolveSmartlink(weapon) {
  * @param {string} rollLabel
  * @param {number} numDice
  * @param {import('@models/index').SR4Weapon} [weapon]
- * @param {{ edgeAvailableOverride?: boolean, edgePayment?: EdgePayment | null }} [options]
+ * @param {{ edgeAvailableOverride?: boolean, edgePayment?: EdgePayment | null, details?: string }} [options]
  * @returns {Promise<{successes: number, isGlitch: boolean, rolledDice: number, edgeUsed: boolean, messageId: string | null}>}
  */
 export async function dialogActions(
@@ -138,7 +182,7 @@ export async function dialogActions(
   rollLabel,
   numDice,
   weapon,
-  { edgeAvailableOverride, edgePayment = null } = {}
+  { edgeAvailableOverride, edgePayment = null, details } = {}
 ) {
   const smartlink = resolveSmartlink(weapon);
   const rollParameters = getRollParameters(actor, dialog, smartlink);
@@ -160,6 +204,7 @@ export async function dialogActions(
     actor,
     skillName: rollLabel,
     extended: rollParameters.extended,
+    details,
   });
 
   return {
@@ -180,20 +225,30 @@ export async function dialogActions(
  * @property {boolean} smartlinkChecked
  * @property {number} numDice
  * @property {number} malus
+ * @property {import('./visibility.js').VisibilityContext | null} visibility
+ * @property {import('./visibility.js').SenseContext | null} senses
  */
 
 /**
  * @param {import('@documents/index').SR4Actor} actor
  * @param {number} [numDice]
  * @param {import('@models/index').SR4Weapon} [weapon]
- * @param {{ ignoreModifiers?: boolean, isAttack?: boolean, edgePayment?: EdgePayment | null }} [options]
+ * @param {{ ignoreModifiers?: boolean, isAttack?: boolean, edgePayment?: EdgePayment | null, visibility?: boolean, visualOnly?: boolean, perception?: boolean, visionActor?: import('@documents/index').SR4Actor }} [options]
  * @returns {DialogParameters}
  */
 export function createDialogParameters(
   actor,
   numDice = 0,
   weapon = undefined,
-  { ignoreModifiers = false, isAttack = false, edgePayment = null } = {}
+  {
+    ignoreModifiers = false,
+    isAttack = false,
+    edgePayment = null,
+    visibility = false,
+    visualOnly = false,
+    perception = false,
+    visionActor = actor,
+  } = {}
 ) {
   const hasSmartlink = weapon ? resolveSmartlink(weapon) : false;
   const attackMalus = isAttack
@@ -210,5 +265,10 @@ export function createDialogParameters(
     smartlinkChecked: hasSmartlink,
     numDice,
     malus,
+    visibility:
+      visibility || perception
+        ? buildVisibilityContext(visionActor, { visualOnly })
+        : null,
+    senses: perception ? buildSenseContext(actor) : null,
   };
 }

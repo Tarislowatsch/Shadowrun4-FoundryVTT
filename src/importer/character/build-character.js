@@ -19,6 +19,7 @@ import {
   resolveEssenceModifiers,
   translateSkillNameToEnglish,
 } from '../mappers/index.js';
+import { visionFromNames } from '@models/shared/visibility-rules.js';
 
 /**
  * @type {Record<string, (record: Record<string, unknown>) => { name: string, type: string, system: object }>}
@@ -237,11 +238,29 @@ function buildWeaponModItems(parsedItems) {
 }
 
 /**
+ * @param {Record<string, Array<Record<string, unknown>>> | undefined} parsedItems
+ * @returns {Record<string, boolean>}
+ */
+export function buildCyberwareVision(parsedItems) {
+  const names = (parsedItems?.cyberware ?? []).flatMap((record) => [
+    String(record.name ?? ''),
+    String(record.name_english ?? ''),
+    .../** @type {string[]} */ (record._childNames ?? []),
+  ]);
+  return visionFromNames(names);
+}
+
+/**
  * @param {import('./parse-character.js').ParsedCharacter} parsed
  * @param {Array<{ name: string, type: string, system: object }>} canonicalSkills
+ * @param {{ metatypeTemplate?: object | null }} [options]
  * @returns {{ name: string, type: 'character', img: string|null, system: object, items: Array<object>, ammoLinks: AmmoLink[], weaponModLinks: WeaponModLink[] }}
  */
-export function buildActorData(parsed, canonicalSkills) {
+export function buildActorData(
+  parsed,
+  canonicalSkills,
+  { metatypeTemplate = null } = {}
+) {
   const essenceModifiers = resolveEssenceModifiers(parsed.items?.quality);
   const { name, img, system } = mapCharacterSystem(
     parsed.character,
@@ -266,7 +285,7 @@ export function buildActorData(parsed, canonicalSkills) {
     .filter((s) => isTrue(s.knowledge))
     .map(mapCharacterSkill);
 
-  const metatypeItem = mapCharacterMetatype(parsed.character);
+  const metatypeItem = mapCharacterMetatype(parsed.character, metatypeTemplate);
   const fallbackMentorItem = buildFallbackMentorItem(parsed, items);
 
   const gearGuidToName = buildGearGuidToName(parsed.items);
@@ -279,7 +298,7 @@ export function buildActorData(parsed, canonicalSkills) {
     name,
     type: 'character',
     img,
-    system,
+    system: { ...system, vision: buildCyberwareVision(parsed.items) },
     items: [
       ...(metatypeItem ? [metatypeItem] : []),
       ...items,

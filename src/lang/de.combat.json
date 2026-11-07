@@ -228,6 +228,7 @@
       "meleeDefenseModifier": "Nahkampf-Verteidigungs-Modifikator",
       "overview": "Übersicht",
       "parryModifier": "Parieren-Modifikator",
+      "perception": "Wahrnehmung",
       "rangedDefenseModifier": "Fernkampf-Verteidigungs-Modifikator",
       "unarmedDamageModifier": "Waffenloser Schaden-Modifikator",
       "woundModifier": "Aktueller Wundmodifikator"
@@ -333,7 +334,8 @@
       "loadedAmmo": "Munitions-Items aus dem Kompendium oder dem Item-Verzeichnis auf das Charaktersheet ziehen, um sie hier auswählen zu können.",
       "shots": "Anzahl der verschossenen Patronen. Jede Patrone nach der ersten erhöht den Rückstoß um 1, reduziert durch den RC-Wert der Waffe.",
       "smartlink": "+2 Würfel. Erfordert ein implantiertes Smartlink-System und eine kompatible Waffe.",
-      "specialization": "+2 Würfel, wenn die Fertigkeitsspezialisierung auf diesen Wurf zutrifft."
+      "specialization": "+2 Würfel, wenn die Fertigkeitsspezialisierung auf diesen Wurf zutrifft.",
+      "visibility": "Vorbelegt aus Beleuchtung und Sichtbehinderung der Szene sowie dem besten verfügbaren Sichtmodus. Bedingungen unten ändern oder Wert überschreiben."
     },
     "vehiclemod": {
       "accelBonus": "Beschl.-Bonus",
@@ -350,6 +352,46 @@
       "slotWarning": "Slot-Kapazität überschritten!",
       "slotsUsed": "Slots",
       "speedBonus": "Geschw.-Bonus"
+    },
+    "visibility": {
+      "light": {
+        "fullDarkness": "Völlige Dunkelheit",
+        "glare": "Blendung",
+        "normal": "Normales Licht",
+        "partialLight": "Schwaches Licht"
+      },
+      "malus": "Sichtmodifikator",
+      "modes": {
+        "activate": "Sichtmodus aktivieren",
+        "add": "Sichtmodus hinzufügen",
+        "deactivate": "Sichtmodus deaktivieren",
+        "fromMetatype": "Metatyp",
+        "none": "Nur normale Sicht",
+        "remove": "Sichtmodus entfernen",
+        "title": "Sichtmodi"
+      },
+      "obscurant": {
+        "heavyFog": "Dichter Nebel/Dunst/Regen/Rauch",
+        "lightFog": "Leichter Nebel/Dunst/Regen/Rauch",
+        "none": "Keine Sichtbehinderung",
+        "thermalSmoke": "Thermalrauch"
+      },
+      "sense": {
+        "bonus": "Sinnesbonus",
+        "hearing": "Gehör",
+        "label": "Sinn",
+        "sight": "Sicht",
+        "smell": "Geruch/Geschmack",
+        "touch": "Tastsinn"
+      },
+      "vision": {
+        "flareCompensation": "Blitzkompensation",
+        "label": "Sichtmodus",
+        "lowLight": "Restlicht",
+        "normal": "Normal",
+        "thermographic": "Thermografie",
+        "ultrasound": "Ultraschall"
+      }
     },
     "weapon": {
       "ammo": "Munition",

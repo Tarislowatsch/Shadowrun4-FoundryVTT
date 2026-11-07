@@ -11,6 +11,7 @@ const SECTIONS = [
       'cybercombatWorkflow',
       'gmDefenderPicker',
       'applyDamageWorkflow',
+      'spellAreaTemplates',
     ],
   },
   {

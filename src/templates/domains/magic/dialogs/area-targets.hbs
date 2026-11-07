@@ -1,0 +1,9 @@
+<form class="area-targets-dialog">
+  <p class="hint">{{localize hint}}</p>
+  {{#each actors}}
+  <div class="form-group">
+    <label for="areaTarget-{{ @index }}">{{ this.name }}</label>
+    <input type="checkbox" id="areaTarget-{{ @index }}" name="areaTarget" value="{{ this.uuid }}" checked />
+  </div>
+  {{/each}}
+</form>

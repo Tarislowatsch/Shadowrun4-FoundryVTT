@@ -8,7 +8,7 @@ const COLLECTIONS = [
   ['spell', 'spells'],
   ['quality', 'qualities'],
   ['power', 'powers'],
-  ['cyberware', 'cyberwares'],
+  ['cyberware', 'cyberwares', parseCyberwareRecord],
   ['bioware', 'biowares'],
   ['program', 'techprograms'],
   ['mentorspirit', 'mentorspirits', toMentorRecord],
@@ -78,6 +78,37 @@ function parseWeaponRecord(weaponEl) {
   if (clips) record._clips = clips;
   if (weaponMods) record._weaponMods = weaponMods;
   return record;
+}
+
+/**
+ * @param {Element} cyberwareEl
+ * @returns {Record<string, unknown>}
+ */
+function parseCyberwareRecord(cyberwareEl) {
+  const record = elementToRecord(cyberwareEl);
+  const childNames = collectChildCyberwareNames(cyberwareEl);
+  if (childNames.length) record._childNames = childNames;
+  return record;
+}
+
+/**
+ * @param {Element} cyberwareEl
+ * @param {string[]} [names]
+ * @returns {string[]}
+ */
+function collectChildCyberwareNames(cyberwareEl, names = []) {
+  for (const childEl of cyberwareEl.querySelectorAll(
+    ':scope > children > cyberware'
+  )) {
+    for (const tag of ['name', 'name_english']) {
+      const name = childEl
+        .querySelector(`:scope > ${tag}`)
+        ?.textContent?.trim();
+      if (name) names.push(name);
+    }
+    collectChildCyberwareNames(childEl, names);
+  }
+  return names;
 }
 
 /**

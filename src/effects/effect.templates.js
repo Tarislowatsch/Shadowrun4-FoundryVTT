@@ -1,3 +1,8 @@
+import {
+  ASTRAL_PERCEPTION_STATUS,
+  ASTRAL_PERCEPTION_TEMPLATE,
+} from '@models/shared/visibility-rules.js';
+
 /**
  * Predefined ActiveEffect templates for common SR4 situations.
  * Each entry matches the data shape expected by ActiveEffect.create().
@@ -83,5 +88,12 @@ export const EFFECT_TEMPLATES = Object.freeze({
         value: '-2',
       },
     ],
+  },
+  /** Astral perception: suppresses physical visibility modifiers */
+  [ASTRAL_PERCEPTION_TEMPLATE]: {
+    name: 'sr4.effect.templates.astralPerception',
+    img: 'icons/svg/eye.svg',
+    statuses: [ASTRAL_PERCEPTION_STATUS],
+    changes: [],
   },
 });

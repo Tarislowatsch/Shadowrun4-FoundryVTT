@@ -2,6 +2,8 @@
 import { TEMPLATES } from '@utils/templates';
 import { extractCharacter } from '@importer/character/parse-character.js';
 import { buildActorData } from '@importer/character/build-character.js';
+import { findMetatypeTemplate } from '@importer/character/metatype-template.js';
+import { metatypeLookupNames } from '@importer/mappers/character.js';
 import { buildSummonedActorData } from '@importer/character/build-summoned.js';
 import { buildVehicleActorData } from '@importer/character/build-vehicle.js';
 import { createIsolated } from '@importer/character/create-isolated.js';
@@ -155,9 +157,13 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
       }
 
       const canonicalSkills = await SR4Actor.buildCompendiumSkillData(false);
+      const metatypeTemplate = await CharacterImporterApp.#findMetatypeTemplate(
+        this.#parsed
+      );
       const { ammoLinks, weaponModLinks, ...data } = buildActorData(
         this.#parsed,
-        canonicalSkills
+        canonicalSkills,
+        { metatypeTemplate }
       );
       if (!data.img) delete data.img;
 
@@ -214,6 +220,18 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
   }
 
   /**
+   * @param {import('@importer/character/parse-character.js').ParsedCharacter} parsed
+   * @returns {Promise<object | null>}
+   */
+  static async #findMetatypeTemplate(parsed) {
+    try {
+      return await findMetatypeTemplate(metatypeLookupNames(parsed.character));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Idempotently syncs `this.#targetActor` to the parsed XML: stats are
    * overwritten, embedded items are diffed (matched items untouched, missing
    * ones created, extra ones deleted), skills are always updated in place,
@@ -225,9 +243,13 @@ export class CharacterImporterApp extends foundry.applications.api.HandlebarsApp
   async #onUpdate() {
     const actor = this.#targetActor;
     const canonicalSkills = await SR4Actor.buildCompendiumSkillData(false);
+    const metatypeTemplate = await CharacterImporterApp.#findMetatypeTemplate(
+      this.#parsed
+    );
     const { ammoLinks, weaponModLinks, items, ...data } = buildActorData(
       this.#parsed,
-      canonicalSkills
+      canonicalSkills,
+      { metatypeTemplate }
     );
 
     try {

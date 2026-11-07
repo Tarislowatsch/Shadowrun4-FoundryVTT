@@ -225,6 +225,15 @@ function registerFlowSettings() {
     default: true,
   });
 
+  game.settings.register(SR4.namespace, 'spellAreaTemplates', {
+    name: 'sr4.settings.spellAreaTemplates.name',
+    hint: 'sr4.settings.spellAreaTemplates.hint',
+    scope: 'world',
+    config: false,
+    type: Boolean,
+    default: true,
+  });
+
   game.settings.register(SR4.namespace, 'autoSustainEffect', {
     name: 'sr4.settings.autoSustainEffect.name',
     hint: 'sr4.settings.autoSustainEffect.hint',
@@ -317,6 +326,13 @@ function registerInternalSettings() {
     config: false,
     type: Number,
     default: 0,
+  });
+
+  game.settings.register(SR4.namespace, 'lastSeenSystemVersion', {
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',
   });
 
   game.settings.register(SR4.namespace, 'itemNameTranslations', {

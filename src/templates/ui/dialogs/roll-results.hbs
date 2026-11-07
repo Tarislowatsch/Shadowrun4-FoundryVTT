@@ -3,6 +3,9 @@
   <strong>{{ actorName }} {{localize "sr4.roll.rolling"}}:</strong>
   {{ skillName }}
   {{/if}}
+  {{#if details}}
+  <br /><em>{{ details }}</em>
+  {{/if}}
   {{#if isCriticalGlitch}}
   <br />🔴 <strong>{{localize "sr4.roll.criticalGlitch"}}</strong>
 

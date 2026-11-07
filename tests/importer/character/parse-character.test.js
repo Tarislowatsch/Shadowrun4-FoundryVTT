@@ -249,6 +249,57 @@ describe('extractCharacter', () => {
     expect(names).toEqual(['Commlink', 'Sim Module']);
   });
 
+  it('collects nested cyberware option names', () => {
+    const option = (name, children = []) =>
+      el('cyberware', {
+        children: [el('name', { text: name }), el('children', { children })],
+      });
+    const eyes = el('cyberware', {
+      children: [
+        el('name', { text: 'Cybereyes Basic System Rating 2' }),
+        el('children', {
+          children: [
+            option('Flare Compensation'),
+            option('Vision Enhancement', [option('Thermographic Vision')]),
+          ],
+        }),
+      ],
+    });
+    const { items } = parse(
+      el('character', { children: [el('cyberwares', { children: [eyes] })] })
+    );
+    expect(items.cyberware[0]._childNames).toEqual([
+      'Flare Compensation',
+      'Vision Enhancement',
+      'Thermographic Vision',
+    ]);
+  });
+
+  it('collects the English names of nested cyberware options', () => {
+    const eyes = el('cyberware', {
+      children: [
+        el('name', { text: 'Cyberaugen Stufe 1' }),
+        el('children', {
+          children: [
+            el('cyberware', {
+              children: [
+                el('name', { text: 'Restlichtverstärkung' }),
+                el('name_english', { text: 'Low-Light Vision' }),
+              ],
+            }),
+          ],
+        }),
+      ],
+    });
+    const { items } = parse(
+      el('character', { children: [el('cyberwares', { children: [eyes] })] })
+    );
+    expect(items.cyberware[0]._childNames).toEqual([
+      'Restlichtverstärkung',
+      'Low-Light Vision',
+    ]);
+  });
+
   it('attaches clips and mods to the correct weapon record', () => {
     const { items } = parse(sampleCharacter());
     expect(items.weapon).toHaveLength(2);

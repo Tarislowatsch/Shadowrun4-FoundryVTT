@@ -159,6 +159,7 @@
       "showOnToken": "Show on Token",
       "source": "Source",
       "templates": {
+        "astralPerception": "Astral Perception",
         "blind": "Blinded",
         "blindFlareComp": "Blinded (Flare Compensation)",
         "disoriented": "Disoriented (Electricity)",
@@ -187,6 +188,12 @@
       },
       "defenseModifier": "Defense Dice Pool Modifier",
       "generalModifier": "General Dice Pool Modifier",
+      "sense": {
+        "hearing": "Perception Bonus: Hearing",
+        "sight": "Perception Bonus: Sight",
+        "smell": "Perception Bonus: Smell/Taste",
+        "touch": "Perception Bonus: Touch"
+      },
       "skill": {
         "aeronauticsmechanic": "Skill: Aeronautics-Mechanic",
         "arcana": "Skill: Arcana",
@@ -435,7 +442,18 @@
         },
         "noScene": "No active scene — open or view a scene first.",
         "save": "Save",
-        "title": "Scene Modifiers"
+        "title": "Scene Modifiers",
+        "visibility": {
+          "light": {
+            "hint": "Lighting conditions on this scene. Applies visibility modifiers to attacks, spellcasting and visual Perception.",
+            "name": "Lighting"
+          },
+          "obscurant": {
+            "hint": "Fog, mist, rain or smoke on this scene. Stacks with the lighting modifier.",
+            "name": "Obscurant"
+          },
+          "section": "Visibility"
+        }
       }
     },
     "skills": {

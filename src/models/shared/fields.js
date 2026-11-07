@@ -155,6 +155,7 @@ export class SR4SheetStatsData extends fields.SchemaField {
  * @property {Record<string, number>} skillGroupBonuses
  * @property {Record<string, number>} skillBonuses
  * @property {Record<string, number>} attributeMaximum
+ * @property {{ sight: number, hearing: number, smell: number, touch: number }} senseBonuses
  */
 export const modifiersField = () =>
   new fields.SchemaField({
@@ -185,6 +186,27 @@ export const modifiersField = () =>
     skillBonuses: new fields.ObjectField({ initial: {} }),
     spellCategoryBonuses: new fields.ObjectField({ initial: {} }),
     attributeMaximum: new fields.ObjectField({ initial: {} }),
+    senseBonuses: new fields.SchemaField({
+      sight: new fields.NumberField({ initial: 0, integer: true }),
+      hearing: new fields.NumberField({ initial: 0, integer: true }),
+      smell: new fields.NumberField({ initial: 0, integer: true }),
+      touch: new fields.NumberField({ initial: 0, integer: true }),
+    }),
+  });
+
+/**
+ * @typedef {object} SR4Vision
+ * @property {boolean} lowLight
+ * @property {boolean} thermographic
+ * @property {boolean} ultrasound
+ * @property {boolean} flareCompensation
+ */
+export const visionField = () =>
+  new fields.SchemaField({
+    lowLight: new fields.BooleanField({ initial: false }),
+    thermographic: new fields.BooleanField({ initial: false }),
+    ultrasound: new fields.BooleanField({ initial: false }),
+    flareCompensation: new fields.BooleanField({ initial: false }),
   });
 
 /**

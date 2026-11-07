@@ -12,3 +12,6 @@
 /packs
 #claude
 .claude
+# mutation testing
+/reports
+/.stryker-tmp

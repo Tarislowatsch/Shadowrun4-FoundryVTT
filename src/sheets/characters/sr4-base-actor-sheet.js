@@ -2,6 +2,10 @@ import { TEMPLATES, renderTemplate } from '@utils/templates';
 import {
   wireFocusSelectListeners,
   wireImageEditListener,
+  buildVisionModesContext,
+  onAddVisionMode,
+  onRemoveVisionMode,
+  onToggleVisionMode,
 } from '@sheets/shared';
 import {
   onOpenCreateItemDialog,
@@ -58,6 +62,9 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       rollAttribute: onRollAttribute,
       createElementResistance: onCreateElementResistance,
       deleteElementResistance: onDeleteElementResistance,
+      addVisionMode: onAddVisionMode,
+      removeVisionMode: onRemoveVisionMode,
+      toggleVisionMode: onToggleVisionMode,
     },
   };
 
@@ -182,6 +189,7 @@ export default class SR4BaseActorSheet extends foundry.applications.api.Handleba
       actor: { img: actorData.img, name: actorData.name, uuid: actorData._id },
       system: actorData.system,
       flags: actorData.flags,
+      visionModes: buildVisionModesContext(this.actor),
       // @ts-ignore — CONFIG.SR4 is registered at runtime by the system
       config: CONFIG.SR4,
     };

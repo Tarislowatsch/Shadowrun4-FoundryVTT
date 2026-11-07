@@ -370,7 +370,8 @@ a.item-toggle-equip {
   white-space: nowrap;
 }
 
-.power-card.suppressed {
+.power-card.suppressed,
+.vision-mode-row.suppressed {
   opacity: 0.55;
 }
 

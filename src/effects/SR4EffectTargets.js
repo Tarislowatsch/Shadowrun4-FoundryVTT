@@ -1,6 +1,7 @@
 import { SR4Attributes } from '@models/index';
 import { SR4SkillGroupKeys } from '@models/actions/skills.model';
 import { SpellCategories } from '@models/magic/spells.models';
+import { Senses } from '@models/shared/visibility-rules';
 
 /** @type {readonly string[]} */
 export const SKILL_KEYS = [
@@ -122,6 +123,12 @@ export const SR4EffectTargets = Object.freeze({
   'system.armor.ballistic': 'sr4.armor.ballisticarmor',
   'system.armor.impact': 'sr4.armor.impactarmor',
   'system.modifiers.soakBonus': 'sr4.bonus.soakBonus',
+  ...Object.fromEntries(
+    Object.values(Senses).map((key) => [
+      `system.modifiers.senseBonuses.${key}`,
+      `sr4.effectTarget.sense.${key}`,
+    ])
+  ),
   ...Object.fromEntries(
     Object.keys(SpellCategories).map((key) => [
       `system.modifiers.spellCategoryBonuses.${key}`,

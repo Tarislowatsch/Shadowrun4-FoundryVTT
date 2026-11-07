@@ -3,12 +3,14 @@ import {
   localize,
   createDialogParameters,
   dialogActions,
-  getChecked,
-  getInt,
+  previewDialogPool,
   promptDialog,
+  ROLL_DIALOG_WIDTH,
+  wireVisibilityControls,
 } from '@utils/dialog';
 import {
   ControlModes,
+  DroneActions,
   buildRiggerSkillOptions,
   controllingActor,
   getRiggerLookup,
@@ -114,18 +116,10 @@ export function wireDroneDialog(html, maxEdge, buttons) {
     );
     if (skillGroup) skillGroup.style.display = autonomous ? 'none' : '';
 
-    const mod =
-      getInt(html, 'bonus') -
-      getInt(html, 'malus') -
-      getInt(html, 'recoilMalus') +
-      (getChecked(html, 'specialization') ? 2 : 0) +
-      (getChecked(html, 'smartlink') ? 2 : 0) +
-      (getChecked(html, 'edge') ? maxEdge : 0);
-
     buttons.forEach((button, index) => {
       const el = html.querySelector(`button[data-action="${button.action}"]`);
       if (el)
-        el.textContent = `${button.label} (${resolvedByButton[index].pool + mod})`;
+        el.textContent = `${button.label} (${previewDialogPool(html, resolvedByButton[index].pool, maxEdge)})`;
     });
   };
   html.querySelectorAll('input, select').forEach((el) => {
@@ -137,6 +131,7 @@ export function wireDroneDialog(html, maxEdge, buttons) {
         : 'input';
     el.addEventListener(evt, update);
   });
+  wireVisibilityControls(html, update);
   update();
   return update;
 }
@@ -154,7 +149,10 @@ export async function openDroneRollDialog(vehicle, action) {
 
   const riggerSkills = buildRiggerSkillOptions(rigger, action);
   const paramsActor = rigger ?? vehicle;
-  const params = createDialogParameters(paramsActor);
+  const params = createDialogParameters(paramsActor, 0, undefined, {
+    visibility: action === DroneActions.PERCEPTION,
+    visionActor: vehicle,
+  });
 
   const content = await renderTemplate(TEMPLATES.rigging.droneRollDialog, {
     ...params,
@@ -169,6 +167,7 @@ export async function openDroneRollDialog(vehicle, action) {
 
   await promptDialog({
     window: { title: `${rollLabel} — ${vehicle.name}` },
+    position: { width: ROLL_DIALOG_WIDTH },
     content,
     ok: {
       label: localize('sr4.roll.rollButton'),

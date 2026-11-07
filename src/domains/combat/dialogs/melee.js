@@ -92,6 +92,7 @@ async function rollMeleeForTarget(
   const params = createDialogParameters(actor, totalDice, weapon, {
     isAttack: true,
     edgePayment,
+    visibility: true,
   });
   const skill = actor.getSkill(skillName);
   const content = await renderTemplate(TEMPLATES.combat.meleeAttackDialog, {

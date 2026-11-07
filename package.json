@@ -1,14 +1,20 @@
 {
   "type": "module",
-  "version": "1.28.0",
+  "version": "1.29.0",
   "dependencies": {
     "dotenv": "^16.4.7"
   },
   "overrides": {
-    "brace-expansion": "^5.0.12"
+    "brace-expansion": "^5.0.12",
+    "@stryker-mutator/core": {
+      "minimatch": "^11.0.5",
+      "qs": "^6.17.1"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@stryker-mutator/core": "^10.1.1",
+    "@stryker-mutator/vitest-runner": "^10.1.1",
     "eslint": "^9.39.5",
     "globals": "^14.0.0",
     "husky": "^9.1.7",
@@ -21,6 +27,7 @@
   },
   "scripts": {
     "test": "vitest run",
+    "test:mutation": "stryker run",
     "build": "vite build",
     "build:full": "npm run build:db && vite build",
     "watch": "vite build --watch",

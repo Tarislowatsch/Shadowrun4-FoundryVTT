@@ -1,0 +1,9 @@
+<div class="sr4-resist-summary">
+  <strong>{{ title }}</strong>
+  {{#if details}}<br /><em>{{ details }}</em>{{/if}}
+  <ul>
+    {{#each rows}}
+    <li><strong>{{ name }}</strong>: {{ text }}</li>
+    {{/each}}
+  </ul>
+</div>

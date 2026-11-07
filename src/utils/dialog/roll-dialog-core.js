@@ -1,6 +1,10 @@
 import { SR4 } from '@config';
 import { getGame } from '../game/game.js';
 import { promptDialog } from './dialog-v2.js';
+import { wireVisibilityControls } from './visibility.js';
+import { getInt, previewDialogPool } from './pool-math.js';
+
+export const ROLL_DIALOG_WIDTH = 520;
 
 /**
  * Returns a localised string, optionally appended with a suffix.
@@ -47,6 +51,7 @@ export async function createRollDialog(config) {
 
   return promptDialog({
     window: { title: config.title },
+    position: { width: ROLL_DIALOG_WIDTH },
     content: config.content,
 
     ok: {
@@ -74,18 +79,11 @@ export async function createRollDialog(config) {
       if (config.dice === undefined) return;
 
       const updateLabel = () => {
-        const bonus = parseInt(html.querySelector('#bonus')?.value ?? '0') || 0;
-        const malus = parseInt(html.querySelector('#malus')?.value ?? '0') || 0;
-        const recoilMalus =
-          parseInt(html.querySelector('#recoilMalus')?.value ?? '0') || 0;
-        const spec = html.querySelector('#specialization')?.checked ? 2 : 0;
-        const sl = html.querySelector('#smartlink')?.checked ? 2 : 0;
-        const edge = html.querySelector('#edge')?.checked
-          ? parseInt(html.querySelector('#maxEdge')?.value ?? '0') || 0
-          : 0;
-
-        const total =
-          config.dice + bonus - malus - recoilMalus + spec + sl + edge;
+        const total = previewDialogPool(
+          html,
+          config.dice,
+          getInt(html, 'maxEdge')
+        );
         const okBtn = html.querySelector('button[data-action="ok"]');
         if (okBtn)
           okBtn.textContent = `${localize('sr4.roll.rollButton')} (${total})`;
@@ -98,6 +96,7 @@ export async function createRollDialog(config) {
         .querySelectorAll('input[type="radio"], select')
         .forEach((el) => el.addEventListener('change', updateLabel));
       if (config.onRender) config.onRender(html, updateLabel);
+      wireVisibilityControls(html, updateLabel);
       updateLabel();
     },
 

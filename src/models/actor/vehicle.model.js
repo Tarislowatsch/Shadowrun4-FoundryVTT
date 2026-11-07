@@ -3,6 +3,8 @@ import {
   monitorField,
   baseDerivedStatsFields,
   modifiersField,
+  visionField,
+  resolveVision,
   sumModField,
   descriptionFields,
 } from '@models/shared';
@@ -76,6 +78,8 @@ export class SR4VehicleData extends foundry.abstract.TypeDataModel {
         commandProgram: new fields.StringField({ initial: '', blank: true }),
       }),
       modifiers: modifiersField(),
+      vision: visionField(),
+      visionDisabled: visionField(),
       derivedStats: new fields.SchemaField({
         ...baseDerivedStatsFields(),
       }),
@@ -83,6 +87,15 @@ export class SR4VehicleData extends foundry.abstract.TypeDataModel {
         physical: monitorField(),
       }),
     };
+  }
+
+  prepareBaseData() {
+    const self = /** @type {any} */ (this);
+    if (!self.vision) return;
+    Object.assign(
+      self.vision,
+      resolveVision(self.vision, {}, self.visionDisabled)
+    );
   }
 
   prepareDerivedData() {

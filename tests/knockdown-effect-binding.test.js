@@ -4,22 +4,25 @@ import {
   KNOCKED_DOWN_STATUS,
   KNOCKED_DOWN_TEMPLATE,
 } from '@models/shared/knockdown-rules.js';
+import {
+  ASTRAL_PERCEPTION_STATUS,
+  ASTRAL_PERCEPTION_TEMPLATE,
+} from '@models/shared/visibility-rules.js';
 
-describe('knockdown effect binding', () => {
+describe.each([
+  ['knockdown', KNOCKED_DOWN_TEMPLATE, KNOCKED_DOWN_STATUS],
+  ['astral perception', ASTRAL_PERCEPTION_TEMPLATE, ASTRAL_PERCEPTION_STATUS],
+])('%s effect binding', (_label, template, status) => {
   it('resolves to an existing effect template', () => {
-    expect(EFFECT_TEMPLATES[KNOCKED_DOWN_TEMPLATE]).toBeDefined();
+    expect(EFFECT_TEMPLATES[template]).toBeDefined();
   });
 
-  it('carries the status id the stacking guard looks for', () => {
-    expect(EFFECT_TEMPLATES[KNOCKED_DOWN_TEMPLATE]?.statuses).toContain(
-      KNOCKED_DOWN_STATUS
-    );
+  it('carries the status id the rules look for', () => {
+    expect(EFFECT_TEMPLATES[template]?.statuses).toContain(status);
   });
 
   it('is registered as a status effect on the token HUD', () => {
-    expect(SR4_STATUS_EFFECTS.map((effect) => effect.id)).toContain(
-      KNOCKED_DOWN_STATUS
-    );
+    expect(SR4_STATUS_EFFECTS.map((effect) => effect.id)).toContain(status);
   });
 });
 

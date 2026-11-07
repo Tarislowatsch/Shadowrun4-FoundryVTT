@@ -72,4 +72,9 @@ describe('computeFinalPool', () => {
     // 8 + 2 - 1 - 3 + (2 + 0 + 4) = 12
     expect(computeFinalPool(8, params, 3)).toBe(12);
   });
+
+  it('subtracts the visibility malus and adds the sense bonus', () => {
+    const params = makeParams({ visibilityMalus: 4, senseBonus: 2 });
+    expect(computeFinalPool(10, params)).toBe(8);
+  });
 });

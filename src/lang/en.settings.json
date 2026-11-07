@@ -87,13 +87,13 @@
         "hint": "When enabled, a dialog is shown before applying damage, allowing confirmation or adjustment. Disabling applies damage immediately.",
         "name": "Damage: Confirmation Workflow"
       },
-      "conjuringDrain": {
-        "hint": "When enabled, drain from summoning, binding and banishing spirits and fading from compiling, registering and decompiling sprites is half the Force/Rating (rounded up) plus the hits scored by the opposing entity, instead of twice its hits (Street Magic p. 31, Unwired p. 39).",
-        "name": "Magic: Alternative Conjuring Drain"
-      },
       "autoSustainEffect": {
         "hint": "Automatically create a sustain active effect when a sustained spell is cast.",
         "name": "Auto Sustain Effect"
+      },
+      "changeEncumbranceToStrength": {
+        "hint": "When enabled, an actor's encumbrance threshold is calculated as Strength + Body instead of Body x 2.",
+        "name": "Encumbrance: Use Strength + Body"
       },
       "combatDefenseWorkflow": {
         "hint": "When enabled, targeted tokens are automatically prompted to roll defense after an attack. Disabling this also disables the Soak Workflow.",
@@ -102,6 +102,10 @@
       "combatSoakWorkflow": {
         "hint": "When enabled, defenders are prompted to roll soak after defense. Requires Combat: Defense Workflow to be active.",
         "name": "Combat: Soak Workflow"
+      },
+      "conjuringDrain": {
+        "hint": "When enabled, drain from summoning, binding and banishing spirits and fading from compiling, registering and decompiling sprites is half the Force/Rating (rounded up) plus the hits scored by the opposing entity, instead of twice its hits (Street Magic p. 31, Unwired p. 39).",
+        "name": "Magic: Alternative Conjuring Drain"
       },
       "cybercombatWorkflow": {
         "hint": "When enabled, Matrix attacks prompt targets for defense and resistance rolls. Disabling turns off the Cybercombat flow.",
@@ -127,14 +131,6 @@
       "decisionModeMatrix": {
         "hint": "Decision mode for reactive matrix rolls (matrix defense, resist, dumpshock) when the global mode is set to Custom.",
         "name": "Decision Mode: Matrix"
-      },
-      "changeEncumbranceToStrength": {
-        "hint": "When enabled, an actor's encumbrance threshold is calculated as Strength + Body instead of Body x 2.",
-        "name": "Encumbrance: Use Strength + Body"
-      },
-      "ignoreEncumbranceSingleArmorItem": {
-        "hint": "When enabled, a single equipped armor item does not count toward encumbrance.",
-        "name": "Encumbrance: Ignore Single Armor Item"
       },
       "flowEdgeTimeout": {
         "hint": "How long (in seconds) the Edge buttons stay active on a roll card during a combat or magic flow before they are automatically removed and the flow continues with the original result.",
@@ -169,6 +165,10 @@
         "noValidActors": "No valid actors found to select as defender.",
         "selectLabel": "Defender",
         "unknownAttacker": "Unknown"
+      },
+      "ignoreEncumbranceSingleArmorItem": {
+        "hint": "When enabled, a single equipped armor item does not count toward encumbrance.",
+        "name": "Encumbrance: Ignore Single Armor Item"
       },
       "knockdownAutoThreshold": {
         "hint": "Once the knockdown rule applies to an attack, damage at or above this value knocks the target down regardless of its Body. Set to 0 to disable this part of the rule.",
@@ -227,6 +227,10 @@
         "reset": "Reset",
         "save": "Save",
         "title": "Source Books"
+      },
+      "spellAreaTemplates": {
+        "hint": "Area combat and illusion spells place a scene region; tokens inside become targets. Can be turned off per cast in the force dialog.",
+        "name": "Spell Area Templates"
       },
       "spellWorkflow": {
         "hint": "Enable the multi-step spellcasting workflow (force selection, roll, drain).",

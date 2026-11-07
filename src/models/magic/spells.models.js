@@ -62,9 +62,21 @@ export const SpellElements = Object.freeze({
 export const SpellRanges = Object.freeze({
   /** @type {string} */ TOUCH: 'sr4.spell.ranges.touch',
   /** @type {string} */ LOS: 'sr4.spell.ranges.los',
-  /** @type {string} */ AREA: 'sr4.spell.ranges.area',
   /** @type {string} */ SELF: 'sr4.spell.ranges.self',
 });
+
+/** @type {ReadonlyArray<keyof typeof SpellRanges>} */
+const NO_SIGHT_RANGES = Object.freeze(['SELF', 'TOUCH']);
+
+/**
+ * @param {{ system?: { range?: string } } | null | undefined} spell
+ * @returns {boolean}
+ */
+export function spellNeedsSight(spell) {
+  return !NO_SIGHT_RANGES.includes(
+    /** @type {keyof typeof SpellRanges} */ (spell?.system?.range)
+  );
+}
 
 /**
  * @enum {string}
@@ -190,6 +202,13 @@ export class SR4SpellData extends foundry.abstract.TypeDataModel {
       source.combatType = source.descriptor.toLowerCase().includes('indirect')
         ? 'INDIRECT'
         : 'DIRECT';
+    }
+    if (typeof source.range === 'string') {
+      source.range = source.range.toUpperCase();
+    }
+    if (source.range === 'AREA') {
+      source.range = 'LOS';
+      source.area = true;
     }
     if (typeof source.category === 'string') {
       source.category = source.category.toUpperCase();

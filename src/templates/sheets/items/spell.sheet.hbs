@@ -10,6 +10,7 @@
         {{/if}}
         <th>{{localize 'sr4.spell.type'}}</th>
         <th>{{localize 'sr4.spell.range'}}</th>
+        <th>{{localize 'sr4.spell.area'}}</th>
         {{#if (eq system.category "COMBAT")}}
         <th>{{localize 'sr4.spell.damagetype'}}</th>
         {{#if (eq system.combatType "INDIRECT")}}
@@ -45,6 +46,9 @@
           <select name="system.range">
             {{selectOptions spellranges selected=system.range localize=true}}
           </select>
+        </td>
+        <td>
+          <input type="checkbox" name="system.area" {{checked system.area}} />
         </td>
         {{#if (eq system.category "COMBAT")}}
         <td>

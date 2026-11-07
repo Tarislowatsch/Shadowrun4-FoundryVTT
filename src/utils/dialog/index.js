@@ -5,3 +5,4 @@ export * from './skill-dice.js';
 export * from './skill-options.js';
 export * from './standard-dialogs.js';
 export * from './dice-pool-split';
+export * from './visibility.js';

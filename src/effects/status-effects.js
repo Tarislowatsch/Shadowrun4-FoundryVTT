@@ -1,3 +1,5 @@
+import { ASTRAL_PERCEPTION_STATUS } from '@models/shared/visibility-rules.js';
+
 export const SR4_STATUS_EFFECTS = Object.freeze([
   {
     id: 'sr4-sustain',
@@ -28,5 +30,10 @@ export const SR4_STATUS_EFFECTS = Object.freeze([
     id: 'sr4-dumpshocked',
     label: 'sr4.effect.templates.dumpshocked',
     img: 'icons/svg/stoned.svg',
+  },
+  {
+    id: ASTRAL_PERCEPTION_STATUS,
+    label: 'sr4.effect.templates.astralPerception',
+    img: 'icons/svg/eye.svg',
   },
 ]);

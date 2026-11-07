@@ -5,6 +5,7 @@ import {
   dialogActions,
   getChecked,
   waitDialog,
+  ROLL_DIALOG_WIDTH,
 } from '@utils/dialog';
 import {
   DroneActions,
@@ -97,6 +98,7 @@ export async function openDroneDefenseDialog(
     window: {
       title: `${localize('sr4.defense.title')} — ${attacker.name} (${weapon.name})`,
     },
+    position: { width: ROLL_DIALOG_WIDTH },
     content,
     render: (event) => {
       const html = event.target.element;

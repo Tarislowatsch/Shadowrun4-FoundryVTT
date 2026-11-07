@@ -26,6 +26,14 @@
     </div>
 
     <div class="modifier-section">
+      <h3>{{localize "sr4.modifiers.perception"}}</h3>
+      {{> modifier-field label="sr4.visibility.sense.sight" name="system.modifiers.senseBonuses.sight" value=sourceModifiers.senseBonuses.sight}}
+      {{> modifier-field label="sr4.visibility.sense.hearing" name="system.modifiers.senseBonuses.hearing" value=sourceModifiers.senseBonuses.hearing}}
+      {{> modifier-field label="sr4.visibility.sense.smell" name="system.modifiers.senseBonuses.smell" value=sourceModifiers.senseBonuses.smell}}
+      {{> modifier-field label="sr4.visibility.sense.touch" name="system.modifiers.senseBonuses.touch" value=sourceModifiers.senseBonuses.touch}}
+    </div>
+
+    <div class="modifier-section">
       <h3>{{localize "sr4.modifiers.initiative.title"}}</h3>
       <div class="modifier-field realm-default-field">
         <label>{{localize "sr4.combat.realmDefault"}}</label>

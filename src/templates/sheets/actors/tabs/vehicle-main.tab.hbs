@@ -88,6 +88,16 @@
   </div>
 
   <div class="npc-section">
+    <div class="tab-header">
+      <h3>{{localize 'sr4.visibility.modes.title'}}</h3>
+      {{#if editMode}}
+        {{> item-create-btn btnAction="addVisionMode" btnTooltip="sr4.visibility.modes.add" btnDisabled=visionModes.complete}}
+      {{/if}}
+    </div>
+    {{> vision-modes-list}}
+  </div>
+
+  <div class="npc-section">
     <h3>{{localize 'sr4.tab.weapons'}}</h3>
     {{#if weapons}}
       {{#each weapons as |weapon|}}
