@@ -14,14 +14,10 @@
             "Optionale Niederschlag-Regel: Schaden kann das Ziel zu Boden werfen, wahlweise bei jedem Angriff oder nur bei Gel-Munition, mit Konstitutions-Modifikator und automatischer Grenze."
           ],
           "29": [
-            "Sichtmodifikatoren: Beleuchtung und Sichtbehinderung pro Szene einstellen; Angriffe, Spruchzauberei und visuelle Wahrnehmungsproben bekommen einen vorberechneten Sichtmodifikator nach dem besten verfügbaren Sichtmodus, im Wurf änderbar. Zauber mit Reichweite „Selbst“ oder „Berührung“ sind ausgenommen.",
-            "Sichtmodi (Restlicht, Thermografie, Ultraschall, Blitzkompensation) werden in einer eigenen Liste gepflegt: im Tab „Bio & Kontakte“, im NPC-Bogen und im Fahrzeugbogen. Sichtarten des Metatyps (Kräfte und Qualitäten wie Low-Light Vision) werden automatisch erkannt, jeder Sichtmodus lässt sich deaktivieren und wieder aktivieren. Der Chummer-Charakterimport übernimmt Sichtoptionen aus Cyberware und ergänzt den Metatyp aus einem passenden Metatyp-Item der Welt oder eines Compendiums.",
-            "Wahrnehmungsproben können den Sinn wählen (Sicht, Gehör, Geruch/Geschmack, Tastsinn), jeweils mit eigenem Bonus, einstellbar im Modifikatoren-Tab oder über Active Effects.",
-            "Neuer Status „Astrale Wahrnehmung“: Solange er aktiv ist, gilt kein Sichtmodifikator.",
-            "Flächenzauber: Der Radius entspricht der Kraft in Metern und lässt sich im Kraft-Dialog pro einbehaltenem Würfel um 1 m verändern (Street Magic S. 160). Ein Erfolgswurf gilt für alle Ziele, die Würfelkarte zeigt Kraft und Radius.",
-            "Flächen-Kampf- und Illusionszauber platzieren die Fläche als Szenen-Region; Tokens darin werden Ziele und lassen sich vor dem Wurf in einer Liste abwählen. Abschaltbar in den Flow-Einstellungen oder pro Zauber im Kraft-Dialog; ohne Platzierung wird mit den markierten Zielen nach Bestätigung gezaubert. Spieler ohne Recht zum Anlegen von Regionen bekommen die Region über die Spielleitung.",
-            "Zauber auf mehrere Ziele fordern die Widerstandswürfe aller Ziele gleichzeitig an und fassen das Ergebnis auf einer gemeinsamen Chatkarte zusammen. Zauber mit Reichweite „Selbst“ treffen immer den Zauberer.",
-            "Im Zauberbogen ist „Fläche“ jetzt ein eigenes Häkchen neben der Reichweite; bestehende Zauber mit Reichweite „Fläche“ werden automatisch umgestellt."
+            "Sichtmodifikatoren: Beleuchtung und Sichtbehinderung pro Szene; Angriffe, Zauber und Wahrnehmung erhalten automatisch den passenden Modifikator nach bestem Sichtmodus.",
+            "Sichtmodi als eigene Liste in Charakter-, NPC- und Fahrzeugbogen, inkl. Erkennung über Metatyp und Chummer-Import.",
+            "Wahrnehmungsproben mit Sinnauswahl und eigenem Bonus pro Sinn; neuer Status „Astrale Wahrnehmung“.",
+            "Flächenzauber: Radius nach Kraft (anpassbar), Platzierung als Szenen-Region mit automatischer Zielauswahl und gemeinsamer Chatkarte für alle Widerstandswürfe."
           ]
         }
       }

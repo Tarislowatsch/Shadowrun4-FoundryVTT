@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "version": "1.29.0",
+  "version": "1.29.1",
   "dependencies": {
     "dotenv": "^16.4.7"
   },

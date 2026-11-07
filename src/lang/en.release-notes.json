@@ -14,14 +14,10 @@
             "Optional knockdown rule: damage can knock the target down, configurable for every attack or gel rounds only, with a Body modifier and an automatic threshold."
           ],
           "29": [
-            "Visibility modifiers: set lighting and obscurant per scene; attacks, spellcasting and visual Perception tests get a pre-calculated visibility modifier based on the best available vision mode, editable per roll. Self and touch spells are exempt.",
-            "Vision modes (low-light, thermographic, ultrasound, flare compensation) are managed in their own list on the Bio & Contacts tab, the NPC sheet and the vehicle sheet. Metatype vision (powers and qualities such as Low-Light Vision) is picked up automatically, and every mode can be deactivated and reactivated. The Chummer character import adds vision options from cyberware and fills the metatype from a matching Metatype item in the world or a compendium.",
-            "Perception tests can choose the sense (sight, hearing, smell/taste, touch), each with its own bonus, set on the Modifiers tab or via Active Effects.",
-            "New status \"Astral Perception\": while active, no visibility modifier applies.",
-            "Area spells: the radius equals the Force in meters and can be changed by 1 m per withheld die in the Force dialog (Street Magic p. 160). One success test applies to all targets, and the roll card shows Force and radius.",
-            "Area combat and illusion spells place their area as a scene region; tokens inside become targets and can be unchecked in a list before the roll. Can be turned off in the flow settings or per cast in the Force dialog; without a placement the spell hits the marked targets after confirmation. Players who may not create regions get theirs created by the GM.",
-            "Spells on several targets request all resistance tests at once and summarise the results on one chat card. Spells with range Self always target the caster.",
-            "The spell sheet has a separate Area checkbox next to the range; existing spells with range Area are converted automatically."
+            "Visibility modifiers: lighting and obscurant per scene; attacks, spells and Perception automatically get the matching modifier for the best vision mode.",
+            "Vision modes as a separate list on character, NPC and vehicle sheets, including detection from metatype and Chummer import.",
+            "Perception tests with sense selection and a bonus per sense; new status \"Astral Perception\".",
+            "Area spells: radius by Force (adjustable), placement as a scene region with automatic targeting and one shared chat card for all resistance tests."
           ]
         }
       }
