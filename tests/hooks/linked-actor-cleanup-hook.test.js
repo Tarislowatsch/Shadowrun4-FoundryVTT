@@ -35,21 +35,31 @@ describe('LinkedActorCleanupHook', () => {
   });
 
   it.each([
-    ['spirit', 'ownerUuid', 'system.ownerUuid'],
-    ['vehicle', 'riggerUuid', 'system.riggerUuid'],
+    [
+      'spirit',
+      { ownerUuid: 'Actor.parent1', bound: true },
+      { 'system.ownerUuid': '', 'system.bound': false },
+    ],
+    [
+      'sprite',
+      { ownerUuid: 'Actor.parent1', bound: true },
+      { 'system.ownerUuid': '', 'system.bound': false },
+    ],
+    [
+      'vehicle',
+      { riggerUuid: 'Actor.parent1' },
+      { 'system.riggerUuid': '', 'system.controlMode': 'autonomous' },
+    ],
   ])(
-    'nulls %s on %s pointing at the deleted actor',
-    async (type, field, updateKey) => {
-      const actor = makeLinkedActor({
-        type,
-        system: { [field]: 'Actor.parent1' },
-      });
+    'unlinks a %s pointing at the deleted actor',
+    async (type, system, expectedUpdate) => {
+      const actor = makeLinkedActor({ type, system });
       globalThis.game.actors = [actor];
       new LinkedActorCleanupHook();
 
       await deleteActorHandler({ uuid: 'Actor.parent1' });
 
-      expect(actor.updateCalls).toEqual([{ [updateKey]: null }]);
+      expect(actor.updateCalls).toEqual([expectedUpdate]);
     }
   );
 

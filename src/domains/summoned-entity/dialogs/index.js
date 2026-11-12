@@ -4,3 +4,4 @@ export * from './spirit-service-roll';
 export * from './summoning-helpers';
 export * from './summoning';
 export * from './spirit-resist';
+export * from './unlink';

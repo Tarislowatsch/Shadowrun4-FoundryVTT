@@ -122,6 +122,44 @@ export function spellResistPool(defender, resistAttribute) {
 }
 
 /**
+ * @param {import('@documents/index').SR4Actor} defender
+ * @param {string} resistAttribute
+ * @param {string} label
+ * @returns {Promise<{ numDice: number, successes: number, isGlitch: boolean, messageId: string | null }>}
+ */
+async function rollPlainSpellResist(defender, resistAttribute, label) {
+  const resistPool = spellResistPool(defender, resistAttribute);
+  const numDice = standardAutoRollPool(defender, resistPool);
+  const { successes, isGlitch, messageId } = await DiceUtility.rollAndShow({
+    numDice,
+    explode: false,
+    edgeAvailable: false,
+    actor: defender,
+    skillName: label,
+  });
+  return { numDice, successes, isGlitch, messageId };
+}
+
+/**
+ * @param {import('@documents/index').SR4Actor} defender
+ * @param {string} resistAttribute
+ * @returns {Promise<number>}
+ */
+export async function rollFallbackSpellResist(defender, resistAttribute) {
+  try {
+    const { successes } = await rollPlainSpellResist(
+      defender,
+      resistAttribute,
+      localizeResistAttribute(resistAttribute)
+    );
+    return successes;
+  } catch (error) {
+    console.error('SR4 | fallback spell resist roll failed', error);
+    return 0;
+  }
+}
+
+/**
  * @param {{
  *   defender: import('@documents/index').SR4Actor,
  *   resistAttribute: string,
@@ -140,15 +178,8 @@ export async function autoResolveSpellResist({
   socketAction,
   casterUuid,
 }) {
-  const resistPool = spellResistPool(defender, resistAttribute);
-  const numDice = standardAutoRollPool(defender, resistPool);
-  const { successes, isGlitch, messageId } = await DiceUtility.rollAndShow({
-    numDice,
-    explode: false,
-    edgeAvailable: false,
-    actor: defender,
-    skillName: label,
-  });
+  const { numDice, successes, isGlitch, messageId } =
+    await rollPlainSpellResist(defender, resistAttribute, label);
   await resolveAndEmitSpellResist({
     defender,
     result: { successes, isGlitch, edgeUsed: false, messageId },

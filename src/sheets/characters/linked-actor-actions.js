@@ -1,4 +1,5 @@
 import { BindingFlow } from '@domains/summoned-entity/flow/binding-flow.js';
+import { confirmAndUnlink } from '@domains/summoned-entity/dialogs/unlink.js';
 
 export async function onOpenLinkedActor(_event, target) {
   const uuid = target.dataset.uuid;
@@ -26,4 +27,20 @@ export async function onBindLinkedActor(_event, target) {
     return;
   }
   await BindingFlow.start(this.actor, actor);
+}
+
+/**
+ * @param {Event} _event
+ * @param {HTMLElement} target
+ * @returns {Promise<void>}
+ */
+export async function onUnlinkLinkedActor(_event, target) {
+  const uuid = target.dataset.uuid;
+  if (!uuid) return;
+  const actor = await fromUuid(uuid);
+  if (!actor) {
+    ui.notifications.warn(game.i18n.localize('sr4.ui.linkedActorNotFound'));
+    return;
+  }
+  await confirmAndUnlink(actor);
 }

@@ -15,7 +15,7 @@ import {
  *   matchAction: string,
  *   matches: (payload: object) => boolean,
  *   onMatch: (payload: object) => T,
- *   fallback: T,
+ *   fallback: T | (() => T | Promise<T>),
  * }} options
  * @returns {Promise<T>}
  */
@@ -27,15 +27,20 @@ export function awaitOpposedSocketResponse({
   onMatch,
   fallback,
 }) {
+  const settings = getGame().settings;
   const timeoutMs = getOpposedRollFallbackTimeoutMs(
-    getGame().settings.get(SR4.namespace, 'flowOpposedRollTimeout')
+    settings.get(SR4.namespace, 'flowOpposedRollTimeout'),
+    settings.get(SR4.namespace, 'flowEdgeTimeout') ?? 0
   );
+
+  const resolveFallback = () =>
+    typeof fallback === 'function' ? fallback() : fallback;
 
   return new Promise((resolve) => {
     let settled = false;
 
     /**
-     * @param {T} value
+     * @param {T | Promise<T>} value
      * @returns {void}
      */
     const settle = (value) => {
@@ -50,7 +55,7 @@ export function awaitOpposedSocketResponse({
       console.warn(
         `SR4 | no ${matchAction} within ${timeoutMs}ms after ${triggerAction}, using the fallback`
       );
-      settle(fallback);
+      settle(resolveFallback());
     }, timeoutMs);
 
     const handler = (data) => {
@@ -63,7 +68,7 @@ export function awaitOpposedSocketResponse({
     emitSystemSocket({ action: triggerAction, payload: triggerPayload }).catch(
       (error) => {
         console.error(`SR4 | failed to emit ${triggerAction}`, error);
-        settle(fallback);
+        settle(resolveFallback());
       }
     );
   });

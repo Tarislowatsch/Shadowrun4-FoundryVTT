@@ -2,6 +2,7 @@ import { openActionDialog } from '@utils/index';
 import { handleSkillRoll } from '@domains/combat/dialogs/index.js';
 import SR4BaseActorSheet from '@sheets/characters/sr4-base-actor-sheet';
 import { buildCritterActorData } from '@importer/character/build-critter.js';
+import { unlinkFromOwner } from '@domains/summoned-entity/owner-link.js';
 
 export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
   static DEFAULT_OPTIONS = {
@@ -26,7 +27,7 @@ export class SR4SummonedEntitySheet extends SR4BaseActorSheet {
   }
 
   static async _onClearOwner() {
-    await this.actor.update({ 'system.ownerUuid': '' });
+    await unlinkFromOwner(this.actor);
   }
 
   /**

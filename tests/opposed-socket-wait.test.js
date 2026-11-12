@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const TIMEOUT_MS = 1000;
 
+const { timeoutMock } = vi.hoisted(() => ({ timeoutMock: vi.fn() }));
+
 vi.mock('../src/utils/game/opposed-roll-timeout.js', () => ({
-  getOpposedRollFallbackTimeoutMs: () => TIMEOUT_MS,
+  getOpposedRollFallbackTimeoutMs: (...args) => timeoutMock(...args),
 }));
 
 const { awaitOpposedSocketResponse } = await import(
@@ -45,6 +47,7 @@ beforeEach(() => {
   responders = [];
   globalThis.game.socket = { emit: vi.fn(), on: vi.fn(), off: vi.fn() };
   globalThis.game.settings = { get: vi.fn().mockReturnValue(20) };
+  timeoutMock.mockReset().mockReturnValue(TIMEOUT_MS);
   vi.spyOn(console, 'warn').mockImplementation(() => {});
   vi.spyOn(console, 'error').mockImplementation(() => {});
 });
@@ -96,6 +99,54 @@ describe('awaitOpposedSocketResponse', () => {
     });
 
     await expect(pending).resolves.toBe(0);
+  });
+
+  it('waits for the opposed roll and the edge offer that follows it', async () => {
+    globalThis.game.settings.get = vi.fn(
+      (_namespace, key) =>
+        ({ flowOpposedRollTimeout: 30, flowEdgeTimeout: 15 })[key]
+    );
+    respondWith({ attackerUuid, defenderUuid, defenseHits: 1 });
+
+    await waitForDefense();
+
+    expect(timeoutMock).toHaveBeenCalledWith(30, 15);
+  });
+
+  it('computes a lazy fallback only once the timeout elapses', async () => {
+    vi.useFakeTimers();
+    const fallback = vi.fn().mockResolvedValue(3);
+
+    const pending = awaitOpposedSocketResponse({
+      triggerAction: 'triggerMatrixDefense',
+      triggerPayload: { attackerUuid, defenderUuid },
+      matchAction: 'matrixDefenseRolled',
+      matches: () => true,
+      onMatch: (payload) => payload.defenseHits,
+      fallback,
+    });
+    expect(fallback).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(TIMEOUT_MS);
+
+    await expect(pending).resolves.toBe(3);
+    expect(fallback).toHaveBeenCalledOnce();
+  });
+
+  it('never computes a lazy fallback when the response arrives', async () => {
+    respondWith({ attackerUuid, defenderUuid, defenseHits: 2 });
+    const fallback = vi.fn();
+
+    const result = await awaitOpposedSocketResponse({
+      triggerAction: 'triggerMatrixDefense',
+      triggerPayload: { attackerUuid, defenderUuid },
+      matchAction: 'matrixDefenseRolled',
+      matches: () => true,
+      onMatch: (payload) => payload.defenseHits,
+      fallback,
+    });
+
+    expect(result).toBe(2);
+    expect(fallback).not.toHaveBeenCalled();
   });
 
   it('falls back when the emit itself fails', async () => {

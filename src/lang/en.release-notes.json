@@ -18,6 +18,9 @@
             "Vision modes as a separate list on character, NPC and vehicle sheets, including detection from metatype and Chummer import.",
             "Perception tests with sense selection and a bonus per sense; new status \"Astral Perception\".",
             "Area spells: radius by Force (adjustable), placement as a scene region with automatic targeting and one shared chat card for all resistance tests."
+          ],
+          "30": [
+            "Spirits, sprites and vehicles can be removed from the character sheet; the actor stays in the world."
           ]
         }
       }

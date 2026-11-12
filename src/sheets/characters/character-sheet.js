@@ -49,6 +49,7 @@ import {
 import {
   onOpenLinkedActor,
   onBindLinkedActor,
+  onUnlinkLinkedActor,
 } from './linked-actor-actions.js';
 import { CharacterImporterApp } from '@sheets/importer/character-importer-app.js';
 import SR4BaseActorSheet from './sr4-base-actor-sheet.js';
@@ -84,6 +85,7 @@ export default class SR4CharacterSheet extends SR4BaseActorSheet {
       deleteConnection: onDeleteConnection,
       openLinkedActor: onOpenLinkedActor,
       bindLinkedActor: onBindLinkedActor,
+      unlinkLinkedActor: onUnlinkLinkedActor,
       summonSpirit: SR4CharacterSheet.#onSummonSpirit,
       summonWatcher: SR4CharacterSheet.#onSummonWatcher,
       compileSprite: SR4CharacterSheet.#onCompileSprite,

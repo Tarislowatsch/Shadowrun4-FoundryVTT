@@ -531,7 +531,9 @@
       "createTemplate": "Create Template",
       "linkedActorNotFound": "Linked actor could not be found; it may have been deleted.",
       "openSheet": "Open Sheet",
-      "rebindActor": "Rebind"
+      "rebindActor": "Rebind",
+      "unlinkActor": "Remove",
+      "unlinkActorConfirm": "Remove {name} from this character? The actor itself stays in the world."
     }
   }
 }

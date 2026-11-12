@@ -5,6 +5,7 @@ import {
   requestEffectDecision,
 } from './apply-effects-flow';
 import { resistOutcome } from '../resist-summary.js';
+import { rollFallbackSpellResist } from '../dialogs/resist-actions.js';
 
 /**
  * @param {string} category
@@ -104,7 +105,11 @@ export class OpposedSpellFlow {
         payload.resistHits === null
           ? 0
           : Math.max(0, castingHits - payload.resistHits),
-      fallback: 0,
+      fallback: async () =>
+        Math.max(
+          0,
+          castingHits - (await rollFallbackSpellResist(target, resistAttribute))
+        ),
     });
   }
 

@@ -11,6 +11,7 @@ import { CompendiumItemNameHook } from './compendium-item-name-hook';
 import { SummoningHook } from './summoning-hook';
 import { SpellAreaHook } from './spell-area-hook';
 import { LinkedActorCleanupHook } from './linked-actor-cleanup-hook';
+import { LinkedActorRefreshHook } from './linked-actor-refresh-hook';
 import { SceneControlsHook } from './scene-controls-hook';
 import { EffectTemplateCacheHook } from './effect-template-cache-hook';
 import { FlagMigrationHook } from './flag-migration-hook';
@@ -30,6 +31,7 @@ export function registerHooks() {
   new CompendiumDirectoryHook();
   new CompendiumItemNameHook();
   new LinkedActorCleanupHook();
+  new LinkedActorRefreshHook();
   new SceneControlsHook();
   new EffectTemplateCacheHook();
   new FlagMigrationHook();

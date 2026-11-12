@@ -120,12 +120,7 @@ export async function buildMatrixContext(actorData, ownerUuid) {
       'sprite',
       spriteKeys
     ),
-    summonedSprites: getLinkedActors(
-      ownerUuid,
-      'sprite',
-      'ownerUuid',
-      buildSpriteStats
-    ),
+    summonedSprites: getLinkedActors(ownerUuid, 'sprite', buildSpriteStats),
     livingPersona: {
       response: computeMatrixResponse(actorData.system),
       signal: Math.min(

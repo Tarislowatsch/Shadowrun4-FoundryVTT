@@ -6,7 +6,7 @@
     <span class="badge bound-badge" data-tooltip="{{localize 'sr4.magic.bound'}}">{{localize "sr4.magic.bound"}}</span>
     {{/if}}
     <div class="item-actions">
-      {{#if (or (eq entityType "spirit") (eq entityType "sprite"))}}
+      {{#if (and isOwner (or (eq entityType "spirit") (eq entityType "sprite")))}}
       <button type="button" class="linked-actor-bind"
         data-action="bindLinkedActor"
         data-uuid="{{uuid}}"
@@ -24,6 +24,14 @@
         data-tooltip="{{localize 'sr4.ui.openSheet'}}">
         <i class="fas fa-external-link-alt"></i>
       </button>
+      {{#if isOwner}}
+      <button type="button" class="linked-actor-unlink"
+        data-action="unlinkLinkedActor"
+        data-uuid="{{uuid}}"
+        data-tooltip="{{localize 'sr4.ui.unlinkActor'}}">
+        <i class="fas fa-link-slash"></i>
+      </button>
+      {{/if}}
     </div>
   </div>
   <div class="item-body">

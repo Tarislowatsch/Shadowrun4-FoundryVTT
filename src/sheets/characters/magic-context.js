@@ -52,11 +52,6 @@ export async function buildMagicContext(actorData, ownerUuid, effectiveSplit) {
       'sr4.magic.spiritAffinities',
       'spirit'
     ),
-    summonedSpirits: getLinkedActors(
-      ownerUuid,
-      'spirit',
-      'ownerUuid',
-      buildSpiritStats
-    ),
+    summonedSpirits: getLinkedActors(ownerUuid, 'spirit', buildSpiritStats),
   };
 }

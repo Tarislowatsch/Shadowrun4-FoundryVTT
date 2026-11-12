@@ -531,7 +531,9 @@
       "createTemplate": "Template erstellen",
       "linkedActorNotFound": "Verknüpfter Akteur wurde nicht gefunden; er wurde möglicherweise gelöscht.",
       "openSheet": "Charakterbogen öffnen",
-      "rebindActor": "Erneut binden"
+      "rebindActor": "Erneut binden",
+      "unlinkActor": "Entfernen",
+      "unlinkActorConfirm": "{name} vom Charakter entfernen? Der Akteur bleibt in der Welt erhalten."
     }
   }
 }

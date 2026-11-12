@@ -17,5 +17,5 @@ function buildVehicleStats(actor) {
  * @returns {object[]}
  */
 export function buildVehicleContext(ownerUuid) {
-  return getLinkedActors(ownerUuid, 'vehicle', 'riggerUuid', buildVehicleStats);
+  return getLinkedActors(ownerUuid, 'vehicle', buildVehicleStats);
 }

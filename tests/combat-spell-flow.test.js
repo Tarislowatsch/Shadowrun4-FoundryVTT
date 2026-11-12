@@ -29,6 +29,16 @@ vi.mock('../src/domains/magic/flow/apply-effects-flow.js', () => ({
   getSpellEffectData: (...args) => getSpellEffectDataMock(...args),
 }));
 
+const rollFallbackSpellResistMock = vi.fn();
+
+vi.mock(
+  '../src/domains/magic/dialogs/resist-actions.js',
+  async (importOriginal) => ({
+    ...(await importOriginal()),
+    rollFallbackSpellResist: (...args) => rollFallbackSpellResistMock(...args),
+  })
+);
+
 vi.mock('@domains/combat/flow/apply-damage-flow.js', () => ({
   ApplyDamageFlow: {
     sendCombatSummary: (...args) => sendCombatSummaryMock(...args),
@@ -236,7 +246,7 @@ describe('CombatSpellFlow.resolve — direct socket request', () => {
       expect.objectContaining({
         triggerAction: 'triggerDirectSpellResist',
         matchAction: 'directSpellResisted',
-        fallback: 0,
+        fallback: expect.any(Function),
         triggerPayload: {
           defenderUuid: 'Actor.target1',
           casterUuid: 'Actor.caster1',
@@ -289,6 +299,32 @@ describe('CombatSpellFlow.resolve — direct socket request', () => {
       expect(onMatch({ resistHits })).toBe(expected);
     }
   );
+
+  it.each([
+    [false, 'BODY'],
+    [true, 'WILLPOWER'],
+  ])(
+    'falls back to a plain resist roll (mana: %s -> %s)',
+    async (isMana, attribute) => {
+      rollFallbackSpellResistMock.mockResolvedValue(2);
+      const { fallback } = await resolveAndCapture(
+        isMana ? { type: 'MANA' } : {}
+      );
+
+      await expect(fallback()).resolves.toBe(2);
+      expect(rollFallbackSpellResistMock).toHaveBeenCalledWith(
+        expect.objectContaining({ uuid: 'Actor.target1' }),
+        attribute
+      );
+    }
+  );
+
+  it('never lets the fallback roll go below zero net hits', async () => {
+    rollFallbackSpellResistMock.mockResolvedValue(6);
+    const { fallback } = await resolveAndCapture();
+
+    await expect(fallback()).resolves.toBe(0);
+  });
 });
 
 describe('CombatSpellFlow.resolve — direct damage', () => {

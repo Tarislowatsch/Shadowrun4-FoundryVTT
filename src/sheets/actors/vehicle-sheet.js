@@ -12,6 +12,7 @@ import {
 } from '@domains/rigging/index.js';
 import { SR4SummonedEntitySheet } from './sr4-summoned-entity-sheet.js';
 import { SR4 } from '@config';
+import { unlinkFromOwner } from '@domains/summoned-entity/owner-link.js';
 
 const RIGGER_CONFIG_ROLES = [
   { key: 'attackSkill', itemType: 'Skill' },
@@ -315,7 +316,7 @@ export default class SR4VehicleSheet extends SR4SummonedEntitySheet {
   }
 
   static async #onClearRigger() {
-    await this.actor.update({ 'system.riggerUuid': '' });
+    await unlinkFromOwner(this.actor);
   }
 
   static async #onCreateVehicleMod() {

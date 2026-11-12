@@ -1,10 +1,8 @@
 import { isPrimaryGM } from '@utils/actor-ownership.js';
-
-const LINKED_FIELDS = [
-  { type: 'spirit', fieldName: 'ownerUuid' },
-  { type: 'sprite', fieldName: 'ownerUuid' },
-  { type: 'vehicle', fieldName: 'riggerUuid' },
-];
+import {
+  findLinkedActors,
+  unlinkFromOwner,
+} from '@domains/summoned-entity/owner-link.js';
 
 export class LinkedActorCleanupHook {
   constructor() {
@@ -18,17 +16,9 @@ export class LinkedActorCleanupHook {
   async #onDeleteActor(actor) {
     if (!isPrimaryGM()) return;
 
-    const orphaned = LINKED_FIELDS.flatMap(({ type, fieldName }) =>
-      game.actors
-        .filter((a) => a.type === type && a.system?.[fieldName] === actor.uuid)
-        .map((a) => ({ actor: a, fieldName }))
-    );
+    const orphaned = findLinkedActors(actor.uuid);
     if (!orphaned.length) return;
 
-    await Promise.allSettled(
-      orphaned.map(({ actor: linked, fieldName }) =>
-        linked.update({ [`system.${fieldName}`]: null })
-      )
-    );
+    await Promise.allSettled(orphaned.map((linked) => unlinkFromOwner(linked)));
   }
 }

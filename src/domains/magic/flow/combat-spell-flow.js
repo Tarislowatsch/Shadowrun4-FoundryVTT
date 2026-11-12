@@ -3,6 +3,10 @@ import { ApplyDamageFlow } from '@domains/combat/flow/apply-damage-flow.js';
 import { isPhysicalDamageType } from '@models/items/weapons.model.js';
 import { openDirectSpellAllocationDialog } from '../dialogs/combat-spell.js';
 import { getSpellEffectData } from './apply-effects-flow';
+import {
+  directSpellResistAttribute,
+  rollFallbackSpellResist,
+} from '../dialogs/resist-actions.js';
 import { ResistOutcome, resistOutcome } from '../resist-summary.js';
 
 export class CombatSpellFlow {
@@ -138,7 +142,15 @@ export class CombatSpellFlow {
         payload.resistHits === null
           ? 0
           : Math.max(0, castingHits - payload.resistHits),
-      fallback: 0,
+      fallback: async () =>
+        Math.max(
+          0,
+          castingHits -
+            (await rollFallbackSpellResist(
+              target,
+              directSpellResistAttribute(isMana)
+            ))
+        ),
     });
   }
 

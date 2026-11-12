@@ -18,6 +18,9 @@
             "Sichtmodi als eigene Liste in Charakter-, NPC- und Fahrzeugbogen, inkl. Erkennung über Metatyp und Chummer-Import.",
             "Wahrnehmungsproben mit Sinnauswahl und eigenem Bonus pro Sinn; neuer Status „Astrale Wahrnehmung“.",
             "Flächenzauber: Radius nach Kraft (anpassbar), Platzierung als Szenen-Region mit automatischer Zielauswahl und gemeinsamer Chatkarte für alle Widerstandswürfe."
+          ],
+          "30": [
+            "Geister, Sprites und Fahrzeuge lassen sich aus dem Charakterbogen entfernen; der Akteur bleibt in der Welt erhalten."
           ]
         }
       }

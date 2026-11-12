@@ -1,5 +1,6 @@
 import { getGame } from '@utils/index';
 import { AmmoCategory, SR4Attributes } from '@models/index';
+import { findLinkedActors } from '@domains/summoned-entity/owner-link.js';
 
 /**
  * @param {object[]} items
@@ -48,17 +49,14 @@ export function buildStatRows(pairs) {
 /**
  * @param {string} ownerUuid
  * @param {"spirit"|"sprite"|"vehicle"} type
- * @param {string} fieldName - "ownerUuid" or "riggerUuid"
  * @param {(actor: Actor) => {label: string, value: string|number}[]} buildStats
  * @returns {{uuid: string, img: string, name: string, stats: object[]}[]}
  */
-export function getLinkedActors(ownerUuid, type, fieldName, buildStats) {
-  if (!ownerUuid) return [];
-  return game.actors
+export function getLinkedActors(ownerUuid, type, buildStats) {
+  return findLinkedActors(ownerUuid)
     .filter(
       (a) =>
         a.type === type &&
-        a.system?.[fieldName] === ownerUuid &&
         a.testUserPermission(
           game.user,
           CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
@@ -70,6 +68,7 @@ export function getLinkedActors(ownerUuid, type, fieldName, buildStats) {
       name: a.name,
       entityType: a.type,
       bound: a.system?.bound === true,
+      isOwner: a.isOwner === true,
       stats: buildStats(a),
     }));
 }

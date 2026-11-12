@@ -16,8 +16,12 @@ vi.mock('@utils/game/game.js', () => ({
   getGame: () => ({ socket: { emit: (...args) => emitMock(...args) } }),
 }));
 
-const { spellResistPool, autoResolveSpellResist, directSpellResistAttribute } =
-  await import('@domains/magic/dialogs/resist-actions.js');
+const {
+  spellResistPool,
+  autoResolveSpellResist,
+  directSpellResistAttribute,
+  rollFallbackSpellResist,
+} = await import('@domains/magic/dialogs/resist-actions.js');
 
 function makeDefender({ willpower = 5, counterspelling = 2, wound = -1 } = {}) {
   return {
@@ -89,5 +93,42 @@ describe('autoResolveSpellResist', () => {
       defenderUuid: 'defender-uuid',
       resistHits: 3,
     });
+  });
+});
+
+describe('rollFallbackSpellResist', () => {
+  it('rolls the wound-adjusted pool for the defender without edge', async () => {
+    const defender = makeDefender();
+    rollAndShowMock.mockResolvedValue({
+      successes: 2,
+      isGlitch: false,
+      messageId: 'roll-2',
+    });
+
+    const hits = await rollFallbackSpellResist(defender, 'WILLPOWER');
+
+    expect(hits).toBe(2);
+    expect(rollAndShowMock.mock.calls[0][0]).toMatchObject({
+      numDice: 6,
+      edgeAvailable: false,
+      actor: defender,
+    });
+    expect(resolveEdgeForRollMock).not.toHaveBeenCalled();
+    expect(emitMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('rollFallbackSpellResist — failures', () => {
+  it('counts a failed fallback roll as no resistance instead of throwing', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    rollAndShowMock.mockRejectedValue(new Error('roll failed'));
+
+    await expect(
+      rollFallbackSpellResist(makeDefender(), 'WILLPOWER')
+    ).resolves.toBe(0);
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('fallback spell resist'),
+      expect.any(Error)
+    );
   });
 });

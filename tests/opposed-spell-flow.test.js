@@ -15,6 +15,16 @@ vi.mock('@utils/index', async (importOriginal) => {
   };
 });
 
+const rollFallbackSpellResistMock = vi.fn();
+
+vi.mock(
+  '../src/domains/magic/dialogs/resist-actions.js',
+  async (importOriginal) => ({
+    ...(await importOriginal()),
+    rollFallbackSpellResist: (...args) => rollFallbackSpellResistMock(...args),
+  })
+);
+
 vi.mock('@domains/combat/flow/apply-damage-flow.js', () => ({
   ApplyDamageFlow: {
     sendCombatSummary: (...args) => sendCombatSummaryMock(...args),
@@ -141,7 +151,7 @@ describe('OpposedSpellFlow.resolve — socket request', () => {
       expect.objectContaining({
         triggerAction: 'triggerOpposedSpellResist',
         matchAction: 'opposedSpellResisted',
-        fallback: 0,
+        fallback: expect.any(Function),
         triggerPayload: {
           defenderUuid: 'Actor.target1',
           casterUuid: 'Actor.caster1',
@@ -180,6 +190,24 @@ describe('OpposedSpellFlow.resolve — socket request', () => {
       const { onMatch } = await resolveAndCapture();
 
       expect(onMatch({ resistHits })).toBe(expected);
+    }
+  );
+
+  it.each([
+    [1, 2],
+    [3, 0],
+    [5, 0],
+  ])(
+    'falls back to a plain resist roll of %i hits -> %i net hits',
+    async (rolledHits, expected) => {
+      rollFallbackSpellResistMock.mockResolvedValue(rolledHits);
+      const { fallback } = await resolveAndCapture();
+
+      await expect(fallback()).resolves.toBe(expected);
+      expect(rollFallbackSpellResistMock).toHaveBeenCalledWith(
+        target,
+        'WILLPOWER'
+      );
     }
   );
 });

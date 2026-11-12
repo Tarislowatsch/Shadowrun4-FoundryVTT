@@ -50,6 +50,12 @@ import { SummoningFlow } from '@domains/summoned-entity/flow/summoning-flow.js';
 import { ThreadingFlow } from '@domains/resonance/threading-flow.js';
 import { BindingFlow } from '@domains/summoned-entity/flow/binding-flow.js';
 import { DismissalFlow } from '@domains/summoned-entity/flow/dismissal-flow.js';
+import {
+  OWNER_LINK_FIELDS,
+  findLinkedActors,
+  unlinkFromOwner,
+} from '@domains/summoned-entity/owner-link.js';
+import { confirmAndUnlink } from '@domains/summoned-entity/dialogs/unlink.js';
 import { CybercombatFlow } from '@domains/matrix/flow/cybercombat-flow.js';
 import { ActionCategory } from '@models/actions/actions.model';
 import {
@@ -97,6 +103,12 @@ import {
  *   getAllEffectTemplates: Function,
  *   resolveEffectTemplate: Function,
  * }} effects
+ * @property {{
+ *   OWNER_LINK_FIELDS: typeof OWNER_LINK_FIELDS,
+ *   findLinkedActors: typeof findLinkedActors,
+ *   unlinkFromOwner: typeof unlinkFromOwner,
+ *   confirmAndUnlink: typeof confirmAndUnlink,
+ * }} linkedActors
  */
 globalThis.sr4 = {
   config: SR4,
@@ -135,6 +147,12 @@ globalThis.sr4 = {
     getWorldEffectTemplates,
     getAllEffectTemplates,
     resolveEffectTemplate,
+  },
+  linkedActors: {
+    OWNER_LINK_FIELDS,
+    findLinkedActors,
+    unlinkFromOwner,
+    confirmAndUnlink,
   },
 };
 

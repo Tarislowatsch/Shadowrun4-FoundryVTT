@@ -9,6 +9,12 @@ describe('getOpposedRollFallbackTimeoutMs', () => {
     );
   });
 
+  it('also waits out the edge offer that follows the defender roll', () => {
+    expect(getOpposedRollFallbackTimeoutMs(30, 20)).toBe(
+      (30 + 20 + SR4.workflow.opposedRollFallbackBufferSeconds) * 1000
+    );
+  });
+
   it.each([10, 30, 60, 120])(
     'always exceeds the plain timeout-in-ms value for %i seconds',
     (timeoutSeconds) => {
