@@ -97,7 +97,7 @@ function inferOpposed(category, descriptor) {
     case 'ILLUSION':
       return descriptor !== '' && !/obvious|offensichtlich/i.test(descriptor);
     case 'MANIPULATION':
-      return /mental/i.test(descriptor);
+      return /\bmental\b/i.test(descriptor);
     case 'HEALTH':
       return /negativ/i.test(descriptor);
     default:

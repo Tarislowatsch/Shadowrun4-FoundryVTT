@@ -4,39 +4,39 @@ import { mapCritter, mapCritterVariant } from '@importer/mappers/index.js';
 describe('mapCritter', () => {
   it('maps a fixed-stat mundane critter', () => {
     const item = mapCritter({
-      name: 'Dog',
+      name: 'Test Beast',
       category: 'Mundane Critters',
       bp: '0',
-      bodmin: '2',
-      bodmax: '2',
-      bodaug: '2',
-      agimin: '3',
-      agimax: '3',
-      agiaug: '3',
-      reamin: '3',
-      reamax: '3',
-      reaaug: '3',
-      strmin: '2',
-      strmax: '2',
-      straug: '2',
-      chamin: '3',
-      chamax: '3',
-      chaaug: '3',
-      intmin: '3',
-      intmax: '3',
-      intaug: '3',
-      logmin: '1',
-      logmax: '1',
-      logaug: '1',
-      wilmin: '3',
-      wilmax: '3',
-      wilaug: '3',
-      inimin: '2',
-      inimax: '12',
-      iniaug: '18',
-      edgmin: '3',
-      edgmax: '3',
-      edgaug: '6',
+      bodmin: '4',
+      bodmax: '4',
+      bodaug: '4',
+      agimin: '5',
+      agimax: '5',
+      agiaug: '5',
+      reamin: '2',
+      reamax: '2',
+      reaaug: '2',
+      strmin: '4',
+      strmax: '4',
+      straug: '4',
+      chamin: '2',
+      chamax: '2',
+      chaaug: '2',
+      intmin: '4',
+      intmax: '4',
+      intaug: '4',
+      logmin: '2',
+      logmax: '2',
+      logaug: '2',
+      wilmin: '2',
+      wilmax: '2',
+      wilaug: '2',
+      inimin: '3',
+      inimax: '11',
+      iniaug: '17',
+      edgmin: '2',
+      edgmax: '2',
+      edgaug: '5',
       magmin: '0',
       magmax: '6',
       magaug: '6',
@@ -46,37 +46,37 @@ describe('mapCritter', () => {
       essmin: '0',
       essmax: '6',
       essaug: '6',
-      movement: '10/45',
-      source: 'SR4',
-      page: '299',
+      movement: '12/40',
+      source: 'TST',
+      page: '1',
     });
 
     expect(item.type).toBe('CritterTemplate');
     expect(item.system.category).toBe('Mundane Critters');
     expect(item.system.forceBased).toBe(false);
     expect(item.system.actorType).toBe('npc');
-    expect(item.system.attributes.body).toEqual({ value: 2, formula: '' });
-    expect(item.system.attributes.agility).toEqual({ value: 3, formula: '' });
-    expect(item.system.movement).toBe('10/45');
+    expect(item.system.attributes.body).toEqual({ value: 4, formula: '' });
+    expect(item.system.attributes.agility).toEqual({ value: 5, formula: '' });
+    expect(item.system.movement).toBe('12/40');
   });
 
   it('maps a force-based spirit with formula attributes', () => {
     const item = mapCritter({
-      name: 'Spirit of Fire',
+      name: 'Test Spirit',
       category: 'Spirits',
       bp: '0',
-      bodmin: 'F+1',
-      bodmax: 'F+1',
-      bodaug: 'F+1',
-      agimin: 'F+2',
-      agimax: 'F+2',
-      agiaug: 'F+2',
-      reamin: 'F+3',
-      reamax: 'F+3',
-      reaaug: 'F+3',
-      strmin: 'F-2',
-      strmax: 'F-2',
-      straug: 'F-2',
+      bodmin: 'F+3',
+      bodmax: 'F+3',
+      bodaug: 'F+3',
+      agimin: 'F+1',
+      agimax: 'F+1',
+      agiaug: 'F+1',
+      reamin: 'F+2',
+      reamax: 'F+2',
+      reaaug: 'F+2',
+      strmin: 'F-1',
+      strmax: 'F-1',
+      straug: 'F-1',
       chamin: 'F',
       chamax: 'F',
       chaaug: 'F',
@@ -89,9 +89,9 @@ describe('mapCritter', () => {
       wilmin: 'F',
       wilmax: 'F',
       wilaug: 'F',
-      inimin: '(F*2)+3',
-      inimax: '(F*2)+3',
-      iniaug: '(F*2)+3',
+      inimin: '(F*2)+2',
+      inimax: '(F*2)+2',
+      iniaug: '(F*2)+2',
       edgmin: 'F',
       edgmax: 'F',
       edgaug: 'F',
@@ -104,22 +104,22 @@ describe('mapCritter', () => {
       essmin: '0',
       essmax: '6',
       essaug: '6',
-      movement: 'Fly 15/40',
-      source: 'SR4',
-      page: '303',
+      movement: 'Fly 12/30',
+      source: 'TST',
+      page: '2',
     });
 
     expect(item.type).toBe('CritterTemplate');
     expect(item.system.forceBased).toBe(true);
     expect(item.system.actorType).toBe('spirit');
-    expect(item.system.attributes.body).toEqual({ value: 0, formula: 'F+1' });
+    expect(item.system.attributes.body).toEqual({ value: 0, formula: 'F+3' });
     expect(item.system.attributes.strength).toEqual({
       value: 0,
-      formula: 'F-2',
+      formula: 'F-1',
     });
     expect(item.system.attributes.initiative).toEqual({
       value: 0,
-      formula: '(F*2)+3',
+      formula: '(F*2)+2',
     });
     expect(item.system.attributes.resonance).toEqual({
       value: 0,
@@ -129,24 +129,24 @@ describe('mapCritter', () => {
 
   it('maps a sprite category to sprite actorType', () => {
     const item = mapCritter({
-      name: 'Fault Sprite',
+      name: 'Test Sprite',
       category: 'Sprites',
       bp: '0',
       bodmin: '0',
-      agimin: 'F+2',
-      reamin: 'F+2',
+      agimin: 'F+1',
+      reamin: 'F+3',
       strmin: '0',
       chamin: 'F',
-      intmin: 'F+2',
-      logmin: 'F+1',
+      intmin: 'F+1',
+      logmin: 'F+2',
       wilmin: '0',
-      inimin: '(F*3)',
+      inimin: '(F*2)',
       edgmin: 'F',
       magmin: '0',
       resmin: 'F',
       essmin: '0',
-      source: 'SR4',
-      page: '242',
+      source: 'TST',
+      page: '3',
     });
 
     expect(item.system.actorType).toBe('sprite');
@@ -155,33 +155,33 @@ describe('mapCritter', () => {
 
   it('parses powers from critter record', () => {
     const item = mapCritter({
-      name: 'Barghest',
+      name: 'Test Paranormal Beast',
       category: 'Paranormal Critters',
-      bodmin: '7',
-      agimin: '5',
-      reamin: '6',
-      strmin: '5',
-      chamin: '3',
-      intmin: '3',
-      logmin: '1',
-      wilmin: '3',
-      inimin: '4',
-      edgmin: '4',
-      magmin: '4',
+      bodmin: '6',
+      agimin: '4',
+      reamin: '5',
+      strmin: '6',
+      chamin: '2',
+      intmin: '4',
+      logmin: '2',
+      wilmin: '4',
+      inimin: '5',
+      edgmin: '3',
+      magmin: '3',
       resmin: '0',
       essmin: '0',
       powers: {
-        power: ['Enhanced Senses', 'Fear', 'Natural Weapon', 'Paralyzing Howl'],
+        power: ['Test Power A', 'Test Power B', 'Test Power C', 'Test Power D'],
       },
-      source: 'SR4',
-      page: '299',
+      source: 'TST',
+      page: '4',
     });
 
     expect(item.system.powers).toEqual([
-      'Enhanced Senses',
-      'Fear',
-      'Natural Weapon',
-      'Paralyzing Howl',
+      'Test Power A',
+      'Test Power B',
+      'Test Power C',
+      'Test Power D',
     ]);
   });
 });
@@ -189,43 +189,43 @@ describe('mapCritter', () => {
 describe('mapCritterVariant', () => {
   it('inherits parent attributes and overrides variant-specific data', () => {
     const parent = {
-      name: 'Caretaker Spirit',
+      name: 'Test Hive Spirit',
       category: 'Insect Spirits',
       bp: '0',
-      bodmin: 'F+2',
-      agimin: 'F+1',
-      reamin: 'F+1',
+      bodmin: 'F+3',
+      agimin: 'F+2',
+      reamin: 'F+2',
       strmin: 'F',
       chamin: 'F',
       intmin: 'F',
       logmin: 'F',
       wilmin: 'F',
-      inimin: '(F*2)+1',
+      inimin: '(F*2)+2',
       edgmin: 'F',
       magmin: 'F',
       resmin: '0',
       essmin: '0',
-      movement: '10/45',
-      source: 'SM',
-      page: '152',
-      powers: { power: ['Animal Control', 'Hive Mind'] },
+      movement: '12/40',
+      source: 'TST',
+      page: '5',
+      powers: { power: ['Test Power A', 'Test Power B'] },
     };
 
     const variant = {
-      name: 'Ant',
+      name: 'Test Variant',
       bp: '0',
-      powers: { power: ['Elemental Attack', 'Hive Mind'] },
-      source: 'SM',
-      page: '150',
+      powers: { power: ['Test Power C', 'Test Power B'] },
+      source: 'TST',
+      page: '6',
     };
 
     const item = mapCritterVariant(variant, parent);
 
-    expect(item.name).toBe('Ant');
-    expect(item.system.baseTemplate).toBe('Caretaker Spirit');
+    expect(item.name).toBe('Test Variant');
+    expect(item.system.baseTemplate).toBe('Test Hive Spirit');
     expect(item.system.actorType).toBe('spirit');
     expect(item.system.forceBased).toBe(true);
-    expect(item.system.attributes.body).toEqual({ value: 0, formula: 'F+2' });
-    expect(item.system.powers).toEqual(['Elemental Attack', 'Hive Mind']);
+    expect(item.system.attributes.body).toEqual({ value: 0, formula: 'F+3' });
+    expect(item.system.powers).toEqual(['Test Power C', 'Test Power B']);
   });
 });

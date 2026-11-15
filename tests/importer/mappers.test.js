@@ -36,19 +36,19 @@ describe('simple mappers', () => {
       label: 'power: leveled -> rated with per-level cost',
       map: mapPower,
       input: {
-        name: 'Improved Reflexes',
-        points: '1.5',
+        name: 'Test Leveled Power',
+        points: '1.25',
         levels: 'yes',
-        source: 'SR4',
-        page: '195',
+        source: 'TST',
+        page: '1',
       },
       type: 'Power',
-      system: { cost: 1.5, ratingMode: 'rated', rating: 1, geas: false },
+      system: { cost: 1.25, ratingMode: 'rated', rating: 1, geas: false },
     },
     {
       label: 'power: flat -> none with fractional cost',
       map: mapPower,
-      input: { name: 'Analytics', points: '.25', levels: 'no' },
+      input: { name: 'Test Flat Power', points: '.25', levels: 'no' },
       type: 'Power',
       system: { cost: 0.25, ratingMode: 'none' },
     },
@@ -56,80 +56,80 @@ describe('simple mappers', () => {
       label: 'cyberware: essence, grade and resolved cost',
       map: mapCyberware,
       input: {
-        name: 'Attention Coprocessor',
+        name: 'Test Headware',
         category: 'Headware',
-        rating: '3',
-        ess: '0.3',
+        rating: '2',
+        ess: '0.4',
         capacity: '0',
-        avail: '8',
-        cost: 'Rating * 3000',
-        source: 'AU',
-        page: '36',
+        avail: '6',
+        cost: 'Rating * 2500',
+        source: 'TST',
+        page: '2',
       },
       type: 'Implant',
       system: {
-        essence: 0.3,
+        essence: 0.4,
         grade: 'STANDARD',
         type: 'CYBERWARE',
-        rating: 3,
-        cost: 3000,
-        avail: 8,
+        rating: 2,
+        cost: 2500,
+        avail: 6,
       },
     },
     {
       label: 'bioware: implant type bioware',
       map: mapBioware,
       input: {
-        name: 'Muscle Augmentation',
+        name: 'Test Bioware',
         category: 'Basic',
-        ess: 'Rating * 0.2',
-        source: 'SR4',
-        page: '342',
+        ess: 'Rating * 0.3',
+        source: 'TST',
+        page: '3',
       },
       type: 'Implant',
-      system: { type: 'BIOWARE', essence: 0.2 },
+      system: { type: 'BIOWARE', essence: 0.3 },
     },
     {
       label: 'bioware: essence formula resolved with rating',
       map: mapBioware,
       input: {
-        name: 'Muscle Augmentation',
+        name: 'Test Bioware',
         category: 'Basic',
         rating: '3',
-        ess: 'Rating * 0.2',
-        source: 'SR4',
-        page: '342',
+        ess: 'Rating * 0.3',
+        source: 'TST',
+        page: '3',
       },
       type: 'Implant',
-      system: { type: 'BIOWARE', essence: 0.6, rating: 3 },
+      system: { type: 'BIOWARE', essence: 0.9, rating: 3 },
     },
     {
       label: 'armor: ballistic and impact values',
       map: mapArmor,
       input: {
-        name: 'Armor Vest',
-        b: '6',
-        i: '4',
+        name: 'Test Vest',
+        b: '5',
+        i: '3',
         armorcapacity: '0',
-        avail: '4',
-        cost: '600',
-        source: 'SR4',
-        page: '326',
+        avail: '3',
+        cost: '550',
+        source: 'TST',
+        page: '4',
       },
       type: 'Armor',
       system: {
-        ballisticarmor: 6,
-        impactarmor: 4,
+        ballisticarmor: 5,
+        impactarmor: 3,
         stackingType: 'standard',
-        cost: 600,
-        avail: 4,
+        cost: 550,
+        avail: 3,
       },
     },
     {
       label: 'armor: helmet maps to accessory stackingType',
       map: mapArmor,
       input: {
-        name: 'Helmet',
+        name: 'Test Helmet',
         b: '0',
         i: '1',
         category: 'Helmets',
@@ -142,7 +142,7 @@ describe('simple mappers', () => {
       label: 'armor: shield maps to accessory stackingType',
       map: mapArmor,
       input: {
-        name: 'Riot Shield',
+        name: 'Test Shield',
         b: '6',
         i: '4',
         category: 'Shields',
@@ -155,7 +155,7 @@ describe('simple mappers', () => {
       label: 'armor: form-fitting maps to formFitting stackingType',
       map: mapArmor,
       input: {
-        name: 'Form-Fitting Body Armor Full Suit',
+        name: 'Test Form-Fitting Suit',
         b: '6',
         i: '4',
         cost: '1600',
@@ -167,11 +167,11 @@ describe('simple mappers', () => {
       label: 'program: complex form flag',
       map: mapProgram,
       input: {
-        name: 'Analyze',
+        name: 'Test Program',
         category: 'Common Use',
         complexform: 'yes',
-        source: 'SR4',
-        page: '232',
+        source: 'TST',
+        page: '5',
       },
       type: 'Program',
       system: { category: 'Common Use', complexform: true },
@@ -180,14 +180,14 @@ describe('simple mappers', () => {
       label: 'quality: category, bp and source',
       map: mapQuality,
       input: {
-        name: 'Ambidextrous',
-        bp: '5',
+        name: 'Test Quality',
+        bp: '7',
         category: 'Positive',
-        source: 'SR4',
-        page: '90',
+        source: 'TST',
+        page: '9',
       },
       type: 'Quality',
-      system: { category: 'Positive', bp: 5, limit: null, source: 'SR4 p. 90' },
+      system: { category: 'Positive', bp: 7, limit: null, source: 'TST p. 9' },
     },
     {
       label: 'quality: unknown category defaults to Positive',
@@ -199,14 +199,18 @@ describe('simple mappers', () => {
     {
       label: 'quality: keeps Negative category',
       map: mapQuality,
-      input: { name: 'Allergy', bp: '10', category: 'Negative' },
+      input: { name: 'Test Negative Quality', bp: '10', category: 'Negative' },
       type: 'Quality',
       system: { category: 'Negative' },
     },
     {
       label: 'quality: reads Chummer qualitytype field',
       map: mapQuality,
-      input: { name: 'Bad Luck', bp: '20', qualitytype: 'Negative' },
+      input: {
+        name: 'Test Unlucky Quality',
+        bp: '20',
+        qualitytype: 'Negative',
+      },
       type: 'Quality',
       system: { category: 'Negative' },
     },
@@ -218,8 +222,8 @@ describe('simple mappers', () => {
         attribute: 'AGI',
         category: 'Combat Active',
         skillgroup: 'Firearms',
-        source: 'SR4',
-        page: '125',
+        source: 'TST',
+        page: '6',
       },
       type: 'Skill',
       system: {
@@ -247,64 +251,64 @@ describe('weapon mappers', () => {
   describe('weapon damage types', () => {
     it.each([
       {
-        label: 'electric suffix (Shock Glove) -> ELECTRICITY, -half ap ignored',
+        label: 'electric suffix (test glove) -> ELECTRICITY, -half ap ignored',
         map: mapMeleeWeapon,
         input: {
-          name: 'Shock Glove',
+          name: 'Test Shock Glove',
           category: 'Unarmed',
           type: 'Melee',
-          damage: '5S(e)',
+          damage: '4S(e)',
           ap: '-half',
         },
-        expected: { damage: 5, damageType: 'ELECTRICITY', ap: 0 },
+        expected: { damage: 4, damageType: 'ELECTRICITY', ap: 0 },
       },
       {
         label: 'Laser Weapons category -> LASER',
         map: mapRangedWeapon,
         input: {
-          name: 'Ares MP Laser 3',
+          name: 'Test Laser',
           category: 'Laser Weapons',
           type: 'Ranged',
-          damage: '7P',
+          damage: '6P',
           ap: '-half',
-          ammo: '2x5(c) or external source',
+          ammo: '2x4(c) or external source',
         },
-        expected: { damage: 7, damageType: 'LASER', category: 'LASER_WEAPONS' },
+        expected: { damage: 6, damageType: 'LASER', category: 'LASER_WEAPONS' },
       },
       {
         label: 'Flamethrowers category -> FIRE',
         map: mapRangedWeapon,
         input: {
-          name: 'Flamethrower',
+          name: 'Test Flamer',
           category: 'Flamethrowers',
           type: 'Ranged',
-          damage: '8P',
+          damage: '7P',
         },
-        expected: { damage: 8, damageType: 'FIRE' },
+        expected: { damage: 7, damageType: 'FIRE' },
       },
       {
         label: 'flechette (f) stays PHYSICAL and keeps AP',
         map: mapRangedWeapon,
         input: {
-          name: 'Mossberg AM-CMDT',
+          name: 'Test Shotgun',
           category: 'Shotguns',
           type: 'Ranged',
-          damage: '9P(f)',
-          ap: '+5',
+          damage: '8P(f)',
+          ap: '+4',
         },
-        expected: { damage: 9, damageType: 'PHYSICAL', ap: 5 },
+        expected: { damage: 8, damageType: 'PHYSICAL', ap: 4 },
       },
       {
         label: 'flechette with blast falloff parses damage only',
         map: mapRangedWeapon,
         input: {
-          name: 'Grenade: Fragmentation',
+          name: 'Grenade: Test Frag',
           category: 'Gear',
           type: 'Ranged',
-          damage: '12P(f) (-1/m)',
-          ap: '+5',
+          damage: '10P(f) (-1/m)',
+          ap: '+4',
         },
-        expected: { damage: 12, damageType: 'PHYSICAL', ap: 5 },
+        expected: { damage: 10, damageType: 'PHYSICAL', ap: 4 },
       },
       {
         label: 'explicit suffix wins over category mapping',
@@ -338,14 +342,14 @@ describe('weapon mappers', () => {
       {
         label: 'plain S damage -> STUN',
         map: mapRangedWeapon,
-        input: { name: 'Taser', category: 'Tasers', damage: '6S' },
-        expected: { damage: 6, damageType: 'STUN' },
+        input: { name: 'Test Taser', category: 'Tasers', damage: '5S' },
+        expected: { damage: 5, damageType: 'STUN' },
       },
       {
         label: 'launcher damage text without number -> 0',
         map: mapRangedWeapon,
         input: {
-          name: 'ArmTech MGL-12',
+          name: 'Test Launcher',
           category: 'Grenade Launchers',
           damage: 'Grenade',
         },
@@ -355,16 +359,16 @@ describe('weapon mappers', () => {
         label: 'strength-based melee damage keeps offset',
         map: mapMeleeWeapon,
         input: {
-          name: 'Katana',
+          name: 'Test Blade',
           category: 'Blades',
           type: 'Melee',
-          damage: '(STR/2+3)P',
-          ap: '-1',
+          damage: '(STR/2+2)P',
+          ap: '-2',
         },
         expected: {
-          damage: 3,
+          damage: 2,
           damageType: 'PHYSICAL',
-          ap: -1,
+          ap: -2,
           noStrengthBonus: false,
         },
       },
@@ -374,22 +378,22 @@ describe('weapon mappers', () => {
   });
   it('maps a melee weapon with attack skill and reach', () => {
     const item = mapMeleeWeapon({
-      name: 'Combat Axe',
+      name: 'Test Axe',
       category: 'Blades',
       type: 'Melee',
       reach: '2',
-      damage: '(STR/2+5)P',
-      ap: '-4',
-      source: 'AR',
-      page: '16',
+      damage: '(STR/2+4)P',
+      ap: '-3',
+      source: 'TST',
+      page: '7',
     });
     expect(item.type).toBe('Melee Weapon');
     expect(item.system).toMatchObject({
       attackSkill: 'BLADES',
       category: 'BLADES',
       reach: 2,
-      ap: -4,
-      damage: 5,
+      ap: -3,
+      damage: 4,
       damageType: 'PHYSICAL',
       noStrengthBonus: false,
     });
@@ -397,26 +401,26 @@ describe('weapon mappers', () => {
 
   it('maps a ranged weapon with ammo and mode', () => {
     const item = mapRangedWeapon({
-      name: 'Ares Predator',
+      name: 'Test Pistol',
       category: 'Heavy Pistols',
       type: 'Ranged',
-      damage: '5P',
-      ap: '-1',
+      damage: '6P',
+      ap: '-2',
       mode: 'SA',
       rc: '0',
-      ammo: '15(c)',
-      source: 'SR4',
-      page: '316',
+      ammo: '12(c)',
+      source: 'TST',
+      page: '8',
     });
     expect(item.type).toBe('Ranged Weapon');
     expect(item.system).toMatchObject({
       attackSkill: 'PISTOLS',
       category: 'HEAVY_PISTOLS',
-      damage: 5,
-      ap: -1,
+      damage: 6,
+      ap: -2,
       mode: 'SEMI_AUTOMATIC',
-      maxAmmo: 15,
-      currentAmmo: 15,
+      maxAmmo: 12,
+      currentAmmo: 12,
       ammoFeed: 'c',
       smartlink: false,
     });
@@ -457,16 +461,16 @@ describe('gear mapper', () => {
     expect(item.type).toBe('Item');
   });
 
-  it('maps APDS (ap bonus) as Ammo with correct sign', () => {
+  it('maps piercing ammo (ap bonus) as Ammo with correct sign', () => {
     const item = mapGear({
-      name: 'Ammo: APDS',
+      name: 'Ammo: Test Piercing',
       category: 'Ammunition',
       extra: 'Heavy Pistols',
-      weaponbonus: { ap: '-4' },
+      weaponbonus: { ap: '-3' },
     });
     expect(item.type).toBe('Ammo');
     expect(item.system).toMatchObject({
-      apBonus: -4,
+      apBonus: -3,
       damageBonus: 0,
       damageOverride: null,
       damageTypeOverride: '',
@@ -476,7 +480,7 @@ describe('gear mapper', () => {
 
   it('maps Gel Rounds (damage/ap/type) as Ammo', () => {
     const item = mapGear({
-      name: 'Ammo: Gel Rounds',
+      name: 'Ammo: Test Gel Rounds',
       category: 'Ammunition',
       weaponbonus: { ap: '2', damage: '-1', damagetype: 'S' },
     });
@@ -490,7 +494,7 @@ describe('gear mapper', () => {
 
   it('flags the "G" damage code of older data sets as gel rounds', () => {
     const item = mapGear({
-      name: 'Ammo: Impact Rounds',
+      name: 'Ammo: Test Impact Rounds',
       category: 'Ammunition',
       weaponbonus: { ap: '2', damage: '-1', damagetype: 'G' },
     });
@@ -498,10 +502,10 @@ describe('gear mapper', () => {
   });
 
   it.each([
-    ['Ammo: APDS', { ap: '-4' }],
-    ['Ammo: Regular Ammo', {}],
-    ['Ammo: Stick-n-Shock', { damage: '-1', damagetype: '(e)' }],
-    ['Ammo: Gelatin Rounds', { damage: '-1', damagetype: 'S' }],
+    ['Ammo: Test Piercing', { ap: '-3' }],
+    ['Ammo: Test Regular', {}],
+    ['Ammo: Test Shock', { damage: '-1', damagetype: '(e)' }],
+    ['Ammo: Test Gelatin Rounds', { damage: '-1', damagetype: 'S' }],
   ])('does not flag %s as gel rounds', (name, weaponbonus) => {
     const item = mapGear({ name, category: 'Ammunition', weaponbonus });
     expect(item.system.gelRounds).toBe(false);
@@ -514,7 +518,7 @@ describe('gear mapper', () => {
     'reads %s off the flat weaponbonus path without help from the name',
     (_label, weaponbonusdamage, expected) => {
       const item = mapGear({
-        name: 'Ammo: Impact Rounds',
+        name: 'Ammo: Test Impact Rounds',
         category: 'Ammunition',
         extra: 'Heavy Pistols',
         weaponbonusdamage,
@@ -526,32 +530,32 @@ describe('gear mapper', () => {
 
   it('does not leak gelRounds into weapon mods', () => {
     expect(
-      mapWeaponMod({ name: 'Gel-Filled Grip' }).system.gelRounds
+      mapWeaponMod({ name: 'Test Gel-Filled Grip' }).system.gelRounds
     ).toBeUndefined();
   });
 
-  it('maps Flechette (P(f) stays physical) as Ammo', () => {
+  it('maps flechette (P(f) stays physical) as Ammo', () => {
     const item = mapGear({
-      name: 'Ammo: Flechette Rounds',
+      name: 'Ammo: Test Flechette',
       category: 'Ammunition',
-      weaponbonus: { ap: '5', damage: '2', damagetype: 'P(f)' },
+      weaponbonus: { ap: '4', damage: '1', damagetype: 'P(f)' },
     });
     expect(item.system.damageTypeOverride).toBe('PHYSICAL');
   });
 
   it('parses flat weaponbonusdamage/weaponbonusap from character export', () => {
     const item = mapGear({
-      name: 'Ammo: Flechette Rounds',
+      name: 'Ammo: Test Flechette',
       category: 'Ammunition',
       extra: 'Shotguns',
-      weaponbonusdamage: '+2P(f)',
-      weaponbonusap: '+5',
+      weaponbonusdamage: '+1P(f)',
+      weaponbonusap: '+4',
       qty: '24',
     });
     expect(item.type).toBe('Ammo');
     expect(item.system).toMatchObject({
-      damageBonus: 2,
-      apBonus: 5,
+      damageBonus: 1,
+      apBonus: 4,
       damageTypeOverride: 'PHYSICAL',
       damageOverride: null,
       category: 'SHOTGUNS',
@@ -561,7 +565,7 @@ describe('gear mapper', () => {
 
   it('falls back to zero bonus when flat weaponbonusdamage has no number', () => {
     const item = mapGear({
-      name: 'Weird Ammo',
+      name: 'Test Weird Ammo',
       category: 'Ammunition',
       weaponbonusdamage: 'S',
       weaponbonusap: '+3',
@@ -574,21 +578,21 @@ describe('gear mapper', () => {
     });
   });
 
-  it('maps Stick-n-Shock damagereplace as absolute override', () => {
+  it('maps shock ammo damagereplace as absolute override', () => {
     const item = mapGear({
-      name: 'Ammo: Stick-n-Shock',
+      name: 'Ammo: Test Shock',
       category: 'Ammunition',
-      weaponbonus: { apreplace: '-half', damagereplace: '6S(e)' },
+      weaponbonus: { apreplace: '-half', damagereplace: '5S(e)' },
     });
     expect(item.system).toMatchObject({
-      damageOverride: 6,
+      damageOverride: 5,
       damageTypeOverride: 'ELECTRICITY',
     });
   });
 
-  it('maps Regular Ammo (category only, no weaponbonus) as Ammo', () => {
+  it('maps plain ammo (category only, no weaponbonus) as Ammo', () => {
     const item = mapGear({
-      name: 'Regular Ammo',
+      name: 'Test Regular Ammo',
       category: 'Ammunition',
       qty: '100',
     });
@@ -611,9 +615,9 @@ describe('gear mapper', () => {
 
   it('maps qty field to quantity', () => {
     const item = mapGear({
-      name: 'Ammo: APDS',
+      name: 'Ammo: Test Piercing',
       category: 'Ammunition',
-      weaponbonus: { ap: '-4' },
+      weaponbonus: { ap: '-3' },
       qty: '50',
     });
     expect(item.system.quantity).toBe(50);
@@ -621,7 +625,7 @@ describe('gear mapper', () => {
 
   it('maps Foci category as Focus item with equipped', () => {
     const item = mapGear({
-      name: 'Counterspelling Focus (Combat)',
+      name: 'Test Focus',
       category: 'Foci',
       rating: '2',
       equipped: 'True',
@@ -629,14 +633,14 @@ describe('gear mapper', () => {
       avail: '8R',
     });
     expect(item.type).toBe('Focus');
-    expect(item.name).toBe('Counterspelling Focus (Combat)');
+    expect(item.name).toBe('Test Focus');
     expect(item.system.rating).toBe(2);
     expect(item.system.equipped).toBe(true);
   });
 
   it('maps unequipped Focus', () => {
     const item = mapGear({
-      name: 'Sustaining Focus (Illusion)',
+      name: 'Test Other Focus',
       category: 'Foci',
       rating: '3',
       equipped: 'False',
@@ -647,13 +651,13 @@ describe('gear mapper', () => {
 
   it('maps Fetishes category as Fetish item', () => {
     const item = mapGear({
-      name: 'Combat Fetish',
+      name: 'Test Fetish',
       category: 'Fetishes',
       rating: '0',
       cost: '200',
     });
     expect(item.type).toBe('Fetish');
-    expect(item.name).toBe('Combat Fetish');
+    expect(item.name).toBe('Test Fetish');
     expect(item.system.rating).toBe(0);
   });
 });
@@ -664,9 +668,9 @@ describe('isAmmunition', () => {
   });
 
   it('returns true for Ammunition category without weaponbonus', () => {
-    expect(isAmmunition({ name: 'Regular Ammo', category: 'Ammunition' })).toBe(
-      true
-    );
+    expect(
+      isAmmunition({ name: 'Test Regular Ammo', category: 'Ammunition' })
+    ).toBe(true);
   });
 
   it('returns false for Spare Clip', () => {
@@ -685,7 +689,7 @@ describe('commlink mapper', () => {
     {
       label: 'maps commlink with matrix stats',
       input: {
-        name: 'Meta Link',
+        name: 'Test Link',
         iscommlink: 'True',
         response: '1',
         signal: '2',
@@ -807,16 +811,16 @@ describe('enum consistency', () => {
 describe('spell mapper', () => {
   it('maps combat type, range area and drain', () => {
     const item = mapSpell({
-      name: 'Ball Lightning',
+      name: 'Test Lightning Orb',
       descriptor: 'Indirect, Elemental, Area',
       category: 'Combat',
       type: 'P',
       range: 'LOS (A)',
       damage: 'P',
       duration: 'I',
-      dv: '(F/2)+5',
-      source: 'SR4',
-      page: '205',
+      dv: '(F/2)+4',
+      source: 'TST',
+      page: '10',
     });
     expect(item.type).toBe('Spell');
     expect(item.system).toMatchObject({
@@ -827,14 +831,14 @@ describe('spell mapper', () => {
       area: true,
       element: 'ELECTRICITY',
       duration: 'INSTANT',
-      dv: 5,
+      dv: 4,
       damageType: 'PHYSICAL',
     });
   });
 
   it('reads descriptors (plural) from character-import XML', () => {
     const item = mapSpell({
-      name: 'Fireball',
+      name: 'Test Fire Orb',
       descriptors: 'Indirect, Elemental, Area',
       category: 'Combat',
       type: 'P',
@@ -850,7 +854,7 @@ describe('spell mapper', () => {
 
   it('maps mana touch spells without element', () => {
     const item = mapSpell({
-      name: 'Heal',
+      name: 'Test Mend',
       descriptor: 'Essence',
       category: 'Health',
       type: 'M',
@@ -872,7 +876,7 @@ describe('spell mapper', () => {
 
   it('detects (Limited) suffix and strips it from the name', () => {
     const item = mapSpell({
-      name: 'Analyze Truth (Limited)',
+      name: 'Test Truth (Limited)',
       descriptors: 'Active, Directional',
       category: 'Detection',
       type: 'M',
@@ -881,13 +885,13 @@ describe('spell mapper', () => {
       duration: 'S',
       dv: '(F/2)',
     });
-    expect(item.name).toBe('Analyze Truth');
+    expect(item.name).toBe('Test Truth');
     expect(item.system.limited).toBe(true);
   });
 
   it('sets limited to false for regular spells', () => {
     const item = mapSpell({
-      name: 'Manabolt',
+      name: 'Test Bolt',
       descriptor: 'Direct',
       category: 'Combat',
       type: 'M',
@@ -896,9 +900,31 @@ describe('spell mapper', () => {
       duration: 'I',
       dv: '(F/2)',
     });
-    expect(item.name).toBe('Manabolt');
+    expect(item.name).toBe('Test Bolt');
     expect(item.system.limited).toBe(false);
   });
+
+  it.each([
+    ['Test Environment Area', 'Environmental, Area', false],
+    ['Test Environment', 'Environmental', false],
+    ['Test Mind', 'Mental', true],
+    ['Test Mind Area', 'Mental, Area', true],
+  ])(
+    'flags manipulation spell %s (%s) as opposed=%s',
+    (name, descriptor, expected) => {
+      const item = mapSpell({
+        name,
+        descriptor,
+        category: 'Manipulation',
+        type: 'M',
+        range: 'LOS',
+        damage: '',
+        duration: 'S',
+        dv: '(F/2)',
+      });
+      expect(item.system.opposed).toBe(expected);
+    }
+  );
 });
 
 describe('parseMount', () => {
@@ -919,32 +945,32 @@ describe('weapon mod mapper', () => {
     {
       label: 'accessory with mount and recoil compensation',
       input: {
-        name: 'Bipod',
+        name: 'Test Bipod',
         mount: 'Under',
-        rc: '(2)',
-        avail: '2',
-        cost: '100',
-        source: 'SR4',
-        page: '322',
+        rc: '(1)',
+        avail: '3',
+        cost: '150',
+        source: 'TST',
+        page: '11',
       },
-      system: { mount: 'under', rcBonus: 2, slotCost: 1, cost: 100, avail: 2 },
+      system: { mount: 'under', rcBonus: 1, slotCost: 1, cost: 150, avail: 3 },
     },
     {
       label: 'weapon mod with slots and category',
       input: {
-        name: 'Electronic Firing',
+        name: 'Test Firing Mod',
         category: 'Weapon Mod',
         rating: '0',
-        slots: '2',
-        rc: '1',
-        avail: '10R',
-        cost: '1000',
+        slots: '3',
+        rc: '2',
+        avail: '8R',
+        cost: '900',
       },
       system: {
         mount: 'internal',
-        rcBonus: 1,
-        slotCost: 2,
-        availability: '10R',
+        rcBonus: 2,
+        slotCost: 3,
+        availability: '8R',
       },
     },
   ])('maps $label', ({ input, system }) => {
@@ -957,7 +983,9 @@ describe('weapon mod mapper', () => {
     expect(
       mapWeaponMod({ name: 'Smartgun System, Internal' }).system.grantsSmartlink
     ).toBe(true);
-    expect(mapWeaponMod({ name: 'Bipod' }).system.grantsSmartlink).toBe(false);
+    expect(mapWeaponMod({ name: 'Test Bipod' }).system.grantsSmartlink).toBe(
+      false
+    );
   });
 });
 
@@ -966,57 +994,57 @@ describe('mod dispatch', () => {
     {
       label: 'routes armor mods by armorcapacity',
       input: {
-        name: 'Auto-Injector',
+        name: 'Test Armor Mod',
         category: 'General',
         b: '0',
         i: '0',
         maxrating: '1',
-        armorcapacity: '[2]',
-        avail: '4',
-        cost: '1500',
+        armorcapacity: '[3]',
+        avail: '5',
+        cost: '1200',
       },
       type: 'Armor Mod',
-      system: { capacityCost: 2, ballisticBonus: 0, impactBonus: 0, rating: 1 },
+      system: { capacityCost: 3, ballisticBonus: 0, impactBonus: 0, rating: 1 },
     },
     {
       label: 'routes "Weapon Mod" category to weapon mods',
       input: {
-        name: 'Gas-Vent 3 System',
+        name: 'Test Vent Mod',
         category: 'Weapon Mod',
-        slots: '3',
-        rc: '3',
-        avail: '9F',
-        cost: '600',
+        slots: '2',
+        rc: '2',
+        avail: '7F',
+        cost: '500',
       },
       type: 'Weapon Mod',
-      system: { rcBonus: 3 },
+      system: { rcBonus: 2 },
     },
     {
       label:
         'routes remaining mods to vehicle mods and resolves rating bonuses',
       input: {
-        name: 'Armor, Normal',
+        name: 'Test Vehicle Armor',
         category: 'All',
-        rating: '20',
+        rating: '15',
         slots: '1',
         avail: '6R',
-        cost: 'Rating * 200',
+        cost: 'Rating * 150',
         bonus: { armor: 'Rating' },
       },
       type: 'Vehicle Mod',
-      system: { armorBonus: 20, slotCost: 1, rating: 20 },
+      system: { armorBonus: 15, slotCost: 1, rating: 15 },
     },
     {
       label: 'reads a flat vehicle handling bonus from the bonus block',
       input: {
-        name: 'Off-Road Suspension',
+        name: 'Test Suspension',
         category: 'Standard',
         rating: '0',
         slots: '1',
-        bonus: { handling: '1' },
+        bonus: { handling: '2' },
       },
       type: 'Vehicle Mod',
-      system: { handlingBonus: 1 },
+      system: { handlingBonus: 2 },
     },
   ])('$label', ({ input, type, system }) => {
     const item = mapMod(input);
@@ -1028,7 +1056,7 @@ describe('mod dispatch', () => {
 describe('critter skills', () => {
   it('maps a collapsed same-tag skill array with force ratings and specs', () => {
     const critter = mapCritter({
-      name: 'Spirit of Air',
+      name: 'Test Spirit',
       category: 'Spirits',
       skills: [
         { '#text': 'Assensing', rating: 'F' },
@@ -1050,31 +1078,31 @@ describe('critter skills', () => {
 
   it('maps mixed skill/group containers including repeated skills', () => {
     const critter = mapCritter({
-      name: 'Hellhound',
+      name: 'Test Beast',
       category: 'Mundane Critters',
       skills: {
         skill: [
-          { '#text': 'Infiltration', rating: '3' },
-          { '#text': 'Tracking', rating: '4' },
+          { '#text': 'Infiltration', rating: '2' },
+          { '#text': 'Tracking', rating: '5' },
         ],
         group: 'Athletics',
       },
     });
     expect(critter.system.skills).toEqual([
-      { name: 'Infiltration', rating: 3, ratingFormula: '', spec: '' },
-      { name: 'Tracking', rating: 4, ratingFormula: '', spec: '' },
+      { name: 'Infiltration', rating: 2, ratingFormula: '', spec: '' },
+      { name: 'Tracking', rating: 5, ratingFormula: '', spec: '' },
       { name: 'Athletics', rating: 0, ratingFormula: '', spec: '' },
     ]);
   });
 
   it('ignores force formulas for non-force-based critters', () => {
     const critter = mapCritter({
-      name: 'Barghest',
+      name: 'Test Paranormal Beast',
       category: 'Paranormal Critters',
-      skills: [{ '#text': 'Dodge', rating: '2' }],
+      skills: [{ '#text': 'Dodge', rating: '3' }],
     });
     expect(critter.system.skills).toEqual([
-      { name: 'Dodge', rating: 2, ratingFormula: '', spec: '' },
+      { name: 'Dodge', rating: 3, ratingFormula: '', spec: '' },
     ]);
   });
 });
@@ -1082,33 +1110,33 @@ describe('critter skills', () => {
 describe('implant essence reverse-calc', () => {
   it('reverses grade and quality to recover the base essence', () => {
     const item = mapCyberware(
-      { name: 'Wired Reflexes', ess: '1.8', grade: 'Standard' },
+      { name: 'Test Reflex Ware', ess: '2.7', grade: 'Standard' },
       undefined,
       { biocompatibility: 'CYBERWARE' }
     );
-    expect(item.system.essence).toBe(2);
+    expect(item.system.essence).toBe(3);
     expect(item.system.grade).toBe('STANDARD');
   });
 
   it('recognizes the Chummer "…ware" grade suffix and reverses it', () => {
     const item = mapCyberware(
-      { name: 'Smartlink', ess: '0.072', grade: 'Alphaware' },
+      { name: 'Test Eye Ware', ess: '0.144', grade: 'Alphaware' },
       undefined,
       { biocompatibility: 'CYBERWARE' }
     );
     expect(item.system.grade).toBe('ALPHA');
-    // 0.072 / (0.8 * 0.9) = 0.1
-    expect(item.system.essence).toBe(0.1);
+    // 0.144 / (0.8 * 0.9) = 0.2
+    expect(item.system.essence).toBe(0.2);
   });
 
   it('does not reverse the quality for a non-matching implant type', () => {
     const item = mapBioware(
-      { name: 'Enhanced Articulation', ess: '0.24', grade: 'Alphaware' },
+      { name: 'Test Joint Ware', ess: '0.32', grade: 'Alphaware' },
       undefined,
       { biocompatibility: 'CYBERWARE' }
     );
-    // bioware unaffected by cyberware biocompatibility: 0.24 / 0.8 = 0.3
-    expect(item.system.essence).toBe(0.3);
+    // bioware unaffected by cyberware biocompatibility: 0.32 / 0.8 = 0.4
+    expect(item.system.essence).toBe(0.4);
   });
 
   it('stays a no-op without modifiers', () => {

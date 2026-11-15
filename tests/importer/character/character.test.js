@@ -522,44 +522,44 @@ describe('buildActorData', () => {
       items: {
         weapon: [
           {
-            name: 'AK-97',
+            name: 'Test Rifle',
             type: 'Ranged',
             category: 'Assault Rifles',
-            damage: '6P',
-            ammo: '38(c)',
+            damage: '7P',
+            ammo: '30(c)',
             mode: 'SA/BF/FA',
             _weaponMods: [
               {
-                name: 'Gas Vent 2',
+                name: 'Test Vent',
                 slots: '1',
-                rc: '2',
-                source: 'SR4',
-                page: '322',
+                rc: '3',
+                source: 'TST',
+                page: '1',
               },
               {
-                name: 'Foregrip',
+                name: 'Test Grip',
                 rc: '1',
                 mount: 'Under',
                 conceal: '0',
-                source: 'AR',
-                page: '34',
+                source: 'TST',
+                page: '2',
               },
             ],
           },
           {
-            name: 'Ares Crusader',
+            name: 'Test Machine Pistol',
             type: 'Ranged',
             category: 'Machine Pistols',
-            damage: '4P',
-            ammo: '40(c)',
+            damage: '5P',
+            ammo: '32(c)',
             mode: 'SA/BF',
             _weaponMods: [
               {
-                name: 'Gas Vent 2',
+                name: 'Test Vent',
                 slots: '1',
-                rc: '2',
-                source: 'SR4',
-                page: '322',
+                rc: '3',
+                source: 'TST',
+                page: '1',
               },
             ],
           },
@@ -572,20 +572,20 @@ describe('buildActorData', () => {
     const modItems = data.items.filter((i) => i.type === 'Weapon Mod');
     expect(modItems).toHaveLength(3);
     expect(modItems.map((m) => m.name).sort()).toEqual([
-      'Foregrip',
-      'Gas Vent 2',
-      'Gas Vent 2',
+      'Test Grip',
+      'Test Vent',
+      'Test Vent',
     ]);
 
-    const gasVent = modItems.find((m) => m.name === 'Gas Vent 2');
-    expect(gasVent.system.slotCost).toBe(1);
-    const foregrip = modItems.find((m) => m.name === 'Foregrip');
-    expect(foregrip.system.slotCost).toBe(0);
+    const vent = modItems.find((m) => m.name === 'Test Vent');
+    expect(vent.system.slotCost).toBe(1);
+    const grip = modItems.find((m) => m.name === 'Test Grip');
+    expect(grip.system.slotCost).toBe(0);
 
     expect(data.weaponModLinks).toEqual([
-      { weaponName: 'AK-97', modName: 'Gas Vent 2' },
-      { weaponName: 'AK-97', modName: 'Foregrip' },
-      { weaponName: 'Ares Crusader', modName: 'Gas Vent 2' },
+      { weaponName: 'Test Rifle', modName: 'Test Vent' },
+      { weaponName: 'Test Rifle', modName: 'Test Grip' },
+      { weaponName: 'Test Machine Pistol', modName: 'Test Vent' },
     ]);
   });
 
